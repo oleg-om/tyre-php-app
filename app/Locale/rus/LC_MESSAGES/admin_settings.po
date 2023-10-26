@@ -1,0 +1,6 @@
+msgid "title_list"
+msgstr "Настройки"
+msgid "message_item_saved"
+msgstr "Настройки сохранены"
+msgid "error_item_not_saved"
+msgstr "Не удается сохранить настройки"
