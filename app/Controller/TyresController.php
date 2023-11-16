@@ -234,8 +234,9 @@ class TyresController extends AppController {
 
 
         $models = $this->Product->find('all', array(
-            'fields' => array('Product.model_id', 'Product.id'),
-            'conditions' => $conditions
+            'fields' => array('Product.model_id', 'Product.id', 'Product.price'),
+            'conditions' => $conditions,
+            'order' => 'Product.price ASC'
         ));
         //print_r($models);
 
@@ -677,13 +678,13 @@ class TyresController extends AppController {
             $this->set('show_size', $show_size);
 
             $models = $this->Product->find('all', array(
-                'fields' => array('Product.model_id'),
+                'fields' => array('Product.model_id', 'Product.id'),
                 'conditions' => $conditions
             ));
             $model_ids = array();
             foreach ($models as $model) {
                 if (!in_array($model['Product']['model_id'], $model_ids)) {
-                    $model_ids[] = $model['Product']['model_id'];
+                    $model_ids[$model['Product']['id']] = $model['Product']['model_id'];
                 }
             }
             $product_ids =  implode(", ", array_keys($model_ids));
