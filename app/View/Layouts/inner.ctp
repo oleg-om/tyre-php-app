@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="ru">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" /> 
 <meta http-equiv="X-UA-Compatible" content="IE=9" />
@@ -26,6 +26,10 @@ echo $this->Html->meta('description', $meta_description);
 <meta content="telephone=no" name="format-detection" />
 </head> 
 <body>
+<!-- Google Tag Manager (noscript) -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-T2BRRZ3N"
+                  height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<!-- End Google Tag Manager (noscript) -->
 <?php
 if (!isset($show_left_menu)) {
 	$show_left_menu = true;
@@ -56,63 +60,28 @@ if (!isset($show_right_menu)) {
 <?php
 	echo $this->element('sql_dump');
 ?>
-<script type="text/javascript">
-
-  var _gaq = _gaq || [];
-  _gaq.push(['_setAccount', 'UA-34557894-1']);
-  _gaq.push(['_trackPageview']);
-
-  (function() {
-	var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-	ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-	var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-  })();
-
-</script>
+<!-- Google Tag Manager -->
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+            new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+        j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+        'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+    })(window,document,'script','dataLayer','GTM-T2BRRZ3N');</script>
+<!-- End Google Tag Manager -->
 <!-- Yandex.Metrika counter -->
-<script type="text/javascript">
-    (function (d, w, c) {
-        (w[c] = w[c] || []).push(function() {
-            try {
-                w.yaCounter28781221 = new Ya.Metrika({
-                    id:28781221,
-                    clickmap:true,
-                    trackLinks:true,
-                    accurateTrackBounce:true
-                }
+<script type="text/javascript" >
+    (function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+        m[i].l=1*new Date();
+        for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
+        k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})
+    (window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");
 
-);
-            } catch(e) { }
-        });
-
-        var n = d.getElementsByTagName("script")[0],
-            s = d.createElement("script"),
-            f = function () { n.parentNode.insertBefore(s, n); }
-
-;
-        s.type = "text/javascript";
-        s.async = true;
-        s.src = (d.location.protocol == "https:" ? "https:" : "http:") + "//mc.yandex.ru/metrika/watch.js";
-
-        if (w.opera == "[object Opera]") {
-            d.addEventListener("DOMContentLoaded", f, false);
-        }
-
- else { f(); }
-
-    })(document, window, "yandex_metrika_callbacks");
+    ym(95593459, "init", {
+        clickmap:true,
+        trackLinks:true,
+        accurateTrackBounce:true
+    });
 </script>
-<noscript><div><img src="//mc.yandex.ru/watch/28781221" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
+<noscript><div><img src="https://mc.yandex.ru/watch/95593459" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
 <!-- /Yandex.Metrika counter -->
-<!--LiveInternet counter--><script type="text/javascript"><!--
-document.write("<a href='//www.liveinternet.ru/click' "+
-"target=_blank><img src='//counter.yadro.ru/hit?t57.15;r"+
-escape(document.referrer)+((typeof(screen)=="undefined")?"":
-";s"+screen.width+"*"+screen.height+"*"+(screen.colorDepth?
-screen.colorDepth:screen.pixelDepth))+";u"+escape(document.URL)+
-";"+Math.random()+
-"' alt='' title='LiveInternet' "+
-"border='0' width='88' height='31'><\/a>")
-//--></script><!--/LiveInternet-->
 </body>
 </html>
