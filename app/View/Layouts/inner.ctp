@@ -1,8 +1,9 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" /> 
-<meta http-equiv="X-UA-Compatible" content="IE=9" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
 <title><?php echo h($meta_title); ?></title>
 <?php
 echo $this->Html->meta('keywords', $meta_keywords);
@@ -11,7 +12,7 @@ echo $this->Html->meta('description', $meta_description);
 <link href="http://fonts.googleapis.com/css?family=Open+Sans:400,700&subset=latin,cyrillic" rel="stylesheet" type="text/css">
 <link href="http://fonts.googleapis.com/css?family=Open+Sans+Condensed:300,700&subset=latin,cyrillic" rel="stylesheet" type="text/css">
 <?php
-	$css = array('main-v3');
+	$css = array('main-style', 'main-style-media');
 	if (isset($additional_css)) {
 		$css = array_merge($css, $additional_css);
 	}
@@ -35,10 +36,11 @@ if (!isset($show_left_menu)) {
 	$show_left_menu = true;
 }
 if (!isset($show_right_menu)) {
-	$show_right_menu = true;
+	$show_right_menu = false;
 }
 ?>
 <?php echo $this->element('header'); ?>
+<?php echo $this->element('breadcrumbs'); ?>
 <div class="wrap">
 	<?php
 		echo $this->element('filter');
@@ -50,7 +52,11 @@ if (!isset($show_right_menu)) {
 			}
 		?>
 		<div class="center-content"><?php echo $content_for_layout; ?></div>
-
+        <?php
+        if ($show_right_menu) {
+            echo $this->element('right');
+        }
+        ?>
 		<div class="clear"></div>
 	</div>
 	<div id="footer">

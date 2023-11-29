@@ -6,6 +6,14 @@ if (empty($active_menu)) {
 <div id="header">
 	<div class="tyres">
 		<div class="wrap">
+            <div class="header-wrap">
+                <a href="javascript:void(0);" onclick="switchToggle();" class="header-toggle">
+                    <svg viewBox="0 0 100 80" width="40" height="40">
+                        <rect width="100" height="10" fill="#FFFFFF"></rect>
+                        <rect y="30" width="100" height="10" fill="#FFFFFF"></rect>
+                        <rect y="60" width="100" height="10" fill="#FFFFFF"></rect>
+                    </svg>
+                </a>
 			<div class="logo"><a href="/"><img src="/img/kerchshina.png" alt="Шинный центр" /></a></div>
 			<div class="info-group">
 				<div class="desc">Шинный центр</div>
@@ -15,8 +23,8 @@ if (empty($active_menu)) {
 				</div>
 			</div>
 			<div class="cart"><button onclick="window.location='/checkout';"><?php if (isset($cart) && !empty($cart['items'])) { ?><em><?php echo count($cart['items']); ?></em><?php } ?><span>Корзина</span></button></div>
-			<div class="clear"></div>
-			<div id="nav">
+            </div>
+			<div id="nav" class="toggle__menu">
 				<ul>
 					<li<?php if ($active_menu == 'home') { ?> class="activ"<?php } ?>><a href="/">Главная</a></li>
 					<li<?php if ($active_menu == 'tyres') { ?> class="activ"<?php } ?>><a href="/tyres?auto=cars">Шины</a></li>
@@ -31,4 +39,16 @@ if (empty($active_menu)) {
 			</div>
 		</div>
 	</div>
+    <script>
+        var toggle = false;
+        function switchToggle() {
+            if (!toggle) {
+                document.getElementById("nav").className = "toggle__menu-open";
+                toggle = true
+            } else {
+                document.getElementById("nav").className = "toggle__menu";
+                toggle = false
+            }
+        }
+    </script>
 </div>

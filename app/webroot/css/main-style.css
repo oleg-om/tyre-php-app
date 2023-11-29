@@ -1,17 +1,38 @@
-﻿body {
+﻿:root {
+  --breakpoint-xs: 0;
+  --breakpoint-sm: 576px;
+  --breakpoint-md: 768px;
+  --breakpoint-lg: 992px;
+  --breakpoint-xl: 1200px;
+  --breakpoint-xxl: 1400px;
+
+  --container-sm: 100%;
+  --container-md: 720px;
+  --container-lg: 960px;
+  --container-xl: 1140px;
+  --container-xxl: 1320px;
+}
+
+body {
   margin: 0px;
   padding: 0px;
   font-size: 13px !important;
   color: #666666 !important;
   font-family: Arial, Helvetica, sans-serif !important;
   background-color: #f2f2f2 !important;
+  display: flex;
+  flex-direction: column;
 }
 .wrap {
-  width: 1130px;
+  width: 100%;
+  max-width: calc(var(--container-sm) - 30px);
   margin: auto;
+  padding-right: 15px;
+  padding-left: 15px;
 }
 .clear {
   clear: both;
+  display: none;
 }
 img {
   border: 0px;
@@ -49,19 +70,18 @@ input {
   background-color: #589b2f;
 }
 #header .tyres {
-  background-image: url(../img/tyres.png);
-  min-height: 105px;
   background-position: center bottom;
   background-repeat: no-repeat;
 }
 #header .logo {
-  float: left;
   padding-top: 5px;
   position: relative;
-  margin-left: -42px;
+}
+#header .logo a img {
+  width: 200px;
 }
 #header .info-group {
-  float: left;
+  display: none;
   padding-left: 15px;
   padding-top: 52px;
 }
@@ -87,10 +107,7 @@ input {
   padding-bottom: 3px;
   margin-top: -7px;
 }
-#header .cart {
-  float: right;
-  padding-top: 25px;
-}
+
 #header .cart button {
   background: url("../img/cart.png") no-repeat scroll 10px 6px;
   border: 0;
@@ -98,13 +115,16 @@ input {
   font-size: 16px;
   font-weight: bold;
   color: #fff;
-  padding: 10px 20px 8px 66px;
   position: relative;
+  height: 34px;
+  width: 47px;
+  background-position: center;
 }
 #header .cart button:hover {
 }
 #header .cart button span {
   text-decoration: underline;
+  display: none;
 }
 #header .cart button:hover span {
   text-decoration: none;
@@ -127,19 +147,37 @@ input {
   width: 16px;
 }
 #header #nav {
-  width: 1130px;
+  width: 100%;
+  max-width: var(--container-sm);
   padding-top: 10px;
 }
 #header #nav ul {
   margin: 0;
   padding: 0;
   list-style-type: none;
+  display: flex;
+  width: 100%;
 }
 #header #nav ul li {
-  float: left;
+  width: 100%;
 }
-#header #nav ul li:last-child a {
-  width: 142px;
+.header-wrap {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.header-toggle {
+  display: flex;
+  width: 25px;
+}
+.toggle__menu {
+  display: none;
+}
+.toggle__menu-open {
+  display: flex;
+}
+.toggle__menu-open ul {
+  flex-direction: column;
 }
 #header #nav ul li a {
   display: block;
@@ -148,7 +186,6 @@ input {
   font-weight: bold;
   text-decoration: none;
   text-shadow: 1px 0 3px #2f630e;
-  width: 141px;
   color: #fff;
   background-color: #316b16;
   text-align: center;
@@ -159,6 +196,7 @@ input {
   background-color: #fff;
   text-shadow: none;
   color: #000;
+  width: 100%;
 }
 #header #nav ul li:hover a {
   background-color: #3a7021;
@@ -173,6 +211,9 @@ input {
   box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
   margin-top: 15px;
   position: relative;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
 }
 .content.no-left {
   background-color: #fff;
@@ -182,8 +223,7 @@ input {
   background-color: #fff;
 }
 .content.no-right.no-right .center-content {
-  float: none;
-  width: auto;
+  width: 100%;
 }
 .content.no-left .content {
   background: none;
@@ -191,13 +231,8 @@ input {
   box-shadow: none;
 }
 .left-nav {
-  width: 200px;
-  float: left;
   padding-bottom: 10px;
   background-color: #f5f5f5;
-  position: sticky;
-  top: 0;
-  bottom: 0;
 }
 .left-nav .title {
   padding: 20px 20px;
@@ -298,9 +333,7 @@ input {
   background-color: #f5f5f5;
 }
 .center-content {
-  float: right;
   padding: 10px 24px 24px;
-  width: 870px;
 }
 .slide {
   position: relative;
@@ -513,8 +546,9 @@ input {
   position: relative;
 }
 .filter-group .item {
-  float: left;
-  margin-right: 40px;
+  display: flex;
+  flex-wrap: wrap;
+  column-gap: 20px;
 }
 .filter-group .item.item6 {
   margin-right: 0;
@@ -682,6 +716,8 @@ input {
   border-top: 1px solid #e0e0e0;
   margin-top: 10px;
   padding-top: 15px;
+  display: flex;
+  justify-content: space-between;
 }
 .pager-filter.bottom .pager-filter {
   border-bottom: 0;
@@ -900,6 +936,8 @@ input {
   border: 0px;
   padding: 10px;
   margin-bottom: 20px;
+  display: flex;
+  min-width: 700px;
 }
 .boxList2.boxList2-new title-link {
   display: block;
@@ -922,6 +960,7 @@ input {
 .boxList2.boxList2-new .prodImg2 {
   height: 113px;
   width: 117px;
+  min-width: 117px;
 }
 .infoList2 {
   float: left;
@@ -929,7 +968,7 @@ input {
   width: 183px;
 }
 .boxList2.boxList2-new .infoList2 {
-  width: 720px;
+  width: 100%;
 }
 .boxList2.boxList2-new .title-link {
   display: block;
@@ -1049,17 +1088,21 @@ a.btVer3:hover {
   text-align: center;
 }
 .width-disk {
-  width: 880px;
+  display: flex;
+  gap: 15px;
+  flex-wrap: wrap;
+  width: 100%;
+  justify-content: space-between;
 }
 .boxList {
   background-color: #f5f5f5;
   box-shadow: 1px 1px 0 #e5e5e5;
-  float: left;
   height: 289px;
-  margin-bottom: 20px;
-  margin-right: 16px;
   padding: 15px;
-  width: 174px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 .border-b-tyres .boxList.season-winter,
 .border-b-tyres .boxList.season-summer,
@@ -1109,7 +1152,9 @@ a.btVer3:hover {
   margin-bottom: 10px;
   overflow: hidden;
   position: relative;
-  width: 173px;
+  width: 100%;
+  max-width: 173px;
+  min-height: 143px;
 }
 .prodImg table {
   height: 100%;
@@ -1121,6 +1166,8 @@ a.btVer3:hover {
 .infoList {
   margin-bottom: 10px;
   text-align: center;
+  display: flex;
+  flex-direction: column;
 }
 .infoList .available {
   margin: 0;
@@ -1143,15 +1190,25 @@ a.btVer3:hover {
   padding: 10px 0;
   text-align: center;
 }
+
 .with-season .priceMore {
   padding: 0;
   text-align: center;
 }
+
 .with-season .priceMore .namber.tyres {
   display: inline-block;
 }
 .with-season .priceMore {
   text-align: center;
+  display: flex;
+  flex-direction: column;
+}
+.with-season .priceMore-range {
+  text-align: center;
+  display: flex;
+  flex-direction: row;
+  gap: 5px;
 }
 .priceMore span {
   color: #333333;
@@ -1524,9 +1581,13 @@ h3.title-tyres {
   float: left;
   padding-top: 22px;
 }
+.product__info {
+  display: flex;
+  gap: 5px;
+}
 .buy-button {
   float: right;
-  padding-top: 24px;
+  padding-top: 8px;
 }
 .buy-button a {
   text-transform: uppercase;
@@ -1829,8 +1890,13 @@ h3.title-tyres {
   position: relative;
   width: 243px;
 }
+.akb__promo img {
+  width: 100%;
+  height: auto;
+}
 .selection {
-  width: 870px;
+  display: flex;
+  flex-wrap: wrap;
 }
 .selection .item {
   background-color: #ffffff;
@@ -1840,8 +1906,10 @@ h3.title-tyres {
   min-height: 90px;
   padding: 15px 0;
   text-align: center;
-  width: 195px;
+  width: 100%;
   box-shadow: 0 0 0 1px #f0f0f0 inset;
+  display: flex;
+  justify-content: center;
 }
 .sectiontableheader {
   width: 100%;
@@ -2159,6 +2227,8 @@ h3.title-tyres {
   border-bottom: 1px solid #dae1e5;
   margin-bottom: 15px;
   padding-bottom: 10px;
+  display: flex;
+  justify-content: space-between;
 }
 .filter-prod.filter-prod2 {
   margin-bottom: 0;
@@ -3089,6 +3159,7 @@ table.withlines {
   color: #ff6600;
   text-align: center;
   margin: 0;
+  margin-bottom: 10px;
 }
 
 .storage__block {
@@ -3118,3 +3189,21 @@ table.withlines {
   color: #4ba123;
   font-size: 12px;
 }
+
+.logos__wrapper {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.logos__wrapper span {
+  display: flex;
+}
+
+.jcarousel-wrapper {
+  width: 350px;
+}
+.jcarousel li {
+  width: 350px !important;
+}
+
+

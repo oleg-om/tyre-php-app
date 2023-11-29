@@ -1,5 +1,5 @@
 <h2 class="title"> Аккумуляторы</h2>
-<p><img src="http://kerchshina.com/files/1/akb4.jpg" alt="" width="870" height="218" /></p>
+<p class="akb__promo"><img src="http://kerchshina.com/files/1/akb4.jpg" alt="" width="870" height="218" /></p>
 <?php if (isset($all_brands)) { ?>
 <div class="selection">
 	<?php

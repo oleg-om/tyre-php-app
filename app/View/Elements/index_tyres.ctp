@@ -178,19 +178,22 @@ foreach ($models as $item) {
 									echo $item['Product'][0]['size1']; ?> / <?php echo $item['Product'][0]['size2']; ?> R<?php echo $item['Product'][0]['size3']; ?> <?php echo h($item['Product'][0]['f1'] . $item['Product'][0]['f2']);
 								?></a>
 							</div>
-							<div class="buy-button">
-				<a href="javascript:void(0);" class="btVer2" onclick="test(<?php echo $item['Product'][0]['id']; ?>);">Купить</a>
-			</div>
+
 							
 							<?php } ?>
 						</div>
+                        <div class="product__info">
 						<div class="priceMore tyres">
 							<?php if ($this->Frontend->canShowTyrePrice($item['Product'][0]['auto'], $item['Product'][0]['not_show_price']) && ($show_size || $has_params)) { ?>
 							<span><?php echo $this->Frontend->getPrice($item['Product'][0]['price'], 'tyres', array('between' => '&nbsp;<span>', 'after' => '</span>')); ?></span>
-							<div class="namber tyres">&nbsp;&nbsp;&nbsp;&nbsp;<?php echo $this->Frontend->getStockCount($item['Product'][0]['stock_count']); ?> шт.</div>
-							<?php echo $item['Product'][0]['in_stock'] ? '<img title="в наличии" alt="в наличии" src="/img/yes.png">' : ''; ?>
+							<div class="namber tyres">&nbsp;&nbsp;&nbsp;&nbsp;<?php echo $this->Frontend->getStockCount($item['Product'][0]['stock_count']); ?> шт. <?php echo $item['Product'][0]['in_stock'] ? '<img title="в наличии" alt="в наличии" src="/img/yes.png">' : ''; ?></div>
+
 							<?php } ?>
 						</div>
+                            <div class="buy-button">
+                                <a href="javascript:void(0);" class="btVer2" onclick="test(<?php echo $item['Product'][0]['id']; ?>);">Купить</a>
+                            </div>
+                        </div>
 						<div class="clear"></div>
 					<?php } elseif ($mode == 'list') { ?>
 						<div class="prodImg2 floatl">
@@ -414,7 +417,7 @@ foreach ($models as $item) {
 							</div>
 							<?php } ?>
 						</div>
-						<div class="priceMore">
+						<div class="priceMore priceMore-range">
 							<?php if ($this->Frontend->canShowTyrePrice($item['Product'][0]['auto'], $item['Product'][0]['not_show_price']) && ($show_size || $has_params)) { ?>
 							<em>от</em> <span><?php echo $this->Frontend->getPrice($min_price, 'tyres', array('between' => '&nbsp;<span>', 'after' => '</span>')); ?></span>
 							<?php } ?>

@@ -1,0 +1,163 @@
+/*--breakpoint-xs: 0;*/
+/*--breakpoint-sm: 576px;*/
+/*--breakpoint-md: 768px;*/
+/*--breakpoint-lg: 992px;*/
+/*--breakpoint-xl: 1200px;*/
+/*--breakpoint-xxl: 1400px;*/
+
+/*--container-sm: 100%;*/
+/*--container-md: 720px;*/
+/*--container-lg: 960px;*/
+/*--container-xl: 1140px;*/
+/*--container-xxl: 1320px;*/
+
+@media screen and (min-width: 550px) {
+    .boxList {
+        width: 42%;
+    }
+    .selection .item {
+        width: 45%;
+    }
+    .jcarousel-wrapper {
+        width: 500px;
+    }
+    .jcarousel li {
+        width: 500px !important;
+    }
+}
+
+@media screen and (min-width: 768px) {
+    .wrap {
+        max-width: var(--container-md)
+    }
+    #header #nav {
+        max-width: var(--container-md)
+    }
+    .boxList {
+        width: 27%;
+    }
+    .width-disk {
+        justify-content: flex-start;
+    }
+    .selection .item {
+        width: 30%;
+    }
+    .jcarousel-wrapper {
+        width: 580px;
+    }
+    .jcarousel li {
+        width: 580px !important;
+    }
+}
+
+@media screen and (min-width: 992px) {
+    .wrap {
+        max-width: var(--container-lg)
+    }
+    #header #nav {
+        max-width: var(--container-lg)
+    }
+    .content {
+        flex-direction: row;
+    }
+    .left-nav {
+        position: sticky;
+        top: 0;
+        bottom: 0;
+        width: 200px;
+    }
+    .filter-group .item {
+        display: block;
+        margin-right: 40px;
+    }
+    #header .cart {
+        padding-top: 25px;
+    }
+    #header .cart button {
+        padding: 10px 20px 8px 66px;
+        width: auto;
+        height: auto;
+        background-position: inherit;
+    }
+    #header .cart button span {
+        display: block;
+    }
+    #header .logo {
+        margin-left: -42px;
+    }
+    #header .tyres {
+        min-height: 105px;
+    }
+    .toggle__menu {
+        display: flex;
+    }
+    #header .info-group {
+        display: block;
+    }
+    .header-toggle {
+        display: none;
+    }
+    .header-wrap {
+        align-items: flex-start;
+    }
+    #header .logo {
+        padding-top: 18px;
+    }
+    .jcarousel-wrapper {
+        width: 680px;
+    }
+    .jcarousel li {
+        width: 680px !important;
+    }
+}
+
+@media screen and (min-width: 1140px) {
+    .wrap {
+        max-width: var(--container-xl)
+    }
+    #header #nav {
+        max-width: var(--container-xl)
+    }
+    #header .logo {
+        padding-top: 5px;
+    }
+    #header .logo a img {
+        width: auto;
+    }
+    #header .tyres {
+        background-image: url(../img/tyres.png);
+    }
+    .boxList {
+        width: 20.333%;
+    }
+    .selection .item {
+        width: 22%;
+    }
+    .jcarousel-wrapper {
+        width: 860px;
+    }
+    .jcarousel li {
+        width: 860px !important;
+    }
+}
+
+@media screen and (min-width: 1320px) {
+    .wrap {
+        max-width: var(--container-xxl)
+    }
+    #header #nav {
+        max-width: var(--container-xxl)
+    }
+    .boxList {
+        width: 16%;
+    }
+    .selection .item {
+        width: 18%;
+    }
+    .jcarousel-wrapper {
+        width: 1048px;
+    }
+    .jcarousel li {
+        width: 1048px !important;
+    }
+}
