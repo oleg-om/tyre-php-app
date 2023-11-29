@@ -20,7 +20,7 @@ class PagesController extends AppController {
 			$this->set('active_menu', 'home');
             $this->set('show_left_menu', true);
 		}
-		$this->set('additional_css', array('jcarousel.basic.css'));
+		$this->set('additional_css', array('jcarousel.responsive.css'));
 		$this->set('additional_js', array('jquery.jcarousel.min.js'));
 	}
 	public function city($slug) {
