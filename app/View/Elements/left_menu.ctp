@@ -1,5 +1,30 @@
-<div class="left-nav">
-	<div class="title">Фильтр по параметрам:</div>
+<div class="left-nav left-nav-open" id="left-nav-filter">
+	<div class="title">
+        <span class="left-nav__title">
+<?php if ($path == 'tyres'): ?>
+Подбор шин по параметрам:
+<?php else: ?>
+    Фильтр по параметрам:
+<?php endif ?>
+        </span>
+        <a href="javascript:void(0);" onclick="switchFilter();" class="left-nav__button">
+            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="#ffffff"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M7 10L12 15L17 10" stroke="#ffffff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path> </g></svg>
+        </a>
+    </div>
+
+    <script>
+        var openFilter = true;
+        function switchFilter() {
+            if (!openFilter) {
+                document.getElementById("left-nav-filter").className = "left-nav left-nav-open";
+                openFilter = true
+            } else {
+                document.getElementById("left-nav-filter").className = "left-nav";
+                openFilter = false
+            }
+        }
+    </script>
+
 <?php
  //print_r($this->request->data['Product']);
 
@@ -130,10 +155,8 @@ $settings = Cache::read('settings', 'long');
 			</div>
 		</div>
 		<div class="item item3 col-r">
-
+            <label class="item-inner__label">Наличие:</label>
 			<div class="item-inner">
-				<label class="name">Наличие:</label>
-				<div class="clear"></div>
 				<?php
 				//print_r($select['PRODUCTINSTOCK']);
 					

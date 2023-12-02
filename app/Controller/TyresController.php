@@ -1032,9 +1032,11 @@ class TyresController extends AppController {
                 $this->set('show_left_menu', false);
             }
             else {
-                $this->response->statusCode(404);
-                $this->response->send();
-                $this->render(false);
+//                $this->response->statusCode(404);
+//                $this->response->send();
+//   echo $this->request;
+                $this->redirect($slug);
+//                $this->render(false);
                 return;
             }
         }

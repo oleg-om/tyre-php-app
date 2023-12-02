@@ -147,16 +147,16 @@ a {
 <div class="conteiner">
 	<div id="header">
 		<div class="logo">
-			<a href="/en"></a>
+			<a href="/"></a>
 		</div>
 	</div>
 
 
 	<div class="errorBox">
-		<div class="error404">Error 404</div>
-		<h2>Page not found</h2>
-		<div class="errorText">Page address is incorrect or page no longer exists.<br><br><br>
-			<a href="/">Back to site</a>
+		<div class="error404">Ошибка 404</div>
+		<h2>Страница не найдена</h2>
+		<div class="errorText">Адрес страницы некоректный, либо такой страницы не существует<br><br><br>
+			<a href="/">Вернуться на главную</a>
 		</div>
 	</div>
 </div>

@@ -67,7 +67,7 @@ foreach ($models as $item) {
 	
 	 
  
-<?php echo $tyres_switch ? ' filter-prod2' : ''; ?>
+
 <div class="filter-prod<?php echo $tyres_switch ? ' filter-prod2' : ''; ?>">
 	<div class="float-l">
 		<?php if ($tyres_switch) { ?>
