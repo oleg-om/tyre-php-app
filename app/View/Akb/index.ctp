@@ -63,15 +63,15 @@ echo $this->element('currency');
 					if (!empty($item['Product']['filename'])) {
 						$filename = $item['Product']['filename'];
 						$id = $item['Product']['id'];
-						$path = 'akb';
+                        $pathAkb = 'akb';
 					}
 					elseif (!empty($item['BrandModel']['filename'])) {
 						$filename = $item['BrandModel']['filename'];
 						$id = $item['BrandModel']['id'];
-						$path = 'models';
+                        $pathAkb = 'models';
 					}
 					if (!empty($filename)) {
-						echo $this->Html->link($this->Html->image('camera.png', array('alt' => $item['Brand']['title'] . ' ' . $item['BrandModel']['title'])), $this->Backend->thumbnail(array('id' => $id, 'filename' => $filename, 'path' => $path, 'width' => 800, 'height' => 600, 'crop' => false, 'folder' => false)), array('escape' => false, 'class' => 'lightbox', 'title' => $item['Brand']['title'] . ' ' . $item['BrandModel']['title']));
+						echo $this->Html->link($this->Html->image('camera.png', array('alt' => $item['Brand']['title'] . ' ' . $item['BrandModel']['title'])), $this->Backend->thumbnail(array('id' => $id, 'filename' => $filename, 'path' => $pathAkb, 'width' => 800, 'height' => 600, 'crop' => false, 'folder' => false)), array('escape' => false, 'class' => 'lightbox', 'title' => $item['Brand']['title'] . ' ' . $item['BrandModel']['title']));
 					}
 				?></td>
 				<td><?php echo $this->Html->link($item['Brand']['title'], array('controller' => 'akb', 'action' => 'view', 'slug' => $item['Brand']['slug'], 'id' => $item['Product']['id']), array('escape' => false)); ?></td>
@@ -119,16 +119,16 @@ echo $this->element('currency');
                                             if (!empty($item['Product']['filename'])) {
                                                 $filename = $item['Product']['filename'];
                                                 $id = $item['Product']['id'];
-                                                $path = 'akb';
+                                                $pathAkb = 'akb';
                                             }
                                             elseif (!empty($item['BrandModel']['filename'])) {
                                                 $filename = $item['BrandModel']['filename'];
                                                 $id = $item['BrandModel']['id'];
-                                                $path = 'models';
+                                                $pathAkb = 'models';
                                             }
                                             if (!empty($filename)) {
-                                                $imgBig = $this->Backend->thumbnail(array('id' => $id, 'filename' => $filename, 'path' => $path, 'width' => 800, 'height' => 600, 'crop' => false, 'folder' => false));
-                                                $imgSmall = $this->Backend->thumbnail(array('id' => $id, 'filename' => $filename, 'path' => $path, 'width' => 150, 'height' => 150, 'crop' => false, 'folder' => false));
+                                                $imgBig = $this->Backend->thumbnail(array('id' => $id, 'filename' => $filename, 'path' => $pathAkb, 'width' => 800, 'height' => 600, 'crop' => false, 'folder' => false));
+                                                $imgSmall = $this->Backend->thumbnail(array('id' => $id, 'filename' => $filename, 'path' => $pathAkb, 'width' => 150, 'height' => 150, 'crop' => false, 'folder' => false));
                                                 echo $this->Html->link($this->Html->image($imgSmall, array('alt' => $brand['Brand']['title'] . ' ' . $item['BrandModel']['title'])), $imgBig, array('escape' => false, 'class' => 'lightbox', 'title' => $brand['Brand']['title'] . ' ' . $item['BrandModel']['title']));
                                             }
                                             else {

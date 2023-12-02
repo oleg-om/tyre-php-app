@@ -2,6 +2,7 @@
 	<div class="title">
         <span class="left-nav__title">
 <?php if ($path == 'tyres'): ?>
+
 Подбор шин по параметрам:
 <?php else: ?>
     Фильтр по параметрам:

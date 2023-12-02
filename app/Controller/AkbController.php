@@ -197,7 +197,7 @@ class AkbController extends AppController {
 			$this->set('products', $products);
 		}
 		else {
-			$this->loadModel('Brand');
+			//$this->loadModel('Brand');
 			$this->set('all_brands', $this->Brand->find('all', array('order' => array('Brand.title' => 'asc'), 'conditions' => array('Brand.category_id' => $this->category_id, 'Brand.is_active' => 1, 'Brand.active_products_count > 0'), 'fields' => array('Brand.id', 'Brand.filename', 'Brand.slug', 'Brand.title'))));
 		}
         $this->paginate['order'] = $sort_orders[$sort];
@@ -225,6 +225,7 @@ class AkbController extends AppController {
 		$this->set('active_menu', 'akb');
 		$this->set('additional_js', array('lightbox'));
 		$this->set('additional_css', array('lightbox'));
+        $this->set('show_filter', 3);
 	}
 	public function brand($slug) {
         $mode = 'block';
@@ -237,12 +238,6 @@ class AkbController extends AppController {
 		$this->loadModel('Brand');
         $this->loadModel('BrandModel');
         $this->loadModel('Product');
-//        $this->BrandModel->virtualFields['full_title'] = 'CONCAT(Brand.title,\' \',BrandModel.title)';
-        $sort_orders = array(
-            'price_asc' => array('Product.price' => 'ASC'),
-            'price_desc' => array('Product.price' => 'DESC'),
-            'name' => array('BrandModel.full_title' => 'ASC'),
-        );
 
         $sort = 'price_asc';
         if (isset($this->request->query['sort']) && in_array($this->request->query['sort'], array('name', 'price_asc', 'price_desc'))) {
@@ -252,6 +247,11 @@ class AkbController extends AppController {
 		if ($brand = $this->Brand->find('first', array('conditions' => array('Brand.is_active' => 1, 'Brand.category_id' => 3, 'Brand.slug' => $slug)))) {
 			if (isset($this->request->query['brand_id'])) {
 				$brand_id = intval($this->request->query['brand_id']);
+                $sort_orders = array(
+                    'price_asc' => array('Product.price' => 'ASC'),
+                    'price_desc' => array('Product.price' => 'DESC'),
+                    'name' => array('Product.title' => 'ASC'),
+                );
 				if ($brand['Brand']['id'] != $brand_id) {
 					if ($brand_id == 0) {
 						$filter = $this->request->query;
@@ -347,7 +347,8 @@ class AkbController extends AppController {
 			}
 			$this->set('breadcrumbs', $breadcrumbs);
 			$this->paginate['limit'] = 30;
-			$this->paginate['order'] = array('Product.price' => 'asc');
+
+            $this->paginate['order'] = $sort_orders[$sort];
 			$this->Product->bindModel(
 				array(
 					'belongsTo' => array(
@@ -370,6 +371,7 @@ class AkbController extends AppController {
 			$this->setMeta('keywords', $meta_keywords);
 			$this->setMeta('description', $meta_description);
 			$this->set('brand', $brand);
+            $this->set('sort', $sort);
 			$this->set('active_menu', 'akb');
 			$this->set('additional_js', array('lightbox'));
 			$this->set('additional_css', array('lightbox'));
