@@ -224,7 +224,8 @@ input {
   background-color: #fff;
 }
 .content.no-right.no-right .center-content {
-  /*width: 100%;*/
+  width: 100%;
+  max-width: -webkit-fill-available;
 }
 .content.no-left .content {
   background: none;
@@ -744,6 +745,7 @@ input {
 }
 .pager-filter .filter {
   margin-top: 1px;
+  display: none;
 }
 
 .pager-filter.bottom {
@@ -814,6 +816,9 @@ input {
   float: left;
   border-radius: 3px;
   margin-left: 8px;
+}
+.filter .table {
+  display: none;
 }
 .filter label {
   float: left;
@@ -972,7 +977,7 @@ input {
   padding: 10px;
   margin-bottom: 20px;
   display: flex;
-  min-width: 700px;
+  flex-direction: column;
 }
 .boxList2.boxList2-new title-link {
   display: block;
@@ -999,8 +1004,8 @@ input {
 }
 .infoList2 {
   float: left;
-  padding-left: 10px;
   width: 183px;
+  margin-top: 10px;
 }
 .boxList2.boxList2-new .infoList2 {
   width: 100%;
@@ -1390,21 +1395,34 @@ h3.title-tyres {
   float: left;
 }
 .prodBigImg {
-  width: 345px;
+  width: 100%;
+  max-width: 345px;
   float: left;
   border: 1px solid #d1d1d2;
   background-color: #fff;
   text-align: center;
+  margin-top: 10px;
 }
 .prodBigImg img {
   width: 100%;
   display: block;
 }
 .infoProdBig {
-  float: right;
-  width: 620px;
+  /*float: right;*/
+  /*width: 620px;*/
   position: relative;
   z-index: 2;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  padding-top: 15px;
+}
+.product__wrapper {
+  display: flex;
+  flex-direction: column;
+}
+.desc-table, .desc-col {
+  display: none;
 }
 .boxLeftInfo {
   margin-bottom: 15px;
@@ -1454,6 +1472,8 @@ h3.title-tyres {
   width: 50%;
 }
 .boxRightInfo {
+  display: flex;
+  flex-direction: column;
 }
 .boxPriceProd {
   background-color: #ffffff;
@@ -1482,11 +1502,11 @@ h3.title-tyres {
   background-color: #e7ecf1;
   float: right;
   padding: 5px 0;
-  width: 260px;
+  max-width: 260px;
+  width: 100%;
 }
 .orderCall h3 {
   margin: 0px;
-  padding: 0px;
   font-weight: normal;
   font-size: 17px;
   color: #7a8aa0;
@@ -1695,13 +1715,14 @@ h3.title-tyres {
 .popup {
   position: fixed;
   top: 50px;
-  width: 610px;
+  max-width: 610px;
   background-color: #f6f6f8;
   z-index: 102;
-  left: 50%;
-  margin-left: -320px;
+  left: 0;
+  right: 0;
   box-shadow: 0 0 10px #474747;
   padding: 15px;
+  margin: auto;
 }
 .popup .title {
   color: #ff6600;
@@ -1743,6 +1764,7 @@ h3.title-tyres {
   margin-bottom: 13px;
   padding: 10px;
   position: relative;
+  display: flex;
 }
 .cart-prod .delete {
   background-image: url("../img/delete.gif");
@@ -1766,8 +1788,12 @@ h3.title-tyres {
   border: 0;
 }
 .cart-prod .desc {
-  width: 325px;
-  float: left;
+  display: flex;
+  flex-direction: column;
+}
+.cart-prod .desc table tbody tr {
+  display: flex;
+  flex-direction: column;
 }
 .cart-prod .desc h3 {
   margin: 0;
@@ -1821,9 +1847,8 @@ h3.title-tyres {
 }
 .option-cart {
   padding-top: 30px;
-}
-.option-cart {
-  padding-top: 30px;
+  display: flex;
+  flex-direction: column;
 }
 .option-cart .next-shop {
   display: block;
@@ -1832,8 +1857,9 @@ h3.title-tyres {
   margin-top: 11px;
 }
 .option-cart .checkout {
-  float: right;
+  display: flex;
   padding-bottom: 6px;
+  padding-top: 10px;
 }
 .option-cart .checkout a {
   text-decoration: none;
@@ -2280,9 +2306,10 @@ h3.title-tyres {
 }
 .filter-prod #switch {
   border: 0 none;
-  float: left;
   margin: 0 0 15px;
   padding: 0;
+  display: flex;
+  flex-direction: column;
 }
 .filter-prod #switch a {
   padding: 7px 15px;
@@ -2299,7 +2326,7 @@ h3.title-tyres {
   text-decoration: none;
 }
 .float-l {
-  float: left;
+  display: flex;
 }
 .float-r {
   float: right;
@@ -2308,9 +2335,14 @@ h3.title-tyres {
   background-color: #f8f8f8;
   padding: 10px;
   margin-bottom: 20px;
+  display: flex;
+  justify-content: space-between;
 }
 .modelsinfo .sortblock {
   margin-top: 0;
+  display: flex;
+  flex-direction: column;
+  text-align: end;
 }
 .modelsinfo span {
   display: block;
@@ -2875,9 +2907,6 @@ tr.tr-odd td {
   margin-right: 5px;
 }
 .available-box {
-  position: absolute;
-  top: -7px;
-  right: 126px;
 }
 #tab-yes,
 #tab-no {

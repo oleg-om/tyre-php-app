@@ -235,30 +235,30 @@ foreach ($models as $item) {
 							<table cellpadding="0" cellspacing="0" class="table-box-list">
 								<col width="180">
 								<col width="50">
-								<col width="231">
+								<col width="231" class="desc-col">
 								<col width="16">
-								<col width="61">
+								<col width="61" class="desc-col">
 								<col width="171">
-								<col />
-								<col width="121">
+								<col class="desc-col" />
+								<col width="121" class="desc-col">
 								<col width="30">
 								<tr onclick="window.location='<?php echo Router::url(array('controller' => 'tyres', 'action' => 'view', 'slug' => $item['Brand']['slug'], 'id' => $item['Product'][0]['id'], '?' => $filter)); ?>';">
 									<td><?php
 										echo $item['Product'][0]['size1']; ?> / <?php echo $item['Product'][0]['size2']; ?> R<?php echo $item['Product'][0]['size3'];
 									?></td>
 									<td><?php echo h($item['Product'][0]['f1'] . $item['Product'][0]['f2']); ?></td>
-									<td><?php echo $this->Frontend->getFF($item['Product'][0]['f1'], $item['Product'][0]['f2']); ?></td>
+									<td class="desc-table"><?php echo $this->Frontend->getFF($item['Product'][0]['f1'], $item['Product'][0]['f2']); ?></td>
 									<td>
 										<div class="productSeason<?php if ($season=='winter') {echo '2';} elseif ($season=='all') {echo '3';}?>" title="<?php echo $seasons[$season];?>"><?php echo $seasons[$season];?></div>
 									</td>
-									<td><?php echo $item['Product'][0]['stud'] ? '<img src="/img/studded.png" alt="шипованная" />' : ''; ?></td>
+									<td class="desc-table"><?php echo $item['Product'][0]['stud'] ? '<img src="/img/studded.png" alt="шипованная" />' : ''; ?></td>
 									<td><strong><?php
 										if ($this->Frontend->canShowTyrePrice($item['Product'][0]['auto'], $item['Product'][0]['not_show_price'])) {
 											echo $this->Frontend->getPrice($item['Product'][0]['price'], 'tyres', array('delimiter' => '<br />'));
 										}
 									?></strong></td>
-									<td><?php if ($item['Product'][0]['sale']) { ?><div class="action-prod-list"><span>акция</span></div><?php } ?></td>
-									<td><?php echo $this->Frontend->getStockCount($item['Product'][0]['stock_count']); ?> шт.</td>
+									<td class="desc-table"><?php if ($item['Product'][0]['sale']) { ?><div class="action-prod-list"><span>акция</span></div><?php } ?></td>
+									<td class="desc-table"><?php echo $this->Frontend->getStockCount($item['Product'][0]['stock_count']); ?> шт.</td>
 									<td><?php echo $item['Product'][0]['in_stock'] ? '<img title="в наличии" alt="в наличии" src="/img/yes.png">' : ''; ?></td>
 								</tr>
 							</table>
@@ -465,12 +465,12 @@ foreach ($models as $item) {
 							<table cellpadding="0" cellspacing="0" class="table-box-list">
 								<col width="180">
 								<col width="50">
-								<col width="231">
+								<col width="231" class="desc-col">
 								<col width="16">
-								<col width="61">
+								<col width="61" class="desc-col">
 								<col width="171">
-								<col />
-								<col width="121">
+								<col class="desc-col" />
+								<col width="121" class="desc-col">
 								<col width="30">
 								<?php foreach ($item['Product'] as $product) { ?>
 									<?php
@@ -482,22 +482,22 @@ foreach ($models as $item) {
 								<tr onclick="window.location='<?php echo Router::url(array('controller' => 'tyres', 'action' => 'view', 'slug' => $item['Brand']['slug'], 'id' => $product['id'])); ?>'">
 									<td><?php echo $product['size1']; ?> / <?php echo $product['size2']; ?> R<?php echo $product['size3']; ?></td>
 									<td><?php echo h($product['f1'] . $product['f2']); ?></td>
-									<td><?php echo $this->Frontend->getFF($product['f1'], $product['f2']); ?></td>
+									<td class="desc-table"><?php echo $this->Frontend->getFF($product['f1'], $product['f2']); ?></td>
 									<td>
 										<div class="productSeason<?php if ($season=='winter') {echo '2';} elseif ($season=='all') {echo '3';}?>" title="<?php echo $seasons[$season];?>"><?php echo $seasons[$season];?></div>
 									</td>
-									<td><?php echo $product['stud'] ? '<img src="/img/studded.png" alt="шиповання" />' : ''; ?></td>
+									<td class="desc-table"><?php echo $product['stud'] ? '<img src="/img/studded.png" alt="шиповання" />' : ''; ?></td>
 									<td><strong><?php
 										if ($this->Frontend->canShowTyrePrice($product['auto'], $product['not_show_price'])) {
 											echo $this->Frontend->getPrice($product['price'], 'tyres', array('delimiter' => '<br />'));
 										}
 									?></strong></td>
-									<td>
+									<td class="desc-table">
 										<?php if ($product['sale']) { ?>
 											<div class="action-prod-list"><span>акция</span></div>
 										<?php } ?>
 									</td>
-									<td><?php echo $this->Frontend->getStockCount($product['stock_count']); ?> шт.</td>
+									<td class="desc-table"><?php echo $this->Frontend->getStockCount($product['stock_count']); ?> шт.</td>
 									<td><?php echo $product['in_stock'] ? '<img title="в наличии" alt="в наличии" src="/img/yes.png">' : ''; ?></td>
 								</tr>
 								<?php } ?>

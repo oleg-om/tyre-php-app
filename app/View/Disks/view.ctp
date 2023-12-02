@@ -1,4 +1,5 @@
 <?php echo $this->element('currency', array('class' => 'bpad')); ?>
+<div class="product__wrapper">
 <div class="prodBigImg">
 	<?php
 		$image_small = $this->Html->image('no-disk-big.jpg');
@@ -76,6 +77,7 @@
 		<?php } ?>
 		<?php if (!empty($product['BrandModel']['video'])) { ?><div class="video"><?php echo $product['BrandModel']['video']; ?></div><?php } ?>
 	</div>
+</div>
 </div>
 <script type="text/javascript">
 <!--

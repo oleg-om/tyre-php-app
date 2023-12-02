@@ -1,4 +1,5 @@
 <?php echo $this->element('currency', array('class' => 'bpad')); ?>
+<div class="product__wrapper">
 <div class="prodBigImg">
 	<?php
 		$image_small = $this->Html->image('no-tyre-big.jpg');
@@ -70,9 +71,8 @@
 		</div>
 		<?php } ?>
 		<div class="orderCall">
-			<h3>Заказать по телефону:</h3>
-			<span>+7 (978) 714-12-19</span>
-			<span>(36561) 5-63-43</span> 
+			<h3>Либо аказать по телефону:</h3>
+			<span><?php echo CONST_STORAGE_CELLPHONE; ?></span>
 		</div>
 		<div class="clear"></div>
 	</div>
@@ -85,6 +85,7 @@
 		<?php } ?>
 		<?php if (!empty($product['BrandModel']['video'])) { ?><div class="video"><?php echo $product['BrandModel']['video']; ?></div><?php } ?>
 	</div>
+</div>
 </div>
 <script type="text/javascript">
 <!--
