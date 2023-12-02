@@ -17,7 +17,6 @@ $this->Paginator->options(array('url' => $url));
 <h2 class="title">Шины</h2>
 <h3 class="tyres-free-header">При покупке 4 шин шиномонтаж бесплатно!</h3>
 <?php
-echo $this->element('currency');
 $available_seasons = array();
 foreach ($models as $item) {
 	if ($mode == 'table' || count($item['Product']) == 1 ) {

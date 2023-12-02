@@ -809,13 +809,19 @@ input {
   text-decoration: none;
   color: #3a3a3a;
   border: 1px solid #dddddd;
-  width: 32px;
+  min-width: 32px;
   height: 23px;
   text-align: center;
   padding-top: 9px;
   float: left;
   border-radius: 3px;
   margin-left: 8px;
+}
+.mode__brands {
+  color: #acacac;
+  padding: 0 5px;
+  font-size: 12px;
+  display: flex;
 }
 .filter .table {
   display: none;

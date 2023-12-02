@@ -1,15 +1,25 @@
 <?php
 if (!isset($mode)) {
-	$mode = 'list';
+	$mode = 'block';
 }
 if (!isset($tyres_switch)) {
 	$tyres_switch = false;
+}
+if (!isset($akb_switch)) {
+    $akb_switch = false;
 }
 $modes = array(
 	'block' => '<img src="/img/block.gif" alt="блоками" />',
 	'list' => '<img src="/img/list.gif" alt="списком" />',
 	'table' => '<img src="/img/table.gif" alt="таблицей" />'
 );
+if ($akb_switch == true) {
+    $modes = array(
+        'list' => '<span class="mode__brands">Бренды</span>',
+        'block' => '<img src="/img/block.gif" alt="блоками" />',
+        'table' => '<img src="/img/table.gif" alt="таблицей" />'
+    );
+}
 $seasons = array(
 	'summer' => 'Летние',
 	'winter' => 'Зимние',
@@ -96,7 +106,7 @@ foreach ($models as $item) {
 			$sort_fields = array(
 				'name' => 'по названию',
 				'price_asc' => 'по цене',
-				//'price_desc' => 'от дорогих к дешевым',
+				'price_desc' => 'от дорогих к дешевым',
 			);
 			if (!isset($sort)) {
 				$sort = 'price_asc';
@@ -182,7 +192,7 @@ foreach ($models as $item) {
 			$sort_fields = array(
 				'name' => 'по названию',
 				'price_asc' => 'по цене',
-				//'price_desc' => 'от дорогих к дешевым',
+				'price_desc' => 'от дорогих к дешевым',
 			);
 			if (!isset($sort)) {
 				$sort = 'price_asc';
