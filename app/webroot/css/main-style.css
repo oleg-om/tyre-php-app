@@ -630,6 +630,10 @@ input {
 .filter-group .item .item-inner {
   padding-bottom: 15px;
 }
+.filter-group .item .item-inner-et {
+  display: flex;
+  flex-direction: column;
+}
 .filter-group .item .item-inner .name {
   float: left;
   width: 115px;
@@ -646,6 +650,11 @@ input {
 .filter-group .item .item-inner .inp {
 
 }
+.filter-group .item .item-inner .inp-et {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
 .sel-style1 {
   padding: 4px;
   width: 219px;
@@ -657,8 +666,7 @@ input {
 }
 .sel-style3 {
   padding: 4px;
-  width: 55px;
-  margin-right: 5px;
+  width: 100%;
 }
 .sel-style4 {
   padding: 4px;
@@ -720,6 +728,9 @@ input {
 }
 .bt-style1:hover {
   background-image: none;
+}
+.bt-style1-disks {
+  margin-top: 15px;
 }
 .center-content .title {
   margin: 0;
@@ -3187,7 +3198,7 @@ table.withlines {
 }
 
 .filter-group.disks .item.item3 .item-inner {
-  padding-bottom: 12px;
+
 }
 .live-fooer {
   text-align: center;

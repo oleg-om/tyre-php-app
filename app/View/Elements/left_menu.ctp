@@ -72,7 +72,6 @@ $settings = Cache::read('settings', 'long');
 		echo $this->Form->create('Product', array('type' => 'get', 'id' => 'filter-form', 'url' => $url));
 		?>
 	<div class="item">
-
 		<div class="item-inner">
 			<label class="name" for="ProductAuto">Тип авто:</label>
 			<div class="inp"><?php
@@ -245,9 +244,9 @@ $settings = Cache::read('settings', 'long');
 		</div>
 	</div>
 	<div class="item item2">
-		<div class="item-inner">
+		<div class="item-inner item-inner-et">
 			<label class="name" for="ProductEtFrom">ET</label>
-			<div class="inp">
+			<div class="inp inp-et">
 				<?php echo $this->Form->input('et_from', array('type' => 'text', 'label' => false, 'div' => false, 'class' => 'sel-style3 filter-text')); ?>- <?php echo $this->Form->input('et_to', array('type' => 'text', 'label' => false, 'div' => false, 'class' => 'sel-style3 filter-text')); ?>
 			</div>
 			<div class="clear"></div>
@@ -274,7 +273,7 @@ $settings = Cache::read('settings', 'long');
 			<div class="clear"></div>
 		</div>		
 	</div>
-	<div class="item item3">
+	<div class="item item3 col-r">
 		<div class="item-inner">
 			<?php
 				$disabled = '';
@@ -286,9 +285,9 @@ $settings = Cache::read('settings', 'long');
 			<label class="checkbox-name" for="ProductInStock4">более 4</label>
 			<div class="clear"></div>
 		</div>
-		<div class="item-inner">
-				<label class="name">Наличие:</label>
-				<div class="clear"></div>
+        <label class="item-inner__label">Наличие:</label>
+        <div class="item-inner">
+
 			<?php
 			
 			$attr=array('label' => false,'class' => 'checkbox','hiddenField' => false, 'checked' => true);
@@ -332,9 +331,10 @@ $settings = Cache::read('settings', 'long');
 			<label class="checkbox-name" for="ProductInStock0">под заказ</label>
 			<div class="clear"></div>
 		</div>
+
 	</div>
 	<div class="item">
-		<button class="bt-style1">ПОИСК</button>
+		<button class="bt-style1 bt-style1-disks">ПОИСК</button>
 	</div>
 	<div class="clear"></div>
 	</form>

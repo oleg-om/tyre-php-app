@@ -203,12 +203,12 @@ class AkbController extends AppController {
         $this->paginate['order'] = $sort_orders[$sort];
         $products = $this->paginate('Product', $conditions);
         $this->set('products', $products);
-        $this->set('brand', $brand);
+//        $this->set('brand', $brand);
         $this->set('models', $models);
         $this->set('view', $view);
         $this->set('sort', $sort);
-        $this->set('brand_models', $models);
-        $this->set('brand_id', $brand['Brand']['id']);
+//        $this->set('brand_models', $models);
+//        $this->set('brand_id', $brand['Brand']['id']);
 		$breadcrumbs = array();
 		$breadcrumbs[] = array(
 			'url' => null,

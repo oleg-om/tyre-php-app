@@ -191,6 +191,9 @@
     .cart-prod .desc table tbody tr {
 
     }
+    .bt-style1-disks {
+        margin-top: 15px;
+    }
 }
 
 @media screen and (min-width: 1200px) {
