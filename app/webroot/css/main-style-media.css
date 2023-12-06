@@ -24,6 +24,13 @@
     .jcarousel li {
         width: 450px !important;
     }
+    .cart-prod {
+        flex-direction: row;
+
+    }
+    .cart-prod.total-cart {
+        justify-content: space-between;
+    }
 }
 
 @media screen and (min-width: 768px) {
@@ -64,7 +71,7 @@
         padding-top: 25px;
     }
     #header .cart button {
-        padding: 10px 20px 8px 66px;
+        padding: 10px 20px 8px 55px;
         width: auto;
         height: auto;
         background-position: inherit;
@@ -189,10 +196,29 @@
         justify-content: flex-end;
     }
     .cart-prod .desc table tbody tr {
-
+        flex-direction: row;
+        align-items: center;
+        gap: 10px;
     }
     .bt-style1-disks {
         margin-top: 15px;
+    }
+    .form-wrapper {
+        flex-flow: row;
+        flex-direction: row;
+    }
+    .popup.order-page {
+        margin: 0;
+        margin-bottom: auto;
+    }
+    .select-namber {
+        display: flex;
+        align-items: center;
+    }
+    .checkout-box {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
     }
 }
 
@@ -223,6 +249,10 @@
     }
     .jcarousel li {
         width: 860px !important;
+    }
+    #header .info-group {
+        display: block;
+        margin-right: auto;
     }
 }
 

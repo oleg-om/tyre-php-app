@@ -170,7 +170,7 @@ class TyresController extends AppController {
         }
         $this->request->data['Product']['mode'] = $mode;
         $this->set('mode', $mode);
-        $auto = null;
+        $auto = 'cars';
         $this->loadModel('Brand');
         $this->loadModel('BrandModel');
         $this->loadModel('Product');
@@ -270,6 +270,7 @@ class TyresController extends AppController {
 
 
         $this->_filter_params($conditions);
+        $this->_filter_by_auto_test($conditions);
         $this->set('price_from', floor($prices[0]['min']));
         $this->set('price_to', ceil($prices[0]['max']));
 
@@ -419,7 +420,7 @@ class TyresController extends AppController {
             $mode = $this->request->query['mode'];
         }
         $this->set('mode', $mode);
-        $auto = null;
+        $auto = 'cars';
         $this->loadModel('Brand');
         if ($brand = $this->Brand->find('first', array('conditions' => array('Brand.is_active' => 1, 'Brand.category_id' => 1, 'Brand.slug' => $slug)))) {
             if (isset($this->request->query['brand_id']) && !empty($this->request->query['brand_id'])) {
@@ -699,6 +700,7 @@ class TyresController extends AppController {
             $this->set('price_from', floor($prices[0]['min']));
             $this->set('price_to', ceil($prices[0]['max']));
             $this->_filter_params($conditions);
+            $this->_filter_by_auto_test($conditions);
             $this->BrandModel->bindModel(
                 array(
                     'belongsTo' => array(
@@ -962,6 +964,7 @@ class TyresController extends AppController {
                     $conditions['Product.axis'] = $this->request->query['axis'];
                 }
                 $this->_filter_params($conditions);
+                $this->_filter_by_auto_test($conditions);
                 $this->request->data['Product'] = $this->request->query;
 
                 $auto = $product['Product']['auto'];
@@ -1318,6 +1321,181 @@ class TyresController extends AppController {
         echo json_encode($result);
         $this->layout = false;
         $this->render(false);
+    }
+
+    protected function _filter_by_auto_test($filter_conditions) {
+        $this->loadModel('Product');
+        $this->Product->bindModel(
+            array(
+                'belongsTo' => array(
+                    'BrandModel' => array(
+                        'foreignKey' => 'model_id'
+                    )
+                )
+            ),
+            false
+        );
+        unset($filter_conditions['Product.model_id']);
+        //$tyre_size1 = Cache::read('tyre_size1', 'long');
+        $conditions = array('Product.category_id' => 1, 'Product.is_active' => 1, 'Product.price > ' => 0, 'Product.stock_count > ' => 0);
+//        if (CONST_DISABLE_FILTERS == '0') {
+//            if ($filter_conditions) {
+//                $conditions = $filter_conditions;
+//            }
+//        }
+
+
+        if (empty($tyre_size1)) {
+
+            $temp_cond = $conditions;
+            unset($temp_cond['Product.size1']);
+
+            //*********** Вывод в фильтре кроме .... при выборе auto => все
+            if(empty($this->request->query['auto'])):
+                //$temp_cond['AND'] = array('Product.auto !=' => array('trucks','agricultural','special'));
+                $temp_cond['AND'] = array('Product.auto !=' => array('trucks','special'));
+            endif;
+            //*********** Вывод в фильтре кроме .... при выборе auto => все
+
+            //print_r($temp_cond);
+            $products = $this->Product->find('all', array('conditions' => $temp_cond, 'fields' => 'DISTINCT Product.size1', 'order' => 'Product.size1'));
+
+            $tyre_size1 = array();
+            foreach ($products as $item) {
+                $size = number_format(str_replace(',', '.', $item['Product']['size1']), 2, '.', '');
+                $size = str_replace('.00', '', $size);
+                $tyre_size1[$size] = $size;
+            }
+            natsort($tyre_size1);
+            unset($tyre_size1[0]);
+
+            //	print_r($tyre_size1);
+
+            Cache::write('tyre_size1', $tyre_size1, 'long');
+        }
+        //$tyre_size2 = Cache::read('tyre_size2', 'long');
+        if (empty($tyre_size2)) {
+            $temp_cond = $conditions;
+            unset($temp_cond['Product.size2']);
+            $products = $this->Product->find('all', array('conditions' => $temp_cond, 'fields' => 'DISTINCT Product.size2', 'order' => 'Product.size2'));
+            $tyre_size2 = array();
+            foreach ($products as $item) {
+                $size = number_format(floatval(str_replace(',', '.', $item['Product']['size2'])), 1, '.', '');
+                if (!empty($size) && $size != '') {
+                    $size = str_replace('.0', '', $size);
+                    $tyre_size2[$size] = $size;
+                }
+            }
+            natsort($tyre_size2);
+            unset($tyre_size2[0]);
+            Cache::write('tyre_size2', $tyre_size2, 'long');
+        }
+
+        //$tyre_size3 = Cache::read('tyre_size3', 'long');
+        if (empty($tyre_size3)) {
+            $temp_cond = $conditions;
+            unset($temp_cond['Product.size3']);
+            $products = $this->Product->find('all', array('conditions' => $temp_cond, 'fields' => 'DISTINCT Product.size3', 'order' => 'Product.size3'));
+            $tyre_size3 = array();
+            foreach ($products as $item) {
+                $numeric_size = str_replace(',', '.', $item['Product']['size3']);
+                if (is_numeric($numeric_size)) {
+                    $size = number_format(str_replace(',', '.', $item['Product']['size3']), 1, '.', '');
+                    if (!empty($size) && $size != '') {
+                        $size = str_replace('.0', '', $size);
+                        $tyre_size3[$size] = $size;
+                    }
+                }
+                else {
+                    $size = trim($item['Product']['size3']);
+                    if (!empty($size) && $size != '') {
+                        $tyre_size3[$size] = $size;
+                    }
+                }
+            }
+            natsort($tyre_size3);
+            unset($tyre_size3[0]);
+            Cache::write('tyre_size3', $tyre_size3, 'long');
+        }
+
+
+
+        if (empty($auto)) {
+            //print_r($conditions);
+
+            $temp_cond = $conditions;
+            foreach ($temp_cond as $i => $cond) {
+                if (is_array($cond) && isset($cond['or']) && isset($cond['or'][0]['BrandModel.auto'])) {
+                    unset($temp_cond[$i]);
+                    break;
+                }
+            }
+
+            $products = $this->Product->find('all', array('conditions' => $temp_cond, 'fields' => 'DISTINCT(IF(BrandModel.auto IS NULL,Product.auto,BrandModel.auto)) AS auto', 'order' => 'Product.auto'));
+            $auto = array();
+            foreach ($products as $item) {
+                if (isset($this->Product->auto[$item[0]['auto']])) {
+                    $auto[$item[0]['auto']] = $this->Product->auto[$item[0]['auto']];
+                }
+            }
+            //print_r($auto);
+        }
+
+        $tyre_axis = array();
+        $temp_cond = $conditions;
+        unset($temp_cond['Product.axis']);
+        $products = $this->Product->find('all', array('conditions' => $temp_cond, 'fields' => 'DISTINCT Product.axis', 'order' => 'Product.axis'));
+        foreach ($products as $item) {
+            $axis = trim($item['Product']['axis']);
+            if (!empty($axis) && $axis != '') {
+                $tyre_axis[$item['Product']['axis']] = $item['Product']['axis'];
+            }
+        }
+
+        $temp_cond = $conditions;
+        $temp_cond['Product.stud'] = 1;
+        $stud = $this->Product->find('count', array('conditions' => $temp_cond));
+
+
+        $temp_cond = $conditions;
+        $temp_cond['Product.in_stock'] = 1;
+        $in_stock = $this->Product->find('count', array('conditions' => $temp_cond));
+
+
+        $temp_cond = $conditions;
+        $temp_cond['Product.stock_count >= '] = 4;
+        $in_stock4 = $this->Product->find('count', array('conditions' => $temp_cond));
+
+        unset($conditions['Product.brand_id']);
+        $brands = $this->Product->find('all', array(
+            'fields' => array('Product.brand_id'),
+            'conditions' => $conditions
+        ));
+        $brand_ids = array();
+        foreach ($brands as $brand) {
+            if (!in_array($brand['Product']['brand_id'], $brand_ids)) {
+                $brand_ids[] = $brand['Product']['brand_id'];
+            }
+        }
+        $brand_conditions = array('Brand.category_id' => $this->category_id, 'Brand.is_active' => 1, 'Brand.active_products_count > 0');
+        $brand_conditions['Brand.id'] = $brand_ids;
+        $this->loadModel('Brand');
+        $brands = $this->Brand->find('list', array('order' => array('Brand.title' => 'asc'), 'conditions' => $brand_conditions, 'fields' => array('Brand.id', 'Brand.title')));
+
+        if ($this->request->is('ajax')) {
+            $result = array(
+                'size1' => $tyre_size1,
+                'size2' => $tyre_size2,
+                'size3' => $tyre_size3,
+                'auto' => $auto,
+            );
+            return $result;
+        } else {
+            $this->set('tyre_size1', $tyre_size1);
+            $this->set('tyre_size2', $tyre_size2);
+            $this->set('tyre_size3', $tyre_size3);
+            $this->set('filter_auto', $auto);
+        }
     }
 
 

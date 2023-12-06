@@ -92,9 +92,9 @@
 						<div class="priceMore disks">
 							<?php if ($this->Frontend->canShowDiskPrice($item['Product'][0]['not_show_price'])) { ?>
 								<span><?php echo $this->Frontend->getPrice($item['Product'][0]['price'], 'disks', array('between' => '&nbsp;<span>', 'after' => '</span>')); ?></span>
-							<?php } ?>
+							<?php } ?><div class="number disks">&nbsp;&nbsp;&nbsp;&nbsp;<?php echo $this->Frontend->getStockCount($item['Product'][0]['stock_count']); ?> шт.</div>
 						</div>
-						<div class="number disks">&nbsp;&nbsp;&nbsp;&nbsp;<?php echo $this->Frontend->getStockCount($item['Product'][0]['stock_count']); ?> шт.</div>
+
 						<div class="clear"></div>
 					<?php } elseif ($mode == 'list') { ?>
 						<div class="prodImg2 floatl">

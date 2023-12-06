@@ -214,7 +214,7 @@ class AkbController extends AppController {
 			'url' => null,
 			'title' => 'Аккумуляторы'
 		);
-        $this->_filter_params($filter_conditions);
+//        $this->_filter_params($filter_conditions);
 		$meta_title = 'Купить аккумуляторы Керчь, Феодосия Шинный центр Авто Дом';
 		$meta_keywords = 'Купить, аккумуляторы, Керчь, Феодосия, Шинный центр Авто Дом';
 		$meta_description = 'Шинный центр Авто Дом предлагает купить автомобильные аккумуляторы в Керчи и Феодосии по лучшим ценам, у нас бесплатная доставка и сервисное обслуживание.';

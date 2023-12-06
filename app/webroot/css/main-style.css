@@ -140,11 +140,11 @@ input {
   font-style: normal;
   font-weight: bold;
   height: 16px;
-  left: 32px;
+  left: 21px;
   position: absolute;
   text-align: center;
   text-decoration: none;
-  top: 6px;
+  top: 1px;
   width: 16px;
 }
 #header #nav {
@@ -594,7 +594,7 @@ input {
 }
 #CarCarViewForm .item.item5,
 #CarIndexForm .item.item5 {
-  margin-right: 30px;
+
 }
 .filter-group .item.item7 {
   margin-right: 0;
@@ -701,7 +701,7 @@ input {
   margin: 28px 0 0;
 }
 .filter-group .item.item5 {
-  margin-right: 50px;
+
 }
 /*.filter-group .item.bt{
 	margin-right: 0;
@@ -971,10 +971,11 @@ input {
   float: left;
   width: 160px;
   text-align: center;
-  margin-bottom: 40px;
 }
 .selection .item a {
   text-decoration: none;
+  display: flex;
+  flex-direction: column;
 }
 .selection .item span {
   display: block;
@@ -983,6 +984,7 @@ input {
 .selection .item strong {
   display: block;
   font-size: 14px;
+  margin-top: auto;
 }
 .selection .item a:hover {
   text-decoration: underline;
@@ -1712,13 +1714,22 @@ h3.title-tyres {
   width: 20px;
 }
 .popup.order-page {
-  position: inherit;
-  float: right;
+  position: relative;
   box-shadow: none;
   padding: 10px;
   background-color: #dae1e5;
   box-shadow: 1px 1px 0 #a0a0a1;
-  width: 550px;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: -webkit-fill-available;
+  top: 0;
+}
+.form-wrapper {
+  display: flex;
+  flex-direction: column;
+  flex-flow: column-reverse;
+  gap: 30px;
 }
 .bg-popup {
   background-image: url(../img/opacity-popup.png);
@@ -1782,6 +1793,8 @@ h3.title-tyres {
   padding: 10px;
   position: relative;
   display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
 .cart-prod .delete {
   background-image: url("../img/delete.gif");
@@ -1917,6 +1930,7 @@ h3.title-tyres {
 }
 .form-order .item-option .item {
   padding-bottom: 15px;
+  display: flex;
 }
 .form-order .item-option .item label.title {
   float: left;
@@ -1975,12 +1989,11 @@ h3.title-tyres {
 .selection {
   display: flex;
   flex-wrap: wrap;
+  gap: 30px;
 }
 .selection .item {
   background-color: #ffffff;
   float: left;
-  margin-bottom: 28px;
-  margin-right: 20px;
   min-height: 90px;
   padding: 15px 0;
   text-align: center;
@@ -2517,6 +2530,9 @@ tr.tr-odd td {
   margin-top: 10px;
   width: 364px;
 }
+.boxPriceProd .buy-button {
+  padding-top: 26px;
+}
 .boxPriceProd.akb-price-box span {
   font-size: 38px;
 }
@@ -2537,6 +2553,11 @@ tr.tr-odd td {
 }
 .booking-table .grid td {
   padding: 0;
+}
+#OrderCheckoutForm {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
 .booking-table .time {
   font-size: 11px;
@@ -3303,5 +3324,6 @@ table.withlines {
 .jcarousel li {
   width: 350px !important;
 }
-
-
+/*.boxList2.boxList2-new.season-no {*/
+/*  display: none;*/
+/*}*/

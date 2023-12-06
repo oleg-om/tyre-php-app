@@ -3,6 +3,7 @@
 	<div class="checkout-box">
 		<div class="title-page">Оформление заказа</div>
 		<?php echo $this->element('currency'); ?>
+        <div class="form-wrapper">
 		<div class="form-order">
 			<?php echo $this->Form->create('Order', array('url' => array('controller' => 'orders', 'action' => 'checkout'))); ?>
 			<div class="item-option"><?php
@@ -46,15 +47,6 @@
 			<?php echo $this->element('cart_items'); ?>
 			<div class="cart-prod total-cart">
 				<div class="img">&nbsp;</div>
-				<div class="desc">
-					<table cellpadding="0" cellspacing="0">
-						<tr>
-							<td class="total-price">Стоимость доставки:</td>
-							<td class="total-price" align="right">по тарифам перевозчика</td>
-						</tr>
-					</table>
-				</div>
-				<div class="clear"></div>
 			</div>
 			<div class="cart-prod total-cart">
 				<div class="img">&nbsp;</div>
@@ -69,7 +61,7 @@
 				<div class="clear"></div>
 			</div>
 		</div>
-		<div class="clear"></div>
+        </div>
 	</div>
 	<?php } else { ?>
 	<p>Корзина пуста</p>

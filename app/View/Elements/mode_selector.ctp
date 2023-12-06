@@ -227,7 +227,8 @@ foreach ($models as $item) {
 <script type="text/javascript">
 <!--
 $(function(){
-	show_season('<?php echo $active; ?>');
+	//show_season('<?php //echo $active; ?>//');
+    show_season('yes');
 });
 function show_season(s) {
 	$('.season-tab').hide();

@@ -104,6 +104,22 @@ $(function(){
 	<?php } ?>
 	<div class="pageText"><?php echo $page['Page']['content'];?></div>
 </div>
+<!--brands-->
+<div class="selection">
+    <?php
+
+    foreach ($all_brands as $i => $item) {
+        echo '<div class="item">';
+        $image = '';
+        if (!empty($item['Brand']['filename'])) {
+            $image = $this->Html->image($this->Backend->thumbnail(array('id' => $item['Brand']['id'], 'filename' => $item['Brand']['filename'], 'path' => 'brands', 'width' => 160, 'height' => 60, 'crop' => false, 'folder' => false)), array('alt' => $item['Brand']['title']));
+        }
+        echo $this->Html->link('<span class="brand__image">' . $image . '</span><strong>' . $item['Brand']['title'] . '</strong>', array('controller' => 'tyres', 'action' => 'brand', 'slug' => $item['Brand']['slug']), array('escape' => false, 'class' => 'img-brand', 'title' => $item['Brand']['title']));
+        echo '</div>';
+    }
+    ?>
+    <div cla
+<!--brands-->
 <div class="clear"></div>
 <?php if (!empty($home_photos)) { ?>
 <script type="text/javascript">
