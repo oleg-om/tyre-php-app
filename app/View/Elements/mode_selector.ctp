@@ -106,7 +106,7 @@ foreach ($models as $item) {
 			$sort_fields = array(
 				'name' => 'по названию',
 				'price_asc' => 'по цене',
-				'price_desc' => 'от дорогих к дешевым',
+//				'price_desc' => 'от дорогих к дешевым',
 			);
 			if (!isset($sort)) {
 				$sort = 'price_asc';

@@ -352,6 +352,7 @@ class PagesController extends AppController {
 		$this->set('seasons', $this->Product->seasons);
 		$this->set('additional_js', array('lightbox', 'functions'));
 		$this->set('additional_css', array('lightbox'));
+
 	}
 	
 	public function test(){

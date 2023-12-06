@@ -220,6 +220,11 @@
         flex-direction: column;
         width: 100%;
     }
+    .left-nav__sticky {
+        position: sticky;
+        top: 0;
+        bottom: 0;
+    }
 }
 
 @media screen and (min-width: 1200px) {
@@ -238,6 +243,9 @@
     #header .tyres {
         background-image: url(../img/tyres.png);
     }
+    /*#header .tyres.winter-season {*/
+    /*    background-image: url(../img/tyres_winter.png);*/
+    /*}*/
     .boxList {
         width: 20.333%;
     }

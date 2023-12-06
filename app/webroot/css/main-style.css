@@ -214,7 +214,6 @@ input {
   position: relative;
   display: flex;
   flex-direction: column;
-  overflow: hidden;
 }
 .content.no-left {
   background-color: #fff;
@@ -1172,6 +1171,7 @@ a.btVer3:hover {
 .info-top {
   margin-bottom: 5px;
   text-align: center;
+  max-height: 37.5px;
 }
 .info-top h3 {
   margin: 0;
@@ -3324,6 +3324,10 @@ table.withlines {
 .jcarousel li {
   width: 350px !important;
 }
-/*.boxList2.boxList2-new.season-no {*/
-/*  display: none;*/
-/*}*/
+.no-img-tyre {
+  width: 100%;
+  height: 100%;
+}
+.gv_galleryWrap {
+  margin-bottom: 20px;
+}

@@ -1,4 +1,5 @@
 <div class="left-nav left-nav-open" id="left-nav-filter">
+    <div class="left-nav__sticky">
 	<div class="title">
         <span class="left-nav__title">
 <?php if ($path == 'tyres'): ?>
@@ -801,4 +802,4 @@ function serializeArray(form) {
 }
 //-->
 </script>
-</div>
+</div></div>

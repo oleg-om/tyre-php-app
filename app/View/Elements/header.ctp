@@ -2,9 +2,12 @@
 if (empty($active_menu)) {
 	$active_menu = 'home';
 }
+if (empty($current_season)) {
+    $current_season = 'summer';
+}
 ?>
 <div id="header">
-	<div class="tyres">
+	<div class="tyres <?php echo $current_season; ?>-season">
 		<div class="wrap">
             <div class="header-wrap">
                 <a href="javascript:void(0);" onclick="switchToggle();" class="header-toggle">
