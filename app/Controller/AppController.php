@@ -201,6 +201,7 @@ class AppController extends Controller {
             $season = 'winter';
         }
         $this->set('current_season', $season);
+        return $season;
     }
 	private function setSettings() {
 		$settings = Cache::read('settings', 'long');

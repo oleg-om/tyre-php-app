@@ -3331,3 +3331,6 @@ table.withlines {
 .gv_galleryWrap {
   margin-bottom: 20px;
 }
+.filter .mode-switch-activ {
+  border: 1px solid #316b16;
+}

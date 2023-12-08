@@ -23,7 +23,6 @@ echo $this->Html->meta('description', $meta_description);
 	}
 	echo $this->Html->script($js);
 ?>
-<meta name="SKYPE_TOOLBAR" content="SKYPE_TOOLBAR_PARSER_COMPATIBLE" />
 <meta content="telephone=no" name="format-detection" />
 </head> 
 <body>
@@ -44,6 +43,7 @@ if (!isset($show_right_menu)) {
 <div class="wrap">
 	<?php
 		echo $this->element('filter');
+
 	?>
 	<div class="content<?php echo $show_left_menu ? '' : ' no-left'; ?><?php echo $show_right_menu ? '' : ' no-right'; ?>">
 		<?php

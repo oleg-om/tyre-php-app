@@ -103,11 +103,20 @@ foreach ($models as $item) {
 			<div class="clear"></div>
 		<?php } else { ?>
 		<?php
-			$sort_fields = array(
-				'name' => 'по названию',
-				'price_asc' => 'по цене',
+            $sort_fields = array(
+                'name' => 'по названию',
+                'price_asc' => 'по цене',
 //				'price_desc' => 'от дорогих к дешевым',
-			);
+            );
+
+            if ($popular_sort == true) {
+                $sort_fields = array(
+                    'popular' => 'по популярности',
+                    'price_asc' => 'по цене',
+                    'name' => 'по названию',
+                );
+            }
+
 			if (!isset($sort)) {
 				$sort = 'price_asc';
 			}
@@ -143,9 +152,9 @@ foreach ($models as $item) {
 			$page = $this->params['named']['page'];
 		}
 		foreach ($modes as $key => $value) {
-			$class = null;
+			$class = 'mode-switch';
 			if ($mode == $key) {
-				$class = 'activ';
+				$class = 'mode-switch-activ';
 			}
 			$mode_filter = $url['?'];
 			$mode_filter['mode'] = $key;
@@ -154,7 +163,7 @@ foreach ($models as $item) {
 			if (!empty($page)) {
 				$mode_url['page'] = $page;
 			}
-			echo $this->Html->link($value, $mode_url, array('class' => $key, 'escape' => false));
+			echo $this->Html->link($value, $mode_url, array('class' => $key . ' ' . $class, 'escape' => false));
 		}
 	?></div>
 	<div class="clear"></div>
@@ -193,6 +202,7 @@ foreach ($models as $item) {
 				'name' => 'по названию',
 				'price_asc' => 'по цене',
 				'price_desc' => 'от дорогих к дешевым',
+                'popular' => 'по популярности',
 			);
 			if (!isset($sort)) {
 				$sort = 'price_asc';

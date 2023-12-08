@@ -346,13 +346,21 @@ foreach ($models as $item) {
 							</div>
 						<?php } ?>
 						<div class="prodImg floatl">
-							<?php if ($item['BrandModel']['new']) { ?>
-							<div class="action-prod new"></div>
-							<?php } elseif ($item['BrandModel']['popular']) { ?>
-							<div class="action-prod hit"></div>
-							<?php } ?>
+                            <?php if ($item['BrandModel']['new']) { ?>
+                                <div class="action-prod new"></div>
+                            <?php } elseif ($item['BrandModel']['popular']) { ?>
+                                <div class="action-prod hit"></div>
+                            <?php } ?>
 							<table cellpadding="0" cellspacing="0">
 								<tr>
+                                    <?php if ($item['Product'][0]['sale']) { ?>
+                                        <img class="special-overlay" src="/img/special-2.png" alt="акция" />
+                                    <?php } elseif ($item['BrandModel']['new']) { ?>
+                                        <!-- <div class="latest-prod-list"><span>новинка</span></div>-->
+                                        <img class="special-overlay" src="/img/special-1.png" alt="новинка" />
+                                    <?php } elseif ($item['BrandModel']['popular']) { ?>
+                                        <img class="special-overlay" src="/img/special-3.png" alt="хит" />
+                                    <?php } ?>
 									<td>
 										<?php
 											$image = $this->Html->image('no-tyre-little.jpg', array('class' => 'no-img-tyre'));

@@ -233,7 +233,7 @@ class TyresController extends AppController {
 
 
         $models = $this->Product->find('all', array(
-            'fields' => array('Product.model_id', 'Product.id', 'Product.price'),
+            'fields' => array('Product.model_id', 'Product.id', 'Product.price', 'Product.in_stock'),
             'conditions' => $conditions,
             'order' => 'Product.price ASC'
         ));
@@ -284,8 +284,8 @@ class TyresController extends AppController {
             endif;
             $this->paginate['conditions'] = $model_conditions;
         }
-        $sort = 'price_asc';
-        if (isset($this->request->query['sort']) && in_array($this->request->query['sort'], array('name', 'price_asc', 'price_desc'))) {
+        $sort = 'popular';
+        if (isset($this->request->query['sort']) && in_array($this->request->query['sort'], array('name', 'price_asc', 'price_desc', 'popular'))) {
             $sort = $this->request->query['sort'];
         }
         if ($mode == 'table') {
@@ -293,6 +293,7 @@ class TyresController extends AppController {
                 'price_asc' => array('Product.price' => 'ASC'),
                 'price_desc' => array('Product.price' => 'DESC'),
                 'name' => array('BrandModel.full_title' => 'ASC'),
+                'popular' => array('BrandModel.popular' => 'DESC', 'BrandModel.new' => 'DESC', 'Product.in_stock' => 'ASC', 'Product.price' => 'ASC')
             );
         }
         else {
@@ -300,6 +301,7 @@ class TyresController extends AppController {
                 'price_asc' => array('BrandModel.low_price' => 'ASC'),
                 'price_desc' => array('BrandModel.low_price' => 'DESC'),
                 'name' => array('BrandModel.full_title' => 'ASC'),
+                'popular' => array('BrandModel.popular' => 'DESC', 'BrandModel.new' => 'DESC', 'BrandModel.in_stock' => 'ASC', 'BrandModel.low_price' => 'ASC')
             );
             $this->BrandModel->virtualFields['low_price'] = '(select min(products.price) from `products` where `products`.`model_id`=`BrandModel`.`id` AND `products`.`id` IN ('.$product_ids.'))';
         }
@@ -1206,6 +1208,9 @@ class TyresController extends AppController {
     private function get_conditions($conditions){
         if(isset($this->request->query['season'])&&!empty($this->request->query['season'])){
             $conditions[] = $this->get_conditions_season($conditions);
+        } else {
+            $season = $this->getCurrentSeason();
+            $conditions['Product.season'] = $season;
         }
 
 

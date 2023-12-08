@@ -44,10 +44,10 @@ foreach ($models as $item) {
 	}
 }
 if (!empty($brand['Brand']['slug']) && !$has_params) {
-	echo $this->element('mode_selector', array('url' => $url, 'tyres_switch' => true, 'available_seasons' => $available_seasons));
+	echo $this->element('mode_selector', array('url' => $url, 'tyres_switch' => true, 'popular_sort' => true, 'available_seasons' => $available_seasons));
 }
 else {
-	echo $this->element('mode_selector', array('url' => $url, 'available_seasons' => $available_seasons));
+	echo $this->element('mode_selector', array('url' => $url, 'popular_sort' => true, 'available_seasons' => $available_seasons));
 }
 ?>
 <div class="clear"></div>
