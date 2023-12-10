@@ -233,6 +233,9 @@
         flex-direction: column;
         gap: 0;
     }
+    .sel-style3 {
+        min-height: 20px;
+    }
 }
 
 @media screen and (min-width: 1200px) {

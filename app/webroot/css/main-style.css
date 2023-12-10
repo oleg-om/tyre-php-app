@@ -675,14 +675,18 @@ input {
   margin-right: 5px;
 }
 .sel-style3 {
-  padding: 4px;
+  padding: 4px 2px 4px 10px;
   width: 100%;
   border-radius: 20px;
+  min-height: 30px;
 }
 .sel-style4 {
   padding: 4px;
   width: 280px;
   margin-right: 5px;
+}
+.video {
+  overflow: hidden;
 }
 .filter-group .item.item2 {
 
