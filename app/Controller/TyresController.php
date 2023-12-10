@@ -284,7 +284,11 @@ class TyresController extends AppController {
             endif;
             $this->paginate['conditions'] = $model_conditions;
         }
-        $sort = 'popular';
+        $sort = 'price_asc';
+            if (CONST_ENABLE_POPULAR_SORT == '1') {
+                $sort = 'popular';
+            }
+
         if (isset($this->request->query['sort']) && in_array($this->request->query['sort'], array('name', 'price_asc', 'price_desc', 'popular'))) {
             $sort = $this->request->query['sort'];
         }
@@ -293,7 +297,7 @@ class TyresController extends AppController {
                 'price_asc' => array('Product.price' => 'ASC'),
                 'price_desc' => array('Product.price' => 'DESC'),
                 'name' => array('BrandModel.full_title' => 'ASC'),
-                'popular' => array('BrandModel.popular' => 'DESC', 'BrandModel.new' => 'DESC', 'Product.in_stock' => 'ASC', 'Product.price' => 'ASC')
+                'popular' => array('BrandModel.virtual_season' => 'ASC', 'BrandModel.popular' => 'DESC', 'BrandModel.new' => 'DESC', 'BrandModel.model_in_stock' => 'DESC', 'BrandModel.low_price' => 'ASC')
             );
         }
         else {
@@ -301,9 +305,21 @@ class TyresController extends AppController {
                 'price_asc' => array('BrandModel.low_price' => 'ASC'),
                 'price_desc' => array('BrandModel.low_price' => 'DESC'),
                 'name' => array('BrandModel.full_title' => 'ASC'),
-                'popular' => array('BrandModel.popular' => 'DESC', 'BrandModel.new' => 'DESC', 'BrandModel.in_stock' => 'ASC', 'BrandModel.low_price' => 'ASC')
+                'popular' => array('BrandModel.virtual_season' => 'ASC', 'BrandModel.popular' => 'DESC', 'BrandModel.new' => 'DESC', 'BrandModel.model_in_stock' => 'DESC', 'BrandModel.low_price' => 'ASC')
             );
             $this->BrandModel->virtualFields['low_price'] = '(select min(products.price) from `products` where `products`.`model_id`=`BrandModel`.`id` AND `products`.`id` IN ('.$product_ids.'))';
+
+            if (CONST_ENABLE_POPULAR_SORT == '1') {
+                $current_season = $this->getCurrentSeason();
+                $this->BrandModel->virtualFields['model_in_stock'] = '(select max(products.in_stock) from `products` where `products`.`model_id`=`BrandModel`.`id` AND `products`.`id` IN ('.$product_ids.'))';
+                $this->BrandModel->virtualFields['products_season'] = '(select max(products.season) from `products` where `products`.`model_id`=`BrandModel`.`id` AND `products`.`id` IN ('.$product_ids.'))';
+                if ($current_season == 'winter') {
+                    $this->BrandModel->virtualFields['virtual_season'] = 'REPLACE(REPLACE(REPLACE(COALESCE((select max(products.season) from `products` where `products`.`model_id`=`BrandModel`.`id` AND `products`.`id` IN ('.$product_ids.')), "2"), "all", "2"), "winter", "1"), "summer", "3")';
+                } else {
+                    $this->BrandModel->virtualFields['virtual_season'] = 'REPLACE(REPLACE(REPLACE(COALESCE((select max(products.season) from `products` where `products`.`model_id`=`BrandModel`.`id` AND `products`.`id` IN ('.$product_ids.')), "2"), "all", "2"), "winter", "3"), "summer", "1")';
+                }
+            }
+
         }
         $this->paginate['order'] = $sort_orders[$sort];
         $this->BrandModel->virtualFields['full_title'] = 'CONCAT(Brand.title,\' \',BrandModel.title)';
@@ -736,7 +752,7 @@ class TyresController extends AppController {
                 'url' => array('controller' => 'tyres', 'action' => 'index'),
                 'title' => $title
             );
-            $meta_title = !empty($brand['Brand']['meta_title']) ? $brand['Brand']['meta_title'] : $brand['Brand']['title'];
+            $meta_title = !empty($brand['Brand']['meta_title']) ? 'Шины ' . $brand['Brand']['meta_title'] . ' - купить в Керчи' : 'Шины ' . $brand['Brand']['title'] . ' - купить в Керчи';
             $meta_keywords = $brand['Brand']['meta_keywords'];
             $meta_description = $brand['Brand']['meta_description'];
             $sort = 'price_asc';
@@ -784,7 +800,7 @@ class TyresController extends AppController {
                         'title' => $model['BrandModel']['title']
                     );
                     $this->setLastModels($model);
-                    $meta_title = (!empty($model['BrandModel']['meta_title']) ? $model['BrandModel']['meta_title'] : 'Шина ' . $model['Brand']['title'] . ' ' . $model['BrandModel']['title']);
+                    $meta_title = (!empty($model['BrandModel']['meta_title']) ? $model['Brand']['title'] . ' ' . $model['BrandModel']['meta_title'] . ' - купить шины в Керчи' : 'Шина ' . $model['Brand']['title'] . ' ' . $model['BrandModel']['title'] . ' - купить в Керчи');
                     $meta_keywords = $model['BrandModel']['meta_keywords'];
                     $meta_description = $model['BrandModel']['meta_description'];
                     $this->set('model', $model);
@@ -1026,7 +1042,7 @@ class TyresController extends AppController {
                 $this->set('models', $models);
                 $this->set('brand_id', $brand['Brand']['id']);
                 $this->set('model_id', $product['Product']['model_id']);
-                $this->setMeta('title', $product['Product']['sku']);
+                $this->setMeta('title', $product['Product']['sku'] . ' - купить шины Керчь');
                 $this->setMeta('keywords', $product['BrandModel']['meta_keywords']);
                 $this->setMeta('description', $product['BrandModel']['meta_description']);
                 $this->set('brand', $brand);
@@ -1208,10 +1224,11 @@ class TyresController extends AppController {
     private function get_conditions($conditions){
         if(isset($this->request->query['season'])&&!empty($this->request->query['season'])){
             $conditions[] = $this->get_conditions_season($conditions);
-        } else {
-            $season = $this->getCurrentSeason();
-            $conditions['Product.season'] = $season;
         }
+//        else {
+//            $season = $this->getCurrentSeason();
+//            $conditions['Product.season'] = $season;
+//        }
 
 
 

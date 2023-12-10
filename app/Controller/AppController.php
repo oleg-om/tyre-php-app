@@ -194,7 +194,7 @@ class AppController extends Controller {
 
     public function getCurrentSeason() {
         $month = date('m');
-        $season = 'summer';
+
         if($month > 3 && $month < 11){
             $season = 'summer';
         } else {

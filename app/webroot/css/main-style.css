@@ -654,6 +654,17 @@ input {
   align-items: center;
   gap: 5px;
 }
+.item-group {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
+.item-group .item-inner {
+  width: 100%;
+}
+.filter-group .item-group .item-inner .name {
+  width: 100%;
+}
 .sel-style1 {
   padding: 4px;
   width: 219px;
@@ -666,6 +677,7 @@ input {
 .sel-style3 {
   padding: 4px;
   width: 100%;
+  border-radius: 20px;
 }
 .sel-style4 {
   padding: 4px;
@@ -2133,8 +2145,9 @@ h3.title-tyres {
 .filter-group .item .sel-style1 {
   width: 100%;
   height: 40px;
-  border-radius: 3px;
+  border-radius: 20px;
   border-color: #b5b5b5;
+  padding: 0 10px;
 }
 #ProductIndexForm .item.bt.bt2 {
   margin-top: -5px;
@@ -3203,12 +3216,11 @@ table.withlines {
 .filter-group .item.item3.col-r .item-inner {
   padding: 0 5px;
   margin-bottom: 15px;
-
   display: flex;
   height: 40px;
   align-items: center;
   background-color: #FFFFFF;
-  border-radius: 3px;
+  border-radius: 20px;
   border: 1px solid #b5b5b5;
 }
 .filter-group .item.item3.col-r .item-inner__label {

@@ -109,7 +109,7 @@ foreach ($models as $item) {
 //				'price_desc' => 'от дорогих к дешевым',
             );
 
-            if ($popular_sort == true) {
+            if ($popular_sort == true && CONST_ENABLE_POPULAR_SORT == '1') {
                 $sort_fields = array(
                     'popular' => 'по популярности',
                     'price_asc' => 'по цене',

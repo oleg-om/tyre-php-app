@@ -159,7 +159,11 @@
             display: flex;
             align-self: flex-start;
             min-width: 345px;
+            height: 345px;
         }
+    }
+    .prodBigImg img {
+        height: 100%;
     }
     .boxRightInfo {
         flex-direction: row;
@@ -224,6 +228,10 @@
         position: sticky;
         top: 0;
         bottom: 0;
+    }
+    .item-group {
+        flex-direction: column;
+        gap: 0;
     }
 }
 

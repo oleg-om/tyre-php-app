@@ -431,6 +431,7 @@ class AkbController extends AppController {
 				$this->set('brand', $brand);
 				$this->set('product', $product);
 				$this->set('active_menu', 'akb');
+                $this->set('show_left_menu', false);
 			}
 			else {
 				$this->response->statusCode(404);

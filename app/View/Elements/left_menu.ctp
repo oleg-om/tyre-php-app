@@ -93,6 +93,7 @@ $settings = Cache::read('settings', 'long');
 			?></div>
 			<div class="clear"></div>
 		</div>
+        <div class="item-group">
 		<div class="item-inner">
 			<label class="name">Ширина:</label>
 			<div class="inp"><?php
@@ -113,8 +114,9 @@ $settings = Cache::read('settings', 'long');
 				echo $this->Form->input('size3', array('type' => 'select', 'label' => false, 'options' => $tyre_size3, 'empty' => array('' => 'Все'), 'div' => false, 'class' => 'sel-style1 filter-select'));
 			?></div>
 			<div class="clear"></div>
-		</div>	
-		<div class="item-inner">
+		</div>
+        </div>
+        <div class="item-inner">
 			<label class="name" for="ProductSeason">Сезон:</label>
 			<div class="inp"><?php 
 		

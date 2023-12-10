@@ -30,7 +30,7 @@ if (empty($current_season)) {
 			<div id="nav" class="toggle__menu">
 				<ul>
 					<li<?php if ($active_menu == 'home') { ?> class="activ"<?php } ?>><a href="/">Главная</a></li>
-					<li<?php if ($active_menu == 'tyres') { ?> class="activ"<?php } ?>><a href="/tyres?auto=cars">Шины</a></li>
+					<li<?php if ($active_menu == 'tyres') { ?> class="activ"<?php } ?>><a href="/tyres<?php if (CONST_ENABLE_POPULAR_SORT != '1') { ?>?auto=cars<?php } ?>">Шины</a></li>
 					<li<?php if ($active_menu == 'disks') { ?> class="activ"<?php } ?>><a href="/disks?material=cast">Диски</a></li>
 					<li<?php if ($active_menu == 'akb') { ?> class="activ"<?php } ?>><a href="/akb">АКБ</a></li>
 					<li<?php if ($active_menu == 'sales') { ?> class="activ"<?php } ?>><a href="/page-sales">Масла</a></li>
