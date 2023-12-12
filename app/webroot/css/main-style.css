@@ -665,6 +665,19 @@ input {
 .filter-group .item-group .item-inner .name {
   width: 100%;
 }
+.sel-style1, .filter select {
+  appearance: none;
+  -webkit-appearance: none;
+  position: relative;
+  background-color: #ffffff;
+  background-image: url("data:image/svg+xml;charset=utf8,%3Csvg width='11' height='6' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M9.666 1l-4 4-4-4' stroke='%233B3F45' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat, repeat;
+  background-position: right .7em top 50%, 0 0;
+  background-size: .65em auto, 100%;
+}
+.filter-group .item .sel-style1:hover {
+  border-color: #969696;
+}
 .sel-style1 {
   padding: 4px;
   width: 219px;
@@ -2425,6 +2438,7 @@ h3.title-tyres {
 }
 .sub-sort li {
   margin-bottom: 2px;
+  margin-top: 5px;
 }
 .infoList h3 a {
   text-decoration: none;
