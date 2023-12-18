@@ -10,5 +10,5 @@ if (isset($breadcrumbs)) {
 			$breadcrumbs_list[] = h($breadcrumb['title']);
 		}
 	}
-	echo '<div class="bre">' . implode('  /  ', $breadcrumbs_list) . '</div>';
+	echo '<div class="bre wrap">' . implode('  /  ', $breadcrumbs_list) . '</div>';
 }

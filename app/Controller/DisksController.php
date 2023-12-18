@@ -1600,7 +1600,7 @@ endforeach;
 		$product_conditions = $conditions = $this->get_conditions($conditions);
 		
 		$this->set('filter', array_filter($this->request->query));
-		$material_condition = null;
+		$material_condition = 'cast';
 		if (isset($conditions['BrandModel.material'])) {
 			$material_condition = $conditions['BrandModel.material'];
 			unset($conditions['BrandModel.material']);

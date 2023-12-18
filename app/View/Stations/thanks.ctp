@@ -38,7 +38,7 @@
 						</tr>
 						<tr>
 							<td valign="top" class="label">www:</td>
-							<td valign="top"><a href="http://kerchshina.com.ua">kerchshina.com.ua</a></td>
+							<td valign="top"><a href="http://kerchshina.com">kerchshina.com</a></td>
 						</tr>
 					</table>
 				</td>

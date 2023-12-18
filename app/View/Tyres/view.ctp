@@ -1,4 +1,5 @@
 <?php echo $this->element('currency', array('class' => 'bpad')); ?>
+<div class="product__wrapper">
 <div class="prodBigImg">
 	<?php
 		$image_small = $this->Html->image('no-tyre-big.jpg');
@@ -59,9 +60,10 @@
 	<div class="boxRightInfo">
 		<?php if ($this->Frontend->canShowTyrePrice($product['Product']['auto'], $product['Product']['not_show_price'])) { ?>
 		<div class="boxPriceProd">
+            <div class="boxPriceProd-price">
 			<em>цена:</em>
 			<span> <?php echo $this->Frontend->getPrice($product['Product']['price'], 'tyres', array('after' => '</strong>', 'between' => ' <strong>')); ?> </span>
-			<div class="clear"></div>
+			</div>
 			<div class="add-to-cart"><?php echo $this->element('add_to_cart'); ?></div>
 			<div class="buy-button">
 				<a href="javascript:void(0);" class="btVer2" onclick="buy();">Купить</a>
@@ -70,9 +72,8 @@
 		</div>
 		<?php } ?>
 		<div class="orderCall">
-			<h3>Заказать по телефону:</h3>
-			<span>+7 (978) 714-12-19</span>
-			<span>(36561) 5-63-43</span> 
+			<h3>Либо заказать по телефону:</h3>
+			<span><?php echo CONST_STORAGE_CELLPHONE; ?></span>
 		</div>
 		<div class="clear"></div>
 	</div>
@@ -85,6 +86,7 @@
 		<?php } ?>
 		<?php if (!empty($product['BrandModel']['video'])) { ?><div class="video"><?php echo $product['BrandModel']['video']; ?></div><?php } ?>
 	</div>
+</div>
 </div>
 <script type="text/javascript">
 <!--

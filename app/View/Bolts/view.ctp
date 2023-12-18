@@ -35,9 +35,10 @@
 			</table>
 			<?php if ($this->Frontend->canShowBoltPrice($product['Product']['not_show_price'])) { ?>
 			<div class="boxPriceProd akb-price-box">
+                <div class="boxPriceProd-price">
 				<em>цена:</em>
 				<span> <?php echo $this->Frontend->getPrice($product['Product']['price'], 'bolts', array('after' => '</strong>', 'between' => ' <strong>')); ?> </span>
-				<div class="clear"></div>
+                </div>
 				<div class="add-to-cart"><?php echo $this->element('add_to_cart'); ?></div>
 				<div class="buy-button">
 					<a href="javascript:void(0);" class="btVer2" onclick="buy();">Купить</a>
