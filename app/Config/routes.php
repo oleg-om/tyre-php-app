@@ -600,6 +600,21 @@ Router::connect(
 	)
 );
 
+Router::connect(
+    '/sitemaps/sitemap.xml',
+    array(
+        'controller' => 'Sitemap',
+        'action' => 'main'
+    )
+);
+Router::connect(
+    '/sitemaps/tyres.xml',
+    array(
+        'controller' => 'Sitemap',
+        'action' => 'tyres'
+    )
+);
+
 //Router::connect('/*', array('controller' => 'Errors', 'action' => 'error404')); 
 
 
