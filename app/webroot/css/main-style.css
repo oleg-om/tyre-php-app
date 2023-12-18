@@ -3346,6 +3346,8 @@ table.withlines {
 .logos__wrapper {
   display: flex;
   flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
 }
 
 .logos__wrapper span {
