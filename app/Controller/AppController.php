@@ -189,6 +189,7 @@ class AppController extends Controller {
 			$this->set('meta_description', $meta_description);
 			$this->set('last_models', $this->Session->read('last_models'));
             $this->getCurrentSeason();
+            $this->setCarBrandsForLeftMenu();
 		}
 	}
 
@@ -260,6 +261,17 @@ class AppController extends Controller {
 
 		$this->set('category_id', $this->category_id);
 	}
+
+    public function setCarBrandsForLeftMenu() {
+        $brands = Cache::read('car_brands', 'long');
+        if (empty($brands)) {
+            $this->loadModel('Brand');
+            if ($brands = $this->CarBrand->find('list', array('conditions' => array('CarBrand.is_active' => 1, 'CarBrand.active_cars_count >' => 0), 'order' => array('CarBrand.title' => 'asc')))) {
+                Cache::write('car_brands', $brands, 'long');
+            }
+        }
+        $this->set('car_brands', $brands);
+    }
 	public function setMeta($key, $value) {
 		if (!empty($value))
 			$this->{'meta_'.$key} = $value;

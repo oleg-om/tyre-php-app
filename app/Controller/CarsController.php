@@ -182,6 +182,7 @@ class CarsController extends AppController {
 										$this->set('active_menu', 'selection');
 										$this->set('show_filter', 4);
 										$this->set('show_left_menu', true);
+                                        $this->set('show_switch_params_and_auto', false);
 									}
 									else {
 										$this->response->statusCode(404);
@@ -257,6 +258,7 @@ class CarsController extends AppController {
 								$this->set('active_menu', 'selection');
 								$this->set('show_filter', 4);
 								$this->render('view_year');
+                                $this->set('show_switch_params_and_auto', false);
 							}
 						}
 						else {
@@ -470,7 +472,9 @@ class CarsController extends AppController {
 						$this->set('active_menu', 'selection');
 						$this->set('show_left_menu', true);
 						$this->set('show_filter', 4);
+                        $this->set('show_switch_params_and_auto', false);
 						$this->render('view');
+
 					}
 					else {
 						$this->response->statusCode(404);

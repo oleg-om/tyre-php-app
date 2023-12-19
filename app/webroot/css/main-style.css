@@ -10,7 +10,7 @@
   --container-md: 720px;
   --container-lg: 960px;
   --container-xl: 1140px;
-  --container-xxl: 1320px;
+  --container-xxl: 1245px;
 }
 
 body {
@@ -246,6 +246,55 @@ input {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  position: relative;
+}
+.left-nav .title__switch {
+  height: 56px;
+  background-color: #e0e0e0;
+  font-size: 14px;
+  color: #999999;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+}
+.left-nav .title__switch .left-nav__button {
+  margin-right: 5px;
+}
+.left-nav__switch {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+.left-nav__switch__button {
+  text-decoration: none;
+  color: black;
+  font-size: 16px;
+  width: 50%;
+  text-align: center;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.left-nav__switch__button.active {
+  font-weight: 600;
+}
+.left-nav__switch__button.active:before {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  border: 2px solid #589b2f;
+}
+#left-nav__switch__button-params:before {
+  right: 50%;
+  left: 0;
+}
+#left-nav__switch__button-auto:before {
+  right: 0;
+  left: 50%;
 }
 .left-nav .left-nav__button {
   border: 1px solid #d75124;
@@ -648,7 +697,6 @@ input {
   width: 115px !important;
 }
 #CarViewForm .item.item5 {
-  margin-right: 20px;
 }
 .filter-group .item .item-inner .inp {
 
@@ -1047,6 +1095,7 @@ input {
   height: 143px;
   overflow: hidden;
   width: 182px;
+  min-width: 182px;
 }
 .boxList2.boxList2-new .prodImg2 {
   height: 113px;
@@ -1353,6 +1402,9 @@ h3.title-tyres {
   border-bottom: 1px solid #d8dee4;
   margin-bottom: 10px;
   padding-bottom: 10px;
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
 }
 .infoList2 h3 {
   font-size: 17px;
@@ -1372,7 +1424,8 @@ h3.title-tyres {
   float: right;
   padding: 23px 15px;
   text-align: center;
-  width: 220px;
+  width: 100%;
+  margin-left: auto;
 }
 .priceMore2 span {
   color: #333333;
@@ -3369,4 +3422,13 @@ table.withlines {
 }
 .filter .mode-switch-activ {
   border: 1px solid #316b16;
+}
+.d-none {
+  display: none;
+}
+.d-block {
+  display: block;
+}
+.d-flex {
+  display: flex;
 }

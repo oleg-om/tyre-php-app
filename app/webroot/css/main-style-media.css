@@ -41,7 +41,7 @@
         max-width: var(--container-md)
     }
     .boxList {
-        width: 27%;
+        width: 27.3%;
     }
     .width-disk {
         justify-content: flex-start;
@@ -101,10 +101,10 @@
         padding-top: 18px;
     }
     .jcarousel-wrapper {
-        width: 680px;
+        width: 600px;
     }
     .jcarousel li {
-        width: 680px !important;
+        width: 600px !important;
     }
     .left-nav {
         position: sticky;
@@ -126,9 +126,22 @@
     }
     .left-nav {
         padding-bottom: 10px;
+        width: 280px;
+        min-width: 280px;
+    }
+    .item-group {
+        flex-direction: row;
+        gap: 10px;
     }
     .bt-style1 {
+        display: block;
+        width: 100%;
+        margin-left: auto;
+        margin-right: auto;
         margin-top: 10px;
+    }
+    .filter-group .item.item3.col-l .item-inner, .filter-group .item.item3.col-r .item-inner {
+        white-space: nowrap;
     }
     .filter-group .item .sel-style1 {
         height: 30px;
@@ -229,12 +242,18 @@
         top: 0;
         bottom: 0;
     }
-    .item-group {
-        flex-direction: column;
-        gap: 0;
-    }
     .sel-style3 {
         min-height: 20px;
+    }
+    .boxList {
+        width: 26.9%;
+    }
+    .boxList2 {
+        flex-wrap: nowrap;
+    }
+    .priceMore2 {
+        width: 210px;
+        margin-bottom: auto;
     }
 }
 
@@ -252,22 +271,37 @@
         width: auto;
     }
     #header .tyres {
+
+    }
+    .header-background {
+        position: absolute;
+        right: -40px;
+        bottom: 0;
         background-image: url(../img/tyres.png);
+        background-repeat: no-repeat;
+        height: 100%;
+        width: 100%;
+        background-position: right bottom;
+        z-index: -1;
+    }
+    .header-wrapper {
+        position: relative;
+        z-index: 1;
     }
     /*#header .tyres.winter-season {*/
     /*    background-image: url(../img/tyres_winter.png);*/
     /*}*/
     .boxList {
-        width: 20.333%;
+        width: 19.9%;
     }
     .selection .item {
         width: 22%;
     }
     .jcarousel-wrapper {
-        width: 860px;
+        width: 780px;
     }
     .jcarousel li {
-        width: 860px !important;
+        width: 780px !important;
     }
     #header .info-group {
         display: block;
@@ -275,23 +309,24 @@
     }
 }
 
-/*@media screen and (min-width: 1320px) {*/
-/*    .wrap {*/
-/*        max-width: var(--container-xxl)*/
-/*    }*/
-/*    #header #nav {*/
-/*        max-width: var(--container-xxl)*/
-/*    }*/
-/*    .boxList {*/
-/*        width: 16%;*/
-/*    }*/
-/*    .selection .item {*/
-/*        width: 18%;*/
-/*    }*/
-/*    .jcarousel-wrapper {*/
-/*        width: 1048px;*/
-/*    }*/
-/*    .jcarousel li {*/
-/*        width: 1048px !important;*/
-/*    }*/
-/*}*/
+@media screen and (min-width: 1320px) {
+    .wrap {
+        max-width: var(--container-xxl)
+    }
+    #header #nav {
+        max-width: var(--container-xxl)
+    }
+    #header .info-group {
+        padding-left: 40px;
+    }
+    .left-nav {
+        width: 305px;
+        min-width: 305px;
+    }
+    .jcarousel-wrapper {
+        width: 840px;
+    }
+    .jcarousel li {
+        width: 840px !important;
+    }
+}

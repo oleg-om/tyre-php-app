@@ -55,6 +55,7 @@ class CarBrandsController extends AppController {
 		$this->set('active_menu', 'selection');
 		$this->set('show_filter', 4);
 		$this->set('show_left_menu', true);
+        $this->set('show_switch_params_and_auto', false);
 	}
 	public function view($slug) {
 		$this->set('car_models', array());
@@ -84,6 +85,7 @@ class CarBrandsController extends AppController {
 			$this->set('show_left_menu', true);
 			$this->set('active_menu', 'selection');
 			$this->set('show_filter', 4);
+            $this->set('show_switch_params_and_auto', false);
 		}
 		else {
 			$this->response->statusCode(404);
