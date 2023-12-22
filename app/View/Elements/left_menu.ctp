@@ -547,7 +547,8 @@ $settings = Cache::read('settings', 'long');
 		$url = array('controller' => 'selection', 'action' => 'view');
 		echo $this->Form->create('Car', array('type' => 'get', 'url' => $url));
 	?>
-	<div class="item item5">
+    <?php if (CONST_SELECTION_WITH_MODALS == '0') { ?>
+    <div class="item item5">
 		<div class="item-inner">
 			<label class="name" for="CarBrandId">Производитель:</label>
 			<div class="inp"><?php
@@ -578,7 +579,73 @@ $settings = Cache::read('settings', 'long');
 			?></div>
 			<div class="clear"></div>
 		</div>
-	</div>
+	</div>;
+    <?php } else { ?>
+        <div class="item item5">
+            <div class="item-inner">
+                <label class="name" for="CarBrandId">Производитель:</label>
+                <a class="inp" href="javascript:void(0);" onclick="openSelectionBrandModal();"><?php
+                    echo $this->Form->input('brand_id', array('type' => 'select', 'label' => false, 'options' => $car_brands, 'empty' => array('' => '...'), 'div' => false, 'class' => 'sel-style1', 'required' => false));
+                    ?></a>
+            </div>
+            <div class="item-inner">
+                <label class="name" for="CarModelId">Модель:</label>
+                <a class="inp" href="javascript:void(0);" onclick="openSelectionModelModal();"><?php
+                    echo $this->Form->input('model_id', array('type' => 'select', 'label' => false, 'options' => $car_models, 'empty' => array('' => '...'), 'div' => false, 'class' => 'sel-style1'));
+                    ?></a>
+            </div>
+        </div>
+        <div class="item">
+            <div class="item-inner">
+                <label class="name" for="CarYear">Год выпуска:</label>
+                <a class="inp" href="javascript:void(0);" onclick="openSelectionYearModal();"><?php
+                    echo $this->Form->input('year', array('class' => 'sel-style1', 'type' => 'select', 'label' => false, 'options' => $car_years, 'empty' => array('' => '...'), 'div' => false, 'name' => 'year'));
+                    ?></a>
+            </div>
+            <div class="item-inner" for="CarMod">
+                <label class="name">Модификация:</label>
+                <a class="inp" href="javascript:void(0);" onclick="openSelectionModModal();"><?php
+                    echo $this->Form->input('mod', array('class' => 'sel-style1', 'type' => 'select', 'label' => false, 'options' => $car_modifications, 'empty' => array('' => '...'), 'div' => false));
+                    ?></a>
+            </div>
+        </div>
+        <script type="text/javascript">
+            function openSelectionBrandModal() {
+                open_popup({
+                    url: '/selection-modal',
+                    type: 'post',
+                    size: 'lg'
+                });
+            }
+            function openSelectionModelModal() {
+                if ($('#CarBrandId').val() != 0 && $('#CarBrandId').val() != '') {
+                    open_popup({
+                        url: `/selection-modal/${$('#CarBrandId').val()}`,
+                        type: 'post',
+                        size: 'lg'
+                    });
+                }
+            }
+            function openSelectionYearModal() {
+                if ($('#CarModelId').val() != 0 && $('#CarModelId').val() != '') {
+                    open_popup({
+                        url: `/selection-modal/${$('#CarBrandId').val()}/${$('#CarModelId').val()}`,
+                        type: 'post',
+                        size: 'lg'
+                    });
+                }
+            }
+            function openSelectionModModal() {
+                if ($('#CarYear').val() != 0 && $('#CarYear').val() != '') {
+                    open_popup({
+                        url: `/selection-modal/${$('#CarBrandId').val()}/${$('#CarModelId').val()}/${$('#CarYear').val()}`,
+                        type: 'post',
+                        size: 'lg'
+                    });
+                }
+            }
+        </script>
+    <?php } ?>
 	<div class="item">
 		<button class="bt-style1" id="sel_submit">ПОИСК</button>
 	</div>
@@ -850,6 +917,33 @@ function serializeArray(form) {
 	});
 	return ar;
 }
+
+
+
 //-->
 </script>
+<?php if (CONST_SELECTION_WITH_MODALS == '1') { ?>
+        <script type="text/javascript">
+            $('#CarBrandId').on('mousedown', function(e) {
+                e.preventDefault();
+                this.blur();
+                window.focus();
+            });
+            $('#CarModelId').on('mousedown', function(e) {
+                e.preventDefault();
+                this.blur();
+                window.focus();
+            });
+            $('#CarYear').on('mousedown', function(e) {
+                e.preventDefault();
+                this.blur();
+                window.focus();
+            });
+            $('#CarMod').on('mousedown', function(e) {
+                e.preventDefault();
+                this.blur();
+                window.focus();
+            });
+        </script>
+<?php } ?>
 </div></div>

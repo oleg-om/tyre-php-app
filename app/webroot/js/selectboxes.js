@@ -472,15 +472,26 @@ function open_popup(opt) {
       url: document.location,
       data: {},
       dataType: "html",
+      load: function () {
+        $("body").html(data).hide();
+      },
       success: function (data) {
         $("#popup").html(data).show();
       },
     },
     opt
   );
-  $("body").append(
-    '<div class="popup" id="popup" style="display:none;"></div><div class="bg-popup" id="popup-overlay"></div>'
-  );
+  console.log('opt',opt);
+  $("body").css('overflow', 'hidden')
+  if (opt?.size === 'lg') {
+    $("body").append(
+        '<div class="popup__wrapper lg" id="popup"><div class="popup" style="display:none;"></div></div><div class="bg-popup" id="popup-overlay"></div>'
+    );
+  } else {
+    $("body").append(
+        '<div class="popup__wrapper" id="popup"><div class="popup" style="display:none;"></div></div><div class="bg-popup" id="popup-overlay"></div>'
+    );
+  }
   $("#popup-overlay").click(close_popup);
   $.ajax(opt);
 }
@@ -490,6 +501,7 @@ function open_popup(opt) {
 function close_popup() {
   $("#popup-overlay").remove();
   $("#popup").remove();
+  $("body").css('overflow', 'auto')
 }
 function search(query) {
   if (query.length > 2) {

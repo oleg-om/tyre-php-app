@@ -55,6 +55,9 @@
     .jcarousel li {
         width: 580px !important;
     }
+    .selection__modal {
+        columns: 3;
+    }
 }
 
 @media screen and (min-width: 992px) {
@@ -254,6 +257,12 @@
     .priceMore2 {
         width: 210px;
         margin-bottom: auto;
+    }
+    .pager-filter.bottom {
+        margin-top: 20px;
+    }
+    .selection__modal {
+        columns: 4;
     }
 }
 
