@@ -17,9 +17,9 @@ if (empty($current_season)) {
                         <rect y="60" width="100" height="10" fill="#FFFFFF"></rect>
                     </svg>
                 </a>
-			<div class="logo"><a href="/"><img src="/img/kerchshina.png" alt="Шинный центр" /></a></div>
+			<div class="logo"><a href="/"><img src="/img/kerchshina.png" alt="Шинный центр" /></a><span class="logo__years">20 лет</span></div>
 			<div class="info-group">
-				<div class="desc">Шинный центр</div>
+                <div class="desc"><span class="desc-title">КерчьШИНА</span><span class="desc-description">Сеть шинных центров</span></div>
 				<div class="info">
 					<?php echo CONST_ADDRESS; ?><br/>
 					<?php echo CONST_PHONE; ?>

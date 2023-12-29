@@ -82,6 +82,10 @@
     #header .logo {
         margin-left: -42px;
     }
+    #header .logo .logo__years {
+        bottom: -6px;
+        top: auto;
+    }
     #header .tyres {
         min-height: 105px;
     }

@@ -78,12 +78,21 @@ input {
   padding-top: 5px;
   position: relative;
 }
+#header .logo .logo__years {
+  position: absolute;
+  top: 15px;
+  right: 1px;
+  color: #fff;
+  background-color: #316b16;
+  padding: 4px 11px;
+  border-radius: 10px;
+}
 #header .logo a img {
   width: 200px;
 }
 #header .info-group {
   display: none;
-  padding-left: 15px;
+  padding-left: 25px;
   padding-top: 52px;
 }
 #header .info-group .desc {
@@ -93,14 +102,22 @@ input {
   text-shadow: 1px 1px 0 #296110;
   font-weight: bold;
   color: #fff;
-  text-transform: uppercase;
-  line-height: 56px;
+  line-height: 35px;
+  display: flex;
+  flex-direction: column;
+}
+#header .info-group .desc .desc-description {
+  font-size: 32px;
+  font-weight: 400;
+  text-transform: inherit;
+  line-height: 20px;
+  padding-top: 17px;
 }
 #header .info-group .info {
   float: left;
   border-left: 1px solid #bcdaa3;
-  padding-left: 15px;
-  margin-left: 15px;
+  padding-left: 25px;
+  margin-left: 25px;
   font-size: 16px;
   color: #fff;
   text-shadow: 1px 1px 0 #486b2b;
