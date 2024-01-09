@@ -424,6 +424,7 @@ class TyresController extends AppController {
         $this->set('sort', $sort);
         $this->set('additional_js', array('lightbox', 'slider', 'functions'));
         $this->set('additional_css', array('lightbox', 'jquery-ui-1.9.2.custom.min'));
+//        $this->setCarBrandsForLeftMenu();
     }
 
 

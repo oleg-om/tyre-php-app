@@ -1,18 +1,40 @@
 <div class="left-nav left-nav-open" id="left-nav-filter">
     <div class="left-nav__sticky">
-	<div class="title">
-        <span class="left-nav__title">
-<?php if ($path == 'tyres'): ?>
 
-Подбор шин по параметрам:
+
+            <?php
+                if (empty(isset($show_switch_params_and_auto))) {
+                    $show_switch_params_and_auto = true;
+
+                }
+            ?>
+
+<?php if ($show_switch_params_and_auto == true): ?>
+<div class="title__switch">
+<div class="left-nav__switch">
+    <a href="javascript:void(0);" onclick="switchTab('params');" id="left-nav__switch__button-params" class="left-nav__switch__button active">
+        По параметрам
+    </a>
+        <a href="javascript:void(0);" onclick="switchTab('auto');" id="left-nav__switch__button-auto" class="left-nav__switch__button">
+        По авто
+    </a>
+</div>
+    <a href="javascript:void(0);" onclick="switchFilter();" class="left-nav__button">
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="#ffffff"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M7 10L12 15L17 10" stroke="#ffffff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path> </g></svg>
+    </a>
+</div>
 <?php else: ?>
-    Фильтр по параметрам:
+   <div class="title">
+    <span class="left-nav__title">
+        Фильтр по параметрам:
+    </span>
+       <a href="javascript:void(0);" onclick="switchFilter();" class="left-nav__button">
+           <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="#ffffff"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M7 10L12 15L17 10" stroke="#ffffff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path> </g></svg>
+       </a>
+   </div>
 <?php endif ?>
-        </span>
-        <a href="javascript:void(0);" onclick="switchFilter();" class="left-nav__button">
-            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="#ffffff"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M7 10L12 15L17 10" stroke="#ffffff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path> </g></svg>
-        </a>
-    </div>
+
+
 
     <script>
         var openFilter = true;
@@ -25,6 +47,23 @@
                 openFilter = false
             }
         }
+
+        function switchTab(params) {
+
+            if (params === 'params') {
+                document.getElementById("left-nav__switch__button-params").className = "left-nav__switch__button left-nav__switch__button-params active";
+                document.getElementById("left-nav__switch__button-auto").className = "left-nav__switch__button left-nav__switch__button-auto";
+
+                document.getElementById("filter").style = "display: block";
+                document.getElementById("filter-group__auto").style = "display: none";
+            } else {
+                document.getElementById("left-nav__switch__button-params").className = "left-nav__switch__button left-nav__switch__button-params";
+                document.getElementById("left-nav__switch__button-auto").className = "left-nav__switch__button left-nav__switch__button-auto active";
+
+                document.getElementById("filter").style = "display: none";
+                document.getElementById("filter-group__auto").style = "display: block";
+            }
+        }
     </script>
 
 <?php
@@ -35,6 +74,7 @@ if (empty($show_filter)) {
 }
 $path = 'tyres';
 $settings = Cache::read('settings', 'long');
+
 /*
 	echo "======";
 	print_r($select);
@@ -501,13 +541,14 @@ $settings = Cache::read('settings', 'long');
 	<div class="clear"></div>
 	</form>
 </div>
-<?php } elseif ($show_filter == 4) { ?>
-<div class="filter-group" id="filter">
+<?php } if ($show_filter == 4 || $show_switch_params_and_auto == true) { ?>
+<div class="filter-group" id="filter-group__auto" style="<?php if ($show_switch_params_and_auto == true) { echo 'display: none'; } ?>">
 	<?php
 		$url = array('controller' => 'selection', 'action' => 'view');
 		echo $this->Form->create('Car', array('type' => 'get', 'url' => $url));
 	?>
-	<div class="item item5">
+    <?php if (CONST_SELECTION_WITH_MODALS == '0') { ?>
+    <div class="item item5">
 		<div class="item-inner">
 			<label class="name" for="CarBrandId">Производитель:</label>
 			<div class="inp"><?php
@@ -538,7 +579,73 @@ $settings = Cache::read('settings', 'long');
 			?></div>
 			<div class="clear"></div>
 		</div>
-	</div>
+	</div>;
+    <?php } else { ?>
+        <div class="item item5">
+            <div class="item-inner">
+                <label class="name" for="CarBrandId">Производитель:</label>
+                <a class="inp" href="javascript:void(0);" onclick="openSelectionBrandModal();"><?php
+                    echo $this->Form->input('brand_id', array('type' => 'select', 'label' => false, 'options' => $car_brands, 'empty' => array('' => '...'), 'div' => false, 'class' => 'sel-style1', 'required' => false));
+                    ?></a>
+            </div>
+            <div class="item-inner">
+                <label class="name" for="CarModelId">Модель:</label>
+                <a class="inp" href="javascript:void(0);" onclick="openSelectionModelModal();"><?php
+                    echo $this->Form->input('model_id', array('type' => 'select', 'label' => false, 'options' => $car_models, 'empty' => array('' => '...'), 'div' => false, 'class' => 'sel-style1'));
+                    ?></a>
+            </div>
+        </div>
+        <div class="item">
+            <div class="item-inner">
+                <label class="name" for="CarYear">Год выпуска:</label>
+                <a class="inp" href="javascript:void(0);" onclick="openSelectionYearModal();"><?php
+                    echo $this->Form->input('year', array('class' => 'sel-style1', 'type' => 'select', 'label' => false, 'options' => $car_years, 'empty' => array('' => '...'), 'div' => false, 'name' => 'year'));
+                    ?></a>
+            </div>
+            <div class="item-inner" for="CarMod">
+                <label class="name">Модификация:</label>
+                <a class="inp" href="javascript:void(0);" onclick="openSelectionModModal();"><?php
+                    echo $this->Form->input('mod', array('class' => 'sel-style1', 'type' => 'select', 'label' => false, 'options' => $car_modifications, 'empty' => array('' => '...'), 'div' => false));
+                    ?></a>
+            </div>
+        </div>
+        <script type="text/javascript">
+            function openSelectionBrandModal() {
+                open_popup({
+                    url: '/selection-modal',
+                    type: 'post',
+                    size: 'lg'
+                });
+            }
+            function openSelectionModelModal() {
+                if ($('#CarBrandId').val() != 0 && $('#CarBrandId').val() != '') {
+                    open_popup({
+                        url: `/selection-modal/${$('#CarBrandId').val()}`,
+                        type: 'post',
+                        size: 'lg'
+                    });
+                }
+            }
+            function openSelectionYearModal() {
+                if ($('#CarModelId').val() != 0 && $('#CarModelId').val() != '') {
+                    open_popup({
+                        url: `/selection-modal/${$('#CarBrandId').val()}/${$('#CarModelId').val()}`,
+                        type: 'post',
+                        size: 'lg'
+                    });
+                }
+            }
+            function openSelectionModModal() {
+                if ($('#CarYear').val() != 0 && $('#CarYear').val() != '') {
+                    open_popup({
+                        url: `/selection-modal/${$('#CarBrandId').val()}/${$('#CarModelId').val()}/${$('#CarYear').val()}`,
+                        type: 'post',
+                        size: 'lg'
+                    });
+                }
+            }
+        </script>
+    <?php } ?>
 	<div class="item">
 		<button class="bt-style1" id="sel_submit">ПОИСК</button>
 	</div>
@@ -810,6 +917,33 @@ function serializeArray(form) {
 	});
 	return ar;
 }
+
+
+
 //-->
 </script>
+<?php if (CONST_SELECTION_WITH_MODALS == '1') { ?>
+        <script type="text/javascript">
+            $('#CarBrandId').on('mousedown', function(e) {
+                e.preventDefault();
+                this.blur();
+                window.focus();
+            });
+            $('#CarModelId').on('mousedown', function(e) {
+                e.preventDefault();
+                this.blur();
+                window.focus();
+            });
+            $('#CarYear').on('mousedown', function(e) {
+                e.preventDefault();
+                this.blur();
+                window.focus();
+            });
+            $('#CarMod').on('mousedown', function(e) {
+                e.preventDefault();
+                this.blur();
+                window.focus();
+            });
+        </script>
+<?php } ?>
 </div></div>

@@ -8,7 +8,7 @@ if (empty($current_season)) {
 ?>
 <div id="header">
 	<div class="tyres <?php echo $current_season; ?>-season">
-		<div class="wrap">
+		<div class="wrap header-wrapper">
             <div class="header-wrap">
                 <a href="javascript:void(0);" onclick="switchToggle();" class="header-toggle">
                     <svg viewBox="0 0 100 80" width="40" height="40">
@@ -40,6 +40,7 @@ if (empty($current_season)) {
 				</ul>
 				<div class="clear"></div>
 			</div>
+            <span class="header-background"></span>
 		</div>
 	</div>
     <script>

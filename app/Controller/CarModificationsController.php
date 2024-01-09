@@ -120,6 +120,7 @@ class CarModificationsController extends AppController {
 					$this->set('show_left_menu', true);
 					$this->set('active_menu', 'selection');
 					$this->set('show_filter', 4);
+                    $this->set('show_switch_params_and_auto', false);
 				}
 				else {
 					$this->response->statusCode(404);
