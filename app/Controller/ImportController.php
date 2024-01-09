@@ -1609,6 +1609,9 @@ class ImportController extends AppController {
 										elseif ($type == 'джип') {
 											$auto = 'cars';
 										}
+                                        elseif ($type == 'спецтранспорт') {
+                                            $auto = 'special';
+                                        }
 									}
 									$stud = 0;
 									if (isset($data->sheets[0]['cells'][$i][8])) {

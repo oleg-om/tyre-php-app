@@ -31,7 +31,7 @@ msgstr "Управляет видимостью данного слайда на
 msgid "label_link"
 msgstr "Ссылка со слайда"
 msgid "error_link_empty"
-msgstr "укажите правильную ссылку (например, http://kerchshina.com.ua/)"
+msgstr "укажите правильную ссылку (например, http://kerchshina.com/)"
 msgid "message_items_not_found"
 msgstr "Слайды не найдены"
 msgid "message_item_deleted"

@@ -7,7 +7,7 @@
 				foreach ($home_photos as $item) {
 					if (!empty($item['HomePhoto']['filename'])) {
 						echo '<li>';
-						$image = $this->Html->image($this->Backend->thumbnail(array('id' => $item['HomePhoto']['id'], 'filename' => $item['HomePhoto']['filename'], 'path' => 'slider', 'width' => 870, 'height' => 420, 'crop' => true)), array('width' => 870, 'height' => 420));
+						$image = $this->Html->image($this->Backend->thumbnail(array('id' => $item['HomePhoto']['id'], 'filename' => $item['HomePhoto']['filename'], 'path' => 'slider', 'width' => 870, 'height' => 420, 'crop' => true)));
 						if (!empty($item['HomePhoto']['link'])) {
 							echo $this->Html->link($image, $item['HomePhoto']['link'], array('escape' => false));
 						}

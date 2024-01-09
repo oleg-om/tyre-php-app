@@ -4,6 +4,7 @@
 if (empty($show_filter)) {
 	$show_filter = 0;
 }
+
 $path = 'tyres';
 $settings = Cache::read('settings', 'long');
 /*

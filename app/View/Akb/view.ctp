@@ -1,25 +1,31 @@
+<div class="product__wrapper">
+    <div class="prodBigImg"><?php
+        $sku = $brand['Brand']['title'] . ' ' . $product['BrandModel']['title'] . ' ' . $product['Product']['ah'] . 'ач ' . $product['Product']['f1'];
+        $filename = null;
+        if (!empty($product['Product']['filename'])) {
+            $filename = $product['Product']['filename'];
+            $id = $product['Product']['id'];
+            $path = 'akb';
+        }
+        elseif (!empty($product['BrandModel']['filename'])) {
+            $filename = $product['BrandModel']['filename'];
+            $id = $product['BrandModel']['id'];
+            $path = 'models';
+        }
+        if (!empty($filename)) {
+            echo $this->Html->link($this->Html->image($this->Backend->thumbnail(array('id' => $id, 'filename' => $filename, 'path' => $path, 'width' => 240, 'height' => 1000, 'crop' => false, 'folder' => false)), array('alt' => $sku)), $this->Backend->thumbnail(array('id' => $id, 'filename' => $filename, 'path' => $path, 'width' => 800, 'height' => 600, 'crop' => false, 'folder' => false)), array('escape' => false, 'class' => 'lightbox', 'title' => $sku));
+        }
+        else {
+            echo $this->Html->image('no-akb-240.jpg', array('alt' => $sku));
+        }
+        ?></div>
+    <div class="infoProdBig">
+        <div class="boxLeftInfo">
+        <h2><?php echo h($brand['Brand']['title']). ' <span>'. $product['BrandModel']['title']; ?></span></h2>
+        </div>
 <table border="0" width="100%">
 	<tr>
-		<td width="240" class="model_image"><?php
-			$sku = $brand['Brand']['title'] . ' ' . $product['BrandModel']['title'] . ' ' . $product['Product']['ah'] . 'ач ' . $product['Product']['f1'];
-			$filename = null;
-			if (!empty($product['Product']['filename'])) {
-				$filename = $product['Product']['filename'];
-				$id = $product['Product']['id'];
-				$path = 'akb';
-			}
-			elseif (!empty($product['BrandModel']['filename'])) {
-				$filename = $product['BrandModel']['filename'];
-				$id = $product['BrandModel']['id'];
-				$path = 'models';
-			}
-			if (!empty($filename)) {
-				echo $this->Html->link($this->Html->image($this->Backend->thumbnail(array('id' => $id, 'filename' => $filename, 'path' => $path, 'width' => 240, 'height' => 1000, 'crop' => false, 'folder' => false)), array('alt' => $sku)), $this->Backend->thumbnail(array('id' => $id, 'filename' => $filename, 'path' => $path, 'width' => 800, 'height' => 600, 'crop' => false, 'folder' => false)), array('escape' => false, 'class' => 'lightbox', 'title' => $sku));
-			}
-			else {
-				echo $this->Html->image('no-akb-240.jpg', array('alt' => $sku));
-			}
-		?></td>
+
 		<td>
 			<table class="brend" border="0" width="100%">
 				<tr>
@@ -64,9 +70,10 @@
 </table>
 <?php if ($this->Frontend->canShowAkbPrice($product['Product']['not_show_price'])) { ?>
 <div class="boxPriceProd akb-price-box">
+    <div class="boxPriceProd-price">
 	<em>цена:</em>
 	<span> <?php echo $this->Frontend->getPrice($product['Product']['price'], 'akb', array('after' => '</strong>', 'between' => ' <strong>')); ?> </span>
-	<div class="clear"></div>
+	</div>
 	<div class="add-to-cart"><?php echo $this->element('add_to_cart'); ?></div>
 	<div class="buy-button">
 		<a href="javascript:void(0);" class="btVer2" onclick="buy();">Купить</a>
@@ -76,6 +83,7 @@
 <?php } ?>
 <?php if (!empty($product['BrandModel']['video'])) { ?><div class="video"><?php echo $product['BrandModel']['video']; ?></div><?php } ?>
 <div class="infoBox"><?php echo $product['BrandModel']['content']; ?></div>
+</div></div>
 <script type="text/javascript">
 <!--
 $(function(){

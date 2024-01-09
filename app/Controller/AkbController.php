@@ -94,13 +94,49 @@ class AkbController extends AppController {
 		$this->redirect($url);
 	}
 	public function index() {
+        $mode = 'block';
+        if (isset($this->request->query['mode']) && in_array($this->request->query['mode'], array('block', 'list', 'table'))) {
+            $mode = $this->request->query['mode'];
+        }
+        $view = 'models';
+        if (isset($this->request->query['view'])) {
+            $view = $this->request->query['view'];
+        }
+        $this->request->data['Product']['mode'] = $mode;
+        $this->set('mode', $mode);
+
 		$this->category_id = 3;
-		/*
-		$this->loadModel('BrandModel');
-		if ($models = $this->BrandModel->find('list', array('conditions' => array('BrandModel.category_id' => 3)))) {
-			$this->BrandModel->recountProducts(array_keys($models));
-		}
-		*/
+
+
+        $this->loadModel('Brand');
+        $this->loadModel('BrandModel');
+        $this->loadModel('Product');
+        $models = $this->BrandModel->find('list', array('conditions' => array('BrandModel.brand_id' => $brand['Brand']['id'], 'BrandModel.is_active' => 1, 'BrandModel.active_products_count > 0'), 'order' => array('BrandModel.title' => 'asc'), 'fields' => array('BrandModel.id', 'BrandModel.title')));
+        $this->set('models', $models);
+
+        $this->BrandModel->virtualFields['full_title'] = 'CONCAT(Brand.title,\' \',BrandModel.title)';
+        $sort_orders = array(
+            'price_asc' => array('Product.price' => 'ASC'),
+            'price_desc' => array('Product.price' => 'DESC'),
+            'name' => array('BrandModel.full_title' => 'ASC'),
+        );
+
+        $sort = 'price_asc';
+        if (isset($this->request->query['sort']) && in_array($this->request->query['sort'], array('name', 'price_asc', 'price_desc'))) {
+            $sort = $this->request->query['sort'];
+        }
+
+        $this->Product->bindModel(
+            array(
+                'belongsTo' => array(
+                    'BrandModel' => array(
+                        'foreignKey' => 'model_id'
+                    ),
+                    'Brand'
+                )
+            ),
+            false
+        );
 		$conditions = array('Product.is_active' => 1, 'Product.category_id' => 3, 'Product.price > ' => 0, 'Product.stock_count > ' => 0);
 		if (isset($this->request->query['brand_id']) && !empty($this->request->query['brand_id'])) {
 			$brand_id = intval($this->request->query['brand_id']);
@@ -112,6 +148,7 @@ class AkbController extends AppController {
 				}
 			}
 		}
+
 		if (CONST_DISABLE_FILTERS == '0') {
 			$filter_conditions = $this->get_conditions($conditions);
 		}
@@ -138,6 +175,9 @@ class AkbController extends AppController {
 			$conditions['Product.length'] = $this->request->query['length'];
 		}
 		$this->request->data['Product'] = $this->request->query;
+
+
+
 		if (count($conditions) > 4) {
 			$this->set('filter', $this->request->query);
 			$this->paginate['limit'] = 30;
@@ -157,14 +197,24 @@ class AkbController extends AppController {
 			$this->set('products', $products);
 		}
 		else {
-			$this->loadModel('Brand');
+			//$this->loadModel('Brand');
 			$this->set('all_brands', $this->Brand->find('all', array('order' => array('Brand.title' => 'asc'), 'conditions' => array('Brand.category_id' => $this->category_id, 'Brand.is_active' => 1, 'Brand.active_products_count > 0'), 'fields' => array('Brand.id', 'Brand.filename', 'Brand.slug', 'Brand.title'))));
 		}
+        $this->paginate['order'] = $sort_orders[$sort];
+        $products = $this->paginate('Product', $conditions);
+        $this->set('products', $products);
+//        $this->set('brand', $brand);
+        $this->set('models', $models);
+        $this->set('view', $view);
+        $this->set('sort', $sort);
+//        $this->set('brand_models', $models);
+//        $this->set('brand_id', $brand['Brand']['id']);
 		$breadcrumbs = array();
 		$breadcrumbs[] = array(
 			'url' => null,
 			'title' => 'Аккумуляторы'
 		);
+//        $this->_filter_params($filter_conditions);
 		$meta_title = 'Купить аккумуляторы Керчь, Феодосия Шинный центр Авто Дом';
 		$meta_keywords = 'Купить, аккумуляторы, Керчь, Феодосия, Шинный центр Авто Дом';
 		$meta_description = 'Шинный центр Авто Дом предлагает купить автомобильные аккумуляторы в Керчи и Феодосии по лучшим ценам, у нас бесплатная доставка и сервисное обслуживание.';
@@ -175,13 +225,33 @@ class AkbController extends AppController {
 		$this->set('active_menu', 'akb');
 		$this->set('additional_js', array('lightbox'));
 		$this->set('additional_css', array('lightbox'));
+        $this->set('show_filter', 3);
 	}
 	public function brand($slug) {
+        $mode = 'block';
+        if (isset($this->request->query['mode']) && in_array($this->request->query['mode'], array('block', 'table'))) {
+            $mode = $this->request->query['mode'];
+        }
+        $this->set('mode', $mode);
+
 		$this->category_id = 3;
 		$this->loadModel('Brand');
+        $this->loadModel('BrandModel');
+        $this->loadModel('Product');
+
+        $sort = 'price_asc';
+        if (isset($this->request->query['sort']) && in_array($this->request->query['sort'], array('name', 'price_asc', 'price_desc'))) {
+            $sort = $this->request->query['sort'];
+        }
+
 		if ($brand = $this->Brand->find('first', array('conditions' => array('Brand.is_active' => 1, 'Brand.category_id' => 3, 'Brand.slug' => $slug)))) {
 			if (isset($this->request->query['brand_id'])) {
 				$brand_id = intval($this->request->query['brand_id']);
+                $sort_orders = array(
+                    'price_asc' => array('Product.price' => 'ASC'),
+                    'price_desc' => array('Product.price' => 'DESC'),
+                    'name' => array('Product.title' => 'ASC'),
+                );
 				if ($brand['Brand']['id'] != $brand_id) {
 					if ($brand_id == 0) {
 						$filter = $this->request->query;
@@ -204,8 +274,12 @@ class AkbController extends AppController {
 			else {
 				$filter_conditions = $conditions;
 			}
+            $this->_filter_params($filter_conditions);
 			$this->_filter_akb_params($filter_conditions);
-			$this->loadModel('BrandModel');
+
+
+
+
 			$models = $this->BrandModel->find('list', array('conditions' => array('BrandModel.brand_id' => $brand['Brand']['id'], 'BrandModel.is_active' => 1, 'BrandModel.active_products_count > 0'), 'order' => array('BrandModel.title' => 'asc'), 'fields' => array('BrandModel.id', 'BrandModel.title')));
 			$model_id = null;
 			if (isset($this->request->query['model_id'])) {
@@ -237,6 +311,7 @@ class AkbController extends AppController {
 				$conditions['Product.length'] = $this->request->query['length'];
 			}
 			$this->request->data['Product'] = $this->request->query;
+            $this->request->data['Product']['mode'] = $mode;
 			$this->request->data['Product']['brand_id'] = $brand['Brand']['id'];
 			$this->set('models', $models);
 			$this->set('brand_models', $models);
@@ -272,7 +347,8 @@ class AkbController extends AppController {
 			}
 			$this->set('breadcrumbs', $breadcrumbs);
 			$this->paginate['limit'] = 30;
-			$this->paginate['order'] = array('Product.price' => 'asc');
+
+            $this->paginate['order'] = $sort_orders[$sort];
 			$this->Product->bindModel(
 				array(
 					'belongsTo' => array(
@@ -295,6 +371,7 @@ class AkbController extends AppController {
 			$this->setMeta('keywords', $meta_keywords);
 			$this->setMeta('description', $meta_description);
 			$this->set('brand', $brand);
+            $this->set('sort', $sort);
 			$this->set('active_menu', 'akb');
 			$this->set('additional_js', array('lightbox'));
 			$this->set('additional_css', array('lightbox'));
@@ -354,6 +431,7 @@ class AkbController extends AppController {
 				$this->set('brand', $brand);
 				$this->set('product', $product);
 				$this->set('active_menu', 'akb');
+                $this->set('show_left_menu', false);
 			}
 			else {
 				$this->response->statusCode(404);

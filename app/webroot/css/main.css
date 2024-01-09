@@ -576,12 +576,16 @@ input {
   width: 115px !important;
 }
 #CarViewForm .item.item5 {
-  margin-right: 20px;
 }
+/*.sel-style1 {*/
+/*  appearance: none;*/
+/*  -webkit-appearance: none;*/
+/*}*/
 .filter-group .item .item-inner .inp {
   float: left;
 }
 .sel-style1 {
+  margin: 50px;
   padding: 4px;
   width: 219px;
 }

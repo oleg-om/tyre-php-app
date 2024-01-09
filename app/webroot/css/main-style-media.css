@@ -1,0 +1,301 @@
+/*--breakpoint-xs: 0;*/
+/*--breakpoint-sm: 576px;*/
+/*--breakpoint-md: 768px;*/
+/*--breakpoint-lg: 992px;*/
+/*--breakpoint-xl: 1200px;*/
+/*--breakpoint-xxl: 1400px;*/
+
+/*--container-sm: 100%;*/
+/*--container-md: 720px;*/
+/*--container-lg: 960px;*/
+/*--container-xl: 1140px;*/
+/*--container-xxl: 1320px;*/
+
+@media screen and (min-width: 550px) {
+    .boxList {
+        width: 42%;
+    }
+    .selection .item {
+        width: 45%;
+    }
+    .jcarousel-wrapper {
+        width: 450px;
+    }
+    .jcarousel li {
+        width: 450px !important;
+    }
+    .cart-prod {
+        flex-direction: row;
+
+    }
+    .cart-prod.total-cart {
+        justify-content: space-between;
+    }
+}
+
+@media screen and (min-width: 768px) {
+    .wrap {
+        max-width: var(--container-md)
+    }
+    #header #nav {
+        max-width: var(--container-md)
+    }
+    .boxList {
+        width: 27%;
+    }
+    .width-disk {
+        justify-content: flex-start;
+    }
+    .selection .item {
+        width: 30%;
+    }
+    .jcarousel-wrapper {
+        width: 580px;
+    }
+    .jcarousel li {
+        width: 580px !important;
+    }
+}
+
+@media screen and (min-width: 992px) {
+    .wrap {
+        max-width: var(--container-lg)
+    }
+    #header #nav {
+        max-width: var(--container-lg)
+    }
+    .content {
+        flex-direction: row;
+    }
+    #header .cart {
+        padding-top: 25px;
+    }
+    #header .cart button {
+        padding: 10px 20px 8px 55px;
+        width: auto;
+        height: auto;
+        background-position: inherit;
+    }
+    #header .cart button span {
+        display: block;
+    }
+    #header .logo {
+        margin-left: -42px;
+    }
+    #header .logo .logo__years {
+        bottom: -6px;
+        top: auto;
+    }
+    #header .tyres {
+        min-height: 105px;
+    }
+    .toggle__menu {
+        display: flex;
+    }
+    #header .info-group {
+        display: block;
+    }
+    .header-toggle {
+        display: none;
+    }
+    .header-wrap {
+        align-items: flex-start;
+    }
+    #header .logo {
+        padding-top: 18px;
+    }
+    .jcarousel-wrapper {
+        width: 680px;
+    }
+    .jcarousel li {
+        width: 680px !important;
+    }
+    .left-nav {
+        position: sticky;
+        top: 0;
+        bottom: 0;
+        width: 200px;
+    }
+    .filter-group .item {
+        display: block;
+    }
+    .left-nav .left-nav__button {
+        display: none;
+    }
+    .left-nav .filter-group {
+        display: block;
+    }
+    .left-nav .title {
+        margin-bottom: 5px;
+    }
+    .left-nav {
+        padding-bottom: 10px;
+    }
+    .bt-style1 {
+        margin-top: 10px;
+    }
+    .filter-group .item .sel-style1 {
+        height: 30px;
+    }
+    .filter-group .item.item3.col-l .item-inner, .filter-group .item.item3.col-r .item-inner {
+        border: none;
+        background: none;
+        height: auto;
+        padding: 0;
+        margin-bottom: 5px;
+    }
+    .filter-group .item.item3.col-r .item-inner__label {
+        display: block;
+    }
+    .bt-style1 {
+        margin-top: 0;
+    }
+    .desc-table, .desc-col {
+        display: table-cell;
+    }
+    .product__wrapper {
+        flex-direction: row;
+
+        .infoProdBig {
+            margin-left: 50px;
+        }
+        .prodBigImg {
+            display: flex;
+            align-self: flex-start;
+            min-width: 345px;
+            height: 345px;
+        }
+    }
+    .prodBigImg img {
+        height: 100%;
+    }
+    .boxRightInfo {
+        flex-direction: row;
+        gap: 10px;
+        justify-content: space-between;
+    }
+    .boxList2.boxList2-new {
+        flex-direction: row;
+    }
+    .infoList2 {
+        margin-top: 0;
+        padding-left: 10px;
+    }
+    .filter .table {
+        display: block;
+    }
+    .pager-filter .filter {
+        display: block;
+    }
+    .filter-prod #switch {
+        flex-direction: row;
+    }
+    .modelsinfo .sortblock {
+        flex-direction: row;
+    }
+    .option-cart {
+        flex-direction: row;
+        justify-content: space-between;
+    }
+    .option-cart .checkout {
+        padding-top: 0;
+    }
+    .cart-prod.total-cart {
+        justify-content: flex-end;
+    }
+    .cart-prod .desc table tbody tr {
+        flex-direction: row;
+        align-items: center;
+        gap: 10px;
+    }
+    .bt-style1-disks {
+        margin-top: 15px;
+    }
+    .form-wrapper {
+        flex-flow: row;
+        flex-direction: row;
+    }
+    .popup.order-page {
+        margin: 0;
+        margin-bottom: auto;
+    }
+    .select-namber {
+        display: flex;
+        align-items: center;
+    }
+    .checkout-box {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+    }
+    .left-nav__sticky {
+        position: sticky;
+        top: 0;
+        bottom: 0;
+    }
+    .item-group {
+        flex-direction: column;
+        gap: 0;
+    }
+    .sel-style3 {
+        min-height: 20px;
+    }
+}
+
+@media screen and (min-width: 1200px) {
+    .wrap {
+        max-width: var(--container-xl)
+    }
+    #header #nav {
+        max-width: var(--container-xl)
+    }
+    #header .logo {
+        padding-top: 5px;
+    }
+    #header .logo a img {
+        width: auto;
+    }
+    #header .tyres {
+        background-image: url(../img/tyres.png);
+    }
+    /*#header .tyres.winter-season {*/
+    /*    background-image: url(../img/tyres_winter.png);*/
+    /*}*/
+    .boxList {
+        width: 20.333%;
+    }
+    .selection .item {
+        width: 22%;
+    }
+    .jcarousel-wrapper {
+        width: 860px;
+    }
+    .jcarousel li {
+        width: 860px !important;
+    }
+    #header .info-group {
+        display: block;
+        margin-right: auto;
+    }
+}
+
+/*@media screen and (min-width: 1320px) {*/
+/*    .wrap {*/
+/*        max-width: var(--container-xxl)*/
+/*    }*/
+/*    #header #nav {*/
+/*        max-width: var(--container-xxl)*/
+/*    }*/
+/*    .boxList {*/
+/*        width: 16%;*/
+/*    }*/
+/*    .selection .item {*/
+/*        width: 18%;*/
+/*    }*/
+/*    .jcarousel-wrapper {*/
+/*        width: 1048px;*/
+/*    }*/
+/*    .jcarousel li {*/
+/*        width: 1048px !important;*/
+/*    }*/
+/*}*/

@@ -1,4 +1,5 @@
 <?php echo $this->element('currency', array('class' => 'bpad')); ?>
+<div class="product__wrapper">
 <div class="prodBigImg">
 	<?php
 		$image_small = $this->Html->image('no-tyre-big.jpg');
@@ -53,17 +54,17 @@
 		</ul>
 		<table cellpadding="0" cellspacing="0">
 			<col width="100">
-			<col width="170">
-			<col width="25">
-			<col width="80">
+			<col width="170" class="desc-col">
+			<col width="25" class="desc-col">
+			<col width="80" class="desc-col">
 			<col width="90">
 			<col width="100">
 			<thead>
 				<tr>
 					<th>Типоразмер</th>
-					<th>Индекс скорости / нагрузки</th>
-					<th></th>
-					<th>Количество</th>
+					<th class="desc-table">Индекс скорости / нагрузки</th>
+					<th class="desc-table"></th>
+					<th class="desc-table">Количество</th>
 					<th>Цена</th>
 					<th></th>
 				</tr>
@@ -80,9 +81,9 @@
 			?>
 			<tr class="body r<?php echo $product['size3']; ?> <?php echo $class; ?>">
 				<td><?php echo $product['size1']; ?> / <?php echo $product['size2']; ?> R<?php echo $product['size3']; ?></td>
-				<td><?php echo h($product['f1'] . $product['f2']) . ' &ndash; ' .  $this->Frontend->getFF($product['f1'], $product['f2']); ?></td>
-				<td><?php echo $product['stud'] ? '<img src="/img/studded.png" alt="шипованная" />' : ''; ?></td>
-				<td><?php echo $this->Frontend->getStockCount($product['stock_count']); ?> шт.</td>
+				<td class="desc-table"><?php echo h($product['f1'] . $product['f2']) . ' &ndash; ' .  $this->Frontend->getFF($product['f1'], $product['f2']); ?></td>
+				<td class="desc-table"><?php echo $product['stud'] ? '<img src="/img/studded.png" alt="шипованная" />' : ''; ?></td>
+				<td class="desc-table"><?php echo $this->Frontend->getStockCount($product['stock_count']); ?> шт.</td>
 				<td><strong><?php
 					if ($this->Frontend->canShowTyrePrice($product['auto'], $product['not_show_price'])) {
 						echo $this->Frontend->getPrice($product['price'], 'tyres');
@@ -105,4 +106,5 @@
 		<?php } ?>
 		<?php if (!empty($product['BrandModel']['video'])) { ?><div class="video"><?php echo $product['BrandModel']['video']; ?></div><?php } ?>
 	</div>
+</div>
 </div>

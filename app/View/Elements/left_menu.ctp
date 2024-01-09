@@ -1,5 +1,32 @@
-<div class="left-nav">
-	<div class="title">Фильтр по параметрам:</div>
+<div class="left-nav left-nav-open" id="left-nav-filter">
+    <div class="left-nav__sticky">
+	<div class="title">
+        <span class="left-nav__title">
+<?php if ($path == 'tyres'): ?>
+
+Подбор шин по параметрам:
+<?php else: ?>
+    Фильтр по параметрам:
+<?php endif ?>
+        </span>
+        <a href="javascript:void(0);" onclick="switchFilter();" class="left-nav__button">
+            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="#ffffff"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M7 10L12 15L17 10" stroke="#ffffff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path> </g></svg>
+        </a>
+    </div>
+
+    <script>
+        var openFilter = true;
+        function switchFilter() {
+            if (!openFilter) {
+                document.getElementById("left-nav-filter").className = "left-nav left-nav-open";
+                openFilter = true
+            } else {
+                document.getElementById("left-nav-filter").className = "left-nav";
+                openFilter = false
+            }
+        }
+    </script>
+
 <?php
  //print_r($this->request->data['Product']);
 
@@ -46,7 +73,6 @@ $settings = Cache::read('settings', 'long');
 		echo $this->Form->create('Product', array('type' => 'get', 'id' => 'filter-form', 'url' => $url));
 		?>
 	<div class="item">
-
 		<div class="item-inner">
 			<label class="name" for="ProductAuto">Тип авто:</label>
 			<div class="inp"><?php
@@ -67,6 +93,7 @@ $settings = Cache::read('settings', 'long');
 			?></div>
 			<div class="clear"></div>
 		</div>
+        <div class="item-group">
 		<div class="item-inner">
 			<label class="name">Ширина:</label>
 			<div class="inp"><?php
@@ -87,8 +114,9 @@ $settings = Cache::read('settings', 'long');
 				echo $this->Form->input('size3', array('type' => 'select', 'label' => false, 'options' => $tyre_size3, 'empty' => array('' => 'Все'), 'div' => false, 'class' => 'sel-style1 filter-select'));
 			?></div>
 			<div class="clear"></div>
-		</div>	
-		<div class="item-inner">
+		</div>
+        </div>
+        <div class="item-inner">
 			<label class="name" for="ProductSeason">Сезон:</label>
 			<div class="inp"><?php 
 		
@@ -106,6 +134,7 @@ $settings = Cache::read('settings', 'long');
 	</div>
 	<div class="item item2">
 		<div class="item item3 col-l">
+            <div class="item-group">
 			<div class="item-inner">
 				<?php
 					$disabled = '';
@@ -128,12 +157,12 @@ $settings = Cache::read('settings', 'long');
 				<label class="checkbox-name" for="ProductInStock4">более 4</label>
 				<div class="clear"></div>
 			</div>
+            </div>
 		</div>
 		<div class="item item3 col-r">
-
+            <label class="item-inner__label">Наличие:</label>
+            <div class="item-group">
 			<div class="item-inner">
-				<label class="name">Наличие:</label>
-				<div class="clear"></div>
 				<?php
 				//print_r($select['PRODUCTINSTOCK']);
 					
@@ -174,7 +203,7 @@ $settings = Cache::read('settings', 'long');
 				?>
 				<label class="checkbox-name" for="ProductInStock0">под заказ</label>
 				<div class="clear"></div>
-			</div>
+			</div></div>
 		</div>	
 			<div class="item">
 			<div class="item-inner">
@@ -221,13 +250,14 @@ $settings = Cache::read('settings', 'long');
 		</div>
 	</div>
 	<div class="item item2">
-		<div class="item-inner">
+		<div class="item-inner item-inner-et">
 			<label class="name" for="ProductEtFrom">ET</label>
-			<div class="inp">
+			<div class="inp inp-et">
 				<?php echo $this->Form->input('et_from', array('type' => 'text', 'label' => false, 'div' => false, 'class' => 'sel-style3 filter-text')); ?>- <?php echo $this->Form->input('et_to', array('type' => 'text', 'label' => false, 'div' => false, 'class' => 'sel-style3 filter-text')); ?>
 			</div>
 			<div class="clear"></div>
 		</div>
+        <div class="item-group">
 		<div class="item-inner">
 			<label class="name" for="ProductSize2">PCD:</label>
 			<div class="inp"><?php
@@ -241,7 +271,7 @@ $settings = Cache::read('settings', 'long');
 				echo $this->Form->input('hub', array('type' => 'select', 'label' => false, 'options' => $disk_hub, 'empty' => array('' => 'Все'), 'div' => false, 'class' => 'sel-style1 filter-select'));
 			?></div>
 			<div class="clear"></div>
-		</div>
+        </div></div>
 		<div class="item-inner">
 			<label class="name" for="ProductBrandId">Производитель:</label>
 			<div class="inp"><?php
@@ -250,7 +280,7 @@ $settings = Cache::read('settings', 'long');
 			<div class="clear"></div>
 		</div>		
 	</div>
-	<div class="item item3">
+	<div class="item item3 col-r">
 		<div class="item-inner">
 			<?php
 				$disabled = '';
@@ -262,9 +292,10 @@ $settings = Cache::read('settings', 'long');
 			<label class="checkbox-name" for="ProductInStock4">более 4</label>
 			<div class="clear"></div>
 		</div>
-		<div class="item-inner">
-				<label class="name">Наличие:</label>
-				<div class="clear"></div>
+        <label class="item-inner__label">Наличие:</label>
+        <div class="item-group">
+        <div class="item-inner">
+
 			<?php
 			
 			$attr=array('label' => false,'class' => 'checkbox','hiddenField' => false, 'checked' => true);
@@ -308,9 +339,10 @@ $settings = Cache::read('settings', 'long');
 			<label class="checkbox-name" for="ProductInStock0">под заказ</label>
 			<div class="clear"></div>
 		</div>
+        </div>
 	</div>
 	<div class="item">
-		<button class="bt-style1">ПОИСК</button>
+		<button class="bt-style1 bt-style1-disks">ПОИСК</button>
 	</div>
 	<div class="clear"></div>
 	</form>
@@ -407,7 +439,7 @@ $settings = Cache::read('settings', 'long');
 		echo $this->Form->create('Product', array('type' => 'get', 'id' => 'filter-form', 'url' => $url));
 	?>
 	<div class="item">
-
+        <div class="item-group">
 		<div class="item-inner">
 			<label class="name" for="ProductAh">Ah:</label>
 			<div class="inp"><?php
@@ -422,6 +454,7 @@ $settings = Cache::read('settings', 'long');
 			?></div>
 			<div class="clear"></div>
 		</div>
+        </div>
 		<div class="item-inner">
 			<label class="name" for="Productf1">Тип:</label>
 			<div class="inp"><?php
@@ -431,6 +464,7 @@ $settings = Cache::read('settings', 'long');
 		</div>
 	</div>
 	<div class="item item2">
+        <div class="item-group">
 		<div class="item-inner">
 			<label class="name" for="ProductWidth">Ширина:</label>
 			<div class="inp"><?php
@@ -452,6 +486,7 @@ $settings = Cache::read('settings', 'long');
 			?></div>
 			<div class="clear"></div>
 		</div>
+        </div>
 		<div class="item-inner">
 			<label class="name" for="ProductBrandId">Производитель:</label>
 			<div class="inp"><?php
@@ -777,4 +812,4 @@ function serializeArray(form) {
 }
 //-->
 </script>
-</div>
+</div></div>

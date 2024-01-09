@@ -188,8 +188,21 @@ class AppController extends Controller {
 			$this->set('meta_keywords', $meta_keywords);
 			$this->set('meta_description', $meta_description);
 			$this->set('last_models', $this->Session->read('last_models'));
+            $this->getCurrentSeason();
 		}
 	}
+
+    public function getCurrentSeason() {
+        $month = date('m');
+
+        if($month > 3 && $month < 11){
+            $season = 'summer';
+        } else {
+            $season = 'winter';
+        }
+        $this->set('current_season', $season);
+        return $season;
+    }
 	private function setSettings() {
 		$settings = Cache::read('settings', 'long');
 		if (empty($settings)) {

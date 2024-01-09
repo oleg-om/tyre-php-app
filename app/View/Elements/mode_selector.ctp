@@ -1,15 +1,25 @@
 <?php
 if (!isset($mode)) {
-	$mode = 'list';
+	$mode = 'block';
 }
 if (!isset($tyres_switch)) {
 	$tyres_switch = false;
+}
+if (!isset($akb_switch)) {
+    $akb_switch = false;
 }
 $modes = array(
 	'block' => '<img src="/img/block.gif" alt="блоками" />',
 	'list' => '<img src="/img/list.gif" alt="списком" />',
 	'table' => '<img src="/img/table.gif" alt="таблицей" />'
 );
+if ($akb_switch == true) {
+    $modes = array(
+        'list' => '<span class="mode__brands">Бренды</span>',
+        'block' => '<img src="/img/block.gif" alt="блоками" />',
+        'table' => '<img src="/img/table.gif" alt="таблицей" />'
+    );
+}
 $seasons = array(
 	'summer' => 'Летние',
 	'winter' => 'Зимние',
@@ -67,7 +77,7 @@ foreach ($models as $item) {
 	
 	 
  
-<?php echo $tyres_switch ? ' filter-prod2' : ''; ?>
+
 <div class="filter-prod<?php echo $tyres_switch ? ' filter-prod2' : ''; ?>">
 	<div class="float-l">
 		<?php if ($tyres_switch) { ?>
@@ -93,11 +103,20 @@ foreach ($models as $item) {
 			<div class="clear"></div>
 		<?php } else { ?>
 		<?php
-			$sort_fields = array(
-				'name' => 'по названию',
-				'price_asc' => 'по цене',
-				//'price_desc' => 'от дорогих к дешевым',
-			);
+            $sort_fields = array(
+                'name' => 'по названию',
+                'price_asc' => 'по цене',
+//				'price_desc' => 'от дорогих к дешевым',
+            );
+
+            if ($popular_sort == true && CONST_ENABLE_POPULAR_SORT == '1') {
+                $sort_fields = array(
+                    'popular' => 'по популярности',
+                    'price_asc' => 'по цене',
+                    'name' => 'по названию',
+                );
+            }
+
 			if (!isset($sort)) {
 				$sort = 'price_asc';
 			}
@@ -133,9 +152,9 @@ foreach ($models as $item) {
 			$page = $this->params['named']['page'];
 		}
 		foreach ($modes as $key => $value) {
-			$class = null;
+			$class = 'mode-switch';
 			if ($mode == $key) {
-				$class = 'activ';
+				$class = 'mode-switch-activ';
 			}
 			$mode_filter = $url['?'];
 			$mode_filter['mode'] = $key;
@@ -144,7 +163,7 @@ foreach ($models as $item) {
 			if (!empty($page)) {
 				$mode_url['page'] = $page;
 			}
-			echo $this->Html->link($value, $mode_url, array('class' => $key, 'escape' => false));
+			echo $this->Html->link($value, $mode_url, array('class' => $key . ' ' . $class, 'escape' => false));
 		}
 	?></div>
 	<div class="clear"></div>
@@ -182,7 +201,8 @@ foreach ($models as $item) {
 			$sort_fields = array(
 				'name' => 'по названию',
 				'price_asc' => 'по цене',
-				//'price_desc' => 'от дорогих к дешевым',
+				'price_desc' => 'от дорогих к дешевым',
+                'popular' => 'по популярности',
 			);
 			if (!isset($sort)) {
 				$sort = 'price_asc';
@@ -217,7 +237,8 @@ foreach ($models as $item) {
 <script type="text/javascript">
 <!--
 $(function(){
-	show_season('<?php echo $active; ?>');
+	//show_season('<?php //echo $active; ?>//');
+    show_season('yes');
 });
 function show_season(s) {
 	$('.season-tab').hide();

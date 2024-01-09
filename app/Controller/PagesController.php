@@ -20,9 +20,14 @@ class PagesController extends AppController {
 			$this->set('active_menu', 'home');
             $this->set('show_left_menu', true);
 		}
-		$this->set('additional_css', array('jcarousel.basic.css'));
+		$this->set('additional_css', array('jcarousel.responsive.css'));
 		$this->set('additional_js', array('jquery.jcarousel.min.js'));
-	}
+
+//        $this->loadModel('Brand');
+//        $brands = $this->Brand->find('all', array('order' => array('Brand.title' => 'asc'), 'conditions' => array('Brand.category_id' => 1, 'Brand.is_active' => 1, 'Brand.active_products_count > 0'), 'fields' => array('Brand.id', 'Brand.filename', 'Brand.slug', 'Brand.title')));
+//        $this->set('all_brands', $brands);
+
+    }
 	public function city($slug) {
 		$this->loadModel('DeliveryCity');
 		$this->DeliveryCity->bindModel(
@@ -347,6 +352,7 @@ class PagesController extends AppController {
 		$this->set('seasons', $this->Product->seasons);
 		$this->set('additional_js', array('lightbox', 'functions'));
 		$this->set('additional_css', array('lightbox'));
+
 	}
 	
 	public function test(){
