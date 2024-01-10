@@ -77,6 +77,7 @@ input {
 #header .logo {
   padding-top: 5px;
   position: relative;
+  display: none;
 }
 #header .logo .logo__years {
   position: absolute;
@@ -91,14 +92,20 @@ input {
   width: 200px;
 }
 #header .info-group {
+  padding: 10px;
+  display: flex;
+  align-items: center;
+  white-space: nowrap;
+  width: 100%;
+  justify-content: center;
+}
+#header .info-group .header-griffon {
   display: none;
-  padding-left: 25px;
-  padding-top: 52px;
 }
 #header .info-group .desc {
   float: left;
   font-family: "Open Sans Condensed", sans-serif;
-  font-size: 46px;
+  font-size: 32px;
   text-shadow: 1px 1px 0 #296110;
   font-weight: bold;
   color: #fff;
@@ -107,13 +114,14 @@ input {
   flex-direction: column;
 }
 #header .info-group .desc .desc-description {
-  font-size: 32px;
+  font-size: 22px;
   font-weight: 400;
   text-transform: inherit;
   line-height: 20px;
-  padding-top: 17px;
+  padding-top: 6px;
 }
 #header .info-group .info {
+  display: none;
   float: left;
   border-left: 1px solid #bcdaa3;
   padding-left: 25px;
@@ -122,10 +130,14 @@ input {
   color: #fff;
   text-shadow: 1px 1px 0 #486b2b;
   line-height: 22px;
-  padding-bottom: 3px;
-  margin-top: -7px;
 }
 
+#header .info-group .info table {
+  text-align: left;
+}
+#header .info-group .info table tbody tr th {
+
+}
 #header .cart button {
   background: url("../img/cart.png") no-repeat scroll 10px 6px;
   border: 0;
@@ -183,6 +195,9 @@ input {
   display: flex;
   justify-content: space-between;
   align-items: center;
+}
+.header-background {
+  display: none;
 }
 .header-toggle {
   display: flex;
@@ -319,7 +334,7 @@ input {
   width: 30px;
   height: 30px;
   border-radius: 3px;
-  display: flex;
+  display: block;
   justify-content: center;
   align-items: center;
 }

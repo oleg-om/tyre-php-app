@@ -23,7 +23,7 @@
             function backToYear() {
                 close_popup();
                 open_popup({
-                    url: `/selection-modal/<?php echo $brand_slug;?>/<?php echo $model_slug;?>/<?php echo $year ?>;?>`,
+                    url: `/selection-modal/<?php echo $brand_slug;?>/<?php echo $model_slug;?>`,
                     type: 'post',
                     size: 'lg'
                 });

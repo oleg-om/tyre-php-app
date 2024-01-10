@@ -1,5 +1,5 @@
 <div class="title">Выберите год:<a href="javascript:void(0);" onclick="close_popup();" class="close">закрыть</a></div>
-<a class="popup__back" href="javascript:void(0);" onclick="backToModel();">Назад</a>
+<a class="popup__back" href="javascript:void(0);" onclick="backToModelModal();">Назад</a>
 <div class="popup__content">
     <div class="selection__modal">
         <?php
@@ -40,10 +40,10 @@
                 });
             }
 
-            function backToModel() {
+            function backToModelModal() {
                 close_popup();
                 open_popup({
-                    url: `/selection-modal/<?php echo $brand_id;?>/<?php echo $model_id;?>`,
+                    url: `/selection-modal/<?php echo $brand_id;?>`,
                     type: 'post',
                     size: 'lg'
                 });

@@ -45,10 +45,10 @@ class SelectionModalController extends AppController {
         $this->set('model_id', $model_slug);
     }
 
-    public function car_modifications($brand_slug, $model_slug, $year) {
+    public function car_modifications($brand_id, $model_id, $year) {
         $data = array(array('0' => '...'));
-        $brand_id = intval($brand_slug);
-        $model_id = intval($model_slug);
+        $brand_id = intval($brand_id);
+        $model_id = intval($model_id);
         $year = intval($year);
         $this->loadModel('Car');
         $this->Car->bindModel(
@@ -68,8 +68,8 @@ class SelectionModalController extends AppController {
             }
         }
         $this->set('modifications', $data);
-        $this->set('brand_slug', $brand_slug);
-        $this->set('model_slug', $model_slug);
+        $this->set('brand_slug', $brand_id);
+        $this->set('model_slug', $model_id);
         $this->set('year', $year);
     }
 }

@@ -458,7 +458,7 @@ class HtmlHelper extends AppHelper {
 		if (strpos($path, '//') !== false) {
 			$url = $path;
 		} else {
-			$url = $this->assetUrl($path, $options + array('pathPrefix' => Configure::read('App.cssBaseUrl'), 'ext' => '.css'));
+			$url = $this->assetUrl($path, $options + array('pathPrefix' => Configure::read('App.cssBaseUrl'), 'ext' => '.css?hash=20240109'));
 			$options = array_diff_key($options, array('fullBase' => null, 'pathPrefix' => null));
 
 			if (Configure::read('Asset.filter.css')) {

@@ -10,7 +10,14 @@
 /*--container-lg: 960px;*/
 /*--container-xl: 1140px;*/
 /*--container-xxl: 1320px;*/
-
+@media screen and (min-width: 350px) {
+    #header .info-group .header-griffon {
+        display: flex;
+        width: 65px;
+        height: 65px;
+        padding-right: 10px;
+    }
+}
 @media screen and (min-width: 550px) {
     .boxList {
         width: 42%;
@@ -92,16 +99,30 @@
     #header .tyres {
         min-height: 105px;
     }
+    #header .info-group .info {
+        display: block;
+    }
+    #header .info-group .info table tbody tr th {
+        min-width: 270px;
+        font-weight: 400;
+    }
+    #header .info-group .header-griffon {
+        height: 75px;
+        width: 75px;
+    }
     .toggle__menu {
         display: flex;
     }
     #header .info-group {
-        display: block;
+        display: flex;
+        padding: 0;
+        width: auto;
     }
     .header-toggle {
         display: none;
     }
     .header-wrap {
+        padding-top: 10px;
         align-items: flex-start;
     }
     #header .logo {
@@ -287,25 +308,26 @@
 
     }
     .header-background {
+        display: block;
         position: absolute;
-        right: -40px;
+        right: -32px;
         bottom: 0;
-        background-image: url(../img/tyres.png);
-        background-repeat: no-repeat;
-        height: 100%;
-        width: 100%;
-        background-position: right bottom;
         z-index: -1;
+        height: 109px;
+        width: 337px;
     }
     .header-wrapper {
         position: relative;
         z-index: 1;
     }
+    .header-wrap {
+        padding-top: 25px;
+    }
     /*#header .tyres.winter-season {*/
     /*    background-image: url(../img/tyres_winter.png);*/
     /*}*/
     .boxList {
-        width: 19.9%;
+        width: 20.333%;
     }
     .selection .item {
         width: 22%;
@@ -316,9 +338,20 @@
     .jcarousel li {
         width: 780px !important;
     }
-    #header .info-group {
-        display: block;
-        margin-right: auto;
+    #header .info-group .desc {
+        font-size: 46px;
+    }
+    #header .info-group .desc .desc-description {
+        font-size: 32px;
+        padding-top: 17px;
+    }
+    #header .info-group .header-griffon {
+        height: 95px;
+        width: 95px;
+        padding-right: 20px;
+    }
+    #header .cart {
+        padding-top: 0;
     }
 }
 
@@ -330,7 +363,8 @@
         max-width: var(--container-xxl)
     }
     #header .info-group {
-        padding-left: 40px;
+       margin-left: -20px;
+        margin-top: auto;
     }
     .left-nav {
         width: 305px;
@@ -341,5 +375,48 @@
     }
     .jcarousel li {
         width: 840px !important;
+    }
+    #header .info-group .info table tbody tr th {
+        min-width: 215px;
+        padding: 0;
+    }
+    #header .info-group .info table tbody tr td {
+        padding: 0;
+    }
+    #header .info-group .header-griffon {
+        width: 115px;
+        height: 115px;
+    }
+    .header-wrap {
+        padding-bottom: 5px;
+    }
+    #header .logos {
+        display: flex;
+        flex-direction: column;
+        margin-top: -15px;
+        padding-left: 10px;
+    }
+    #header .logo {
+        display: flex;
+        padding-top: 0;
+    }
+    #header .logo img {
+        object-fit: contain;
+    }
+    #header .logo__vianor img {
+        height: 40px;
+        width: 173px;
+        padding-top: 10px;
+        margin-left: -45px;
+    }
+    #header .logo__autodom img {
+        height: 80px;
+    }
+    .header-background {
+        right: -68px;
+    }
+    #header .logo .logo__years {
+        bottom: -12px;
+        font-size: 10px;
     }
 }

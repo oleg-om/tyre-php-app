@@ -624,6 +624,8 @@ $settings = Cache::read('settings', 'long');
                         type: 'post',
                         size: 'lg'
                     });
+                } else {
+                    openSelectionBrandModal();
                 }
             }
             function openSelectionYearModal() {
@@ -633,6 +635,8 @@ $settings = Cache::read('settings', 'long');
                         type: 'post',
                         size: 'lg'
                     });
+                } else {
+                    openSelectionModelModal();
                 }
             }
             function openSelectionModModal() {
@@ -642,6 +646,8 @@ $settings = Cache::read('settings', 'long');
                         type: 'post',
                         size: 'lg'
                     });
+                } else {
+                    openSelectionYearModal();
                 }
             }
         </script>

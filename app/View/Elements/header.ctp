@@ -17,14 +17,19 @@ if (empty($current_season)) {
                         <rect y="60" width="100" height="10" fill="#FFFFFF"></rect>
                     </svg>
                 </a>
-			<div class="logo"><a href="/"><img src="/img/kerchshina.png" alt="Шинный центр" /></a><span class="logo__years">20 лет</span></div>
+
 			<div class="info-group">
+                <a class="header-griffon" href="/"><img src="/img/griffon-sm.webp" alt="Керчьшина" /></a>
                 <div class="desc"><span class="desc-title">КерчьШИНА</span><span class="desc-description">Сеть шинных центров</span></div>
 				<div class="info">
 					<?php echo CONST_ADDRESS; ?><br/>
 					<?php echo CONST_PHONE; ?>
 				</div>
 			</div>
+                <div class="logos">
+                    <div class="logo logo__autodom"><img src="/img/kerchshina.png" alt="Шинный центр" /><span class="logo__years">25 лет</span></div>
+                    <div class="logo logo__vianor"><img src="/img/vianor-logo.webp" alt="Vianor" /></div>
+                </div>
 			<div class="cart"><button onclick="window.location='/checkout';"><?php if (isset($cart) && !empty($cart['items'])) { ?><em><?php echo count($cart['items']); ?></em><?php } ?><span>Корзина</span></button></div>
             </div>
 			<div id="nav" class="toggle__menu">
@@ -36,11 +41,11 @@ if (empty($current_season)) {
 					<li<?php if ($active_menu == 'sales') { ?> class="activ"<?php } ?>><a href="/page-sales">Масла</a></li>
 					<li<?php if ($active_menu == 'selection') { ?> class="activ"<?php } ?>><a href="/selection">Подбор</a></li>
 					<li<?php if ($active_menu == 'stations') { ?> class="activ"<?php } ?>><a href="/page-stations">Сервис</a></li>
-					<li<?php if ($active_menu == 'contacts') { ?> class="activ"<?php } ?>><a href="/page-contacts">Контакты</a></li>
+					<li<?php if ($active_menu == 'contacts') { ?> class="activ"<?php } ?>><a href="/page-contacts">8 центров</a></li>
 				</ul>
 				<div class="clear"></div>
 			</div>
-            <span class="header-background"></span>
+            <img class="header-background" src="/img/tyres.png?hash=20240109" alt="Шины" />
 		</div>
 	</div>
     <script>
