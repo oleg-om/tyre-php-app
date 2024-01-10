@@ -45,7 +45,7 @@ if (empty($current_season)) {
 				</ul>
 				<div class="clear"></div>
 			</div>
-            <img class="header-background" src="/img/tyres.png?hash=20240109" alt="Шины" />
+            <img class="header-background" src="/img/tyres.png" alt="Шины" />
 		</div>
 	</div>
     <script>
