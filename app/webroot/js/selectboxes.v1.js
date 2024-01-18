@@ -481,7 +481,7 @@ function open_popup(opt) {
     },
     opt
   );
-  console.log('opt',opt);
+
   $("body").css('overflow', 'hidden')
   if (opt?.size === 'lg') {
     $("body").append(

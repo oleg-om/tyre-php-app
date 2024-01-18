@@ -17,7 +17,7 @@ echo $this->Html->meta('description', $meta_description);
 		$css = array_merge($css, $additional_css);
 	}
 	echo $this->Html->css($css);
-	$js = array('jquery.min', 'selectboxes');
+	$js = array('jquery.min', 'selectboxes.v1');
 	if (isset($additional_js)) {
 		$js = array_merge($js, $additional_js);
 	}
