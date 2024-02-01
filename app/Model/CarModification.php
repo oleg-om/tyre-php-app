@@ -7,32 +7,6 @@ class CarModification extends AppModel {
 			'rule' => 'notEmpty',
 			'message' => 'error_title_empty'
 		),
-		'brand_id' => array(
-			array(
-				'rule' => 'notEmpty',
-				'required' => true,
-				'message' => 'error_brand_id_empty',
-				'last' => true
-			),
-			array(
-				'rule' => array('comparison', '>', 0),
-				'required' => true,
-				'message' => 'error_brand_id_numeric'
-			)
-		),
-		'model_id' => array(
-			array(
-				'rule' => 'notEmpty',
-				'required' => true,
-				'message' => 'error_model_id_empty',
-				'last' => true
-			),
-			array(
-				'rule' => array('comparison', '>', 0),
-				'required' => true,
-				'message' => 'error_model_id_numeric'
-			)
-		),
 		'slug' => array(
 			array(
 				'rule' => 'notEmpty',
@@ -46,12 +20,26 @@ class CarModification extends AppModel {
 				'last' => true,
 				'required' => true
 			)
-		)
+		),
+        'generation_slug' => array(
+            array(
+                'rule' => 'notEmpty',
+                'message' => 'error_slug_empty',
+                'last' => true,
+                'required' => true
+            ),
+            array(
+                'rule' => '/^[A-z0-9_-]+$/',
+                'message' => 'error_slug_format',
+                'last' => true,
+                'required' => true
+            )
+        )
 	);
 	public function __construct() {
 		parent::__construct();
-		$this->virtualFields['is_deletable'] = 'CarModification.cars_count=0';
-		$this->virtualFields['old_model_id'] = 'CarModification.model_id';
+//		$this->virtualFields['is_deletable'] = 'CarModification.cars_count=0';
+//		$this->virtualFields['old_model_id'] = 'CarModification.model_id';
 	}
 	public function afterSave($created, $options = array()) {
 		$fields = array('model_id' => 'CarModel');
@@ -91,15 +79,15 @@ class CarModification extends AppModel {
 		return false;
 	}
 	public function recountCars($ids) {
-		if (!is_array($ids)) $ids = array($ids);
-		$this->Car = ClassRegistry::init('Car');
-		foreach ($ids as $id) {
-			$this->id = $id;
-			if ($data = $this->read(array('id'))) {
-				$cars_count = $this->Car->find('count', array('conditions' => array('Car.modification_id' => $id)));
-				$active_cars_count = $this->Car->find('count', array('conditions' => array('Car.modification_id' => $id, 'Car.is_active' => 1)));
-				$this->save(array('cars_count' => $cars_count, 'active_cars_count' => $active_cars_count), false);
-			}
-		}
+//		if (!is_array($ids)) $ids = array($ids);
+//		$this->Car = ClassRegistry::init('Car');
+//		foreach ($ids as $id) {
+//			$this->id = $id;
+//			if ($data = $this->read(array('id'))) {
+//				$cars_count = $this->Car->find('count', array('conditions' => array('Car.modification_id' => $id)));
+//				$active_cars_count = $this->Car->find('count', array('conditions' => array('Car.modification_id' => $id, 'Car.is_active' => 1)));
+//				$this->save(array('cars_count' => $cars_count, 'active_cars_count' => $active_cars_count), false);
+//			}
+//		}
 	}
 }

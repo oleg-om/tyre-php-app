@@ -37,8 +37,8 @@ class CarModel extends AppModel {
 	);
 	public function __construct() {
 		parent::__construct();
-		$this->virtualFields['is_deletable'] = 'CarModel.cars_count=0 AND CarModel.modifications_count=0';
-		$this->virtualFields['old_brand_id'] = 'CarModel.brand_id';
+		$this->virtualFields['is_deletable'] = 'CarModel.items_count=0';
+		$this->virtualFields['old_brand_slug'] = 'CarModel.brand_slug';
 	}
 	public function afterSave($created, $options = array()) {
 		$fields = array('brand_id' => 'CarBrand');

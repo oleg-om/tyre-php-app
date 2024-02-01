@@ -34,7 +34,7 @@ class CarBrand extends AppModel {
 	public $tmp_name = null;
 	public function __construct() {
 		parent::__construct();
-		$this->virtualFields['is_deletable'] = 'CarBrand.cars_count=0 AND CarBrand.models_count=0';
+		$this->virtualFields['is_deletable'] = 'CarBrand.items_count=0';
 		$this->files_path = IMAGES . 'car_brands';
 	}
 	function _getFolderById() {
@@ -151,8 +151,8 @@ class CarBrand extends AppModel {
 		foreach ($ids as $id) {
 			$this->id = $id;
 			if ($data = $this->read(array('id'))) {
-				$models_count = $this->CarModel->find('count', array('conditions' => array('CarModel.brand_id' => $id)));
-				$active_models_count = $this->CarModel->find('count', array('conditions' => array('CarModel.brand_id' => $id, 'CarModel.is_active' => 1)));
+				$models_count = $this->CarModel->find('count', array('conditions' => array('CarModel.brand_slug' => $id)));
+				$active_models_count = $this->CarModel->find('count', array('conditions' => array('CarModel.brand_slug' => $id, 'CarModel.is_active' => 1)));
 				$this->save(array('models_count' => $models_count, 'active_models_count' => $active_models_count), false);
 			}
 		}

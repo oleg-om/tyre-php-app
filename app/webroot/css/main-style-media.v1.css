@@ -289,6 +289,12 @@
     .selection__modal {
         columns: 4;
     }
+    .selection__modal__gen-item {
+        width: 21%;
+    }
+    .selection__secondary-td {
+        width: 18%;
+    }
 }
 
 @media screen and (min-width: 1200px) {

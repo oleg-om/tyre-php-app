@@ -448,7 +448,7 @@ Router::connect(
 );
 // побдор по марке авто
 Router::connect(
-	'/selection/:brand_slug/:model_slug/:year/:modification_slug',
+	'/selection/:brand_slug/:model_slug/:generation_slug/:modification_slug',
 	array(
 		'controller' => 'cars',
 		'action' => 'car_view'
@@ -457,32 +457,32 @@ Router::connect(
 		'pass' => array(
 			'brand_slug',
 			'model_slug',
-			'year',
+			'generation_slug',
 			'modification_slug'
 		),
 		'brand_slug' => '[A-z0-9_-]+',
 		'model_slug' => '[A-z0-9_-]+',
-		'year' => '[0-9]{4}',
+		'generation_slug' => '[A-z0-9_-]+',
 		'modification_slug' => '[A-z0-9_-]+'
 	)
 );
 
 // побдор по марке авто - выбор модификации
 Router::connect(
-	'/selection/:brand_slug/:model_slug/:year',
+	'/selection/:brand_slug/:model_slug/:generation_slug',
 	array(
-		'controller' => 'car_modifications',
+		'controller' => 'car_generations',
 		'action' => 'view'
 	),
 	array(
 		'pass' => array(
 			'brand_slug',
 			'model_slug',
-			'year'
+			'generation_slug'
 		),
 		'brand_slug' => '[A-z0-9_-]+',
 		'model_slug' => '[A-z0-9_-]+',
-		'year' => '[0-9]{4}'
+		'generation_slug' => '[A-z0-9_-]+'
 	)
 );
 
@@ -696,7 +696,7 @@ Router::connect(
     '/selection-modal/:brand_slug/:model_slug',
     array(
         'controller' => 'selection_modal',
-        'action' => 'car_year'
+        'action' => 'car_generation'
     ),
     array(
         'pass' => array(
@@ -708,7 +708,7 @@ Router::connect(
     )
 );
 Router::connect(
-    '/selection-modal/:brand_slug/:model_slug/:year',
+    '/selection-modal/:brand_slug/:model_slug/:generation_slug',
     array(
         'controller' => 'selection_modal',
         'action' => 'car_modifications'
@@ -717,11 +717,11 @@ Router::connect(
         'pass' => array(
             'brand_slug',
             'model_slug',
-            'year'
+            'generation_slug'
         ),
         'brand_slug' => '[A-z0-9_-]+',
         'model_slug' => '[A-z0-9_-]+',
-        'year' => '[0-9]{4}'
+        'generation_slug' => '[A-z0-9_-]+',
     )
 );
 

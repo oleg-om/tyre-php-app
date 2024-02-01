@@ -134,7 +134,7 @@
 	</div>
 	<h3>Данные автомобиля</h3>
 	<div class="auto"><?php
-		echo $this->Form->input('car_brand_id', array('type' => 'select', 'label' => 'Производитель', 'options' => $car_brands, 'empty' => array(0 => '...')));
+		echo $this->Form->input('car_brand_slug', array('type' => 'select', 'label' => 'Производитель', 'options' => $car_brands, 'empty' => array(0 => '...')));
 		echo $this->Form->input('car_model_id', array('type' => 'select', 'label' => 'Модель', 'options' => $car_models, 'empty' => array(0 => '...')));
 		echo $this->Form->input('number', array('label' => 'ГОС-номер', 'type' => 'text'));
 	?></div>

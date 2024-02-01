@@ -241,36 +241,37 @@ class AppController extends Controller {
 		$car_brands_index = Cache::read('car_brands_index', 'long');
 		if (empty($car_brands_index)) {
 			$this->loadModel('CarBrand');
-			if ($car_brands_index = $this->CarBrand->find('all', array('conditions' => array('CarBrand.is_active' => 1, 'CarBrand.active_cars_count >' => 0), 'order' => array('CarBrand.title' => 'asc')))) {
+			if ($car_brands_index = $this->CarBrand->find('all', array('conditions' => array('CarBrand.is_active' => 1, 'CarBrand.items_count >' => 0), 'order' => array('CarBrand.title' => 'asc')))) {
 				Cache::write('car_brands_index', $car_brands_index, 'long');
 			}
 		}
 		$this->set('car_brands_index', $car_brands_index);
 		$this->set('category_id', $this->category_id);
 	}
+
 	public function setCarBrands() {
 			$brands = Cache::read('car_brands', 'long');
 			if (empty($brands)) {
 				$this->loadModel('Brand');
-				if ($brands = $this->CarBrand->find('list', array('conditions' => array('CarBrand.is_active' => 1, 'CarBrand.active_cars_count >' => 0), 'order' => array('CarBrand.title' => 'asc')))) {
-					Cache::write('car_brands', $brands, 'long');
-				}
-			}
-			$this->set('car_brands', $brands);
+				if ($temp = $this->CarBrand->find('all', array('conditions' => array('CarBrand.is_active' => 1, 'CarBrand.items_count >' => 0), 'order' => array('CarBrand.title' => 'asc')))) {
 
+                    $object = new stdClass();
+                    foreach ($temp as $key => $value)
+                    {
+                        $object->$value['CarBrand']['slug'] = $value['CarBrand']['title'];
+                    }
+					Cache::write('car_brands', $object, 'long');
+                    $this->set('car_brands', $object);
+				}
+			} else {
+                $this->set('car_brands', $brands);
+            }
 
 		$this->set('category_id', $this->category_id);
 	}
 
     public function setCarBrandsForLeftMenu() {
-        $brands = Cache::read('car_brands', 'long');
-        if (empty($brands)) {
-            $this->loadModel('Brand');
-            if ($brands = $this->CarBrand->find('list', array('conditions' => array('CarBrand.is_active' => 1, 'CarBrand.active_cars_count >' => 0), 'order' => array('CarBrand.title' => 'asc')))) {
-                Cache::write('car_brands', $brands, 'long');
-            }
-        }
-        $this->set('car_brands', $brands);
+        $this->setCarBrands();
     }
 	public function setMeta($key, $value) {
 		if (!empty($value))

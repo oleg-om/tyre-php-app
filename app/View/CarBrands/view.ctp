@@ -1,4 +1,4 @@
-<h2 class="title">Подбор по авто</h2>
+<h2 class="title">Подбор по авто: <?php echo $brand['CarBrand']['title']; ?></h2>
 <p>Выберите модель:</p>
 <div class="selection">
 	<?php foreach ($models as $item) { ?>

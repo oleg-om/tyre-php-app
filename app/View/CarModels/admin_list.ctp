@@ -8,7 +8,7 @@ $this->Backend->addColumn('id', array(
 	'type' => 'number',
 	'label' => __d('admin_car_models', 'column_id')
 ));
-$this->Backend->addColumn('brand_id', array(
+$this->Backend->addColumn('brand_slug', array(
 	'label' => __d('admin_car_models', 'column_brand_id'),
 	'type' => 'list',
 	'sortable' => false,
@@ -18,12 +18,8 @@ $this->Backend->addColumn('title', array(
 	'label' => __d('admin_car_models', 'column_title'),
 	'editable' => true
 ));
-$this->Backend->addColumn('modifications_count', array(
+$this->Backend->addColumn('items_count', array(
 	'label' => __d('admin_car_models', 'column_modifications_count'),
-	'counter' => true
-));
-$this->Backend->addColumn('cars_count', array(
-	'label' => __d('admin_car_models', 'column_cars_count'),
 	'counter' => true
 ));
 $this->Backend->addColumn('is_active', array(

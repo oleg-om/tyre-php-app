@@ -731,7 +731,9 @@ input {
 #CarViewForm .item.item5 {
 }
 .filter-group .item .item-inner .inp {
-
+  display: flex;
+  width: 100%;
+  text-decoration: none;
 }
 .filter-group .item .item-inner .inp-et {
   display: flex;
@@ -1088,10 +1090,18 @@ input {
   text-decoration: none;
   display: flex;
   flex-direction: column;
+  width: 100%;
 }
 .selection .item span {
-  display: block;
-  margin-bottom: 10px;
+  margin: auto;
+  padding: 10px;
+  height: 90px;
+  display: flex;
+  align-items: center;
+}
+.selection .item span img {
+  width: 100%;
+  max-height: 100%;
 }
 .selection .item strong {
   display: block;
@@ -2246,11 +2256,15 @@ padding-bottom: 0;
 padding-top: 5px;
 }
 .filter-group .item .sel-style1 {
-width: 100%;
-height: 40px;
-border-radius: 20px;
-border-color: #b5b5b5;
-padding: 0 10px;
+  width: 100%;
+  height: 40px;
+  border-radius: 20px;
+  padding: 0 10px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  color: #000000;
+  border: 1px solid #b5b5b5;
 }
 #ProductIndexForm .item.bt.bt2 {
 margin-top: -5px;
@@ -3475,6 +3489,7 @@ table.withlines {
   color: #316b16;
   font-weight: 600;
   font-size: 16px;
+  min-width: 13.3px;
 }
 .selection__modal-list {
   display: flex;
@@ -3490,6 +3505,60 @@ table.withlines {
 }
 .selection__modal-list-item:hover {
   color: #316b16;
+}
+.selection__modal__gen {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 30px;
+  margin-top: 20px;
+}
+.selection__modal__gen-item {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  width: 210px;
+  text-align: center;
+  gap: 10px;
+}
+.selection__modal__gen-item img {
+  width: 100%;
+  max-width: 210px;
+  height: 90px;
+  object-fit: contain;
+}
+.selection__table {
+  margin-top: 20px;
+  width: 100%;
+}
+.selection__table table {
+  text-align: left;
+  width: 100%;
+  border-collapse: collapse;
+}
+.selection__table table thead {
+  margin-bottom: 15px;
+}
+.selection__table table thead th {
+  font-size: 12px;
+}
+.selection__table table tbody tr {
+  min-height: 46px;
+  height: 46px;
+  font-size: 14px;
+  cursor: pointer;
+  border-bottom: 1px solid rgb(229, 229, 229);
+}
+.selection__table table tbody tr:last-child {
+  border-bottom: none;
+}
+.selection__table table tbody tr:hover {
+  color: #4ba123;
+}
+.selection__main-td {
+  width: 100%;
+}
+.selection__secondary-td {
+  width: 25%;
 }
 .popup__wrapper {
   position: fixed;
@@ -3528,6 +3597,7 @@ table.withlines {
 /* width */
 .popup__content::-webkit-scrollbar {
   width: 10px;
+  cursor: pointer;
 }
 
 /* Track */

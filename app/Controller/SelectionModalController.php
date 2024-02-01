@@ -1,5 +1,6 @@
 <?php
-class SelectionModalController extends AppController {
+class SelectionModalController extends AppController
+{
     public $layout = 'empty';
     public $paginate = array(
         'order' => array(
@@ -9,67 +10,58 @@ class SelectionModalController extends AppController {
     public $model = 'SelectionModal';
     public $submenu = 'selection_modal';
 
-    public function car_brands() {
+    public function car_brands()
+    {
 
     }
-    public function car_models($slug) {
+
+    public function car_models($brand_slug)
+    {
         $this->loadModel('CarModel');
-        $this->set('car_models', $this->CarModel->find('list', array( 'order' => array('CarModel.title' => 'asc'), 'conditions' => array('CarModel.is_active' => 1, 'CarModel.brand_id' => $slug))));
-        $this->set('brand_id', $slug);
+        $this->set('car_models', $this->CarModel->find('all', array('order' => array('CarModel.title' => 'asc'), 'conditions' => array('CarModel.is_active' => 1, 'CarModel.brand_slug' => $brand_slug))));
+        $this->set('brand_slug', $brand_slug);
     }
 
-    public function car_year($brand_slug, $model_slug) {
-        $this->loadModel('Car');
-        $this->Car->bindModel(
-            array(
-                'belongsTo' => array(
-                    'CarModification' => array(
-                        'foreignKey' => 'modification_id'
-                    )
-                )
-            ),
-            false
-        );
-        $all_cars = $this->Car->find('all', array('conditions' => array('Car.brand_id' => $brand_slug, 'Car.model_id' => $model_slug, 'Car.is_active' => 1, 'CarModification.is_active' => 1), 'order' => array('Car.year' => 'asc'), 'fields' => array('Car.year')));
-        $used_years = array();
-        $cars = array();
-        foreach ($all_cars as $item) {
-            if (!in_array($item['Car']['year'], $used_years)) {
-                $cars[] = $item['Car']['year'];;
-                $used_years[] = $item['Car']['year'];
-            }
+    public function car_generation($brand_slug, $model_slug)
+    {
+        $this->loadModel('CarGeneration');
+        $this->loadModel('CarBrand');
+        $this->loadModel('CarModel');
+
+        if ($car_generations = $this->CarGeneration->find('all', array('conditions' => array('CarGeneration.is_active' => 1, 'CarGeneration.model_slug' => $model_slug)))) {
+            $brand = $this->CarBrand->find('first', array('conditions' => array('CarBrand.slug' => $brand_slug)));
+            $model = $this->CarModel->find('first', array('conditions' => array('CarModel.slug' => $model_slug)));
+            $this->set('car_generations', $car_generations);
+
+            $this->set('brand', $brand);
+            $this->set('model', $model);
+        } else {
+            $this->response->statusCode(404);
+            $this->response->send();
+            $this->render(false);
+            return;
         }
-        $this->set('cars', $cars);
-        $this->set('$used_years', $used_years);
-        $this->set('brand_id', $brand_slug);
-        $this->set('model_id', $model_slug);
     }
 
-    public function car_modifications($brand_id, $model_id, $year) {
-        $data = array(array('0' => '...'));
-        $brand_id = intval($brand_id);
-        $model_id = intval($model_id);
-        $year = intval($year);
-        $this->loadModel('Car');
-        $this->Car->bindModel(
-            array(
-                'belongsTo' => array(
-                    'CarModification' => array(
-                        'foreignKey' => 'modification_id'
-                    )
-                )
-            ),
-            false
-        );
+    public function car_modifications($brand_slug, $model_slug, $generation_slug)
+    {
+        $this->loadModel('CarGeneration');
+        $this->loadModel('CarBrand');
+        $this->loadModel('CarModel');
+        $this->loadModel('CarModification');
 
-        if ($car_mods = $this->Car->find('all', array('fields' => array('CarModification.id', 'CarModification.title'), 'conditions' => array('Car.brand_id' => $brand_id, 'Car.model_id' => $model_id, 'Car.is_active' => 1, 'Car.year' => $year, 'CarModification.is_active' => 1), 'order' => array('CarModification.title' => 'asc')))) {
-            foreach ($car_mods as $item) {
-                $data[] = array('id' => $item['CarModification']['id'], 'name' => $item['CarModification']['title']);
-            }
+        if ($car_modifications = $this->CarModification->find('all', array('conditions' => array('CarModification.is_active' => 1, 'CarModification.generation_slug' => $generation_slug)))) {
+            $brand = $this->CarBrand->find('first', array('conditions' => array('CarBrand.slug' => $brand_slug)));
+            $model = $this->CarModel->find('first', array('conditions' => array('CarModel.slug' => $model_slug)));
+            $this->set('car_modifications', $car_modifications);
+
+            $this->set('brand', $brand);
+            $this->set('model', $model);
+        } else {
+            $this->response->statusCode(404);
+            $this->response->send();
+            $this->render(false);
+            return;
         }
-        $this->set('modifications', $data);
-        $this->set('brand_slug', $brand_id);
-        $this->set('model_slug', $model_id);
-        $this->set('year', $year);
     }
 }

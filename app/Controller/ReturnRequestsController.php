@@ -17,7 +17,7 @@ class ReturnRequestsController extends AppController {
 				'belongsTo' => array(
 					'Station',
 					'CarBrand' => array(
-						'foreignKey' => 'car_brand_id'
+						'foreignKey' => 'car_brand_slug'
 					),
 					'CarModel' => array(
 						'foreignKey' => 'car_model_id'
