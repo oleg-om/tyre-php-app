@@ -28,7 +28,7 @@ class SelectionModalController extends AppController
         $this->loadModel('CarBrand');
         $this->loadModel('CarModel');
 
-        if ($car_generations = $this->CarGeneration->find('all', array('conditions' => array('CarGeneration.is_active' => 1, 'CarGeneration.model_slug' => $model_slug)))) {
+        if ($car_generations = $this->CarGeneration->find('all', array('order' => array('CarGeneration.release_year_start' => 'asc'), 'conditions' => array('CarGeneration.is_active' => 1, 'CarGeneration.model_slug' => $model_slug)))) {
             $brand = $this->CarBrand->find('first', array('conditions' => array('CarBrand.slug' => $brand_slug)));
             $model = $this->CarModel->find('first', array('conditions' => array('CarModel.slug' => $model_slug)));
             $this->set('car_generations', $car_generations);
