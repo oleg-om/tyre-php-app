@@ -35,7 +35,7 @@
                 $("#CarModelSlug").attr('value', slug);
                 close_popup();
                 open_popup({
-                    url: `/selection-modal/<?php echo $brand_slug; ?>/${slug}`,
+                    url: `/selection-modal/<?php echo $path; ?>/<?php echo $brand_slug; ?>/${slug}`,
                     type: 'post',
                     size: 'lg'
                 });
@@ -44,7 +44,7 @@
             function backToBrand() {
                 close_popup();
                 open_popup({
-                    url: `/selection-modal`,
+                    url: `/selection-modal<?php echo $path; ?>/`,
                     type: 'post',
                     size: 'lg'
                 });

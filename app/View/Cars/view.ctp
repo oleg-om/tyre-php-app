@@ -1,24 +1,24 @@
 <!--<h1 class="titlePage">Подбор для автомобиля <span class="title-cars">--><?php //echo h($brand['CarBrand']['title']); ?><!-- --><?php //echo h($model['CarModel']['title']); ?><!-- --><?php //echo h($year); ?><!-- --><?php //echo h($modification['CarModification']['title']); ?><!--</span></h1>-->
 <!--<div class="tyresBox">-->
-<!--	<h2 class="tyres">ШИНы</h2>-->
-<!--	--><?php //if (!empty($car['Car']['factory_tyres'])) { ?>
-<!--	<ul>-->
-<!--		<li>Заводская комплектация-->
-<!--			<ul>-->
-<!--				--><?php
-//				$tyres = explode('|', $car['Car']['factory_tyres']);
-//				foreach ($tyres as $tyre) {
-//					$filter = $this->Frontend->getTyreParams($tyre); ?>
-<!--				<li>Шины --><?php //echo $this->Html->link($tyre, array('controller' => 'tyres', 'action' => 'index', '?' => $filter), array('escape' => false));?><!--</li>-->
-<!--				--><?php //} ?>
-<!--			</ul>-->
-<!--		</li>-->
-<!--	</ul>-->
-<!--	--><?php //} ?>
-<!--	--><?php //if (!empty($car['Car']['replace_tyres'])) { ?>
-<!--	<ul>-->
-<!--		<li>Варианты замены-->
-<!--			<ul>-->
+	<h2 class="tyres">ШИНы</h2>
+	<?php if (!empty($car['Car']['factory_tyres'])) { ?>
+	<ul>
+		<li>Заводская комплектация
+			<ul>
+				<?php
+				$tyres = explode('|', $car['Car']['factory_tyres']);
+				foreach ($tyres as $tyre) {
+					$filter = $this->Frontend->getTyreParams($tyre); ?>
+				<li>Шины <?php echo $this->Html->link($tyre, array('controller' => 'tyres', 'action' => 'index', '?' => $filter), array('escape' => false));?></li>
+				<?php } ?>
+			</ul>
+		</li>
+	</ul>
+	<?php } ?>
+	<?php if (!empty($car['Car']['replace_tyres'])) { ?>
+	<ul>
+		<li>Варианты замены
+			<ul>
 <!--				--><?php
 //				$tyres = explode('|', $car['Car']['replace_tyres']);
 //				foreach ($tyres as $tyre) {

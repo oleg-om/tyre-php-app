@@ -167,6 +167,56 @@ class TyresController extends AppController {
         if (isset($this->request->query['mode']) && in_array($this->request->query['mode'], array('block', 'list', 'table'))) {
             $mode = $this->request->query['mode'];
         }
+        // modification
+        $modification_slug = '';
+        if (isset($this->request->query['modification']) && !empty($this->request->query['modification'])) {
+            $modification_slug = $this->request->query['modification'];
+        }
+        if ($modification_slug) {
+
+            $this->loadModel('CarTyres');
+            $this->loadModel('CarBrand');
+            $this->loadModel('CarModel');
+            $this->loadModel('CarGeneration');
+            $this->loadModel('CarModification');
+
+            $car_modification = $this->CarModification->find('first', array('conditions' => array('CarModification.is_active' => 1, 'CarModification.slug' => $modification_slug)));
+            $car_generation = $this->CarGeneration->find('first', array('conditions' => array('CarGeneration.is_active' => 1, 'CarGeneration.slug' => $car_modification['CarModification']['generation_slug'])));
+            $car_model = $this->CarModel->find('first', array('conditions' => array('CarModel.is_active' => 1, 'CarModel.slug' => $car_generation['CarGeneration']['model_slug'])));
+            $car_brand = $this->CarBrand->find('first', array('conditions' => array('CarBrand.is_active' => 1, 'CarBrand.slug' => $car_model['CarModel']['brand_slug'])));
+
+            $this->set('car_modification', $car_modification);
+            $this->set('car_generation', $car_generation);
+            $this->set('car_model', $car_model);
+            $this->set('car_brand', $car_brand);
+            $this->set('modification_slug',$modification_slug);
+
+            $car_sizes = $this->CarTyres->find('first', array('conditions' => array('CarTyres.modification_slug' => $modification_slug)));
+            $this->set('car_sizes', $car_sizes);
+            $this->set('car_image', $car_generation['CarGeneration']['image_default']);
+
+            // if no sizes in query url use first factory size
+            if (empty($this->request->query['size1']) && empty($this->request->query['size2']) && empty($this->request->query['size3'])) {
+                $tyres = explode('|', $car_sizes['CarTyres']['factory_tyres']);
+                $first_size = $tyres[0];
+
+                // getTyreParams
+                list($size_12, $size_3) = explode(' ', $first_size);
+                $size_3 = str_replace('R', '', $size_3);
+                list($size_1, $size_2) = explode('/', $size_12);
+                $filter = array('size1' => $size_1, 'size2' => $size_2, 'size3' => $size_3, 'season' => $this->request->query['season']);
+
+                $this->set('first_size', $filter['size1']);
+                // redirect with sizes
+                $car_search_query = array('modification' => $modification_slug, 'size1' => $filter['size1'], 'size2' => $filter['size2'], 'size3' => $filter['size3'], 'season' => $filter['season']);
+                $this->redirect(array('controller' => 'tyres', 'action' => 'index', '?' => $car_search_query));
+            }
+            $this->set('size1', $this->request->query['size1']);
+            $this->set('size2', $this->request->query['size2']);
+            $this->set('size3', $this->request->query['size3']);
+            $this->set('season', $this->request->query['season']);
+        }
+
         $this->request->data['Product']['mode'] = $mode;
         $this->set('mode', $mode);
         $auto = 'cars';

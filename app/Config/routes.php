@@ -673,52 +673,64 @@ Router::connect(
 //);
 
 Router::connect(
-    '/selection-modal',
+    '/selection-modal/:path',
     array(
         'controller' => 'selection_modal',
         'action' => 'car_brands'
+    ),
+    array(
+        'pass' => array(
+            'path'
+        ),
+        'path' => '[A-z0-9_-]+'
     )
 );
 Router::connect(
-    '/selection-modal/:slug',
+    '/selection-modal/:path/:slug',
     array(
         'controller' => 'selection_modal',
         'action' => 'car_models'
     ),
     array(
         'pass' => array(
+            'path',
             'slug'
         ),
+        'path' => '[A-z0-9_-]+',
         'slug' => '[A-z0-9_-]+'
     )
 );
 Router::connect(
-    '/selection-modal/:brand_slug/:model_slug',
+    '/selection-modal/:path/:brand_slug/:model_slug',
     array(
         'controller' => 'selection_modal',
         'action' => 'car_generation'
     ),
     array(
         'pass' => array(
+            'path',
             'brand_slug',
             'model_slug'
         ),
+        'path' => '[A-z0-9_-]+',
         'brand_slug' => '[A-z0-9_-]+',
         'model_slug' => '[A-z0-9_-]+'
     )
 );
 Router::connect(
-    '/selection-modal/:brand_slug/:model_slug/:generation_slug',
+    '/selection-modal/:path/:brand_slug/:model_slug/:generation_slug',
     array(
         'controller' => 'selection_modal',
         'action' => 'car_modifications'
     ),
     array(
         'pass' => array(
+            'path',
             'brand_slug',
             'model_slug',
             'generation_slug'
         ),
+        'path' => '[A-z0-9_-]+',
         'brand_slug' => '[A-z0-9_-]+',
         'model_slug' => '[A-z0-9_-]+',
         'generation_slug' => '[A-z0-9_-]+',

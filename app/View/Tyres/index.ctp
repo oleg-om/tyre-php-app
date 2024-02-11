@@ -14,8 +14,58 @@ if (!empty($brand['Brand']['slug'])) {
 }
 $this->Paginator->options(array('url' => $url));
 ?>
-<h1 class="title">Шины <?php if (!empty($brand['Brand']['slug'])) echo $brand['Brand']['title'] ?></h1>
-<h3 class="tyres-free-header">При покупке 4 шин шиномонтаж бесплатно!</h3>
+<h1 class="title">Шины <?php if (!empty($brand['Brand']['slug'])) echo $brand['Brand']['title'] ?>
+    <?php if (!empty($car_brand['CarBrand']['slug'])) echo ' на '.$car_brand['CarBrand']['title'].' '.$car_model['CarModel']['title'].' '.$car_generation['CarGeneration']['title'].' '.$car_modification['CarModification']['title'] ?>
+</h1>
+
+<?php if (empty($car_sizes['CarTyres']['factory_tyres'])) echo '<h3 class="tyres-free-header">При покупке 4 шин шиномонтаж бесплатно!</h3>'; ?>
+
+
+<div class="<?php if (empty($modification_slug)) { echo 'd-none'; } else { echo 'car__sizes car__sizes-tyres'; } ?>">
+        <div class="car__sizes__wrap">
+    <div class="car__sizes__info">
+<?php if (!empty($car_sizes['CarTyres']['factory_tyres'])) { ?>
+    <div class="car__sizes__wrapper">
+        <div class="car__sizes__title">Заводская комплектация</div>
+            <ul class="car__sizes__list">
+                <?php
+
+                $tyres = explode('|', $car_sizes['CarTyres']['factory_tyres']);
+                foreach (array_unique($tyres) as $tyre) {
+                    $filter = $this->Frontend->getTyreParams($tyre, $car_sizes['CarTyres']['modification_slug'], $size1, $size2, $size3); ?>
+                    <li class="<?php if ($filter['is_active'] == 1) { echo 'is_active'; }?>"><?php if ($filter['is_active'] == 1) { echo '• '; }?>Шины <?php echo $this->Html->link($tyre, array('controller' => 'tyres', 'action' => 'index', '?' => $filter), array('escape' => false));?></li>
+                <?php } ?>
+            </ul>
+
+    </div>
+<?php } ?>
+
+<?php if (!empty($car_sizes['CarTyres']['tuning_tyres'])) { ?>
+    <div class="car__sizes__wrapper">
+        <div class="car__sizes__title">Тюнинг</div>
+            <ul class="car__sizes__list">
+                <?php
+                $tyres = explode('|', $car_sizes['CarTyres']['tuning_tyres']);
+                foreach (array_unique($tyres) as $tyre) {
+                    $filter = $this->Frontend->getTyreParams($tyre, $car_sizes['CarTyres']['modification_slug'], $size1, $size2, $size3); ?>
+                    <li class="<?php if ($filter['is_active'] == 1) { echo 'is_active'; }?>"><?php if ($filter['is_active'] == 1) { echo '• '; }?>Шины <?php echo $this->Html->link($tyre, array('controller' => 'tyres', 'action' => 'index', '?' => $filter, array('escape' => false)));?></li>
+                <?php } ?>
+            </ul>
+    </div>
+
+<?php } ?>
+  </div>
+    <?php
+    $image = '';
+    if (!empty($car_image)) {
+        $image = $this->Html->image('car_generations/' . $car_image, array('alt' => $car_brand['CarBrand']['title']));
+    }
+    echo $image;
+    ?>
+        </div>
+</div>
+
+
 <?php
 $available_seasons = array();
 foreach ($models as $item) {

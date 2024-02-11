@@ -3616,3 +3616,52 @@ table.withlines {
 .popup__content::-webkit-scrollbar-thumb:hover {
   background: #3a7021;
 }
+
+.car__sizes {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  background-color: #f5f5f5;
+  padding: 10px 20px;
+  margin-bottom: 20px;
+  margin-top: 10px;
+}
+
+.car__sizes__wrap {
+  display: flex;
+  gap: 30px;
+  justify-content: space-between;
+}
+
+.car__sizes ul {
+  padding: 0;
+  list-style: none;
+}
+
+.car__sizes__list {
+  margin-top: 10px;
+}
+
+.car__sizes__list li {
+  margin-top: 5px;
+}
+
+.car__sizes__list .is_active {
+  font-weight: 600;
+}
+
+.car__sizes__title {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.car__sizes__info {
+  display: flex;
+  gap: 30px;
+}
+
+.car__sizes img {
+  max-width: 30%;
+  object-fit: contain;
+  max-height: 120px;
+}

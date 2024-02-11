@@ -340,11 +340,20 @@ class FrontendHelper extends AppHelper {
 		if ($count > $max) $count = $max;
 		return $count;
 	}
-	public function getTyreParams($tyre) {
+	public function getTyreParams($tyre, $modification_slug, $query_size1, $query_size2, $query_size3) {
 		list($size12, $size3) = explode(' ', $tyre);
 		$size3 = str_replace('R', '', $size3);
 		list($size1, $size2) = explode('/', $size12);
-		return array('size1' => $size1, 'size2' => $size2, 'size3' => $size3);
+        $filter = array('size1' => $size1, 'size2' => $size2, 'size3' => $size3);
+        if (isset($modification_slug)) {
+            $filter['modification'] = $modification_slug;
+        }
+        if ($query_size1 == $filter['size1'] && $query_size2 == $filter['size2'] && $query_size3 == $filter['size3']) {
+            $filter['is_active'] = 1;
+        } else {
+            $filter['is_active'] = 0;
+        }
+		return $filter;
 	}
 	public function getDiskParams($disk) {
 		$disk = str_replace(' x ', ' ', $disk);

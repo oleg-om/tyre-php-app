@@ -64,6 +64,36 @@
                 document.getElementById("filter-group__auto").style = "display: block";
             }
         }
+
+        function setAuto() {
+            $("#CarBrandSlug").html('<?php echo $car_brand['CarBrand']['title']; ?>').change();
+            $("#CarBrandSlug").attr('value', '<?php echo $car_brand['CarBrand']['slug']; ?>');
+
+            $("#CarModelSlug").html('<?php echo $car_model['CarModel']['title']; ?>').change();
+            $("#CarModelSlug").attr('value', '<?php echo $car_model['CarModel']['slug']; ?>');
+
+            $("#CarGenerationSlug").html('<?php echo $car_generation['CarGeneration']['title']; ?>').change();
+            $("#CarGenerationSlug").attr('value', '<?php echo $car_generation['CarGeneration']['slug']; ?>');
+
+            $("#CarModificationSlug").html('<?php echo $car_modification['CarModification']['title']; ?>').change();
+            $("#CarModificationSlug").attr('value', '<?php echo $car_modification['CarModification']['slug']; ?>');
+
+            if ('<?php echo $season; ?>') {
+                $("#AutoSelectionSeason").val('<?php echo $season; ?>').change();
+            }
+
+        }
+
+        function getTab() {
+            if ('<?php echo $modification_slug; ?>') {
+                setTimeout(()=> {
+                    switchTab('auto');
+                    setAuto();
+                    }, 1);
+            }
+        }
+
+        getTab();
     </script>
 
 <?php
@@ -575,10 +605,19 @@ $settings = Cache::read('settings', 'long');
                 </a>
             </div>
         </div>
+    <div class="item" style="<?php if ($show_filter != 1 || empty($modification_slug)) { echo 'display: none'; } ?>">
+        <div class="item-inner">
+            <label class="name" for="ProductSeason">Сезон:</label>
+            <div class="inp"><?php
+                echo $this->Form->input('season', array('type' => 'select', 'label' => false, 'options' => $filter_seasons, 'empty' => array('' => 'Все'), 'div' => false, 'class' => 'sel-style1 filter-select', 'id' => 'AutoSelectionSeason'));
+                ?></div>
+            <div class="clear"></div>
+        </div>
+    </div>
         <script type="text/javascript">
             function openSelectionBrandModal() {
                 open_popup({
-                    url: '/selection-modal',
+                    url: '/selection-modal/<?php echo $show_filter;?>',
                     type: 'post',
                     size: 'lg'
                 });
@@ -586,7 +625,7 @@ $settings = Cache::read('settings', 'long');
             function openSelectionModelModal() {
                 if ($('#CarBrandSlug').attr('value') != 0 && $('#CarBrandSlug').attr('value') != '') {
                     open_popup({
-                        url: `/selection-modal/${$('#CarBrandSlug').attr('value')}`,
+                        url: `/selection-modal/<?php echo $show_filter;?>/${$('#CarBrandSlug').attr('value')}`,
                         type: 'post',
                         size: 'lg'
                     });
@@ -597,7 +636,7 @@ $settings = Cache::read('settings', 'long');
             function openSelectionGenerationModal() {
                 if ($('#CarModelSlug').attr('value') != 0 && $('#CarModelSlug').attr('value') != '') {
                     open_popup({
-                        url: `/selection-modal/${$('#CarBrandSlug').attr('value')}/${$('#CarModelSlug').attr('value')}`,
+                        url: `/selection-modal/<?php echo $show_filter;?>/${$('#CarBrandSlug').attr('value')}/${$('#CarModelSlug').attr('value')}`,
                         type: 'post',
                         size: 'lg'
                     });
@@ -608,7 +647,7 @@ $settings = Cache::read('settings', 'long');
             function openSelectionModModal() {
                 if ($('#CarGenerationSlug').attr('value') != 0 && $('#CarGenerationSlug').attr('value') != '') {
                     open_popup({
-                        url: `/selection-modal/${$('#CarBrandSlug').attr('value')}/${$('#CarModelSlug').attr('value')}/${$('#CarGenerationSlug').attr('value')}`,
+                        url: `/selection-modal/<?php echo $show_filter;?>/${$('#CarBrandSlug').attr('value')}/${$('#CarModelSlug').attr('value')}/${$('#CarGenerationSlug').attr('value')}`,
                         type: 'post',
                         size: 'lg'
                     });
@@ -619,7 +658,7 @@ $settings = Cache::read('settings', 'long');
         </script>
 
 	<div class="item">
-		<button class="bt-style1" id="sel_submit" type="button">ПОИСК</button>
+		<button class="bt-style1" id="sel_submit" type="button" onclick="onSearchModifications()">ПОИСК</button>
 	</div>
 	<div class="clear"></div>
 	</form>
@@ -870,7 +909,15 @@ function serializeArray(form) {
 	return ar;
 }
 
+function onSearchModifications() {
+    const season = $('#AutoSelectionSeason').val();
+    const mod = $('#CarModificationSlug').attr('value');
 
+    if (<?php echo $show_filter; ?> === 1) {
+        // tyres
+        window.location = `${origin}/tyres?modification=${mod}&season=${season ? season : ''}<?php if (!empty($size1)) { echo '&size1='.$size1; } ?><?php if (!empty($size2)) { echo '&size2='.$size2; } ?><?php if (!empty($size3)) { echo '&size3='.$size3; } ?>`;
+    }
+}
 
 //-->
 </script>

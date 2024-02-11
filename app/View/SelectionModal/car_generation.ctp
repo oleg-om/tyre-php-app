@@ -27,7 +27,7 @@
                 $("#CarGenerationSlug").attr('value', slug);
                 close_popup();
                 open_popup({
-                    url: `/selection-modal/<?php echo $brand['CarBrand']['slug'];?>/<?php echo $model['CarModel']['slug'];?>/${slug}`,
+                    url: `/selection-modal/<?php echo $path; ?>/<?php echo $brand['CarBrand']['slug'];?>/<?php echo $model['CarModel']['slug'];?>/${slug}`,
                     type: 'post',
                     size: 'lg'
                 });
@@ -36,7 +36,7 @@
             function backToModelModal() {
                 close_popup();
                 open_popup({
-                    url: `/selection-modal/<?php echo $brand_id;?>`,
+                    url: `/selection-modal/<?php echo $path; ?>/<?php echo $brand_id;?>`,
                     type: 'post',
                     size: 'lg'
                 });

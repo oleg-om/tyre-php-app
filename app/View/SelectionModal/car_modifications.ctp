@@ -33,16 +33,25 @@
             </div>
         </div>
         <script type="text/javascript">
+            function goToGoods(category, slug) {
+                const origin = window.location.origin;
+
+              if (category === 1) {
+                  // tyres
+                  window.location = `${origin}/tyres?modification=${slug}`;
+              }
+            }
             function setModification(title, slug) {
                 $("#CarModificationSlug").html(title);
                 $("#CarModificationSlug").attr('value', slug);
                 close_popup();
+                goToGoods(<?php echo $path; ?>, slug)
             }
 
             function backToYear() {
                 close_popup();
                 open_popup({
-                    url: `/selection-modal/<?php echo $brand_slug;?>/<?php echo $model_slug;?>`,
+                    url: `/selection-modal/<?php echo $path; ?>/<?php echo $brand_slug;?>/<?php echo $model_slug;?>`,
                     type: 'post',
                     size: 'lg'
                 });

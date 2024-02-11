@@ -10,19 +10,20 @@ class SelectionModalController extends AppController
     public $model = 'SelectionModal';
     public $submenu = 'selection_modal';
 
-    public function car_brands()
+    public function car_brands($path)
     {
-
+        $this->set('path', $path);
     }
 
-    public function car_models($brand_slug)
+    public function car_models($path, $brand_slug)
     {
         $this->loadModel('CarModel');
         $this->set('car_models', $this->CarModel->find('all', array('order' => array('CarModel.title' => 'asc'), 'conditions' => array('CarModel.is_active' => 1, 'CarModel.brand_slug' => $brand_slug))));
         $this->set('brand_slug', $brand_slug);
+        $this->set('path', $path);
     }
 
-    public function car_generation($brand_slug, $model_slug)
+    public function car_generation($path, $brand_slug, $model_slug)
     {
         $this->loadModel('CarGeneration');
         $this->loadModel('CarBrand');
@@ -35,6 +36,7 @@ class SelectionModalController extends AppController
 
             $this->set('brand', $brand);
             $this->set('model', $model);
+            $this->set('path', $path);
         } else {
             $this->response->statusCode(404);
             $this->response->send();
@@ -43,7 +45,7 @@ class SelectionModalController extends AppController
         }
     }
 
-    public function car_modifications($brand_slug, $model_slug, $generation_slug)
+    public function car_modifications($path, $brand_slug, $model_slug, $generation_slug)
     {
         $this->loadModel('CarGeneration');
         $this->loadModel('CarBrand');
@@ -57,6 +59,7 @@ class SelectionModalController extends AppController
 
             $this->set('brand', $brand);
             $this->set('model', $model);
+            $this->set('path', $path);
         } else {
             $this->response->statusCode(404);
             $this->response->send();
