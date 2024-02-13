@@ -40,6 +40,10 @@
                   // tyres
                   window.location = `${origin}/tyres?modification=${slug}`;
               }
+                if (category === 2) {
+                    // disks
+                    window.location = `${origin}/disks?modification=${slug}`;
+                }
             }
             function setModification(title, slug) {
                 $("#CarModificationSlug").html(title);

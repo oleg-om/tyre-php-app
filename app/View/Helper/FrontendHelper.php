@@ -356,13 +356,41 @@ class FrontendHelper extends AppHelper {
 		return $filter;
 	}
 	public function getDiskParams($disk) {
-		$disk = str_replace(' x ', ' ', $disk);
-		$disk = str_replace('ET', '', $disk);
-		list($size3, $size1, $et) = explode(' ', $disk);
-		$et = number_format(str_replace(',', '.', $et), 1, '.', '');
-		$size3 = str_replace(',', '.', $size3);
-		$size1 = str_replace(',', '.', $size1);
-		return array('size1' => $size1, 'size3' => $size3, 'et_from' => $et - 5, 'et_to' => $et + 5);
+        $item = $disk['CarWheels'];
+		$is_kit = $item['kit'] == 1;
+
+        $front_filter = array('size1' => $item['front_axle_diameter'], 'size2' => $item['front_axle_pn'].'x'.$item['front_axle_pcd'], 'et_from' => $item['front_axle_et_min'], 'et_to' => $item['front_axle_et_max'], 'hub_from' => strval($item['front_axle_co_min']), 'hub_to' => strval($item['front_axle_co_max']), 'in_stock4' => 0, 'in_stock' => 2, 'width_from' => $item['front_axle_width_min'], 'width_to' => $item['front_axle_width_max'], 'modification' => $item['modification_slug']);
+        $back_filter = array('size1' => $item['back_axle_diameter'], 'size2' => $item['back_axle_pn'].'x'.$item['back_axle_pcd'], 'et_from' => $item['back_axle_et_min'], 'et_to' => $item['back_axle_et_max'], 'hub_from' => strval($item['back_axle_co_min']), 'hub_to' => strval($item['back_axle_co_max']), 'in_stock4' => 0, 'in_stock' => 2, 'width_from' => $item['back_axle_width_min'], 'width_to' => $item['back_axle_width_max'], 'modification' => $item['modification_slug']);
+
+        if ($this->request->query['size1'] === $item['front_axle_diameter'] &&
+            $this->request->query['size2'] === $item['front_axle_pn'].'x'.$item['front_axle_pcd'] &&
+            $this->request->query['et_from'] === $item['front_axle_et_min'] &&
+            $this->request->query['et_to'] === $item['front_axle_et_max'] &&
+            $this->request->query['hub_from'] === $item['front_axle_co_min'] &&
+            $this->request->query['hub_to'] === $item['front_axle_co_max'] &&
+            $this->request->query['width_from'] === $item['front_axle_width_min'] &&
+            $this->request->query['width_to'] === $item['front_axle_width_max']
+        ) {
+            $front_filter['is_active'] = 1;
+        } else {
+            $front_filter['is_active'] = 0;
+        }
+
+        if ($this->request->query['size1'] === $item['back_axle_diameter'] &&
+            $this->request->query['size2'] === $item['back_axle_pn'].'x'.$item['back_axle_pcd'] &&
+            $this->request->query['et_from'] === $item['back_axle_et_min'] &&
+            $this->request->query['et_to'] === $item['back_axle_et_max'] &&
+            $this->request->query['hub_from'] === $item['back_axle_co_min'] &&
+            $this->request->query['hub_to'] === $item['back_axle_co_max'] &&
+            $this->request->query['width_from'] === $item['back_axle_width_min'] &&
+            $this->request->query['width_to'] === $item['back_axle_width_max']
+        ) {
+            $back_filter['back_is_active'] = 1;
+        } else {
+            $back_filter['back_is_active'] = 0;
+        }
+
+        return array('front' => $front_filter, 'back' => $back_filter);
 	}
 	public function getSize3($size3) {
 		return trim(str_replace(array('J', 'j'), '', $size3));

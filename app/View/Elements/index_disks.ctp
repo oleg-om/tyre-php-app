@@ -262,6 +262,8 @@
 						</div>
 						<div class="clear"></div>
 					<?php } elseif ($mode == 'list') { ?>
+					<div class="disk-wrapper">
+					<div class="disk-info">
 						<div class="prodImg2 floatl">
 							<table cellpadding="0" cellspacing="0">
 								<tr>
@@ -315,6 +317,7 @@
 								echo $this->Html->link('все размеры', array('controller' => 'disks', 'action' => 'brand', 'slug' => $item['Brand']['slug'], '?' => $link_filter), array('class' => 'btVer3'));
 							?>
 						</div>
+						</div>
 						<div class="moreTable hidden">
 							<table cellpadding="0" cellspacing="0">
 								<tr>
@@ -347,6 +350,7 @@
 								<?php } ?>
 							</table>
 							<div class="clear"></div>
+						</div>
 						</div>
 						<div class="clear"></div>
 					<?php } else { ?>

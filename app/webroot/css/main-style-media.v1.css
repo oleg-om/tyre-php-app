@@ -295,6 +295,13 @@
     .selection__secondary-td {
         width: 18%;
     }
+    .car__sizes__wrap {
+        flex-direction: row;
+    }
+    .car__sizes img {
+        max-width: 30%;
+        margin: 0;
+    }
 }
 
 @media screen and (min-width: 1200px) {

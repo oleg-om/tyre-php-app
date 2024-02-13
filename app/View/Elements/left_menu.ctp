@@ -917,6 +917,10 @@ function onSearchModifications() {
         // tyres
         window.location = `${origin}/tyres?modification=${mod}&season=${season ? season : ''}<?php if (!empty($size1)) { echo '&size1='.$size1; } ?><?php if (!empty($size2)) { echo '&size2='.$size2; } ?><?php if (!empty($size3)) { echo '&size3='.$size3; } ?>`;
     }
+    if (<?php echo $show_filter; ?> === 2) {
+        // disks
+        window.location = `${origin}/disks?modification=${mod}`;
+    }
 }
 
 //-->

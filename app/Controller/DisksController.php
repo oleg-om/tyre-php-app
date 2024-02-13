@@ -1557,6 +1557,57 @@ endforeach;
 		$this->paginate['limit'] = $limit;
 		$this->set('limit', $limit);
 
+        // modification
+        $modification_slug = '';
+        if (isset($this->request->query['modification']) && !empty($this->request->query['modification'])) {
+            $modification_slug = $this->request->query['modification'];
+        }
+        if ($modification_slug) {
+
+            $this->loadModel('CarWheels');
+            $this->loadModel('CarBrand');
+            $this->loadModel('CarModel');
+            $this->loadModel('CarGeneration');
+            $this->loadModel('CarModification');
+
+            $car_modification = $this->CarModification->find('first', array('conditions' => array('CarModification.is_active' => 1, 'CarModification.slug' => $modification_slug)));
+            $car_generation = $this->CarGeneration->find('first', array('conditions' => array('CarGeneration.is_active' => 1, 'CarGeneration.slug' => $car_modification['CarModification']['generation_slug'])));
+            $car_model = $this->CarModel->find('first', array('conditions' => array('CarModel.is_active' => 1, 'CarModel.slug' => $car_generation['CarGeneration']['model_slug'])));
+            $car_brand = $this->CarBrand->find('first', array('conditions' => array('CarBrand.is_active' => 1, 'CarBrand.slug' => $car_model['CarModel']['brand_slug'])));
+
+            $this->set('car_modification', $car_modification);
+            $this->set('car_generation', $car_generation);
+            $this->set('car_model', $car_model);
+            $this->set('car_brand', $car_brand);
+            $this->set('modification_slug',$modification_slug);
+
+            $car_factory_sizes = $this->CarWheels->find('all', array('conditions' => array('CarWheels.modification_slug' => $modification_slug, 'CarWheels.factory' => 1)));
+            $car_tuning_sizes = $this->CarWheels->find('all', array('conditions' => array('CarWheels.modification_slug' => $modification_slug, 'CarWheels.factory' => 0)));
+            $this->set('car_factory_sizes', $car_factory_sizes);
+            $this->set('car_tuning_sizes', $car_tuning_sizes);
+            $this->set('car_image', $car_generation['CarGeneration']['image_default']);
+
+
+
+            // if no sizes in query url use first factory size
+            if (empty($this->request->query['size1']) && empty($this->request->query['size2']) && empty($this->request->query['et_from'])
+                && empty($this->request->query['et_to']) && empty($this->request->query['hub_from'])
+            ) {
+                $first_size = $car_factory_sizes[0];
+
+                // getDiskParams
+                $item = $first_size['CarWheels'];
+                $filter = array('size1' => $item['front_axle_diameter'], 'size2' => $item['front_axle_pn'].'x'.$item['front_axle_pcd'], 'et_from' => $item['front_axle_et_min'], 'et_to' => $item['front_axle_et_max'], 'hub_from' => strval($item['front_axle_co_min']), 'hub_to' => strval($item['front_axle_co_max']), 'in_stock4' => 0, 'in_stock' => 2, 'width_from' => $item['front_axle_width_min'], 'width_to' => $item['front_axle_width_max'], 'modification' => $item['modification_slug']);
+
+//                $this->set('first_size', $filter['size1']);
+                $this->redirect(array('controller' => 'disks', 'action' => 'index', '?' => $filter));
+            }
+            $this->set('size1', $this->request->query['size1']);
+            $this->set('size2', $this->request->query['size2']);
+            $this->set('size3', $this->request->query['size3']);
+            $this->set('season', $this->request->query['season']);
+        }
+
 		/*
 		if($this->sett_var('SHOW_DISKS_IMG_TOVAR')==1):
 		
@@ -1569,6 +1620,37 @@ endforeach;
 
 		
 		$conditions = array('Product.is_active' => 1, 'Product.category_id' => 2, 'Product.price > ' => 0, 'Product.stock_count > ' => 0);
+
+        if (isset($this->request->query['hub_from']) && !empty($this->request->query['hub_from'])) {
+            $hub = floatval(str_replace(',', '.', $this->request->query['hub_from']));
+            if ($hub > 0) {
+                $conditions['Product.hub >='] = $hub;
+            }
+        }
+        if (isset($this->request->query['hub_to']) && !empty($this->request->query['hub_to'])) {
+            $hub = floatval(str_replace(',', '.', $this->request->query['hub_to']));
+            if ($hub > 0) {
+                $conditions['Product.hub <='] = $hub;
+            }
+        }
+
+        if (isset($this->request->query['width_from']) && isset($this->request->query['width_to'])) {
+            $this->Product->virtualFields['width_number'] = 'CONVERT(size3,DECIMAL(5,1))';
+        }
+
+        if (isset($this->request->query['width_from']) && !empty($this->request->query['width_from'])) {
+            $width = floatval(str_replace(',', '.', $this->request->query['width_from']));
+            if ($width > 0) {
+                $conditions['Product.width_number >='] = $width;
+            }
+        }
+
+        if (isset($this->request->query['width_to']) && !empty($this->request->query['width_to'])) {
+            $width = floatval(str_replace(',', '.', $this->request->query['width_to']));
+            if ($width > 0) {
+                $conditions['Product.width_number <='] = $width;
+            }
+        }
 		
 		$this->request->data['Product'] = $this->request->query;
 		$mode = 'block';

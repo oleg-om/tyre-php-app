@@ -3631,6 +3631,7 @@ table.withlines {
   display: flex;
   gap: 30px;
   justify-content: space-between;
+  flex-direction: column-reverse;
 }
 
 .car__sizes ul {
@@ -3658,10 +3659,16 @@ table.withlines {
 .car__sizes__info {
   display: flex;
   gap: 30px;
+  flex-wrap: wrap;
 }
 
 .car__sizes img {
-  max-width: 30%;
+  max-width: 70%;
   object-fit: contain;
   max-height: 120px;
+  margin: auto;
+}
+
+.disk-wrapper {
+  width: 100%;
 }
