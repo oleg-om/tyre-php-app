@@ -921,6 +921,10 @@ function onSearchModifications() {
         // disks
         window.location = `${origin}/disks?modification=${mod}`;
     }
+    if (<?php echo $show_filter; ?> === 3) {
+        // disks
+        window.location = `${origin}/akb?modification=${mod}`;
+    }
 }
 
 //-->

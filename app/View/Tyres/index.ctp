@@ -24,36 +24,46 @@ $this->Paginator->options(array('url' => $url));
 <div class="<?php if (empty($modification_slug)) { echo 'd-none'; } else { echo 'car__sizes car__sizes-tyres'; } ?>">
         <div class="car__sizes__wrap">
     <div class="car__sizes__info">
-<?php if (!empty($car_sizes['CarTyres']['factory_tyres'])) { ?>
+        <div class="car__sizes__diameters">
+        <?php
+        $diameters = explode('|', $car_sizes['CarTyres']['diameters']);
+        foreach ($diameters as $diameter) { ?>
+
+            <?php
+            $diameter_filter = array('modification' => $modification_slug, 'diameter' => $diameter);
+            $diameter_class = $diameter == 'R'.$size3 ? 'active-diameter' : '';
+
+            echo $this->Html->link($diameter, array('controller' => 'tyres', 'action' => 'index', '?' => $diameter_filter), array('escape' => false, 'class' => $diameter_class));?>
+        <?php } ?>
+        </div>
+
+<?php if (!empty($factory_sizes)) { ?>
     <div class="car__sizes__wrapper">
         <div class="car__sizes__title">Заводская комплектация</div>
             <ul class="car__sizes__list">
                 <?php
-
-                $tyres = explode('|', $car_sizes['CarTyres']['factory_tyres']);
-                foreach (array_unique($tyres) as $tyre) {
-                    $filter = $this->Frontend->getTyreParams($tyre, $car_sizes['CarTyres']['modification_slug'], $size1, $size2, $size3); ?>
-                    <li class="<?php if ($filter['is_active'] == 1) { echo 'is_active'; }?>"><?php if ($filter['is_active'] == 1) { echo '• '; }?>Шины <?php echo $this->Html->link($tyre, array('controller' => 'tyres', 'action' => 'index', '?' => $filter), array('escape' => false));?></li>
+                foreach (array_unique($factory_sizes) as $tyre) {
+                    $size_filter = $this->Frontend->getTyreParams($tyre, $car_sizes['CarTyres']['modification_slug'], $size1, $size2, $size3); ?>
+                    <li id="<?php echo 'size-R'.$size_filter['size3']; ?>" class="<?php echo 'size-R'.$size_filter['size3']; ?> <?php if ($size_filter['is_active'] == 1) { echo 'is_active'; }?>"><?php if ($size_filter['is_active'] == 1) { echo '• '; }?>Шины <?php echo $this->Html->link($tyre, array('controller' => 'tyres', 'action' => 'index', '?' => $size_filter), array('escape' => false));?></li>
                 <?php } ?>
             </ul>
 
     </div>
 <?php } ?>
 
-<?php if (!empty($car_sizes['CarTyres']['tuning_tyres'])) { ?>
-    <div class="car__sizes__wrapper">
-        <div class="car__sizes__title">Тюнинг</div>
-            <ul class="car__sizes__list">
-                <?php
-                $tyres = explode('|', $car_sizes['CarTyres']['tuning_tyres']);
-                foreach (array_unique($tyres) as $tyre) {
-                    $filter = $this->Frontend->getTyreParams($tyre, $car_sizes['CarTyres']['modification_slug'], $size1, $size2, $size3); ?>
-                    <li class="<?php if ($filter['is_active'] == 1) { echo 'is_active'; }?>"><?php if ($filter['is_active'] == 1) { echo '• '; }?>Шины <?php echo $this->Html->link($tyre, array('controller' => 'tyres', 'action' => 'index', '?' => $filter, array('escape' => false)));?></li>
-                <?php } ?>
-            </ul>
-    </div>
+        <?php if (!empty($tuning_sizes)) { ?>
+            <div class="car__sizes__wrapper">
+                <div class="car__sizes__title">Тюнинг</div>
+                <ul class="car__sizes__list">
+                    <?php
+                    foreach (array_unique($tuning_sizes) as $tyre) {
+                        $size_filter = $this->Frontend->getTyreParams($tyre, $car_sizes['CarTyres']['modification_slug'], $size1, $size2, $size3); ?>
+                        <li id="<?php echo 'size-R'.$size_filter['size3']; ?>" class="<?php echo 'size-R'.$size_filter['size3']; ?> <?php if ($size_filter['is_active'] == 1) { echo 'is_active'; }?>"><?php if ($size_filter['is_active'] == 1) { echo '• '; }?>Шины <?php echo $this->Html->link($tyre, array('controller' => 'tyres', 'action' => 'index', '?' => $size_filter), array('escape' => false));?></li>
+                    <?php } ?>
+                </ul>
 
-<?php } ?>
+            </div>
+        <?php } ?>
   </div>
     <?php
     $image = '';
@@ -64,6 +74,7 @@ $this->Paginator->options(array('url' => $url));
     ?>
         </div>
 </div>
+
 
 
 <?php

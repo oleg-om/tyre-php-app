@@ -44,6 +44,10 @@
                     // disks
                     window.location = `${origin}/disks?modification=${slug}`;
                 }
+                if (category === 3) {
+                    // akb
+                    window.location = `${origin}/akb?modification=${slug}`;
+                }
             }
             function setModification(title, slug) {
                 $("#CarModificationSlug").html(title);
