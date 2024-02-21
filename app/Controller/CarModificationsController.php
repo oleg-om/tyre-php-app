@@ -7,7 +7,7 @@ class CarModificationsController extends AppController {
 			'CarModification.title' => 'asc'
 		)
 	);
-	public $filter_fields = array('CarModification.id' => 'int', 'CarModification.brand_id' => 'int', 'CarModification.model_id' => 'int', 'CarModification.title' => 'text');
+	public $filter_fields = array('CarModification.id' => 'int', 'CarModification.generation_slug' => 'text', 'CarModification.title' => 'text');
 	public $model = 'CarModification';
 	public $submenu = 'cars';
 	public function _list() {
@@ -16,7 +16,7 @@ class CarModificationsController extends AppController {
 		$this->loadModel('CarModel');
 		$this->set('brands', $this->CarBrand->find('list', array('fields' => array('CarBrand.id', 'CarBrand.title'), 'order' => array('CarBrand.title' => 'asc'))));
 		if (isset($this->request->data['CarModification']['brand_id'])) {
-			$this->set('models', $this->CarModel->find('list', array('fields' => array('CarModel.id', 'CarModel.title'), 'conditions' => array('CarModel.brand_id' => $this->request->data['CarModification']['brand_id']), 'order' => array('CarModel.title' => 'asc'))));
+			$this->set('models', $this->CarModel->find('list', array('fields' => array('CarModel.id', 'CarModel.title'), 'conditions' => array('CarModel.brand_slug' => $this->request->data['CarModification']['brand_slug']), 'order' => array('CarModel.title' => 'asc'))));
 		}
 		else {
 			$this->set('models', array('' => __d('admin_common', 'list_all_items')));
@@ -29,7 +29,7 @@ class CarModificationsController extends AppController {
 		$this->loadModel('CarModel');
 		$this->set('brands', $this->CarBrand->find('list', array('fields' => array('CarBrand.id', 'CarBrand.title'), 'order' => array('CarBrand.title' => 'asc'))));
 		if (isset($this->request->data['CarModification']['brand_id'])) {
-			$this->set('models', $this->CarModel->find('list', array('fields' => array('CarModel.id', 'CarModel.title'), 'conditions' => array('CarModel.brand_id' => $this->request->data['CarModification']['brand_id']), 'order' => array('CarModel.title' => 'asc'))));
+			$this->set('models', $this->CarModel->find('list', array('fields' => array('CarModel.id', 'CarModel.title'), 'conditions' => array('CarModel.brand_slug' => $this->request->data['CarModification']['brand_slug']), 'order' => array('CarModel.title' => 'asc'))));
 		}
 		else {
 			$this->set('models', array('' => __d('admin_common', 'list_any_items')));
@@ -44,7 +44,7 @@ class CarModificationsController extends AppController {
 		$this->loadModel('CarBrand');
 		if ($brand = $this->CarBrand->find('first', array('conditions' => array('CarBrand.is_active' => 1, 'CarBrand.slug' => $brand_slug)))) {
 			$this->loadModel('CarModel');
-			if ($model = $this->CarModel->find('first', array('conditions' => array('CarModel.is_active' => 1, 'CarModel.brand_id' => $brand['CarBrand']['id'], 'CarModel.slug' => $model_slug)))) {
+			if ($model = $this->CarModel->find('first', array('conditions' => array('CarModel.is_active' => 1, 'CarModel.brand_slug' => $brand['CarBrand']['slug'], 'CarModel.slug' => $model_slug)))) {
 				$this->loadModel('Car');
 				$this->Car->bindModel(
 					array(
@@ -57,7 +57,7 @@ class CarModificationsController extends AppController {
 					false
 				);
 				if ($this->Car->find('count', array('conditions' => array('Car.brand_id' => $brand['CarBrand']['id'], 'Car.model_id' => $model['CarModel']['id'], 'Car.is_active' => 1, 'CarModification.is_active' => 1, 'Car.year' => $year)))) {
-					$this->set('models', $this->CarModel->find('all', array('conditions' => array('CarModel.brand_id' => $brand['CarBrand']['id'], 'CarModel.is_active' => 1, 'CarModel.active_cars_count > 0'), 'order' => array('CarModel.title' => 'asc'))));
+					$this->set('models', $this->CarModel->find('all', array('conditions' => array('CarModel.brand_slug' => $brand['CarBrand']['slug'], 'CarModel.is_active' => 1, 'CarModel.items_count > 0'), 'order' => array('CarModel.title' => 'asc'))));
 					$all_cars = $this->Car->find('all', array('conditions' => array('Car.brand_id' => $brand['CarBrand']['id'], 'Car.model_id' => $model['CarModel']['id'], 'Car.is_active' => 1, 'CarModification.is_active' => 1), 'order' => array('Car.year' => 'asc'), 'fields' => array('Car.year')));
 					$used_years = array();
 					$cars = array();
@@ -75,7 +75,7 @@ class CarModificationsController extends AppController {
 					$this->request->data['Car']['brand_id'] = $brand['CarBrand']['id'];
 					$this->request->data['Car']['model_id'] = $model['CarModel']['id'];
 					$this->request->data['Car']['year'] = $year;
-					$this->set('car_models', $this->CarModel->find('list', array( 'order' => array('CarModel.title' => 'asc'), 'conditions' => array('CarModel.is_active' => 1, 'CarModel.brand_id' => $brand['CarBrand']['id']))));
+					$this->set('car_models', $this->CarModel->find('list', array( 'order' => array('CarModel.title' => 'asc'), 'conditions' => array('CarModel.is_active' => 1, 'CarModel.brand_slug' => $brand['CarBrand']['slug']))));
 					$years = array();
 					if ($cars = $this->Car->find('all', array( 'order' => array('Car.year' => 'desc'), 'fields' => array('Car.year'), 'conditions' => array('Car.model_id' => $model['CarModel']['id'], 'Car.is_active' => 1, 'CarModification.is_active' => 1)))) {
 						$years = array();

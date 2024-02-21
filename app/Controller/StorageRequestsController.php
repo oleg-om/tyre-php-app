@@ -22,7 +22,7 @@ class StorageRequestsController extends AppController {
 				'belongsTo' => array(
 					'Station',
 					'CarBrand' => array(
-						'foreignKey' => 'car_brand_id'
+						'foreignKey' => 'car_brand_slug'
 					),
 					'CarModel' => array(
 						'foreignKey' => 'car_model_id'
@@ -109,8 +109,8 @@ class StorageRequestsController extends AppController {
 						$station_title = $station['Station']['title'];
 					}
 				}
-				if (!empty($this->request->data['StorageRequest']['car_brand_id'])) {
-					$this->CarBrand->id = $this->request->data['StorageRequest']['car_brand_id'];
+				if (!empty($this->request->data['StorageRequest']['car_brand_slug'])) {
+					$this->CarBrand->id = $this->request->data['StorageRequest']['car_brand_slug'];
 					if ($brand = $this->CarBrand->read(array('title'))) {
 						$car_brand_name = $brand['CarBrand']['title'];
 					}
@@ -204,8 +204,8 @@ class StorageRequestsController extends AppController {
 		$this->_filter_params();
 		$this->_filter_disc_params();
 		$this->set('car_brands', $this->CarBrand->find('list', array('fields' => array('CarBrand.id', 'CarBrand.title'), 'order' => array('CarBrand.title' => 'asc'))));
-		if (isset($this->request->data['StorageRequest']['car_brand_id'])) {
-			$this->set('car_models', $this->CarModel->find('list', array('fields' => array('CarModel.id', 'CarModel.title'), 'conditions' => array('CarModel.brand_id' => $this->request->data['StorageRequest']['car_brand_id']), 'order' => array('CarModel.title' => 'asc'))));
+		if (isset($this->request->data['StorageRequest']['car_brand_slug'])) {
+			$this->set('car_models', $this->CarModel->find('list', array('fields' => array('CarModel.id', 'CarModel.title'), 'conditions' => array('CarModel.brand_slug' => $this->request->data['StorageRequest']['car_brand_slug']), 'order' => array('CarModel.title' => 'asc'))));
 		}
 		else {
 			$this->set('car_models', array());

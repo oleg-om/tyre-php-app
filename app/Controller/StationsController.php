@@ -103,7 +103,7 @@ class StationsController extends AppController {
 		}
 		$this->set('car_brands', $this->CarBrand->find('list', array('fields' => array('CarBrand.id', 'CarBrand.title'), 'order' => array('CarBrand.title' => 'asc'))));
 		if (isset($this->request->data['Request']['brand_id'])) {
-			$this->set('car_models', $this->CarModel->find('list', array('fields' => array('CarModel.id', 'CarModel.title'), 'conditions' => array('CarModel.brand_id' => $this->request->data['Request']['brand_id']), 'order' => array('CarModel.title' => 'asc'))));
+			$this->set('car_models', $this->CarModel->find('list', array('fields' => array('CarModel.id', 'CarModel.title'), 'conditions' => array('CarModel.brand_slug' => $this->request->data['Request']['brand_slug']), 'order' => array('CarModel.title' => 'asc'))));
 		}
 		else {
 			$this->set('car_models', array());

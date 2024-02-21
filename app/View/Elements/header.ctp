@@ -5,6 +5,7 @@ if (empty($active_menu)) {
 if (empty($current_season)) {
     $current_season = 'summer';
 }
+//$modification_slug = $this->request->query['modification'];
 ?>
 <div id="header">
 	<div class="tyres <?php echo $current_season; ?>-season">
@@ -35,9 +36,9 @@ if (empty($current_season)) {
 			<div id="nav" class="toggle__menu">
 				<ul>
 					<li<?php if ($active_menu == 'home') { ?> class="activ"<?php } ?>><a href="/">Главная</a></li>
-					<li<?php if ($active_menu == 'tyres') { ?> class="activ"<?php } ?>><a href="/tyres<?php if (CONST_ENABLE_POPULAR_SORT != '1') { ?>?auto=cars<?php } ?>">Шины</a></li>
-					<li<?php if ($active_menu == 'disks') { ?> class="activ"<?php } ?>><a href="/disks?material=cast">Диски</a></li>
-					<li<?php if ($active_menu == 'akb') { ?> class="activ"<?php } ?>><a href="/akb">АКБ</a></li>
+					<li<?php if ($active_menu == 'tyres') { ?> class="activ"<?php } ?>><a href="/tyres<?php if (!empty($modification_slug) && $active_menu != 'tyres') { echo '?modification='.$modification_slug; } else { echo ''; } ?>">Шины</a></li>
+					<li<?php if ($active_menu == 'disks') { ?> class="activ"<?php } ?>><a href="/disks<?php if (!empty($modification_slug) && $active_menu != 'disks') { echo '?modification='.$modification_slug; } else { echo '?material=cast'; } ?>">Диски</a></li>
+					<li<?php if ($active_menu == 'akb') { ?> class="activ"<?php } ?>><a href="/akb<?php if (!empty($modification_slug) && $active_menu != 'akb') { echo '?modification='.$modification_slug; } else { echo ''; } ?>">АКБ</a></li>
 					<li<?php if ($active_menu == 'sales') { ?> class="activ"<?php } ?>><a href="/page-sales">Масла</a></li>
 					<li<?php if ($active_menu == 'selection') { ?> class="activ"<?php } ?>><a href="/selection">Подбор</a></li>
 					<li<?php if ($active_menu == 'stations') { ?> class="activ"<?php } ?>><a href="/page-stations">Сервис</a></li>
@@ -45,7 +46,7 @@ if (empty($current_season)) {
 				</ul>
 				<div class="clear"></div>
 			</div>
-            <img class="header-background" src="/img/tyres.v1.png" alt="Шины" />
+            <img class="header-background" src="/img/tyres.v2.png" alt="Шины" />
 		</div>
 	</div>
     <script>

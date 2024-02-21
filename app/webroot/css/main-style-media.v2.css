@@ -289,6 +289,19 @@
     .selection__modal {
         columns: 4;
     }
+    .selection__modal__gen-item {
+        width: 21%;
+    }
+    .selection__secondary-td {
+        width: 18%;
+    }
+    .car__sizes__wrap {
+        flex-direction: row;
+    }
+    .car__sizes img {
+        max-width: 30%;
+        margin: 0;
+    }
 }
 
 @media screen and (min-width: 1200px) {
@@ -330,7 +343,7 @@
         width: 20.333%;
     }
     .selection .item {
-        width: 22%;
+        width: 17%;
     }
     .jcarousel-wrapper {
         width: 780px;

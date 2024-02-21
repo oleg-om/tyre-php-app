@@ -19,12 +19,8 @@ $this->Backend->addColumn('title', array(
 	'label' => __d('admin_car_brands', 'column_title'),
 	'editable' => true
 ));
-$this->Backend->addColumn('models_count', array(
+$this->Backend->addColumn('items_count', array(
 	'label' => __d('admin_car_brands', 'column_models_count'),
-	'counter' => true
-));
-$this->Backend->addColumn('cars_count', array(
-	'label' => __d('admin_car_brands', 'column_cars_count'),
 	'counter' => true
 ));
 $this->Backend->addColumn('is_active', array(

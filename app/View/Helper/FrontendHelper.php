@@ -340,21 +340,79 @@ class FrontendHelper extends AppHelper {
 		if ($count > $max) $count = $max;
 		return $count;
 	}
-	public function getTyreParams($tyre) {
+	public function getTyreParams($tyre, $modification_slug, $query_size1, $query_size2, $query_size3) {
 		list($size12, $size3) = explode(' ', $tyre);
 		$size3 = str_replace('R', '', $size3);
 		list($size1, $size2) = explode('/', $size12);
-		return array('size1' => $size1, 'size2' => $size2, 'size3' => $size3);
+        $filter = array('size1' => $size1, 'size2' => $size2, 'size3' => $size3, 'diameter' => 'R'.$size3);
+        if (isset($modification_slug)) {
+            $filter['modification'] = $modification_slug;
+        }
+        if ($query_size1 == $filter['size1'] && $query_size2 == $filter['size2'] && $query_size3 == $filter['size3']) {
+            $filter['is_active'] = 1;
+        } else {
+            $filter['is_active'] = 0;
+        }
+		return $filter;
 	}
 	public function getDiskParams($disk) {
-		$disk = str_replace(' x ', ' ', $disk);
-		$disk = str_replace('ET', '', $disk);
-		list($size3, $size1, $et) = explode(' ', $disk);
-		$et = number_format(str_replace(',', '.', $et), 1, '.', '');
-		$size3 = str_replace(',', '.', $size3);
-		$size1 = str_replace(',', '.', $size1);
-		return array('size1' => $size1, 'size3' => $size3, 'et_from' => $et - 5, 'et_to' => $et + 5);
+        $item = $disk['CarWheels'];
+
+        $front_filter = array('size1' => $item['front_axle_diameter'], 'size2' => $item['front_axle_pn'].'x'.$item['front_axle_pcd'], 'et_from' => $item['front_axle_et_min'], 'et_to' => $item['front_axle_et_max'], 'hub_from' => strval($item['front_axle_co_min']), 'hub_to' => strval($item['front_axle_co_max']), 'in_stock4' => 0, 'in_stock' => 2, 'width_from' => $item['front_axle_width_min'], 'width_to' => $item['front_axle_width_max'], 'modification' => $item['modification_slug'], 'diameter' => $item['front_axle_diameter']);
+        $back_filter =  array('size1' => $item['back_axle_diameter'], 'size2' => $item['back_axle_pn'].'x'.$item['back_axle_pcd'], 'et_from' => $item['back_axle_et_min'], 'et_to' => $item['back_axle_et_max'], 'hub_from' => strval($item['back_axle_co_min']), 'hub_to' => strval($item['back_axle_co_max']), 'in_stock4' => 0, 'in_stock' => 2, 'width_from' => $item['back_axle_width_min'], 'width_to' => $item['back_axle_width_max'], 'modification' => $item['modification_slug'], 'diameter' => $item['back_axle_diameter']);
+
+        if ($this->request->query['size1'] === $item['front_axle_diameter'] &&
+            $this->request->query['size2'] === $item['front_axle_pn'].'x'.$item['front_axle_pcd'] &&
+            $this->request->query['et_from'] === $item['front_axle_et_min'] &&
+            $this->request->query['et_to'] === $item['front_axle_et_max'] &&
+            $this->request->query['hub_from'] === $item['front_axle_co_min'] &&
+            $this->request->query['hub_to'] === $item['front_axle_co_max'] &&
+            $this->request->query['width_from'] === $item['front_axle_width_min'] &&
+            $this->request->query['width_to'] === $item['front_axle_width_max']
+        ) {
+            $front_filter['is_active'] = 1;
+        } else {
+            $front_filter['is_active'] = 0;
+        }
+
+        if ($this->request->query['size1'] === $item['back_axle_diameter'] &&
+            $this->request->query['size2'] === $item['back_axle_pn'].'x'.$item['back_axle_pcd'] &&
+            $this->request->query['et_from'] === $item['back_axle_et_min'] &&
+            $this->request->query['et_to'] === $item['back_axle_et_max'] &&
+            $this->request->query['hub_from'] === $item['back_axle_co_min'] &&
+            $this->request->query['hub_to'] === $item['back_axle_co_max'] &&
+            $this->request->query['width_from'] === $item['back_axle_width_min'] &&
+            $this->request->query['width_to'] === $item['back_axle_width_max']
+        ) {
+            $back_filter['is_active'] = 1;
+        } else {
+            $back_filter['is_active'] = 0;
+        }
+
+        return array('front' => $front_filter, 'back' => $back_filter);
 	}
+
+    public function getAkbParams($akb) {
+        $item = $akb['CarBatteries'];
+
+        $filter = array('ah_from' => $item['capacity_min'], 'ah_to' => $item['capacity_max'], 'length_from' => $item['length_min'], 'length_to' => $item['length_max'], 'width_from' => $item['width_min'], 'width_to' => $item['width_max'], 'height_from' => $item['height_min'], 'height_to' => $item['height_max'], 'f1' => $item['type_case_id'] === 1 ? 'euro' : 'asia', 'f2' => $item['polarity_id'] === 1 ? 'left' : 'right', 'modification' => $item['modification_slug']);
+
+        if ($this->request->query['ah_from'] === $item['capacity_min'] &&
+            $this->request->query['ah_to'] === $item['capacity_max'] &&
+            $this->request->query['length_from'] === $item['length_min'] &&
+            $this->request->query['length_to'] === $item['length_max'] &&
+            $this->request->query['width_from'] === $item['width_min'] &&
+            $this->request->query['width_to'] === $item['width_max'] &&
+            $this->request->query['height_from'] === $item['height_min'] &&
+            $this->request->query['height_to'] === $item['height_max']
+        ) {
+            $filter['is_active'] = 1;
+        } else {
+            $filter['is_active'] = 0;
+        }
+
+        return $filter;
+    }
 	public function getSize3($size3) {
 		return trim(str_replace(array('J', 'j'), '', $size3));
 	}

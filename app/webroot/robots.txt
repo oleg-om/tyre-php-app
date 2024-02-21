@@ -1,5 +1,5 @@
 User-agent: *
 Allow: /
 
-Clean-param: et_from&hub&in_stock&in_stock4&brand_id&size1 /disks
+Clean-param: et_from&hub&in_stock&in_stock4&brand_id&size1&material&size2&size3&hub&brand_id /disks
 Clean-param: mode

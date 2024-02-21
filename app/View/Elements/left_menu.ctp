@@ -12,10 +12,10 @@
 <?php if ($show_switch_params_and_auto == true): ?>
 <div class="title__switch">
 <div class="left-nav__switch">
-    <a href="javascript:void(0);" onclick="switchTab('params');" id="left-nav__switch__button-params" class="left-nav__switch__button active">
+    <a href="javascript:void(0);" onclick="switchTab('params');" id="left-nav__switch__button-params" class="left-nav__switch__button <?php if (empty($modification_slug)) { echo 'active'; } ?>">
         По параметрам
     </a>
-        <a href="javascript:void(0);" onclick="switchTab('auto');" id="left-nav__switch__button-auto" class="left-nav__switch__button">
+        <a href="javascript:void(0);" onclick="switchTab('auto');" id="left-nav__switch__button-auto" class="left-nav__switch__button <?php if (!empty($modification_slug)) { echo 'active'; } ?>">
         По авто
     </a>
 </div>
@@ -64,6 +64,36 @@
                 document.getElementById("filter-group__auto").style = "display: block";
             }
         }
+
+        function setAuto() {
+            $("#CarBrandSlug").html('<?php echo $car_brand['CarBrand']['title']; ?>').change();
+            $("#CarBrandSlug").attr('value', '<?php echo $car_brand['CarBrand']['slug']; ?>');
+
+            $("#CarModelSlug").html('<?php echo $car_model['CarModel']['title']; ?>').change();
+            $("#CarModelSlug").attr('value', '<?php echo $car_model['CarModel']['slug']; ?>');
+
+            $("#CarGenerationSlug").html('<?php echo $car_generation['CarGeneration']['title']; ?>').change();
+            $("#CarGenerationSlug").attr('value', '<?php echo $car_generation['CarGeneration']['slug']; ?>');
+
+            $("#CarModificationSlug").html('<?php echo $car_modification['CarModification']['title']; ?>').change();
+            $("#CarModificationSlug").attr('value', '<?php echo $car_modification['CarModification']['slug']; ?>');
+
+            if ('<?php echo $season; ?>') {
+                $("#AutoSelectionSeason").val('<?php echo $season; ?>').change();
+            }
+
+        }
+
+        function getTab() {
+            if ('<?php echo $modification_slug; ?>') {
+                setTimeout(()=> {
+                    // switchTab('auto');
+                    setAuto();
+                    }, 1);
+            }
+        }
+
+        getTab();
     </script>
 
 <?php
@@ -102,7 +132,7 @@ $settings = Cache::read('settings', 'long');
 	
 ?>
 <?php if ($show_filter == 1) { ?>
-<div class="filter-group tyres" id="filter">
+<div class="filter-group tyres" id="filter" style="<?php if (!empty($modification_slug)) { echo 'display: none'; } ?>">
 	<?php
 		$url = array('controller' => 'tyres', 'action' => 'index');
 
@@ -262,7 +292,7 @@ $settings = Cache::read('settings', 'long');
 	</form>
 </div>
 <?php } elseif ($show_filter == 2) { $path = 'disks';?>
-<div class="filter-group disks" id="filter">
+<div class="filter-group disks" id="filter" style="<?php if (!empty($modification_slug)) { echo 'display: none'; } ?>">
 	<?php
 		if (!isset($this->request->data['Product']['in_stock'])) {
 			if ( $settings['SHOW_DISKS_BAR'] == 1 ) { $in_stocky = 1; } else { $in_stocky = 2; }
@@ -388,7 +418,7 @@ $settings = Cache::read('settings', 'long');
 	</form>
 </div>
 <?php } elseif ($show_filter == 7) { $path = 'bolts';?>
-<div class="filter-group" id="filter">
+<div class="filter-group" id="filter" style="<?php if (!empty($modification_slug)) { echo 'display: none'; } ?>">
 	<?php
 		$url = array('controller' => 'bolts', 'action' => 'index');
 		echo $this->Form->create('Product', array('type' => 'get', 'id' => 'filter-form', 'url' => $url));
@@ -473,7 +503,7 @@ $settings = Cache::read('settings', 'long');
 	</form>
 </div>
 <?php } elseif ($show_filter == 3) { $path = 'akb';?>
-<div class="filter-group" id="filter">
+<div class="filter-group" id="filter" style="<?php if (!empty($modification_slug)) { echo 'display: none'; } ?>">
 	<?php
 		$url = array('controller' => 'akb', 'action' => 'index');
 		echo $this->Form->create('Product', array('type' => 'get', 'id' => 'filter-form', 'url' => $url));
@@ -542,85 +572,60 @@ $settings = Cache::read('settings', 'long');
 	</form>
 </div>
 <?php } if ($show_filter == 4 || $show_switch_params_and_auto == true) { ?>
-<div class="filter-group" id="filter-group__auto" style="<?php if ($show_switch_params_and_auto == true) { echo 'display: none'; } ?>">
+<div class="filter-group" id="filter-group__auto" style="<?php if ($show_switch_params_and_auto == true) { echo 'display: none'; } ?> <?php if (!empty($modification_slug)) { echo 'display: block'; } ?>">
 	<?php
 		$url = array('controller' => 'selection', 'action' => 'view');
 		echo $this->Form->create('Car', array('type' => 'get', 'url' => $url));
 	?>
-    <?php if (CONST_SELECTION_WITH_MODALS == '0') { ?>
-    <div class="item item5">
-		<div class="item-inner">
-			<label class="name" for="CarBrandId">Производитель:</label>
-			<div class="inp"><?php
-				echo $this->Form->input('brand_id', array('type' => 'select', 'label' => false, 'options' => $car_brands, 'empty' => array('' => '...'), 'div' => false, 'class' => 'sel-style1', 'required' => false));
-			?></div>
-			<div class="clear"></div>
-		</div>
-		<div class="item-inner">
-			<label class="name" for="CarModelId">Модель:</label>
-			<div class="inp"><?php
-				echo $this->Form->input('model_id', array('type' => 'select', 'label' => false, 'options' => $car_models, 'empty' => array('' => '...'), 'div' => false, 'class' => 'sel-style1'));
-			?></div>
-			<div class="clear"></div>
-		</div>
-	</div>
-	<div class="item">
-		<div class="item-inner">
-			<label class="name" for="CarYear">Год выпуска:</label>
-			<div class="inp"><?php
-				echo $this->Form->input('year', array('class' => 'sel-style1', 'type' => 'select', 'label' => false, 'options' => $car_years, 'empty' => array('' => '...'), 'div' => false, 'name' => 'year'));
-			?></div>
-			<div class="clear"></div>
-		</div>
-		<div class="item-inner" for="CarMod">
-			<label class="name">Модификация:</label>
-			<div class="inp"><?php
-				echo $this->Form->input('mod', array('class' => 'sel-style1', 'type' => 'select', 'label' => false, 'options' => $car_modifications, 'empty' => array('' => '...'), 'div' => false));
-			?></div>
-			<div class="clear"></div>
-		</div>
-	</div>;
-    <?php } else { ?>
         <div class="item item5">
             <div class="item-inner">
-                <label class="name" for="CarBrandId">Производитель:</label>
-                <a class="inp" href="javascript:void(0);" onclick="openSelectionBrandModal();"><?php
-                    echo $this->Form->input('brand_id', array('type' => 'select', 'label' => false, 'options' => $car_brands, 'empty' => array('' => '...'), 'div' => false, 'class' => 'sel-style1', 'required' => false));
-                    ?></a>
+                <label class="name" for="CarBrandSlug">Производитель:</label>
+                <a class="inp" href="javascript:void(0);" onclick="openSelectionBrandModal();">
+                    <span name="brand_id" id="CarBrandSlug" value="" class="sel-style1">...</span>
+                </a>
             </div>
             <div class="item-inner">
-                <label class="name" for="CarModelId">Модель:</label>
-                <a class="inp" href="javascript:void(0);" onclick="openSelectionModelModal();"><?php
-                    echo $this->Form->input('model_id', array('type' => 'select', 'label' => false, 'options' => $car_models, 'empty' => array('' => '...'), 'div' => false, 'class' => 'sel-style1'));
-                    ?></a>
+                <label class="name" for="CarModelSlug">Модель:</label>
+                <a class="inp" href="javascript:void(0);" onclick="openSelectionModelModal();">
+                    <span name="model_id" id="CarModelSlug" value="" class="sel-style1" >...</span>
+                </a>
             </div>
         </div>
         <div class="item">
             <div class="item-inner">
-                <label class="name" for="CarYear">Год выпуска:</label>
-                <a class="inp" href="javascript:void(0);" onclick="openSelectionYearModal();"><?php
-                    echo $this->Form->input('year', array('class' => 'sel-style1', 'type' => 'select', 'label' => false, 'options' => $car_years, 'empty' => array('' => '...'), 'div' => false, 'name' => 'year'));
-                    ?></a>
+                <label class="name" for="CarGenerationSlug">Поколение:</label>
+                <a class="inp" href="javascript:void(0);" onclick="openSelectionGenerationModal();">
+                    <span name="year_id" id="CarGenerationSlug" value="" class="sel-style1" />...</span>
+                </a>
             </div>
-            <div class="item-inner" for="CarMod">
+            <div class="item-inner" for="CarModificationSlug">
                 <label class="name">Модификация:</label>
-                <a class="inp" href="javascript:void(0);" onclick="openSelectionModModal();"><?php
-                    echo $this->Form->input('mod', array('class' => 'sel-style1', 'type' => 'select', 'label' => false, 'options' => $car_modifications, 'empty' => array('' => '...'), 'div' => false));
-                    ?></a>
+                <a class="inp" href="javascript:void(0);" onclick="openSelectionModModal();">
+                    <span name="year_id" id="CarModificationSlug" value="" class="sel-style1" />...</span>
+                </a>
             </div>
         </div>
+    <div class="item" style="<?php if ($show_filter != 1 || empty($modification_slug)) { echo 'display: none'; } ?>">
+        <div class="item-inner">
+            <label class="name" for="ProductSeason">Сезон:</label>
+            <div class="inp"><?php
+                echo $this->Form->input('season', array('type' => 'select', 'label' => false, 'options' => $filter_seasons, 'empty' => array('' => 'Все'), 'div' => false, 'class' => 'sel-style1 filter-select', 'id' => 'AutoSelectionSeason'));
+                ?></div>
+            <div class="clear"></div>
+        </div>
+    </div>
         <script type="text/javascript">
             function openSelectionBrandModal() {
                 open_popup({
-                    url: '/selection-modal',
+                    url: '/selection-modal/<?php echo $show_filter;?>',
                     type: 'post',
                     size: 'lg'
                 });
             }
             function openSelectionModelModal() {
-                if ($('#CarBrandId').val() != 0 && $('#CarBrandId').val() != '') {
+                if ($('#CarBrandSlug').attr('value') != 0 && $('#CarBrandSlug').attr('value') != '') {
                     open_popup({
-                        url: `/selection-modal/${$('#CarBrandId').val()}`,
+                        url: `/selection-modal/<?php echo $show_filter;?>/${$('#CarBrandSlug').attr('value')}`,
                         type: 'post',
                         size: 'lg'
                     });
@@ -628,10 +633,10 @@ $settings = Cache::read('settings', 'long');
                     openSelectionBrandModal();
                 }
             }
-            function openSelectionYearModal() {
-                if ($('#CarModelId').val() != 0 && $('#CarModelId').val() != '') {
+            function openSelectionGenerationModal() {
+                if ($('#CarModelSlug').attr('value') != 0 && $('#CarModelSlug').attr('value') != '') {
                     open_popup({
-                        url: `/selection-modal/${$('#CarBrandId').val()}/${$('#CarModelId').val()}`,
+                        url: `/selection-modal/<?php echo $show_filter;?>/${$('#CarBrandSlug').attr('value')}/${$('#CarModelSlug').attr('value')}`,
                         type: 'post',
                         size: 'lg'
                     });
@@ -640,20 +645,20 @@ $settings = Cache::read('settings', 'long');
                 }
             }
             function openSelectionModModal() {
-                if ($('#CarYear').val() != 0 && $('#CarYear').val() != '') {
+                if ($('#CarGenerationSlug').attr('value') != 0 && $('#CarGenerationSlug').attr('value') != '') {
                     open_popup({
-                        url: `/selection-modal/${$('#CarBrandId').val()}/${$('#CarModelId').val()}/${$('#CarYear').val()}`,
+                        url: `/selection-modal/<?php echo $show_filter;?>/${$('#CarBrandSlug').attr('value')}/${$('#CarModelSlug').attr('value')}/${$('#CarGenerationSlug').attr('value')}`,
                         type: 'post',
                         size: 'lg'
                     });
                 } else {
-                    openSelectionYearModal();
+                    openSelectionGenerationModal();
                 }
             }
         </script>
-    <?php } ?>
+
 	<div class="item">
-		<button class="bt-style1" id="sel_submit">ПОИСК</button>
+		<button class="bt-style1" id="sel_submit" type="button" onclick="onSearchModifications()">ПОИСК</button>
 	</div>
 	<div class="clear"></div>
 	</form>
@@ -662,35 +667,15 @@ $settings = Cache::read('settings', 'long');
 <!--
 $(function(){
 	$('#sel_submit').click(function() {
-		if ($('#CarBrandId').val() == 0 || $('#CarBrandId').val() == '') {
+		if ($('#CarBrandSlug').val() == 0 || $('#CarBrandSlug').val() == '') {
 			return false;
-		}
-	});
-	$('#CarBrandId').change(function() {
-		if (parseInt($(this).val()) != 0) {
-			$('#CarModelId option').remove();
-			$('#CarModelId').ajaxAddOption('/car_models/get_models/'+$(this).val(), {}, false);
-		}
-	});
-	$('#CarModelId').change(function() {
-		if (parseInt($(this).val()) != 0) {
-			$('#CarYear option').remove();
-			$('#CarYear').ajaxAddOption('/car_models/get_years/'+$(this).val(), {}, false);
-		}
-	});
-	$('#CarYear').change(function() {
-		var brand_id = $('#CarBrandId').val();
-		var model_id = $('#CarModelId').val();
-		if (parseInt($(this).val()) != 0) {
-			$('#CarMod option').remove();
-			$('#CarMod').ajaxAddOption('/car_modifications/get_modifications/' + brand_id + '/' + model_id + '/' + $(this).val(), {}, false);
 		}
 	});
 });
 //-->
 </script>
 <?php } elseif ($show_filter == 5) { ?>
-<div class="filter-group" id="filter">
+<div class="filter-group" id="filter" style="<?php if (!empty($modification_slug)) { echo 'display: none'; } ?>">
 	<?php
 		echo $this->Form->create('UsedTyre', array('type' => 'get', 'url' => array('controller' => 'used_tyres', 'action' => 'index')));
 	?>
@@ -724,7 +709,7 @@ $(function(){
 	</form>
 </div>
 <?php } elseif ($show_filter == 6) { ?>
-<div class="filter-group" id="filter">
+<div class="filter-group" id="filter" style="<?php if (!empty($modification_slug)) { echo 'display: none'; } ?>">
 	<?php
 		$url = array('controller' => 'tubes', 'action' => 'index');
 		echo $this->Form->create('Product', array('type' => 'get', 'url' => $url));
@@ -924,28 +909,44 @@ function serializeArray(form) {
 	return ar;
 }
 
+function onSearchModifications() {
+    const season = $('#AutoSelectionSeason').val();
+    const mod = $('#CarModificationSlug').attr('value');
 
+    if (<?php echo $show_filter; ?> === 1) {
+        // tyres
+        window.location = `${origin}/tyres?modification=${mod}&season=${season ? season : ''}<?php if (!empty($size1)) { echo '&size1='.$size1; } ?><?php if (!empty($size2)) { echo '&size2='.$size2; } ?><?php if (!empty($size3)) { echo '&size3='.$size3; } ?>`;
+    }
+    if (<?php echo $show_filter; ?> === 2) {
+        // disks
+        window.location = `${origin}/disks?modification=${mod}`;
+    }
+    if (<?php echo $show_filter; ?> === 3) {
+        // disks
+        window.location = `${origin}/akb?modification=${mod}`;
+    }
+}
 
 //-->
 </script>
 <?php if (CONST_SELECTION_WITH_MODALS == '1') { ?>
         <script type="text/javascript">
-            $('#CarBrandId').on('mousedown', function(e) {
+            $('#CarBrandSlug').on('mousedown', function(e) {
                 e.preventDefault();
                 this.blur();
                 window.focus();
             });
-            $('#CarModelId').on('mousedown', function(e) {
+            $('#CarModelSlug').on('mousedown', function(e) {
                 e.preventDefault();
                 this.blur();
                 window.focus();
             });
-            $('#CarYear').on('mousedown', function(e) {
+            $('#CarGenerationSlug').on('mousedown', function(e) {
                 e.preventDefault();
                 this.blur();
                 window.focus();
             });
-            $('#CarMod').on('mousedown', function(e) {
+            $('#CarModificationSlug').on('mousedown', function(e) {
                 e.preventDefault();
                 this.blur();
                 window.focus();
