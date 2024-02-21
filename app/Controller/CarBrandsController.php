@@ -54,7 +54,7 @@ class CarBrandsController extends AppController {
 		$this->set('breadcrumbs', $breadcrumbs);
 		$this->set('active_menu', 'selection');
 		$this->set('show_filter', 4);
-		$this->set('show_left_menu', true);
+		$this->set('show_left_menu', false);
         $this->set('show_switch_params_and_auto', false);
 	}
 	public function view($slug) {
@@ -82,7 +82,7 @@ class CarBrandsController extends AppController {
 			$this->set('brand_id', $brand['CarBrand']['id']);
 			$this->setMeta('title', 'Подбор по авто ' . $brand['CarBrand']['title']);
 			$this->set('brand', $brand);
-			$this->set('show_left_menu', true);
+			$this->set('show_left_menu', false);
 			$this->set('active_menu', 'selection');
 			$this->set('show_filter', 4);
             $this->set('show_switch_params_and_auto', false);

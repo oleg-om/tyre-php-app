@@ -28,7 +28,7 @@ echo '<p class="akb__promo"><img src="http://kerchshina.com/files/1/akb4.jpg" al
                             ?>
                             <li>
                                     <span class="<?php if ($filter['is_active'] == 1) { echo 'is_active'; }?>">
-                                        <?php if ($filter['is_active'] == 1) { echo '• '; }?><?php echo $this->Html->link($size['CarBatteries']['capacity_min'].'-'.$size['CarBatteries']['capacity_max'].' Ач, '.$size['CarBatteries']['polarity'].' полярность, размер (ДхШхВ) '.$size['CarBatteries']['length_min'].'-'.$size['CarBatteries']['length_max'].'x'.$size['CarBatteries']['width_min'].'-'.$size['CarBatteries']['width_max'].'x'.$size['CarBatteries']['height_min'].'-'.$size['CarBatteries']['height_max'].' мм', array('controller' => 'akb', 'action' => 'index', '?' => $filter), array('escape' => false));?>
+                                        <?php if ($filter['is_active'] == 1) { echo '• '; }?><?php echo $this->Html->link($size['CarBatteries']['capacity_min'].'-'.$size['CarBatteries']['capacity_max'].' Ач, '.$size['CarBatteries']['polarity'].' полярность, '.$size['CarBatteries']['type_case'].', размер (ДхШхВ) '.$size['CarBatteries']['length_min'].'-'.$size['CarBatteries']['length_max'].'x'.$size['CarBatteries']['width_min'].'-'.$size['CarBatteries']['width_max'].'x'.$size['CarBatteries']['height_min'].'-'.$size['CarBatteries']['height_max'].' мм', array('controller' => 'akb', 'action' => 'index', '?' => $filter), array('escape' => false));?>
                                     </span>
                             </li>
                         <?php } ?>
@@ -47,7 +47,7 @@ echo '<p class="akb__promo"><img src="http://kerchshina.com/files/1/akb4.jpg" al
                             ?>
                             <li>
                                     <span class="<?php if ($filter['is_active'] == 1) { echo 'is_active'; }?>">
-                                        <?php if ($filter['is_active'] == 1) { echo '• '; }?><?php echo $this->Html->link($size['CarBatteries']['capacity_min'].'-'.$size['CarBatteries']['capacity_max'].' Ач, '.$size['CarBatteries']['polarity'].' полярность, размер (ДхШхВ) '.$size['CarBatteries']['length_min'].'-'.$size['CarBatteries']['length_max'].'x'.$size['CarBatteries']['width_min'].'-'.$size['CarBatteries']['width_max'].'x'.$size['CarBatteries']['height_min'].'-'.$size['CarBatteries']['height_max'].' мм', array('controller' => 'akb', 'action' => 'index', '?' => $filter), array('escape' => false));?>
+                                        <?php if ($filter['is_active'] == 1) { echo '• '; }?><?php echo $this->Html->link($size['CarBatteries']['capacity_min'].'-'.$size['CarBatteries']['capacity_max'].' Ач, '.$size['CarBatteries']['polarity'].' полярность, '.$size['CarBatteries']['type_case'].', размер (ДхШхВ) '.$size['CarBatteries']['length_min'].'-'.$size['CarBatteries']['length_max'].'x'.$size['CarBatteries']['width_min'].'-'.$size['CarBatteries']['width_max'].'x'.$size['CarBatteries']['height_min'].'-'.$size['CarBatteries']['height_max'].' мм', array('controller' => 'akb', 'action' => 'index', '?' => $filter), array('escape' => false));?>
                                     </span>
                             </li>
                         <?php } ?>
@@ -117,6 +117,7 @@ echo $this->element('currency');
 				<th>Кол.</th>
 				<th></th>
 			</tr>
+
 			<?php $i = 0; foreach ($products as $item) { ?>
 
 			<tr height="22" class="rowTint<?php echo $i % 2 == 1 ? '1' : ''; ?>">
@@ -154,6 +155,7 @@ echo $this->element('currency');
 				<td><?php echo $item['Product']['in_stock'] ? '.' : ''; ?></td>
 			</tr>
 			<?php $i ++; } ?>
+            <?php if (empty($products)) { echo 'По Вашему запросу ничего не найдено'; } ?>
 		</table>
         <?php } ?>
         <?php if ($mode == 'block') { ?>
@@ -223,6 +225,7 @@ echo $this->element('currency');
                         </div>
                         <?php $i ++; } ?>
                 </div></div>
+            <?php if (empty($products)) { echo 'По Вашему запросу ничего не найдено'; } ?>
         <?php } ?>
 		<?php
 			echo $this->element('pager', array('bottom' => true));

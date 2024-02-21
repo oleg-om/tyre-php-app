@@ -1608,6 +1608,7 @@ endforeach;
                 $car_diameters[] = 'R'.$car_size['CarWheels']['front_axle_diameter'];
             }
 
+
             $this->set('car_diameters', array_unique($car_diameters));
 
 //             if no sizes in query url use first factory size
@@ -1660,7 +1661,7 @@ endforeach;
                     } else {
                         $first_size = array_values($filteredTuningTyres)[0];
                     }
-                    print_r(json_encode($first_size));
+
                     // getDiskParams
                     $item = $first_size['CarWheels'];
                     $filter = array('size1' => $item['front_axle_diameter'], 'size2' => $item['front_axle_pn'].'x'.$item['front_axle_pcd'], 'et_from' => $item['front_axle_et_min'], 'et_to' => $item['front_axle_et_max'], 'hub_from' => strval($item['front_axle_co_min']), 'hub_to' => strval($item['front_axle_co_max']), 'in_stock4' => 0, 'in_stock' => 2, 'width_from' => $item['front_axle_width_min'], 'width_to' => $item['front_axle_width_max'], 'modification' => $item['modification_slug'], 'diameter' => $diameter);

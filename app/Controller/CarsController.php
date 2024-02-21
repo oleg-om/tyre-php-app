@@ -365,6 +365,88 @@ class CarsController extends AppController {
 		}
 	}
 	public function car_view($brand_slug, $model_slug, $generation_slug, $modification_slug) {
+        $this->loadModel('CarTyres');
+        $this->loadModel('CarWheels');
+        $this->loadModel('CarBatteries');
+        $this->loadModel('CarBrand');
+        $this->loadModel('CarModel');
+        $this->loadModel('CarGeneration');
+        $this->loadModel('CarModification');
+
+        if ($car_modification = $this->CarModification->find('first', array('conditions' => array('CarModification.is_active' => 1, 'CarModification.slug' => $modification_slug)))) {
+            $car_generation = $this->CarGeneration->find('first', array('conditions' => array('CarGeneration.is_active' => 1, 'CarGeneration.slug' => $car_modification['CarModification']['generation_slug'])));
+            $car_model = $this->CarModel->find('first', array('conditions' => array('CarModel.is_active' => 1, 'CarModel.slug' => $car_generation['CarGeneration']['model_slug'])));
+            $car_brand = $this->CarBrand->find('first', array('conditions' => array('CarBrand.is_active' => 1, 'CarBrand.slug' => $car_model['CarModel']['brand_slug'])));
+
+            $this->set('car_modification', $car_modification);
+            $this->set('car_generation', $car_generation);
+            $this->set('car_model', $car_model);
+            $this->set('car_brand', $car_brand);
+            $this->set('modification_slug', $modification_slug);
+
+            // tyres
+
+            $car_tyres = $this->CarTyres->find('first', array('conditions' => array('CarTyres.modification_slug' => $modification_slug)));
+
+            $this->set('$car_tyres', $car_tyres);
+            $this->set('car_image', $car_generation['CarGeneration']['image_default']);
+
+            $factory_tyres = explode('|', $car_tyres['CarTyres']['factory_tyres']);
+            $tuning_tyres = explode('|', $car_tyres['CarTyres']['tuning_tyres']);
+
+            $this->set('factory_tyres', $factory_tyres);
+            $this->set('tuning_tyres', $tuning_tyres);
+
+            $factory_wheels = $this->CarWheels->find('all', array('conditions' => array('CarWheels.modification_slug' => $modification_slug, 'CarWheels.factory' => 1)));
+            $tuning_wheels = $this->CarWheels->find('all', array('conditions' => array('CarWheels.modification_slug' => $modification_slug, 'CarWheels.factory' => 0)));
+
+            $this->set('factory_wheels', $factory_wheels);
+            $this->set('tuning_wheels', $tuning_wheels);
+
+            $factory_akb = $this->CarBatteries->find('all', array('conditions' => array('CarBatteries.modification_slug' => $modification_slug, 'CarBatteries.is_factory' => 1)));
+            $tuning_akb = $this->CarBatteries->find('all', array('conditions' => array('CarBatteries.modification_slug' => $modification_slug, 'CarBatteries.is_factory' => 0)));
+
+            $this->set('car_image', $car_generation['CarGeneration']['image_default']);
+
+            $this->set('factory_akb', $factory_akb);
+            $this->set('tuning_akb', $tuning_akb);
+            $this->set('start_stop', $this->request->query['start_stop']);
+
+            $this->set('car_image', $car_generation['CarGeneration']['image_default']);
+
+            			$breadcrumbs = array();
+						$breadcrumbs[] = array(
+							'url' => array('controller' => 'car_brands', 'action' => 'index'),
+							'title' => 'Подбор по авто'
+						);
+						$breadcrumbs[] = array(
+							'url' => array('controller' => 'car_brands', 'action' => 'view', 'slug' => $car_brand['CarBrand']['slug']),
+							'title' => $car_brand['CarBrand']['title']
+						);
+						$breadcrumbs[] = array(
+							'url' => array('controller' => 'car_models', 'action' => 'view', 'brand_slug' => $car_brand['CarBrand']['slug'], 'model_slug' => $car_model['CarModel']['slug']),
+							'title' => $car_model['CarModel']['title']
+						);
+						$breadcrumbs[] = array(
+							'url' => array('controller' => 'car_generations', 'action' => 'view', 'brand_slug' => $car_brand['CarBrand']['slug'], 'model_slug' => $car_model['CarModel']['slug'], 'generation_slug' => $car_generation['CarGeneration']['slug']),
+							'title' => $car_generation['CarGeneration']['title']
+						);
+						$breadcrumbs[] = array(
+							'url' => null,
+							'title' => $car_modification['CarModification']['title']
+						);
+
+            $this->set('breadcrumbs', $breadcrumbs);
+
+            $this->set('show_left_menu', false);
+
+        } else {
+            $this->response->statusCode(404);
+            $this->response->send();
+            $this->render(true);
+            return;
+        }
+
 //		$this->set('car_tyres', array());
 //		$this->set('car_years', array());
 //		$this->set('car_modifications', array());

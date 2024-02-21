@@ -20,6 +20,7 @@ $this->Paginator->options(array('url' => $url));
                 <div class="car__sizes__diameters">
                     <?php
                     $diameters = $car_diameters;
+                    sort($diameters);
                     foreach ($diameters as $diameter) { ?>
                         <?php
                         $diameter_filter = array('modification' => $modification_slug, 'diameter' => $diameter);

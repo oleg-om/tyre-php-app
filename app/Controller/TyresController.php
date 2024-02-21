@@ -175,6 +175,7 @@ class TyresController extends AppController {
         if ($modification_slug) {
 
             $this->loadModel('CarTyres');
+            $this->loadModel('CarWheels');
             $this->loadModel('CarBrand');
             $this->loadModel('CarModel');
             $this->loadModel('CarGeneration');

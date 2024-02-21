@@ -268,6 +268,9 @@ class AkbController extends AppController {
 		if (isset($this->request->query['f1']) && !empty($this->request->query['f1'])) {
 			$conditions['Product.f1'] = $this->request->query['f1'];
 		}
+        if (isset($this->request->query['f2']) && !empty($this->request->query['f2'])) {
+            $conditions['Product.f2'] = $this->request->query['f2'] === 'left' ? 'L+' : 'R+';
+        }
 		if (isset($this->request->query['current']) && !empty($this->request->query['current'])) {
 			$conditions['Product.current'] = $this->request->query['current'];
 		}
@@ -620,13 +623,13 @@ class AkbController extends AppController {
 		}
 		natsort($akb_f1);
 		$temp_cond = $conditions;
-		unset($temp_cond['Product.current']);
-		$products = $this->Product->find('all', array('conditions' => $temp_cond, 'fields' => 'DISTINCT Product.current', 'order' => 'Product.current'));
-		$akb_current = array();
+		unset($temp_cond['Product.f1']);
+		$products = $this->Product->find('all', array('conditions' => $temp_cond, 'fields' => 'DISTINCT Product.f1', 'order' => 'Product.f1'));
+		$akb_f1 = array();
 		foreach ($products as $item) {
-			$current = $item['Product']['current'];
-			if ($current > 0) {
-				$akb_current[$current] = $current;
+			$f1 = $item['Product']['f1'];
+			if (!empty($f1)) {
+                $akb_f1[$f1] = $f1;
 			}
 		}		
 		natsort($akb_current);

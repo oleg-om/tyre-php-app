@@ -12,10 +12,10 @@
 <?php if ($show_switch_params_and_auto == true): ?>
 <div class="title__switch">
 <div class="left-nav__switch">
-    <a href="javascript:void(0);" onclick="switchTab('params');" id="left-nav__switch__button-params" class="left-nav__switch__button active">
+    <a href="javascript:void(0);" onclick="switchTab('params');" id="left-nav__switch__button-params" class="left-nav__switch__button <?php if (empty($modification_slug)) { echo 'active'; } ?>">
         По параметрам
     </a>
-        <a href="javascript:void(0);" onclick="switchTab('auto');" id="left-nav__switch__button-auto" class="left-nav__switch__button">
+        <a href="javascript:void(0);" onclick="switchTab('auto');" id="left-nav__switch__button-auto" class="left-nav__switch__button <?php if (!empty($modification_slug)) { echo 'active'; } ?>">
         По авто
     </a>
 </div>
@@ -87,7 +87,7 @@
         function getTab() {
             if ('<?php echo $modification_slug; ?>') {
                 setTimeout(()=> {
-                    switchTab('auto');
+                    // switchTab('auto');
                     setAuto();
                     }, 1);
             }
@@ -132,7 +132,7 @@ $settings = Cache::read('settings', 'long');
 	
 ?>
 <?php if ($show_filter == 1) { ?>
-<div class="filter-group tyres" id="filter">
+<div class="filter-group tyres" id="filter" style="<?php if (!empty($modification_slug)) { echo 'display: none'; } ?>">
 	<?php
 		$url = array('controller' => 'tyres', 'action' => 'index');
 
@@ -292,7 +292,7 @@ $settings = Cache::read('settings', 'long');
 	</form>
 </div>
 <?php } elseif ($show_filter == 2) { $path = 'disks';?>
-<div class="filter-group disks" id="filter">
+<div class="filter-group disks" id="filter" style="<?php if (!empty($modification_slug)) { echo 'display: none'; } ?>">
 	<?php
 		if (!isset($this->request->data['Product']['in_stock'])) {
 			if ( $settings['SHOW_DISKS_BAR'] == 1 ) { $in_stocky = 1; } else { $in_stocky = 2; }
@@ -418,7 +418,7 @@ $settings = Cache::read('settings', 'long');
 	</form>
 </div>
 <?php } elseif ($show_filter == 7) { $path = 'bolts';?>
-<div class="filter-group" id="filter">
+<div class="filter-group" id="filter" style="<?php if (!empty($modification_slug)) { echo 'display: none'; } ?>">
 	<?php
 		$url = array('controller' => 'bolts', 'action' => 'index');
 		echo $this->Form->create('Product', array('type' => 'get', 'id' => 'filter-form', 'url' => $url));
@@ -503,7 +503,7 @@ $settings = Cache::read('settings', 'long');
 	</form>
 </div>
 <?php } elseif ($show_filter == 3) { $path = 'akb';?>
-<div class="filter-group" id="filter">
+<div class="filter-group" id="filter" style="<?php if (!empty($modification_slug)) { echo 'display: none'; } ?>">
 	<?php
 		$url = array('controller' => 'akb', 'action' => 'index');
 		echo $this->Form->create('Product', array('type' => 'get', 'id' => 'filter-form', 'url' => $url));
@@ -572,7 +572,7 @@ $settings = Cache::read('settings', 'long');
 	</form>
 </div>
 <?php } if ($show_filter == 4 || $show_switch_params_and_auto == true) { ?>
-<div class="filter-group" id="filter-group__auto" style="<?php if ($show_switch_params_and_auto == true) { echo 'display: none'; } ?>">
+<div class="filter-group" id="filter-group__auto" style="<?php if ($show_switch_params_and_auto == true) { echo 'display: none'; } ?> <?php if (!empty($modification_slug)) { echo 'display: block'; } ?>">
 	<?php
 		$url = array('controller' => 'selection', 'action' => 'view');
 		echo $this->Form->create('Car', array('type' => 'get', 'url' => $url));
@@ -675,7 +675,7 @@ $(function(){
 //-->
 </script>
 <?php } elseif ($show_filter == 5) { ?>
-<div class="filter-group" id="filter">
+<div class="filter-group" id="filter" style="<?php if (!empty($modification_slug)) { echo 'display: none'; } ?>">
 	<?php
 		echo $this->Form->create('UsedTyre', array('type' => 'get', 'url' => array('controller' => 'used_tyres', 'action' => 'index')));
 	?>
@@ -709,7 +709,7 @@ $(function(){
 	</form>
 </div>
 <?php } elseif ($show_filter == 6) { ?>
-<div class="filter-group" id="filter">
+<div class="filter-group" id="filter" style="<?php if (!empty($modification_slug)) { echo 'display: none'; } ?>">
 	<?php
 		$url = array('controller' => 'tubes', 'action' => 'index');
 		echo $this->Form->create('Product', array('type' => 'get', 'url' => $url));

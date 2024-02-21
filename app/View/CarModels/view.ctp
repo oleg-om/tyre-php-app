@@ -1,6 +1,13 @@
 <h2 class="title">Подбор по авто: <?php echo $brand['CarBrand']['title'] . ' ' . $model['CarModel']['title']; ?></h2>
 <p>Выберите поколение:</p>
 <div class="selection">
+    <?php
+    function sortCars($a, $b) {
+//        return strcmp($a->release_year_start, $b->release_year_start);
+        return $a['CarGeneration']['release_year_start'] - $b['CarGeneration']['release_year_start'] ;
+    }
+    usort($car_generations, 'sortCars'); ?>
+
 	<?php foreach ($car_generations as $item) { ?>
 		<div class="item"><?php
             $image = '';
