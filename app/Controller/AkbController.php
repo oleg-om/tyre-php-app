@@ -151,7 +151,7 @@ class AkbController extends AppController {
 
                 // getAkbParams
                 $item = $first_size['CarBatteries'];
-                $filter = array('ah_from' => $item['capacity_min'], 'ah_to' => $item['capacity_max'], 'length_from' => $item['length_min'], 'length_to' => $item['length_max'], 'width_from' => $item['width_min'], 'width_to' => $item['width_max'], 'height_from' => $item['height_min'], 'height_to' => $item['height_max'], 'modification' => $item['modification_slug'], 'start_stop' => $item['start_stop']);
+                $filter = array('ah_from' => $item['capacity_min'], 'ah_to' => $item['capacity_max'], 'length_from' => $item['length_min'], 'length_to' => $item['length_max'], 'width_from' => $item['width_min'], 'width_to' => $item['width_max'], 'height_from' => $item['height_min'], 'height_to' => $item['height_max'], 'modification' => $item['modification_slug'], 'start_stop' => $item['start_stop'], 'f1' => $item['type_case_id'] === 1 ? 'euro' : 'asia', 'f2' => $item['polarity_id'] === 1 ? 'left' : 'right');
 
                 // redirect with sizes
                 $this->redirect(array('controller' => 'akb', 'action' => 'index', '?' => $filter));
