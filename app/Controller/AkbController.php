@@ -174,44 +174,44 @@ class AkbController extends AppController {
             }
         }
 
-        if (isset($this->request->query['width_from']) && !empty($this->request->query['width_from'])) {
-            $ah_s = floatval(str_replace(',', '.', $this->request->query['width_from']));
-            if ($ah_s > 0) {
-                $conditions['Product.width >='] = $ah_s;
-            }
-        }
-        if (isset($this->request->query['width_to']) && !empty($this->request->query['width_to'])) {
-            $ah_s = floatval(str_replace(',', '.', $this->request->query['width_to']));
-            if ($ah_s > 0) {
-                $conditions['Product.width <='] = $ah_s;
-            }
-        }
-
-        if (isset($this->request->query['length_from']) && !empty($this->request->query['length_from'])) {
-            $ah_s = floatval(str_replace(',', '.', $this->request->query['length_from']));
-            if ($ah_s > 0) {
-                $conditions['Product.length >='] = $ah_s;
-            }
-        }
-        if (isset($this->request->query['length_to']) && !empty($this->request->query['length_to'])) {
-            $ah_s = floatval(str_replace(',', '.', $this->request->query['length_to']));
-            if ($ah_s > 0) {
-                $conditions['Product.length <='] = $ah_s;
-            }
-        }
-
-        if (isset($this->request->query['height_from']) && !empty($this->request->query['height_from'])) {
-            $ah_s = floatval(str_replace(',', '.', $this->request->query['height_from']));
-            if ($ah_s > 0) {
-                $conditions['Product.height >='] = $ah_s;
-            }
-        }
-        if (isset($this->request->query['height_to']) && !empty($this->request->query['height_to'])) {
-            $ah_s = floatval(str_replace(',', '.', $this->request->query['height_to']));
-            if ($ah_s > 0) {
-                $conditions['Product.height <='] = $ah_s;
-            }
-        }
+//        if (isset($this->request->query['width_from']) && !empty($this->request->query['width_from'])) {
+//            $ah_s = floatval(str_replace(',', '.', $this->request->query['width_from']));
+//            if ($ah_s > 0) {
+//                $conditions['Product.width >='] = $ah_s;
+//            }
+//        }
+//        if (isset($this->request->query['width_to']) && !empty($this->request->query['width_to'])) {
+//            $ah_s = floatval(str_replace(',', '.', $this->request->query['width_to']));
+//            if ($ah_s > 0) {
+//                $conditions['Product.width <='] = $ah_s;
+//            }
+//        }
+//
+//        if (isset($this->request->query['length_from']) && !empty($this->request->query['length_from'])) {
+//            $ah_s = floatval(str_replace(',', '.', $this->request->query['length_from']));
+//            if ($ah_s > 0) {
+//                $conditions['Product.length >='] = $ah_s;
+//            }
+//        }
+//        if (isset($this->request->query['length_to']) && !empty($this->request->query['length_to'])) {
+//            $ah_s = floatval(str_replace(',', '.', $this->request->query['length_to']));
+//            if ($ah_s > 0) {
+//                $conditions['Product.length <='] = $ah_s;
+//            }
+//        }
+//
+//        if (isset($this->request->query['height_from']) && !empty($this->request->query['height_from'])) {
+//            $ah_s = floatval(str_replace(',', '.', $this->request->query['height_from']));
+//            if ($ah_s > 0) {
+//                $conditions['Product.height >='] = $ah_s;
+//            }
+//        }
+//        if (isset($this->request->query['height_to']) && !empty($this->request->query['height_to'])) {
+//            $ah_s = floatval(str_replace(',', '.', $this->request->query['height_to']));
+//            if ($ah_s > 0) {
+//                $conditions['Product.height <='] = $ah_s;
+//            }
+//        }
 
 
         $this->loadModel('Brand');
