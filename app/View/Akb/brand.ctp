@@ -7,7 +7,7 @@ $this->Paginator->options(array('url' => array('controller' => 'akb', 'action' =
 <div id="vmMainPage">
     <?php
     $url = array('controller' => 'akb', 'action' => 'brand', 'slug' => $brand['Brand']['slug'], '?' => $filter);
-    echo $this->element('mode_selector', array('url' => $url, 'akb_switch' => true));
+    echo $this->element('mode_selector', array('url' => $url, 'title' => true));
     ?>
     <?php if ($mode == 'table') { ?>
 	<table border="0" width="100%" cellspacing="0" cellpadding="0" class="sectiontableheader sectiontableentry1">

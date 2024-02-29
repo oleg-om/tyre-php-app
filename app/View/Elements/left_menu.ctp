@@ -509,6 +509,9 @@ $settings = Cache::read('settings', 'long');
 		echo $this->Form->create('Product', array('type' => 'get', 'id' => 'filter-form', 'url' => $url));
 	?>
 	<div class="item">
+        <?php
+        echo $this->element('range_slider', array('options' => $akb_ah, 'title' => 'Емкость, Ач:', 'id' => 'akb-ah'));
+        ?>
         <div class="item-group">
 		<div class="item-inner">
 			<label class="name" for="ProductAh">Ah:</label>

@@ -94,7 +94,7 @@ class AkbController extends AppController {
 		$this->redirect($url);
 	}
 	public function index() {
-        $mode = 'block';
+        $mode = 'table';
         if (isset($this->request->query['mode']) && in_array($this->request->query['mode'], array('block', 'list', 'table'))) {
             $mode = $this->request->query['mode'];
         }
@@ -596,12 +596,20 @@ class AkbController extends AppController {
 		if (isset($this->request->query['length']) && !empty($this->request->query['length'])) {
 			$conditions['Product.length'] = $this->request->query['length'];
 		}
+        if (isset($this->request->query['ah_from']) && !empty($this->request->query['ah_from'])) {
+            $conditions['Product.ah_from'] = $this->request->query['ah_from'];
+        }
+        if (isset($this->request->query['ah_to']) && !empty($this->request->query['ah_to'])) {
+            $conditions['Product.ah_to'] = $this->request->query['ah_to'];
+        }
 		return $conditions;
 	}
 	private function _filter_akb_params($conditions = array()) {
 		$this->loadModel('Product');
 		$temp_cond = $conditions;
 		unset($temp_cond['Product.ah']);
+        unset($temp_cond['Product.ah_from']);
+        unset($temp_cond['Product.ah_to']);
 		$products = $this->Product->find('all', array('conditions' => $temp_cond, 'fields' => 'DISTINCT Product.ah', 'order' => 'Product.ah'));
 		$akb_ah = array();
 		foreach ($products as $item) {
