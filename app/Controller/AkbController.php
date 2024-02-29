@@ -151,7 +151,7 @@ class AkbController extends AppController {
 
                 // getAkbParams
                 $item = $first_size['CarBatteries'];
-                $filter = array('ah_from' => $item['capacity_min'], 'ah_to' => $item['capacity_max'], 'length_from' => $item['length_min'], 'length_to' => $item['length_max'], 'width_from' => $item['width_min'], 'width_to' => $item['width_max'], 'height_from' => $item['height_min'], 'height_to' => $item['height_max'], 'modification' => $item['modification_slug'], 'start_stop' => $item['start_stop'], 'f1' => $item['type_case_id'] === 1 ? 'euro' : 'asia', 'f2' => $item['polarity_id'] === 1 ? 'left' : 'right');
+                $filter = array('ah_from' => $item['capacity_min'], 'ah_to' => $item['capacity_max'], 'length_from' => $item['length_min'], 'length_to' => $item['length_max'], 'width_from' => $item['width_min'], 'width_to' => $item['width_max'], 'height_from' => $item['height_min'], 'height_to' => $item['height_max'], 'modification' => $item['modification_slug'], 'start_stop' => $item['start_stop']);
 
                 // redirect with sizes
                 $this->redirect(array('controller' => 'akb', 'action' => 'index', '?' => $filter));
@@ -177,41 +177,41 @@ class AkbController extends AppController {
 //        if (isset($this->request->query['width_from']) && !empty($this->request->query['width_from'])) {
 //            $ah_s = floatval(str_replace(',', '.', $this->request->query['width_from']));
 //            if ($ah_s > 0) {
-//                $conditions['Product.width >='] = $ah_s;
+//                $conditions['Product.length >='] = $ah_s;
 //            }
 //        }
 //        if (isset($this->request->query['width_to']) && !empty($this->request->query['width_to'])) {
 //            $ah_s = floatval(str_replace(',', '.', $this->request->query['width_to']));
 //            if ($ah_s > 0) {
-//                $conditions['Product.width <='] = $ah_s;
+//                $conditions['Product.length <='] = $ah_s;
 //            }
 //        }
 //
 //        if (isset($this->request->query['length_from']) && !empty($this->request->query['length_from'])) {
 //            $ah_s = floatval(str_replace(',', '.', $this->request->query['length_from']));
 //            if ($ah_s > 0) {
-//                $conditions['Product.length >='] = $ah_s;
+//                $conditions['Product.width >='] = $ah_s;
 //            }
 //        }
 //        if (isset($this->request->query['length_to']) && !empty($this->request->query['length_to'])) {
 //            $ah_s = floatval(str_replace(',', '.', $this->request->query['length_to']));
 //            if ($ah_s > 0) {
-//                $conditions['Product.length <='] = $ah_s;
+//                $conditions['Product.width <='] = $ah_s;
 //            }
 //        }
-//
-//        if (isset($this->request->query['height_from']) && !empty($this->request->query['height_from'])) {
-//            $ah_s = floatval(str_replace(',', '.', $this->request->query['height_from']));
-//            if ($ah_s > 0) {
-//                $conditions['Product.height >='] = $ah_s;
-//            }
-//        }
-//        if (isset($this->request->query['height_to']) && !empty($this->request->query['height_to'])) {
-//            $ah_s = floatval(str_replace(',', '.', $this->request->query['height_to']));
-//            if ($ah_s > 0) {
-//                $conditions['Product.height <='] = $ah_s;
-//            }
-//        }
+
+        if (isset($this->request->query['height_from']) && !empty($this->request->query['height_from'])) {
+            $ah_s = floatval(str_replace(',', '.', $this->request->query['height_from']));
+            if ($ah_s > 0) {
+                $conditions['Product.height >='] = $ah_s;
+            }
+        }
+        if (isset($this->request->query['height_to']) && !empty($this->request->query['height_to'])) {
+            $ah_s = floatval(str_replace(',', '.', $this->request->query['height_to']));
+            if ($ah_s > 0) {
+                $conditions['Product.height <='] = $ah_s;
+            }
+        }
 
 
         $this->loadModel('Brand');
