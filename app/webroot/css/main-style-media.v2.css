@@ -65,6 +65,17 @@
     .selection__modal {
         columns: 3;
     }
+    .list-view__item {
+        grid-template-columns: auto 139px 131px;
+        grid-template-rows: auto;
+    }
+    .list-view__price-col {
+        margin-left: 30px;
+    }
+    .list-view__info-col .akb-polarity {
+        display: flex;
+        left: 83px;
+    }
 }
 
 @media screen and (min-width: 992px) {
@@ -366,6 +377,9 @@
     #header .cart {
         padding-top: 0;
     }
+    .list-view__item {
+        grid-template-columns: auto 200px 180px;
+    }
 }
 
 @media screen and (min-width: 1320px) {
@@ -431,5 +445,8 @@
     #header .logo .logo__years {
         bottom: -12px;
         font-size: 10px;
+    }
+    .list-view__info-col .akb-polarity {
+        left: 160px;
     }
 }

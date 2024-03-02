@@ -94,7 +94,7 @@ class AkbController extends AppController {
 		$this->redirect($url);
 	}
 	public function index() {
-        $mode = 'block';
+        $mode = 'list';
         if (isset($this->request->query['mode']) && in_array($this->request->query['mode'], array('block', 'list', 'table'))) {
             $mode = $this->request->query['mode'];
         }
