@@ -24,8 +24,8 @@ class Import extends AppModel {
 		parent::__construct();
 		$this->types = array(
 			1 => __d('admin_import', 'type_1'),
+            8 => __d('admin_import', 'type_8'),
 			2 => __d('admin_import', 'type_2'),
-			8 => __d('admin_import', 'type_8'),
 			3 => __d('admin_import', 'type_3'),
 			4 => __d('admin_import', 'type_4'),
 			5 => __d('admin_import', 'type_5'),

@@ -30,7 +30,7 @@ $this->Paginator->options(array('url' => $url));
         foreach ($diameters as $diameter) { ?>
 
             <?php
-            $diameter_filter = array('modification' => $modification_slug, 'diameter' => $diameter);
+            $diameter_filter = array('modification' => $modification_slug, 'diameter' => $diameter, 'season' => $season);
             $diameter_class = $diameter == 'R'.$size3 ? 'active-diameter' : '';
 
             echo $this->Html->link($diameter, array('controller' => 'tyres', 'action' => 'index', '?' => $diameter_filter), array('escape' => false, 'class' => $diameter_class));?>

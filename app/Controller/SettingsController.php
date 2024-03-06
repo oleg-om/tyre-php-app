@@ -8,7 +8,7 @@ class SettingsController extends AppController {
 		
 		$Label['PRODUCTINSTOCK']="По умолчанию в фильтре, Шины";
 		$Label['PRODUCTINSTOCK2']="По умолчанию в фильтре, Диски";
-		
+        $Label['POPULAR_SORT_SEASON']="При сортировки по популярности отображать в первую очередь";
 		
 		
 		

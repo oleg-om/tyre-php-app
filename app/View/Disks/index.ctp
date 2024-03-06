@@ -23,7 +23,7 @@ $this->Paginator->options(array('url' => $url));
                     sort($diameters);
                     foreach ($diameters as $diameter) { ?>
                         <?php
-                        $diameter_filter = array('modification' => $modification_slug, 'diameter' => $diameter);
+                        $diameter_filter = array('modification' => $modification_slug, 'diameter' => $diameter, 'material' => $material);
                         $diameter_class = $diameter == 'R'.$size1 ? 'active-diameter' : '';
 
                         echo $this->Html->link($diameter, array('controller' => 'disks', 'action' => 'index', '?' => $diameter_filter), array('escape' => false, 'class' => $diameter_class));?>
@@ -36,8 +36,8 @@ $this->Paginator->options(array('url' => $url));
                             <?php
 
                             foreach ($car_factory_sizes as $size) {
-                                $front_filter = $this->Frontend->getDiskParams($size)['front'];
-                                $back_filter = $this->Frontend->getDiskParams($size)['back'];
+                                $front_filter = $this->Frontend->getDiskParams($size, $material)['front'];
+                                $back_filter = $this->Frontend->getDiskParams($size, $material)['back'];
                                 ?>
                                 <li>
                                     <span class="<?php if ($front_filter['is_active'] == 1) { echo 'is_active'; }?>">
@@ -57,8 +57,8 @@ $this->Paginator->options(array('url' => $url));
                         <ul class="car__sizes__list">
                             <?php
                             foreach ($car_tuning_sizes as $size) {
-                                $front_filter = $this->Frontend->getDiskParams($size)['front'];
-                                $back_filter = $this->Frontend->getDiskParams($size)['back']; ?>
+                                $front_filter = $this->Frontend->getDiskParams($size, $material)['front'];
+                                $back_filter = $this->Frontend->getDiskParams($size, $material)['back']; ?>
                                 <li>
                                     <span class="<?php if ($front_filter['is_active'] == 1) { echo 'is_active'; }?>">
                                         <?php if ($front_filter['is_active'] == 1 || $back_filter['is_active'] == 1) { echo '• '; }?><?php if ($size['CarWheels']['kit'] == 1) { echo 'Передние'; } else echo 'Диски'; ?> <?php echo $this->Html->link($size['CarWheels']['front_axle_title'], array('controller' => 'disks', 'action' => 'index', '?' => $front_filter), array('escape' => false));?>
