@@ -3895,6 +3895,11 @@ table.withlines {
   cursor: help;
 }
 
+.tooltip-places-empty {
+  cursor: auto;
+  border: none;
+}
+
 .tooltip-places .tooltiptext {
   visibility: hidden;
   width: 250px;

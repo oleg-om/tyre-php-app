@@ -8,8 +8,9 @@ if (empty($text)) {
 $place_list = explode('|', $stock_places);
 ?>
 
-<div class="tooltip-places">
+<div class="tooltip-places <?php if (empty($stock_places)) { echo 'tooltip-places-empty'; } ?>">
     <?php echo $text; ?>
+    <?php if (!empty($stock_places)) { ?>
     <div class="tooltiptext">
         <span class="tooltip-places-title">Наличие по шинным центрам:</span>
         <table>
@@ -57,4 +58,5 @@ $place_list = explode('|', $stock_places);
         </tbody>
         </table>
     </div>
+    <?php } ?>
 </div>
