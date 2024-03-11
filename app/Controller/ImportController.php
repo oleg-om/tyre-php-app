@@ -3178,6 +3178,321 @@ class ImportController extends AppController {
 								}
 							}
 						//	exit();
+//                        АКБ (расширенный)
+                        case 9:
+                            $category_id = 3;
+                            $brand_slugs = $this->Brand->find('list', array('fields' => array('Brand.slug', 'Brand.id')));
+                            $all_brands = $this->Brand->find('list', array('conditions' => array('Brand.category_id' => $category_id), 'fields' => array('Brand.title', 'Brand.id')));
+                            $all_models = $this->BrandModel->find('all', array('conditions' => array('BrandModel.category_id' => $category_id), 'fields' => array('BrandModel.id', 'BrandModel.brand_id', 'BrandModel.title')));
+                            $model_synonyms = $this->ModelSynonym->find('all');
+                            $brand_synonyms = $this->BrandSynonym->find('all');
+                            $brands = array();
+                            $models = array();
+                            foreach ($all_brands as $brand => $id) {
+                                $brand = $this->_clean_text($brand);
+                                $brands[$brand] = $id;
+                                foreach ($brand_synonyms as $synonym) {
+                                    if ($synonym['BrandSynonym']['brand_id'] == $id) {
+                                        $brand = trim($this->_clean_text($synonym['BrandSynonym']['title']));
+                                        $brands[$brand] = $id;
+                                    }
+                                }
+                            }
+                            foreach ($all_models as $item) {
+                                if (!isset($models[$item['BrandModel']['brand_id']])) {
+                                    $models[$item['BrandModel']['brand_id']] = array();
+                                }
+                                $model = $this->_clean_text($item['BrandModel']['title'], false);
+                                $models[$item['BrandModel']['brand_id']][$model] = $item['BrandModel']['id'];
+                                foreach ($model_synonyms as $synonym) {
+                                    if ($synonym['ModelSynonym']['model_id'] == $item['BrandModel']['id']) {
+                                        $model = trim($this->_clean_text($synonym['ModelSynonym']['title'], false));
+                                        $models[$item['BrandModel']['brand_id']][$model] = $item['BrandModel']['id'];
+                                    }
+                                }
+                            }
+                            //debug($data->sheets[0]['cells']);
+                            for ($i = 1; $i <= $data->sheets[0]['numRows']; $i++) {
+                                if (isset($data->sheets[0]['cells'][$i][1])) {
+                                    $total_rows ++;
+                                    $brand_id = null;
+                                    $model_id = null;
+                                    $auto_text = trim($data->sheets[0]['cells'][$i][1]);
+                                    $auto = 'cars';
+
+                                    if ($auto_text == 'грузовой') {
+                                        $auto = 'trucks';
+                                    }
+                                    elseif ($auto_text == 'грузовые') {
+                                        $auto = 'trucks';
+                                    }
+                                    elseif ($auto_text == 'мото') {
+                                        $auto = 'moto';
+                                    }
+                                    elseif ($auto_text == 'легковой') {
+                                        $auto = 'cars';
+                                    }
+                                    elseif ($auto_text == 'легковые') {
+                                        $auto = 'cars';
+                                    }
+
+                                    $brand_name = trim($data->sheets[0]['cells'][$i][2]);
+                                    $model_name = trim($data->sheets[0]['cells'][$i][3]);
+                                    $brand = $this->_clean_text($brand_name);
+                                    $model = $this->_clean_text($model_name, false);
+                                    $is_short = trim($data->sheets[0]['cells'][$i][4]);
+                                    $manufacturing_technology = trim($data->sheets[0]['cells'][$i][5]);
+                                    $start_stop = trim($data->sheets[0]['cells'][$i][6]);
+                                    $warranty = trim($data->sheets[0]['cells'][$i][7]);
+                                    $country = trim($data->sheets[0]['cells'][$i][8]);
+                                    $size = trim($data->sheets[0]['cells'][$i][9]);
+                                    $size = str_replace('х', 'x', $size);
+                                    $ah = trim($data->sheets[0]['cells'][$i][10]);
+                                    $current = trim($data->sheets[0]['cells'][$i][11]);
+                                    $f1 = '';
+                                    if (isset($data->sheets[0]['cells'][$i][12])) {
+                                        $f1 = trim($data->sheets[0]['cells'][$i][12]);
+                                    }
+                                    $f2 = trim($data->sheets[0]['cells'][$i][13]);
+                                    $price = floatval(trim($data->sheets[0]['cells'][$i][14])) / $rate;
+                                    $price_with_exchange = floatval(trim($data->sheets[0]['cells'][$i][15])) / $rate;
+
+                                    $autodom_count = trim($data->sheets[0]['cells'][$i][16]);
+                                    $tiptop_count = trim($data->sheets[0]['cells'][$i][17]);
+                                    $bam_count = trim($data->sheets[0]['cells'][$i][18]);
+                                    $atp_count = trim($data->sheets[0]['cells'][$i][19]);
+                                    $taksopark_count = trim($data->sheets[0]['cells'][$i][20]);
+                                    $vianorshop_count = trim($data->sheets[0]['cells'][$i][21]);
+                                    $hundai_count = trim($data->sheets[0]['cells'][$i][22]);
+                                    $tavrida_count = trim($data->sheets[0]['cells'][$i][23]);
+                                    $gruz_count = trim($data->sheets[0]['cells'][$i][24]);
+
+                                    if (empty($autodom_count)) {
+                                        $autodom_count = 0;
+                                    }
+                                    if (empty($tiptop_count)) {
+                                        $tiptop_count = 0;
+                                    }
+                                    if (empty($bam_count)) {
+                                        $bam_count = 0;
+                                    }
+                                    if (empty($atp_count)) {
+                                        $atp_count = 0;
+                                    }
+                                    if (empty($taksopark_count)) {
+                                        $taksopark_count = 0;
+                                    }
+                                    if (empty($vianorshop_count)) {
+                                        $vianorshop_count = 0;
+                                    }
+                                    if (empty($hundai_count)) {
+                                        $hundai_count = 0;
+                                    }
+                                    if (empty($tavrida_count)) {
+                                        $tavrida_count = 0;
+                                    }
+                                    if (empty($gruz_count)) {
+                                        $gruz_count = 0;
+                                    }
+
+                                    $stock_count = intval(trim($data->sheets[0]['cells'][$i][25]));
+
+                                    $stock_places = $autodom_count.'|'.$tiptop_count.'|'.$bam_count.'|'.$atp_count.'|'.$taksopark_count.'|'.$vianorshop_count.'|'.$hundai_count.'|'.$tavrida_count.'|'.$gruz_count;
+
+                                    if (substr_count($size, 'x') == 2) {
+                                        list($length, $width, $height) = explode('x', $size);
+                                        if (isset($brands[$brand])) {
+                                            $brand_id = $brands[$brand];
+                                            if (isset($models[$brand_id][$model])) {
+                                                $model_id = $models[$brand_id][$model];
+                                            }
+                                            else {
+                                                $save_data = array(
+                                                    'is_active' => 1,
+                                                    'brand_id' => $brand_id,
+                                                    'category_id' => $category_id,
+                                                    'title' => $model_name,
+                                                    'meta_title' => $model_name,
+                                                    'slug' => $this->_transliterate($model_name)
+                                                );
+                                                $this->BrandModel->create();
+                                                if ($this->BrandModel->save($save_data)) {
+                                                    $created_models ++;
+                                                    $model_id = $this->BrandModel->id;
+                                                    $models[$brand_id][$model] = $model_id;
+                                                }
+                                            }
+                                        }
+                                        else {
+                                            if (isset($need_to_create_brands[$brand_name])) {
+                                                $need_to_create_brands[$brand_name][] = $i;
+                                            }
+                                            else {
+                                                $need_to_create_brands[$brand_name] = array($i);
+                                            }
+                                            /*
+                                            $slug = $this->_transliterate($brand_name);
+                                            $check_slug = $slug;
+                                            $j = 2;
+                                            while (isset($brand_slugs[$check_slug])) {
+                                                $check_slug = $slug . $j;
+                                                $j ++;
+                                            }
+                                            $brand_slugs[$check_slug] = 1;
+                                            $slug = $check_slug;
+                                            $save_data = array(
+                                                'is_active' => 1,
+                                                'category_id' => $category_id,
+                                                'title' => $brand_name,
+                                                'slug' => $slug,
+                                                'meta_title' => $brand_name
+                                            );
+                                            $this->Brand->create();
+                                            if ($this->Brand->save($save_data)) {
+                                                $created_brands ++;
+                                                $brand_id = $this->Brand->id;
+                                                $recount_brands[] = $brand_id;
+                                                $brands[$brand] = $brand_id;
+                                                $save_data = array(
+                                                    'is_active' => 1,
+                                                    'brand_id' => $brand_id,
+                                                    'category_id' => $category_id,
+                                                    'title' => $model_name,
+                                                    'meta_title' => $model_name
+                                                );
+                                                $this->BrandModel->create();
+                                                if ($this->BrandModel->save($save_data)) {
+                                                    $created_models ++;
+                                                    $model_id = $this->BrandModel->id;
+                                                    $recount_models[] = $model_id;
+                                                    $models[$brand_id][$model] = $model_id;
+                                                }
+                                            }
+                                            */
+                                        }
+                                        if (!empty($brand_id) && !empty($model_id)) {
+                                            if (!in_array($brand_id, $recount_brands)) {
+                                                $recount_brands[] = $brand_id;
+                                            }
+                                            if (!in_array($model_id, $recount_models)) {
+                                                $recount_models[] = $model_id;
+                                            }
+                                            $conditions = array(
+                                                'Product.brand_id' => $brand_id,
+                                                'Product.model_id' => $model_id,
+                                                'Product.category_id' => $category_id,
+                                                'Product.ah' => $ah,
+                                                'Product.current' => $current,
+                                                'Product.width' => $width,
+                                                'Product.length' => $length,
+                                                'Product.height' => $height,
+                                                'Product.f1' => $f1,
+                                                'Product.f2' => $f2
+                                            );
+                                            if ($only_prices) {
+                                                if ($product = $this->Product->find('first', array('conditions' => $conditions, 'fields' => array('Product.id', 'Product.price', 'Product.supplier_id')))) {
+                                                    if ($price != $product['Product']['price'] || $ignore_prices) {
+                                                        if (!$only_suppliers || ($only_suppliers && $supplier_id == $product['Product']['supplier_id'])) {
+                                                            $this->Product->id = $product['Product']['id'];
+                                                            if ($this->Product->saveField('price', $price)) {
+                                                                $this->Product->saveField('supplier_id', $supplier_id);
+                                                                $updated_products ++;
+                                                            }
+                                                            else {
+                                                                $not_updated_products ++;
+                                                                debug($this->Product->validationErrors);
+                                                            }
+                                                        }
+                                                        else {
+                                                            $nothing_update_products ++;
+                                                        }
+                                                    }
+                                                    else {
+                                                        $nothing_update_products ++;
+                                                    }
+                                                }
+                                            }
+                                            else {
+                                                if ($product = $this->Product->find('first', array('conditions' => $conditions, 'fields' => array('Product.id', 'Product.price', 'Product.stock_count', 'Product.in_stock', 'Product.supplier_id')))) {
+                                                    $save_data = array();
+                                                    if ($price <= $product['Product']['price'] || $ignore_prices) {
+                                                        if (!$only_suppliers || ($only_suppliers && $supplier_id == $product['Product']['supplier_id'])) {
+                                                            $save_data['price'] = $price;
+                                                            $save_data['supplier_id'] = $supplier_id;
+                                                            if ($stock_count != $product['Product']['stock_count']) {
+                                                                $save_data['stock_count'] = $stock_count;
+                                                            }
+                                                            if ($in_stock != $product['Product']['in_stock']) {
+                                                                $save_data['in_stock'] = $in_stock;
+                                                            }
+                                                            if (!empty($save_data)) {
+                                                                $this->Product->id = $product['Product']['id'];
+                                                                if ($this->Product->save($save_data, false)) {
+                                                                    $updated_products ++;
+                                                                }
+                                                                else {
+                                                                    $not_updated_products ++;
+                                                                    debug($this->Product->validationErrors);
+                                                                }
+                                                            }
+                                                            else {
+                                                                $nothing_update_products ++;
+                                                            }
+                                                        }
+                                                        else {
+                                                            $nothing_update_products ++;
+                                                        }
+                                                    }
+                                                    else {
+                                                        $nothing_update_products ++;
+                                                    }
+                                                }
+                                                else {
+                                                    $save_data = array(
+                                                        'is_active' => 1,
+                                                        'supplier_id' => $supplier_id,
+                                                        'brand_id' => $brand_id,
+                                                        'model_id' => $model_id,
+                                                        'category_id' => $category_id,
+                                                        'ah' => $ah,
+                                                        'current' => $current,
+                                                        'width' => $width,
+                                                        'length' => $length,
+                                                        'height' => $height,
+                                                        'f1' => $f1,
+                                                        'f2' => $f2,
+                                                        'price' => $price,
+                                                        'stock_count' => $stock_count,
+                                                        'in_stock' => $in_stock,
+                                                        'stock_places' => $stock_places,
+                                                        'material' => $country,
+                                                        'color' => $manufacturing_technology,
+                                                        'price_with_exchange' => $price_with_exchange,
+                                                        'type' => $is_short,
+                                                        'sku' => $start_stop,
+                                                        'axis' => $warranty,
+                                                        'auto' => $auto,
+
+                                                    );
+                                                    $this->Product->create();
+                                                    if ($this->Product->save($save_data)) {
+
+                                                        $created_products ++;
+                                                    }
+                                                    else {
+                                                        $not_created_products ++;
+                                                        debug($this->Product->validationErrors);
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                                else {
+                                    $skipped_rows ++;
+                                }
+                            }
+                            break;
 					}
 					/****** конец switch **********/
 					

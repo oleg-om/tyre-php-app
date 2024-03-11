@@ -2281,6 +2281,7 @@ border: 1px solid #cccccc;
 }
 .brend th {
 text-align: right;
+  width: 30%;
 }
 .brend tr:nth-of-type(even) td,
 .brend tr:nth-of-type(even) th {
@@ -3715,4 +3716,242 @@ table.withlines {
 .selectionCarImg img {
   object-fit: contain;
   max-width: 100%;
+}
+
+.list-view__grid {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.list-view__item {
+  display: grid;
+  background-color: #ffffff;
+  box-shadow: 1px 1px 3px #9f9f9f;
+  border: 0;
+  padding: 20px;
+  gap: 30px;
+  grid-template-rows: repeat(3, auto);
+  grid-template-columns: auto;
+}
+.list-view__info-col .akb-polarity {
+  display: none;
+}
+.list-view__info-col table tbody {
+  text-align: left;
+  font-size: 14px;
+}
+.list-view__info-col table tbody h3 {
+  margin: 0 0 10px 0;
+}
+.list-view__info-col table tbody tr th, td {
+  padding-bottom: 3px;
+}
+.list-view__info-col table tbody tr td {
+  padding-left: 10px;
+}
+.list-view__img-col .prodImg {
+  height: 100%;
+  max-height: 200px;
+  max-width: 200px;
+  width: 100%;
+  display: grid;
+}
+.list-view__img-col .prodImg a {
+  cursor: zoom-in;
+}
+.list-view__img-col .prodImg img {
+  object-fit: cover;
+  width: 100%;
+  height: 100%;
+}
+.list-view__img-col {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  position: relative;
+  margin: auto;
+  width: 100%;
+}
+.list-view__price-col {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+
+  align-items: center;
+  gap: 5px;
+}
+.product__info-prices {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-self: flex-start;
+  margin-left: 10px;
+}
+.product__info-price {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+.product__info-number {
+  font-size: 18px;
+  font-weight: bold;
+}
+.product__info-number-red {
+  font-size: 20px;
+  color: #c72e30;
+}
+.product__info-title {
+  margin-top: 3px;
+  padding-left: 18px;
+}
+.product__info-recycle {
+  position: absolute;
+  width: 24px;
+  height: 24px;
+  left: -30px;
+}
+.product__info-buy a {
+  min-width: 117px;
+  width: fit-content;
+  display: block;
+  text-align: center;
+  border-radius: 5px;
+  padding: 5px;
+}
+.boxPriceProd-price .product__info-price span {
+  font-size: 22px;
+}
+.boxPriceProd-price .product__info-price {
+  width: max-content;
+  margin: auto;
+}
+.boxPriceProd-price .product__info-number-red {
+  font-size: 26px !important;
+}
+.boxPriceProd-price .product__info-price:last-child {
+  margin-top: 6px;
+}
+.boxPriceProd-price .product__info-title {
+  font-size: 16px !important;
+  font-weight: normal;
+}
+.position-relative {
+  position: relative;
+}
+.my-1 {
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+.akb-polarity {
+  position: absolute;
+  left: 160px;
+  display: flex;
+  top: 0;
+  bottom: 0;
+  gap: 3px;
+  z-index: 1;
+}
+.akb-polarity span {
+  font-size: 16px;
+  font-weight: bold;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  text-align: center;
+  color: #FFFFFF;
+  line-height: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.akb-polarity-red {
+  background-color: #c72e30;
+}
+.akb-polarity-blue {
+  background-color: #0034ff;
+}
+.list-view__img-warranty {
+  color: black;
+  display: flex;
+  background-color: #e5e4eb;
+  text-align: center;
+  justify-content: center;
+  padding: 3px 0;
+  max-width: 202px;
+  width: calc(100% + 2px);
+  margin-top: -10px;
+}
+.product__info__buy-group {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.tooltip-places {
+  position: relative;
+  display: inline-block;
+  border-bottom: 1px dotted black;
+  cursor: help;
+}
+
+.tooltip-places-empty {
+  cursor: auto;
+  border: none;
+}
+
+.tooltip-places .tooltiptext {
+  visibility: hidden;
+  width: 250px;
+  max-width: 300px;
+  min-width: 200px;
+  background-color: #589b2f;
+  color: #000000;
+  text-align: left;
+  border-radius: 6px;
+  padding: 10px;
+  position: absolute;
+  z-index: 1;
+  bottom: 150%;
+  left: 50%;
+  margin-left: -130px;
+}
+.tooltip-places .tooltiptext table {
+  width: 100%;
+  background: #f2f2f2;
+}
+.tooltip-places .tooltiptext table tbody tr td {
+  padding: 2px 2px 5px 2px;
+  border: 1px solid #316b16;
+}
+
+.tooltip-places .tooltiptext::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: #589b2f transparent transparent transparent;
+}
+
+.tooltip-places:hover .tooltiptext {
+  visibility: visible;
+}
+.tooltip-places-row-quantity {
+  text-wrap: nowrap;
+}
+.tooltip-places-title {
+  color: #FFFFFF;
+  padding-bottom: 5px;
+  font-weight: 600;
+  display: block;
+}
+.t1, .t2 {
+  display: flex;
+  flex-direction: column;
+  width: fit-content;
+  max-width: 100%;
+  overflow: hidden;
 }

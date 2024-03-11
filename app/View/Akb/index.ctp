@@ -1,6 +1,6 @@
 <h2 class="title"> Аккумуляторы <?php if (!empty($brand['Brand']['slug'])) echo $brand['Brand']['title'] ?>
     <?php if (!empty($car_brand['CarBrand']['slug'])) echo ' на '.$car_brand['CarBrand']['title'].' '.$car_model['CarModel']['title'].' '.$car_generation['CarGeneration']['title'].' '.$car_modification['CarModification']['title'] ?></h2>
-<?php if ($mode == 'list')
+<?php if ($mode == 'brand')
     $view = 'brands'
 ?>
 <?php if ($mode == 'brands')
@@ -73,7 +73,7 @@ echo $this->element('currency');
 
 ?>
 <?php if ($view == 'models')
-    echo $this->element('mode_selector', array('url' => $url, 'akb_switch' => true));
+    echo $this->element('mode_selector', array('url' => $url));
     ?>
 
 <?php if ($view == 'brands') { ?>
@@ -224,14 +224,21 @@ echo $this->element('currency');
                             <td><?php echo $item['Product']['in_stock'] ? '.' : ''; ?></td>
                         </div>
                         <?php $i ++; } ?>
-                </div></div>
+                </div>
+            </div>
             <?php if (empty($products)) { echo 'По Вашему запросу ничего не найдено'; } ?>
         <?php } ?>
+        <!--LIST MODE START-->
+        <?php if ($mode == 'list') { ?>
+            <?php echo $this->element('akb_list_view'); ?>
+        <?php } ?>
+        <!--LIST MODE END-->
 		<?php
 			echo $this->element('pager', array('bottom' => true));
 		?>
 	</div>
 <?php } ?>
+
 <?php
 	echo $this->element('seo_akb');
 	//echo $this->element('bottom_banner');

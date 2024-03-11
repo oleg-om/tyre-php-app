@@ -81,6 +81,9 @@
             if ('<?php echo $season; ?>') {
                 $("#AutoSelectionSeason").val('<?php echo $season; ?>').change();
             }
+            if ('<?php echo $material; ?>') {
+                $("#AutoSelectionMaterial").val('<?php echo $material; ?>').change();
+            }
 
         }
 
@@ -312,7 +315,7 @@ $settings = Cache::read('settings', 'long');
 			<div class="clear"></div>
 		</div>
 		<div class="item-inner">
-			<label class="name" for="ProductMaterial">Тип:</label>
+			<label class="name" for="ProductMaterial">Материал:</label>
 			<div class="inp"><?php
 				echo $this->Form->input('material', array('type' => 'select', 'label' => false, 'options' => $materials, 'empty' => array('' => 'Все'), 'div' => false, 'class' => 'sel-style1 filter-select'));
 			?></div>
@@ -614,6 +617,15 @@ $settings = Cache::read('settings', 'long');
             <div class="clear"></div>
         </div>
     </div>
+    <div class="item" style="<?php if ($show_filter != 2 || empty($modification_slug)) { echo 'display: none'; } ?>">
+        <div class="item-inner">
+            <label class="name" for="ProductMaterial">Материал:</label>
+            <div class="inp"><?php
+                echo $this->Form->input('material', array('type' => 'select', 'label' => false, 'options' => $materials, 'empty' => array('' => 'Все'), 'div' => false, 'class' => 'sel-style1 filter-select', 'id' => 'AutoSelectionMaterial'));
+                ?></div>
+            <div class="clear"></div>
+        </div>
+    </div>
         <script type="text/javascript">
             function openSelectionBrandModal() {
                 open_popup({
@@ -911,15 +923,16 @@ function serializeArray(form) {
 
 function onSearchModifications() {
     const season = $('#AutoSelectionSeason').val();
+    const disk_material = $('#AutoSelectionMaterial').val();
     const mod = $('#CarModificationSlug').attr('value');
 
     if (<?php echo $show_filter; ?> === 1) {
         // tyres
-        window.location = `${origin}/tyres?modification=${mod}&season=${season ? season : ''}<?php if (!empty($size1)) { echo '&size1='.$size1; } ?><?php if (!empty($size2)) { echo '&size2='.$size2; } ?><?php if (!empty($size3)) { echo '&size3='.$size3; } ?>`;
+        window.location = `${origin}/tyres?modification=${mod}&season=${season ? season : ''}<?php if (!empty($size1)) { echo '&size1='.$size1; } ?><?php if (!empty($size2)) { echo '&size2='.$size2; } ?><?php if (!empty($size3)) { echo '&size3='.$size3; } ?><?php echo '&diameter='.$this->request->query['diameter']; ?>`;
     }
     if (<?php echo $show_filter; ?> === 2) {
         // disks
-        window.location = `${origin}/disks?modification=${mod}`;
+        window.location = `${origin}/disks?modification=${mod}&material=${disk_material ? disk_material : ''}<?php echo '&diameter='.$this->request->query['diameter']; ?>`;
     }
     if (<?php echo $show_filter; ?> === 3) {
         // disks

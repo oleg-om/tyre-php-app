@@ -55,10 +55,10 @@ $this->Backend->removeFormButton('save_and_exit');
 echo $this->Backend->getFormContent();
 echo $this->Backend->getFormFooter();
 echo $this->Backend->getScript();
-echo '<p><a href="/examples/manual.pdf" class="no-loader" target="_blank">' . __d('admin_import', 'link_manual') . '</a></p>';
+echo '<p><a href="/app/webroot/examples/manual.pdf" class="no-loader" target="_blank">' . __d('admin_import', 'link_manual') . '</a></p>';
 $types_links = array();
 foreach ($types as $i => $type) {
-	$types_links[] = '<p>' . $type . ' &mdash; <a href="/examples/type_' . $i . '.xls" class="no-loader" target="_blank">' . __d('admin_import', 'link_download') . '</a></p>';
+	$types_links[] = '<p>' . $type . ' &mdash; <a href="/app/webroot/examples/type_' . $i . '.xls" class="no-loader" target="_blank">' . __d('admin_import', 'link_download') . '</a></p>';
 }
 echo '<div class="examples"><h3>' . __d('admin_import', 'title_examples') . '</h3>' . implode('', $types_links) . '</div>';
 echo '<div class="examples"><h3>' . __d('admin_import', 'title_columns') . '</h3>' . __d('admin_import', 'title_columns_info') . '</div>';

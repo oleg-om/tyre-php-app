@@ -64,23 +64,51 @@
 					<th>Ток</th>
 					<td><?php echo $product['Product']['current']; ?></td>
 				</tr>
+                <tr>
+                    <th>Тип корпуса</th>
+                    <td><?php echo $product['Product']['f1'] == 'euro' ? 'Евро' : 'Азия'; ?></td>
+                </tr>
+                <tr>
+                    <th>Технология изготовления</th>
+                    <td><?php echo $product['Product']['color'] ? $product['Product']['color'] : '-'; ?> <?php echo $product['Product']['sku'] ? '<strong>'.$product['Product']['sku'].'</strong>' : ''; ?></td>
+                </tr>
+                <tr>
+                    <th>Страна-производитель</th>
+                    <td><?php echo $product['Product']['material'] ? $product['Product']['material'] : '-'; ?></td>
+                </tr>
+                <tr>
+                    <th>Гарантия</th>
+                    <td><?php echo $product['Product']['axis']; ?></td>
+                </tr>
 			</table>
 		</td>
 	</tr>
 </table>
+        <div class="product__info-instock my-1">
+            <?php
+            $in_stock_mark = $product['Product']['in_stock'] ? '<img title="в наличии" alt="в наличии" src="/img/yes.png">' : '';
+            echo $this->element('stock_places', array('stock_places' => $product['Product']['stock_places'], 'text' => '<div class="namber tyres">В наличии : '.$this->Frontend->getStockCount($product['Product']['stock_count']).' шт. '.$in_stock_mark.'</div>'));
+            ?>
+        </div>
+        <div class="boxRightInfo">
 <?php if ($this->Frontend->canShowAkbPrice($product['Product']['not_show_price'])) { ?>
 <div class="boxPriceProd akb-price-box">
     <div class="boxPriceProd-price">
-	<em>цена:</em>
-	<span> <?php echo $this->Frontend->getPrice($product['Product']['price'], 'akb', array('after' => '</strong>', 'between' => ' <strong>')); ?> </span>
+        <?php echo $this->element('akb_price', array('item' => $product)); ?>
 	</div>
 	<div class="add-to-cart"><?php echo $this->element('add_to_cart'); ?></div>
 	<div class="buy-button">
 		<a href="javascript:void(0);" class="btVer2" onclick="buy();">Купить</a>
 	</div>
 	<div class="clear"></div>
+
 </div>
 <?php } ?>
+        <div class="orderCall">
+            <h3>Либо заказать по телефону:</h3>
+            <span><?php echo CONST_STORAGE_CELLPHONE; ?></span>
+        </div>
+        </div>
 <?php if (!empty($product['BrandModel']['video'])) { ?><div class="video"><?php echo $product['BrandModel']['video']; ?></div><?php } ?>
 <div class="infoBox"><?php echo $product['BrandModel']['content']; ?></div>
 </div></div>

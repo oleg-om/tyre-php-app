@@ -80,6 +80,40 @@ $this->Backend->addText('f2', array(
 	'div' => 'item_div half'
 ));
 $this->Backend->addHtml('<div class="clear"></div>');
+$this->Backend->addText('color', array(
+    'label' => __d('admin_akb', 'label_color'),
+    'div' => 'item_div third'
+));
+$this->Backend->addText('material', array(
+    'label' => __d('admin_akb', 'label_material'),
+    'div' => 'item_div third'
+));
+$this->Backend->addText('price_with_exchange', array(
+    'label' => __d('admin_akb', 'label_price_with_exchange'),
+    'div' => 'item_div third'
+));
+$this->Backend->addHtml('<div class="clear"></div>');
+$this->Backend->addSelect('auto', array(
+    'label' => __d('admin_akb', 'label_auto'),
+    'options' => $auto,
+    'empty' => false,
+    'div' => 'item_div third'
+));
+$this->Backend->addText('sku', array(
+    'label' => __d('admin_akb', 'label_start_stop'),
+    'div' => 'item_div third'
+));
+$this->Backend->addText('axis', array(
+    'label' => __d('admin_akb', 'label_warranty'),
+    'div' => 'item_div third'
+));
+$this->Backend->addHtml('<div class="clear"></div>');
+$this->Backend->addText('stock_places', array(
+    'label' => __d('admin_akb', 'label_stock_places'),
+    'div' => 'item_div'
+));
+
+$this->Backend->addHtml('<div class="clear"></div>');
 $this->Backend->addHidden('id');
 $this->Backend->addHidden('old_brand_id');
 $this->Backend->addHidden('old_model_id');

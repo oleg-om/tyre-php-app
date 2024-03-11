@@ -35,6 +35,7 @@ class AkbController extends AppController {
 		else {
 			$this->set('models', array('' => __d('admin_common', 'list_any_items')));
 		}
+        $this->set('auto', $this->{$this->model}->auto);
 		return $title;
 	}
 	public function admin_apply() {
@@ -94,7 +95,7 @@ class AkbController extends AppController {
 		$this->redirect($url);
 	}
 	public function index() {
-        $mode = 'block';
+        $mode = 'list';
         if (isset($this->request->query['mode']) && in_array($this->request->query['mode'], array('block', 'list', 'table'))) {
             $mode = $this->request->query['mode'];
         }
@@ -177,26 +178,26 @@ class AkbController extends AppController {
 //        if (isset($this->request->query['width_from']) && !empty($this->request->query['width_from'])) {
 //            $ah_s = floatval(str_replace(',', '.', $this->request->query['width_from']));
 //            if ($ah_s > 0) {
-//                $conditions['Product.length >='] = $ah_s;
+//                $conditions['Product.width >='] = $ah_s;
 //            }
 //        }
 //        if (isset($this->request->query['width_to']) && !empty($this->request->query['width_to'])) {
 //            $ah_s = floatval(str_replace(',', '.', $this->request->query['width_to']));
 //            if ($ah_s > 0) {
-//                $conditions['Product.length <='] = $ah_s;
+//                $conditions['Product.width <='] = $ah_s;
 //            }
 //        }
 //
 //        if (isset($this->request->query['length_from']) && !empty($this->request->query['length_from'])) {
 //            $ah_s = floatval(str_replace(',', '.', $this->request->query['length_from']));
 //            if ($ah_s > 0) {
-//                $conditions['Product.width >='] = $ah_s;
+//                $conditions['Product.length >='] = $ah_s;
 //            }
 //        }
 //        if (isset($this->request->query['length_to']) && !empty($this->request->query['length_to'])) {
 //            $ah_s = floatval(str_replace(',', '.', $this->request->query['length_to']));
 //            if ($ah_s > 0) {
-//                $conditions['Product.width <='] = $ah_s;
+//                $conditions['Product.length <='] = $ah_s;
 //            }
 //        }
 
@@ -337,7 +338,7 @@ class AkbController extends AppController {
         $this->set('show_filter', 3);
 	}
 	public function brand($slug) {
-        $mode = 'block';
+        $mode = 'list';
         if (isset($this->request->query['mode']) && in_array($this->request->query['mode'], array('block', 'table'))) {
             $mode = $this->request->query['mode'];
         }
@@ -463,7 +464,8 @@ class AkbController extends AppController {
 					'belongsTo' => array(
 						'BrandModel' => array(
 							'foreignKey' => 'model_id'
-						)
+						),
+                        'Brand'
 					)
 				),
 				false

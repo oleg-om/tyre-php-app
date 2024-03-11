@@ -7,7 +7,7 @@ $this->Paginator->options(array('url' => array('controller' => 'akb', 'action' =
 <div id="vmMainPage">
     <?php
     $url = array('controller' => 'akb', 'action' => 'brand', 'slug' => $brand['Brand']['slug'], '?' => $filter);
-    echo $this->element('mode_selector', array('url' => $url, 'akb_switch' => true));
+    echo $this->element('mode_selector', array('url' => $url));
     ?>
     <?php if ($mode == 'table') { ?>
 	<table border="0" width="100%" cellspacing="0" cellpadding="0" class="sectiontableheader sectiontableentry1">
@@ -162,6 +162,9 @@ $this->Paginator->options(array('url' => array('controller' => 'akb', 'action' =
                 </div>
                 <?php $i ++; } ?>
         </div></div>
+    <?php } ?>
+    <?php if ($mode == 'list') { ?>
+        <?php echo $this->element('akb_list_view'); ?>
     <?php } ?>
 	<div class="clear"></div>
 	<div class="pager-filter bottom">
