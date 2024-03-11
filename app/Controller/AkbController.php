@@ -35,6 +35,7 @@ class AkbController extends AppController {
 		else {
 			$this->set('models', array('' => __d('admin_common', 'list_any_items')));
 		}
+        $this->set('auto', $this->{$this->model}->auto);
 		return $title;
 	}
 	public function admin_apply() {

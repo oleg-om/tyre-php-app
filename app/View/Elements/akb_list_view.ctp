@@ -36,11 +36,11 @@
                     </tr>
                     <tr>
                         <th>Технология изготовления</th>
-                        <td><?php echo $item['Product']['color'] ? $item['Product']['color'] : '-'; ?></td>
+                        <td><?php echo $item['Product']['color'] ? $item['Product']['color'] : ''; ?> <?php echo $item['Product']['sku'] ? '<strong>'.$item['Product']['sku'].'</strong>' : ''; ?></td>
                     </tr>
                     <tr>
                         <th>Страна-производитель</th>
-                        <td><?php echo $item['Product']['material'] ? $item['Product']['material'] : '-'; ?></td>
+                        <td><?php echo $item['Product']['material'] ? $item['Product']['material'] : ''; ?></td>
                     </tr>
                 </table>
 
@@ -77,7 +77,7 @@
                         </tr>
                     </table>
                 </div>
-                <span class="list-view__img-warranty">Гарантия:&nbsp;&nbsp;<strong>24 месяца</strong></span>
+                <span class="list-view__img-warranty">Гарантия:&nbsp;&nbsp;<strong><?php echo $item['Product']['axis']; ?></strong></span>
             </div>
             <div class="list-view__price-col">
                 <div class="product__info-prices">

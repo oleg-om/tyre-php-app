@@ -70,11 +70,15 @@
                 </tr>
                 <tr>
                     <th>Технология изготовления</th>
-                    <td><?php echo $product['Product']['color'] ? $product['Product']['color'] : '-'; ?></td>
+                    <td><?php echo $product['Product']['color'] ? $product['Product']['color'] : '-'; ?> <?php echo $product['Product']['sku'] ? '<strong>'.$product['Product']['sku'].'</strong>' : ''; ?></td>
                 </tr>
                 <tr>
                     <th>Страна-производитель</th>
                     <td><?php echo $product['Product']['material'] ? $product['Product']['material'] : '-'; ?></td>
+                </tr>
+                <tr>
+                    <th>Гарантия</th>
+                    <td><?php echo $product['Product']['axis']; ?></td>
                 </tr>
 			</table>
 		</td>

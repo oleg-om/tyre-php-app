@@ -3755,7 +3755,7 @@ table.withlines {
   max-height: 200px;
   max-width: 200px;
   width: 100%;
-
+  display: grid;
 }
 .list-view__img-col .prodImg a {
   cursor: zoom-in;

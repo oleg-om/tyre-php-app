@@ -3217,34 +3217,55 @@ class ImportController extends AppController {
                                     $total_rows ++;
                                     $brand_id = null;
                                     $model_id = null;
-                                    $brand_name = trim($data->sheets[0]['cells'][$i][1]);
-                                    $model_name = trim($data->sheets[0]['cells'][$i][2]);
+                                    $auto_text = trim($data->sheets[0]['cells'][$i][1]);
+                                    $auto = 'cars';
+
+                                    if ($auto_text == 'грузовой') {
+                                        $auto = 'trucks';
+                                    }
+                                    elseif ($auto_text == 'грузовые') {
+                                        $auto = 'trucks';
+                                    }
+                                    elseif ($auto_text == 'мото') {
+                                        $auto = 'moto';
+                                    }
+                                    elseif ($auto_text == 'легковой') {
+                                        $auto = 'cars';
+                                    }
+                                    elseif ($auto_text == 'легковые') {
+                                        $auto = 'cars';
+                                    }
+
+                                    $brand_name = trim($data->sheets[0]['cells'][$i][2]);
+                                    $model_name = trim($data->sheets[0]['cells'][$i][3]);
                                     $brand = $this->_clean_text($brand_name);
                                     $model = $this->_clean_text($model_name, false);
-                                    $is_short = trim($data->sheets[0]['cells'][$i][3]);
-                                    $manufacturing_technology = trim($data->sheets[0]['cells'][$i][4]);
-                                    $country = trim($data->sheets[0]['cells'][$i][5]);
-                                    $size = trim($data->sheets[0]['cells'][$i][6]);
+                                    $is_short = trim($data->sheets[0]['cells'][$i][4]);
+                                    $manufacturing_technology = trim($data->sheets[0]['cells'][$i][5]);
+                                    $start_stop = trim($data->sheets[0]['cells'][$i][6]);
+                                    $warranty = trim($data->sheets[0]['cells'][$i][7]);
+                                    $country = trim($data->sheets[0]['cells'][$i][8]);
+                                    $size = trim($data->sheets[0]['cells'][$i][9]);
                                     $size = str_replace('х', 'x', $size);
-                                    $ah = trim($data->sheets[0]['cells'][$i][7]);
-                                    $current = trim($data->sheets[0]['cells'][$i][8]);
+                                    $ah = trim($data->sheets[0]['cells'][$i][10]);
+                                    $current = trim($data->sheets[0]['cells'][$i][11]);
                                     $f1 = '';
-                                    if (isset($data->sheets[0]['cells'][$i][9])) {
-                                        $f1 = trim($data->sheets[0]['cells'][$i][9]);
+                                    if (isset($data->sheets[0]['cells'][$i][12])) {
+                                        $f1 = trim($data->sheets[0]['cells'][$i][12]);
                                     }
-                                    $f2 = trim($data->sheets[0]['cells'][$i][10]);
-                                    $price = floatval(trim($data->sheets[0]['cells'][$i][11])) / $rate;
-                                    $price_with_exchange = floatval(trim($data->sheets[0]['cells'][$i][12])) / $rate;
+                                    $f2 = trim($data->sheets[0]['cells'][$i][13]);
+                                    $price = floatval(trim($data->sheets[0]['cells'][$i][14])) / $rate;
+                                    $price_with_exchange = floatval(trim($data->sheets[0]['cells'][$i][15])) / $rate;
 
-                                    $autodom_count = trim($data->sheets[0]['cells'][$i][13]);
-                                    $tiptop_count = trim($data->sheets[0]['cells'][$i][14]);
-                                    $bam_count = trim($data->sheets[0]['cells'][$i][15]);
-                                    $atp_count = trim($data->sheets[0]['cells'][$i][16]);
-                                    $taksopark_count = trim($data->sheets[0]['cells'][$i][17]);
-                                    $vianorshop_count = trim($data->sheets[0]['cells'][$i][18]);
-                                    $hundai_count = trim($data->sheets[0]['cells'][$i][19]);
-                                    $tavrida_count = trim($data->sheets[0]['cells'][$i][20]);
-                                    $gruz_count = trim($data->sheets[0]['cells'][$i][21]);
+                                    $autodom_count = trim($data->sheets[0]['cells'][$i][16]);
+                                    $tiptop_count = trim($data->sheets[0]['cells'][$i][17]);
+                                    $bam_count = trim($data->sheets[0]['cells'][$i][18]);
+                                    $atp_count = trim($data->sheets[0]['cells'][$i][19]);
+                                    $taksopark_count = trim($data->sheets[0]['cells'][$i][20]);
+                                    $vianorshop_count = trim($data->sheets[0]['cells'][$i][21]);
+                                    $hundai_count = trim($data->sheets[0]['cells'][$i][22]);
+                                    $tavrida_count = trim($data->sheets[0]['cells'][$i][23]);
+                                    $gruz_count = trim($data->sheets[0]['cells'][$i][24]);
 
                                     if (empty($autodom_count)) {
                                         $autodom_count = 0;
@@ -3274,7 +3295,7 @@ class ImportController extends AppController {
                                         $gruz_count = 0;
                                     }
 
-                                    $stock_count = intval(trim($data->sheets[0]['cells'][$i][22]));
+                                    $stock_count = intval(trim($data->sheets[0]['cells'][$i][25]));
 
                                     $stock_places = $autodom_count.'|'.$tiptop_count.'|'.$bam_count.'|'.$atp_count.'|'.$taksopark_count.'|'.$vianorshop_count.'|'.$hundai_count.'|'.$tavrida_count.'|'.$gruz_count;
 
@@ -3447,7 +3468,10 @@ class ImportController extends AppController {
                                                         'material' => $country,
                                                         'color' => $manufacturing_technology,
                                                         'price_with_exchange' => $price_with_exchange,
-                                                        'type' => $is_short
+                                                        'type' => $is_short,
+                                                        'sku' => $start_stop,
+                                                        'axis' => $warranty,
+                                                        'auto' => $auto,
 
                                                     );
                                                     $this->Product->create();
