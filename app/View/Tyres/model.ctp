@@ -5,7 +5,7 @@
 		$image_small = $this->Html->image('no-tyre-big.jpg');
 		$image_big = '/img/tyre.jpg';
 		if (!empty($model['BrandModel']['filename'])) {
-			$image_small = $this->Html->image($this->Backend->thumbnail(array('id' => $model['BrandModel']['id'], 'filename' => $model['BrandModel']['filename'], 'path' => 'models', 'width' => 315, 'height' => 1000, 'crop' => false, 'folder' => false)), array('alt' => $model['BrandModel']['title']));
+			$image_small = $this->Html->image($this->Backend->thumbnail(array('id' => $model['BrandModel']['id'], 'filename' => $model['BrandModel']['filename'], 'path' => 'models', 'width' => 400, 'height' => 1000, 'crop' => false, 'folder' => false)), array('alt' => $model['BrandModel']['title']));
 			$image_big = $this->Backend->thumbnail(array('id' => $model['BrandModel']['id'], 'filename' => $model['BrandModel']['filename'], 'path' => 'models', 'width' => 800, 'height' => 600, 'crop' => false, 'folder' => false, 'watermark' => 'wm.png'), array('alt' => $model['BrandModel']['title']));
 
 		}

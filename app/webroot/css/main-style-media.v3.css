@@ -351,7 +351,7 @@
     /*    background-image: url(../img/tyres_winter.png);*/
     /*}*/
     .boxList {
-        width: 20.333%;
+        width: 28.39%;
     }
     .selection .item {
         width: 17%;
@@ -448,5 +448,8 @@
     }
     .list-view__info-col .akb-polarity {
         left: 160px;
+    }
+    .boxList {
+        width: 28.839%
     }
 }
