@@ -65,10 +65,6 @@
 					<td><?php echo $product['Product']['current']; ?></td>
 				</tr>
                 <tr>
-                    <th>Тип корпуса</th>
-                    <td><?php echo $product['Product']['f1'] == 'euro' ? 'Евро' : 'Азия'; ?></td>
-                </tr>
-                <tr>
                     <th>Технология изготовления</th>
                     <td><?php echo $product['Product']['color'] ? $product['Product']['color'] : '-'; ?> <?php echo $product['Product']['sku'] ? '<strong>'.$product['Product']['sku'].'</strong>' : ''; ?></td>
                 </tr>
