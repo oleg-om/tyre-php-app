@@ -18,7 +18,7 @@
                     </tr>
                     <tr>
                         <th>Тип корпуса</th>
-                        <td><?php echo $item['Product']['f1'] == 'euro' ? 'Евро' : 'Азия'; ?></td>
+                        <td><?php echo $item['Product']['f1']; ?></td>
                     </tr>
                     <tr>
                         <th>Полярность</th>
