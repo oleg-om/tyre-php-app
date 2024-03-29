@@ -18,8 +18,6 @@ $this->Paginator->options(array('url' => $url));
     <?php if (!empty($car_brand['CarBrand']['slug'])) echo ' на '.$car_brand['CarBrand']['title'].' '.$car_model['CarModel']['title'].' '.$car_generation['CarGeneration']['title'].' '.$car_modification['CarModification']['title'] ?>
 </h1>
 
-<?php if (empty($car_sizes['CarTyres']['factory_tyres'])) echo '<h3 class="tyres-free-header">При покупке 4 шин шиномонтаж бесплатно!</h3>'; ?>
-
 
 <div class="<?php if (empty($modification_slug)) { echo 'd-none'; } else { echo 'car__sizes car__sizes-tyres'; } ?>">
         <div class="car__sizes__wrap">

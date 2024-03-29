@@ -91,23 +91,7 @@ foreach ($models as $item) {
 						}
 					?>
 					<?php if ($mode == 'block') { ?>
-						<?php if ($has_params) { ?>
-							<div class="info-top">
-								<h3>
-									<?php
-										$link_filter = array('model_id' => $item['BrandModel']['id']);
-										//$link_filter = array_merge($link_filter, $filter);
-										echo $this->Html->link('<span class="brand">' . $item['Brand']['title']. '</span><span class="model">'. $item['BrandModel']['title'] . '</span>', array('controller' => 'tyres', 'action' => 'brand', 'slug' => $item['Brand']['slug'], '?' => $link_filter), array('escape' => false));
-										$url = array('controller' => 'tyres', 'action' => 'view', 'slug' => $item['Brand']['slug'], 'id' => $item['Product'][0]['id']);
-									?>
-									<span class="productSeason<?php if ($season=='winter') {echo '2';} elseif ($season=='all') {echo '3';}?>" title="<?php echo $seasons[$season];?>">
-										<?php echo $seasons[$season];?>
-									</span>
-									<?php echo $item['Product'][0]['stud'] ? '<img src="/img/studded.png" alt="шипованная" />' : ''; ?>
-								</h3>
-							</div>
-						<?php } ?>
-						<div class="prodImg floatl">
+						<div class="prodImg floatl prodImg-tyres">
 							<?php if ($item['BrandModel']['new']) { ?>
 							<div class="action-prod new"></div>
 							<?php } elseif ($item['BrandModel']['popular']) { ?>
@@ -115,25 +99,17 @@ foreach ($models as $item) {
 							<?php } ?>
 							<table cellpadding="0" cellspacing="0">
 								<tr>
-																	<?php if ($item['Product'][0]['sale']) { ?>
-									<img class="special-overlay" src="/img/special-2.png" alt="акция" />
-								<?php } elseif ($item['BrandModel']['new']) { ?>
-									<!-- <div class="latest-prod-list"><span>новинка</span></div>-->
-									<img class="special-overlay" src="/img/special-1.png" alt="новинка" />
-								<?php } elseif ($item['BrandModel']['popular']) { ?>
-									<img class="special-overlay" src="/img/special-3.png" alt="хит" />
-								<?php } ?>
+								<?php echo $this->element('tyre_icons', array('product' => $item['Product'][0], 'brandModel' => $item['BrandModel'])); ?>
 									<td>
-
 										<?php
 											$image = $this->Html->image('no-tyre-little.jpg', array('class' => 'no-img-tyre'));
 											$image_big = false;
 											if (!empty($item['BrandModel']['filename'])) {
-												$image = $this->Html->image($this->Backend->thumbnail(array('id' => $item['BrandModel']['id'], 'filename' => $item['BrandModel']['filename'], 'path' => 'models', 'width' => 158, 'height' => 158, 'crop' => false, 'folder' => false, 'tyre' => true)), array('alt' => $item['BrandModel']['title']));
+												$image = $this->Html->image($this->Backend->thumbnail(array('id' => $item['BrandModel']['id'], 'filename' => $item['BrandModel']['filename'], 'path' => 'models', 'width' => 284, 'height' => 284, 'tyre' => true, 'crop' => false, 'folder' => false)), array('alt' => $item['BrandModel']['title']));
 												$image_big = $this->Backend->thumbnail(array('id' => $item['BrandModel']['id'], 'filename' => $item['BrandModel']['filename'], 'path' => 'models', 'width' => 800, 'height' => 600, 'crop' => false, 'folder' => false, 'watermark' => 'wm.png'), array('alt' => $item['BrandModel']['title']));
 											}
 											if ($image_big) {
-												echo $this->Html->link($image, $image_big, array('escape' => false, 'class' => 'lightbox', 'id' => $item['BrandModel']['id']));
+												echo $this->Html->link($image, $image_big, array('escape' => false, 'class' => 'lightbox rel-box', 'id' => $item['BrandModel']['id']));
 											}
 											else {
 												echo $image;
@@ -141,15 +117,24 @@ foreach ($models as $item) {
 										?>
 									</td>
 								</tr>
-							</table> 
-							<div class="storage__block">
-								<p class="storage__text">
-									Хранение шин 0 ₽
-								</p>
-							</div>
-							<!-- <?php echo $item['Brand']['title'] == 'Nokian' || $item['Brand']['title'] == 'Bridgestone' || $item['Brand']['title'] == 'Michelin' ? '<div class="storage__block-green"><p class="storage__text-green">Шиномонтаж 0 ₽</p></div>' : '<div class="storage__block"><p class="storage__text">Хранение шин 0 ₽</p></div>'; ?> -->
+							</table>
 							
 						</div>
+                        <div class="box-info">
+                        <?php if ($has_params) { ?>
+                            <div class="info-top">
+                                <h3>
+                                    <?php
+                                    $link_filter = array('model_id' => $item['BrandModel']['id']);
+
+                                    echo $this->Html->link('<span class="brand">' . $item['Brand']['title']. '</span><span class="model">'. $item['BrandModel']['title'] . '</span>', array('controller' => 'tyres', 'action' => 'brand', 'slug' => $item['Brand']['slug'], '?' => $link_filter), array('escape' => false));
+                                    $url = array('controller' => 'tyres', 'action' => 'view', 'slug' => $item['Brand']['slug'], 'id' => $item['Product'][0]['id']);
+                                    ?>
+                                </h3>
+                                <?php echo $this->element('tyre_season', array('seasons' => $seasons, 'season' => $season, 'item' => $item)); ?>
+                            </div>
+                        <?php } ?>
+                            <div class="tyre-block__sizes">
 						<div class="infoList">
 							<?php if ($show_available) { ?>
 								<p class="available"><?php
@@ -178,21 +163,24 @@ foreach ($models as $item) {
 									echo $item['Product'][0]['size1']; ?> / <?php echo $item['Product'][0]['size2']; ?> R<?php echo $item['Product'][0]['size3']; ?> <?php echo h($item['Product'][0]['f1'] . $item['Product'][0]['f2']);
 								?></a>
 							</div>
-
-							
 							<?php } ?>
 						</div>
+                                <?php
+                                $in_stock_mark = $item['Product'][0]['in_stock'] ? '<img title="в наличии" alt="в наличии" src="/img/yes.png">' : '';
+                                echo $this->element('stock_places', array('stock_places' => $item['Product'][0]['stock_places'], 'text' => '<div class="namber tyres">'.$this->Frontend->getStockCount($item['Product'][0]['stock_count']).' шт. '.$in_stock_mark.'</div>', 'position' => 'left')); ?>
+                        </div>
                         <div class="product__info">
 						<div class="priceMore tyres">
 							<?php if ($this->Frontend->canShowTyrePrice($item['Product'][0]['auto'], $item['Product'][0]['not_show_price']) && ($show_size || $has_params)) { ?>
 							<span><?php echo $this->Frontend->getPrice($item['Product'][0]['price'], 'tyres', array('between' => '&nbsp;<span>', 'after' => '</span>')); ?></span>
-							<div class="namber tyres">&nbsp;&nbsp;&nbsp;&nbsp;<?php echo $this->Frontend->getStockCount($item['Product'][0]['stock_count']); ?> шт. <?php echo $item['Product'][0]['in_stock'] ? '<img title="в наличии" alt="в наличии" src="/img/yes.png">' : ''; ?></div>
+
 
 							<?php } ?>
 						</div>
                             <div class="buy-button">
-                                <a href="javascript:void(0);" class="btVer2" onclick="test(<?php echo $item['Product'][0]['id']; ?>);">Купить</a>
+                                <a href="javascript:void(0);" class="btVer2" onclick="buy_tyre(<?php echo $item['Product'][0]['id']; ?>);">Купить</a>
                             </div>
+                        </div>
                         </div>
 						<div class="clear"></div>
 					<?php } elseif ($mode == 'list') { ?>
@@ -285,7 +273,7 @@ foreach ($models as $item) {
 								$image = $this->Html->image('img-detal.jpg');
 								if (!empty($item['BrandModel']['filename'])) {
 									$image_big = $this->Backend->thumbnail(array('id' => $item['BrandModel']['id'], 'filename' => $item['BrandModel']['filename'], 'path' => 'models', 'width' => 800, 'height' => 600, 'crop' => false, 'folder' => false, 'watermark' => 'wm.png'), array('alt' => $item['BrandModel']['title']));
-									echo $this->Html->link($image, $image_big, array('escape' => false, 'class' => 'lightbox', 'id' => $item['BrandModel']['id']));
+									echo $this->Html->link($image, $image_big, array('escape' => false, 'class' => 'lightbox rel-box', 'id' => $item['BrandModel']['id']));
 								}
 							?></td>
 							<td><?php
@@ -333,19 +321,7 @@ foreach ($models as $item) {
 					}
 					?>
 					<?php if ($mode == 'block') { ?>
-						<?php if ($has_params) { ?>
-							<div class="info-top">
-								<h3>
-									<?php
-										$link_filter = array('model_id' => $item['BrandModel']['id']);
-										//$link_filter = array_merge($link_filter, $filter);
-										echo $this->Html->link('<span class="brand">' . $item['Brand']['title']. '</span><span class="model">'. $item['BrandModel']['title'] . '</span>', array('controller' => 'tyres', 'action' => 'brand', 'slug' => $item['Brand']['slug'], '?' => $link_filter), array('escape' => false));
-									?>
-									<span class="productSeason<?php if ($season=='winter') {echo '2';} elseif ($season=='all') {echo '3';}?>" title="<?php echo $seasons[$season];?>"><?php echo $seasons[$season];?></span>
-								</h3>
-							</div>
-						<?php } ?>
-						<div class="prodImg floatl">
+						<div class="prodImg floatl prodImg-tyres">
                             <?php if ($item['BrandModel']['new']) { ?>
                                 <div class="action-prod new"></div>
                             <?php } elseif ($item['BrandModel']['popular']) { ?>
@@ -353,20 +329,13 @@ foreach ($models as $item) {
                             <?php } ?>
 							<table cellpadding="0" cellspacing="0">
 								<tr>
-                                    <?php if ($item['Product'][0]['sale']) { ?>
-                                        <img class="special-overlay" src="/img/special-2.png" alt="акция" />
-                                    <?php } elseif ($item['BrandModel']['new']) { ?>
-                                        <!-- <div class="latest-prod-list"><span>новинка</span></div>-->
-                                        <img class="special-overlay" src="/img/special-1.png" alt="новинка" />
-                                    <?php } elseif ($item['BrandModel']['popular']) { ?>
-                                        <img class="special-overlay" src="/img/special-3.png" alt="хит" />
-                                    <?php } ?>
+                                    <?php echo $this->element('tyre_icons', array('product' => $item['Product'][0], 'brandModel' => $item['BrandModel'])); ?>
 									<td>
 										<?php
 											$image = $this->Html->image('no-tyre-little.jpg', array('class' => 'no-img-tyre'));
 											$image_big = false;
 											if (!empty($item['BrandModel']['filename'])) {
-												$image = $this->Html->image($this->Backend->thumbnail(array('id' => $item['BrandModel']['id'], 'filename' => $item['BrandModel']['filename'], 'path' => 'models', 'width' => 158, 'height' => 158, 'crop' => false, 'folder' => false, 'tyre' => true)), array('alt' => $item['BrandModel']['title']));
+												$image = $this->Html->image($this->Backend->thumbnail(array('id' => $item['BrandModel']['id'], 'filename' => $item['BrandModel']['filename'], 'path' => 'models', 'width' => 284, 'height' => 284, 'tyre' => true, 'crop' => false, 'folder' => false)), array('alt' => $item['BrandModel']['title']));
 												$image_big = $this->Backend->thumbnail(array('id' => $item['BrandModel']['id'], 'filename' => $item['BrandModel']['filename'], 'path' => 'models', 'width' => 800, 'height' => 600, 'crop' => false, 'folder' => false, 'watermark' => 'wm.png'), array('alt' => $item['BrandModel']['title']));
 											}
 											if ($item['BrandModel']['new']) {
@@ -376,7 +345,7 @@ foreach ($models as $item) {
 												$image = '<div class="action-prod hit"></div>' . $image;
 											}
 											if ($image_big) {
-												echo $this->Html->link($image, $image_big, array('escape' => false, 'class' => 'lightbox', 'id' => $item['BrandModel']['id']));
+												echo $this->Html->link($image, $image_big, array('escape' => false, 'class' => 'lightbox rel-box', 'id' => $item['BrandModel']['id']));
 											}
 											else {
 												echo $image;
@@ -385,14 +354,20 @@ foreach ($models as $item) {
 									</td>
 								</tr>
 							</table>
-							<div class="storage__block-green">
-								<p class="storage__text-green">
-								Шиномонтаж 0 ₽
-								</p>
-							</div>
-							<!-- show block with free tyremount only for brands -->
-							<!-- <?php echo $item['Brand']['title'] == 'Nokian' || $item['Brand']['title'] == 'Bridgestone' || $item['Brand']['title'] == 'Michelin' ? '<div class="storage__block-green"><p class="storage__text-green">Шиномонтаж 0 ₽</p></div>' : '<div class="storage__block"><p class="storage__text">Хранение шин 0 ₽</p></div>'; ?> -->
 						</div>
+                        <div class="box-info">
+                        <?php if ($has_params) { ?>
+                            <div class="info-top">
+                                <h3>
+                                    <?php
+                                    $link_filter = array('model_id' => $item['BrandModel']['id']);
+                                    //$link_filter = array_merge($link_filter, $filter);
+                                    echo $this->Html->link('<span class="brand">' . $item['Brand']['title']. '</span><span class="model">'. $item['BrandModel']['title'] . '</span>', array('controller' => 'tyres', 'action' => 'brand', 'slug' => $item['Brand']['slug'], '?' => $link_filter), array('escape' => false));
+                                    ?>
+                                </h3>
+                                <?php echo $this->element('tyre_season', array('seasons' => $seasons, 'season' => $season, 'item' => $item)); ?>
+                            </div>
+                        <?php } ?>
 						<div class="infoList">
 							<?php if ($show_available) { ?>
 								<p class="available"><?php
@@ -431,6 +406,7 @@ foreach ($models as $item) {
 							<?php } ?>
 							
 						</div>
+                        </div>
 						<div class="clear"></div>
 					<?php } elseif ($mode == 'list') { ?>
 						<div class="prodImg2 floatl">
@@ -534,7 +510,7 @@ foreach ($models as $item) {
 									if (!empty($item['BrandModel']['filename'])) {
 										$image = $this->Html->image('img-detal.jpg');
 										$image_big = $this->Backend->thumbnail(array('id' => $item['BrandModel']['id'], 'filename' => $item['BrandModel']['filename'], 'path' => 'models', 'width' => 800, 'height' => 600, 'crop' => false, 'folder' => false, 'watermark' => 'wm.png'), array('alt' => $item['BrandModel']['title']));
-										echo $this->Html->link($image, $image_big, array('escape' => false, 'class' => 'lightbox', 'id' => $item['BrandModel']['id']));
+										echo $this->Html->link($image, $image_big, array('escape' => false, 'class' => 'lightbox rel-box', 'id' => $item['BrandModel']['id']));
 									}
 								?></td>
 								<td><?php
@@ -608,8 +584,7 @@ $(function(){
 
 
 <script type="text/javascript">
- 
- function test(itemId) {
+ function buy_tyre(itemId) {
   open_popup({
 		url: '/cart',
 		type: 'post',

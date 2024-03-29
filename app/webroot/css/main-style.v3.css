@@ -1130,6 +1130,7 @@ input {
 .rel-box {
   display: block;
   position: relative;
+  cursor: zoom-in;
 }
 .prodImg2 {
   background-color: #ffffff;
@@ -1277,32 +1278,48 @@ a.btVer3:hover {
   justify-content: space-between;
 }
 .boxList {
-  background-color: #f5f5f5;
-  box-shadow: 1px 1px 0 #e5e5e5;
   height: 289px;
   padding: 15px;
   width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  transition: .15s linear;
+}
+.boxList:hover {
+  border-color: transparent;
+  transition: .15s ease-out;
+  box-shadow: 0 10px 25px 0 rgba(0,0,0,.13);
 }
 .border-b-tyres .boxList.season-winter,
 .border-b-tyres .boxList.season-summer,
 .border-b-tyres .boxList.season-all {
-  height: 260px;
+  height: 320px;
   padding-top: 15px;
 }
 .info-top {
   margin-bottom: 5px;
-  text-align: center;
+  text-align: start;
   max-height: 37.5px;
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
 }
 .info-top h3 {
   margin: 0;
   padding: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .info-top a {
   text-decoration: none;
+  color: #2f9ae9;
+}
+.info-top a:hover {
+  text-decoration: underline;
 }
 .boxList .brand {
   color: #000000;
@@ -1311,7 +1328,7 @@ a.btVer3:hover {
 }
 .info-top .brand {
   color: #2f9ae9;
-  font-size: 14px;
+  font-size: 17px;
 }
 .boxList .model {
   color: #2f9ae9;
@@ -1319,7 +1336,7 @@ a.btVer3:hover {
 }
 .info-top .model {
   color: #2f9ae9;
-  font-size: 13px;
+  font-size: 15px;
 }
 .info-top .productSeason2,
 .info-top .productSeason,
@@ -1330,14 +1347,17 @@ a.btVer3:hover {
 }
 .prodImg {
   background-color: #ffffff;
-  border: 1px solid #dddddd;
-  height: 143px;
+  height: 195px;
   margin-bottom: 10px;
-  overflow: hidden;
   position: relative;
   width: 100%;
-  max-width: 173px;
-  min-height: 143px;
+  max-width: 255px;
+  min-height: 195px;
+}
+.prodImg img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
 }
 .prodImg table {
   height: 100%;
@@ -1348,9 +1368,9 @@ a.btVer3:hover {
 }
 .infoList {
   margin-bottom: 10px;
-  text-align: center;
   display: flex;
   flex-direction: column;
+  max-width: 100%;
 }
 .infoList .available {
   margin: 0;
@@ -1361,6 +1381,8 @@ a.btVer3:hover {
   font-size: 13px;
   /* padding-top: 10px; */
   white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .season-winter .detalProd,
 .season-summer .detalProd {
@@ -1386,6 +1408,8 @@ a.btVer3:hover {
   text-align: center;
   display: flex;
   flex-direction: column;
+  margin-right: auto;
+  margin-top: 10px;
 }
 .with-season .priceMore-range {
   text-align: center;
@@ -1406,25 +1430,40 @@ a.btVer3:hover {
   display: inline-block;
   font-size: 15px;
   font-weight: bold;
-  margin-bottom: 5px;
-  margin-right: 5px;
 }
 h3.title-tyres {
-  font-size: 14px;
-  height: 32px;
+  font-size: 17px;
+  height: 40px;
+  min-height: 40px;
   margin: 0 0 5px;
   padding: 0;
   text-align: center;
+  line-height: 20px;
+
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+h3.title-tyres a {
+  text-decoration: none;
+}
+h3.title-tyres a:hover {
+  text-decoration: underline;
 }
 .border-b .priceMore.disks {
-  display: inline !important;
-  float: none;
+  text-wrap: nowrap;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
   margin-top: 0;
   width: auto;
+  padding: 10px;
+  flex-wrap: wrap;
 }
 .priceMore.disks span {
   color: #c72e30;
-  font-size: 15px;
+  font-size: 17px;
   margin: 0;
 }
 .priceMore.disks span span {
@@ -1433,10 +1472,10 @@ h3.title-tyres {
 .number.disks {
   display: inline;
   font-weight: bold;
-  margin-top: 11px;
+  margin-left: 10px;
 }
 .boxList.disks {
-  height: 240px;
+  height: 320px;
   padding-top: 8px;
   text-align: center;
 }
@@ -1456,9 +1495,15 @@ h3.title-tyres {
 .detalProd {
   clear: both;
   color: #333333;
-  font-size: 13px;
-  /* padding-top: 10px; */
+  font-size: 14px;
   white-space: nowrap;
+}
+.detalProd a {
+  color: #333333;
+  text-decoration: none;
+}
+.detalProd a:hover {
+  text-decoration: underline;
 }
 .priceMore2 {
   background-color: #ffffff;
@@ -1555,8 +1600,6 @@ h3.title-tyres {
   display: block;
 }
 .infoProdBig {
-  /*float: right;*/
-  /*width: 620px;*/
   position: relative;
   z-index: 2;
   display: flex;
@@ -1785,17 +1828,22 @@ h3.title-tyres {
 }
 .product__info {
   display: flex;
+  width: 100%;
   gap: 5px;
+  justify-content: space-between;
 }
 .buy-button {
-  float: right;
-  padding-top: 8px;
+  display: flex;
 }
 .buy-button a {
   text-transform: uppercase;
-  padding: 2px 12px;
-  font-family: "Open Sans Condensed", sans-serif;
+  padding: 2px 15px;
   font-size: 16px;
+  height: 35px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  transition: all 0.3s ease-in-out;
 }
 .select-namber a {
   background-color: #ececec;
@@ -3357,12 +3405,6 @@ table.withlines {
   padding: 0 0 15px;
 }
 
-.special-overlay {
-  position: absolute;
-  left: 0;
-  top: 0;
-}
-
 .articles {
   width: 870px;
 }
@@ -3410,34 +3452,6 @@ table.withlines {
   text-align: center;
   margin: 0;
   margin-bottom: 10px;
-}
-
-.storage__block {
-  position: absolute;
-  bottom: 0;
-  background-color: #fff;
-  border: 1px solid #2f9ae9;
-  margin: 4px;
-  opacity: 0.8;
-}
-.storage__text {
-  margin: 3px 6px;
-  color: #2f9ae9;
-  font-size: 12px;
-}
-
-.storage__block-green {
-  position: absolute;
-  bottom: 0;
-  background-color: #fff;
-  border: 1px solid #4ba123;
-  margin: 4px;
-  opacity: 0.8;
-}
-.storage__text-green {
-  margin: 3px 6px;
-  color: #4ba123;
-  font-size: 12px;
 }
 
 .logos__wrapper {
@@ -3721,18 +3735,24 @@ table.withlines {
 .list-view__grid {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 15px;
 }
 
 .list-view__item {
   display: grid;
   background-color: #ffffff;
-  box-shadow: 1px 1px 3px #9f9f9f;
-  border: 0;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
   padding: 20px;
   gap: 30px;
   grid-template-rows: repeat(3, auto);
   grid-template-columns: auto;
+  transition: .15s linear;
+}
+.list-view__item:hover {
+  border-color: transparent;
+  transition: .15s ease-out;
+  box-shadow: 0 10px 25px 0 rgba(0,0,0,.13);
 }
 .list-view__info-col .akb-polarity {
   display: none;
@@ -3740,12 +3760,21 @@ table.withlines {
 .list-view__info-col table tbody {
   text-align: left;
   font-size: 14px;
+  color: rgb(51, 51, 51);
 }
 .list-view__info-col table tbody h3 {
   margin: 0 0 10px 0;
+  font-size: 17px;
+}
+.list-view__info-col table tbody h3 a {
+  text-decoration: none;
+}
+.list-view__info-col table tbody h3 a:hover {
+  text-decoration: underline;
 }
 .list-view__info-col table tbody tr th, td {
   padding-bottom: 3px;
+  font-weight: 400;
 }
 .list-view__info-col table tbody tr td {
   padding-left: 10px;
@@ -3761,7 +3790,7 @@ table.withlines {
   cursor: zoom-in;
 }
 .list-view__img-col .prodImg img {
-  object-fit: cover;
+  object-fit: contain;
   width: 100%;
   height: 100%;
 }
@@ -3794,16 +3823,23 @@ table.withlines {
   position: relative;
 }
 .product__info-number {
-  font-size: 18px;
-  font-weight: bold;
+  font-size: 17px;
+  color: #000000;
 }
 .product__info-number-red {
   font-size: 20px;
   color: #c72e30;
+  font-weight: bold;
+}
+.product__info-number-black {
+  font-size: 20px;
+  color: #000000;
+  font-weight: bold;
 }
 .product__info-title {
   margin-top: 3px;
   padding-left: 18px;
+  color: rgb(51, 51, 51);
 }
 .product__info-recycle {
   position: absolute;
@@ -3814,10 +3850,12 @@ table.withlines {
 .product__info-buy a {
   min-width: 117px;
   width: fit-content;
-  display: block;
+  display: flex;
   text-align: center;
   border-radius: 5px;
   padding: 5px;
+  justify-content: center;
+  max-height: 25px;
 }
 .boxPriceProd-price .product__info-price span {
   font-size: 22px;
@@ -3852,35 +3890,27 @@ table.withlines {
   gap: 3px;
   z-index: 1;
 }
-.akb-polarity span {
-  font-size: 16px;
-  font-weight: bold;
-  border-radius: 50%;
-  width: 20px;
-  height: 20px;
-  text-align: center;
-  color: #FFFFFF;
-  line-height: 20px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+.akb-polarity-icon {
+  width: 22px;
+  height: 22px;
+  min-width: 22px;
 }
-.akb-polarity-red {
-  background-color: #c72e30;
-}
-.akb-polarity-blue {
-  background-color: #0034ff;
+.akb-polarity-icon-blue {
+  transform: scale(1.1);
 }
 .list-view__img-warranty {
   color: black;
   display: flex;
-  background-color: #e5e4eb;
   text-align: center;
   justify-content: center;
   padding: 3px 0;
   max-width: 202px;
   width: calc(100% + 2px);
-  margin-top: -10px;
+  margin-top: -30px;
+  border: 1px solid #40b252;
+  border-radius: 20px;
+  font-size: 12px;
+  z-index: 1;
 }
 .product__info__buy-group {
   display: flex;
@@ -3900,12 +3930,30 @@ table.withlines {
   border: none;
 }
 
+.tooltip-places-center .tooltiptext {
+  left: 50%;
+  margin-left: -130px;
+}
+.tooltip-places-center .tooltiptext::after {
+  left: 50%;
+}
+
+.tooltip-places-left .tooltiptext {
+  left: auto;
+  right: 0;
+  margin-left: auto;
+  margin-right: -20px;
+}
+.tooltip-places-left .tooltiptext::after {
+  left: 85%;
+}
+
 .tooltip-places .tooltiptext {
   visibility: hidden;
   width: 250px;
   max-width: 300px;
   min-width: 200px;
-  background-color: #589b2f;
+  background-color: #474747;
   color: #000000;
   text-align: left;
   border-radius: 6px;
@@ -3913,8 +3961,7 @@ table.withlines {
   position: absolute;
   z-index: 1;
   bottom: 150%;
-  left: 50%;
-  margin-left: -130px;
+  box-shadow: 0 10px 25px 0 rgba(0,0,0,.13);
 }
 .tooltip-places .tooltiptext table {
   width: 100%;
@@ -3929,11 +3976,10 @@ table.withlines {
   content: "";
   position: absolute;
   top: 100%;
-  left: 50%;
   margin-left: -5px;
   border-width: 5px;
   border-style: solid;
-  border-color: #589b2f transparent transparent transparent;
+  border-color: #474747 transparent transparent transparent;
 }
 
 .tooltip-places:hover .tooltiptext {
@@ -3954,4 +4000,78 @@ table.withlines {
   width: fit-content;
   max-width: 100%;
   overflow: hidden;
+}
+.priceMore__row {
+  display: flex;
+  justify-content: space-around;
+  width: 100%;
+}
+.prodImg-tyres table tbody a img {
+  margin: 0;
+}
+.tyre__icons {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 1;
+}
+.tyre__icon {
+  width: 31px;
+  height: 31px;
+  max-width: 31px;
+  position: relative;
+}
+.tyre__icon-tooltip {
+  display: none;
+  position: absolute;
+  left: 40px;
+  top: 0;
+  padding: 7px;
+  border-radius: 5px;
+  box-shadow: 0 10px 25px 0 rgba(0,0,0,.13);
+  background-color: #FFFFFF;
+  transition: all 0.2s ease-in-out;
+}
+.tyre__icon-tooltip:after {
+  content: " ";
+  position: absolute;
+  top: 16px;
+  right: 100%; /* To the left of the tooltip */
+  margin-top: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: transparent #FFFFFF transparent transparent;
+}
+.tyre__icon:hover {
+  transform: scale(1.2);
+}
+.tyre__icon:hover .tyre__icon-tooltip {
+  display: block;
+}
+.tyre-block__season {
+  display: flex;
+  gap: 5px;
+  margin-right: -3px;
+}
+.tyre-block__season img {
+  width: 23px;
+  height: 23px;
+  min-width: 23px;
+}
+.tyre-block__sizes {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  align-items: baseline;
+}
+.box-info {
+  display: flex;
+  flex-direction: column;
+  width: 90%;
+}
+.prodImg-disks {
+  max-width: 195px;
 }

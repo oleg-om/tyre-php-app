@@ -8,11 +8,26 @@ $this->Backend->addCheckbox('is_active', array(
 	'label' => __d('admin_tyres', 'label_is_active'),
 	'acronym' => __d('admin_tyres', 'acronym_is_active')
 ));
-$this->Backend->addCheckbox('sale', array(
-	'label' => __d('admin_tyres', 'label_sale')
-));
 $this->Backend->addCheckbox('not_show_price', array(
 	'label' => __d('admin_tyres', 'label_not_show_price')
+));
+$this->Backend->addCheckbox('sale', array(
+    'label' => __d('admin_tyres', 'label_sale')
+));
+$this->Backend->addCheckbox('p1', array(
+    'label' => __d('admin_tyres', 'label_p1')
+));
+$this->Backend->addCheckbox('p2', array(
+    'label' => __d('admin_tyres', 'label_p2')
+));
+$this->Backend->addCheckbox('p3', array(
+    'label' => __d('admin_tyres', 'label_p3')
+));
+$this->Backend->addCheckbox('p4', array(
+    'label' => __d('admin_tyres', 'label_p4')
+));
+$this->Backend->addCheckbox('p5', array(
+    'label' => __d('admin_tyres', 'label_p5')
 ));
 $this->Backend->addSelect('brand_id', array(
 	'label' => __d('admin_tyres', 'label_brand_id'),

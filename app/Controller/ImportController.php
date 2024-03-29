@@ -2467,6 +2467,30 @@ class ImportController extends AppController {
 									if (isset($data->sheets[0]['cells'][$i][14])) {
 										$stock_count = intval(trim($data->sheets[0]['cells'][$i][14]));
 									}
+
+                                    $free_tyremount = 0;
+                                    $free_storage = 0;
+                                    $warranty = 0;
+                                    $xl = 0;
+                                    $run_flat = 0;
+
+                                    if (isset($data->sheets[0]['cells'][$i][17])) {
+                                        $free_tyremount = 1;
+                                    }
+                                    if (isset($data->sheets[0]['cells'][$i][18])) {
+                                        $free_storage = 1;
+                                    }
+                                    if (isset($data->sheets[0]['cells'][$i][19])) {
+                                        $warranty = 1;
+                                    }
+                                    if (isset($data->sheets[0]['cells'][$i][20])) {
+                                        $xl = 1;
+                                    }
+                                    if (isset($data->sheets[0]['cells'][$i][21])) {
+                                        $run_flat = 1;
+                                    }
+
+
 									if (isset($brands[$brand])) {
 										$brand_id = $brands[$brand];
 										if (isset($models[$brand_id][$model])) {
@@ -2683,7 +2707,12 @@ class ImportController extends AppController {
 													'auto' => $auto,
 													'price' => $price,
 													'stock_count' => $stock_count,
-													'in_stock' => $in_stock
+													'in_stock' => $in_stock,
+                                                    'p1' => $free_tyremount,
+                                                    'p2' => $free_storage,
+                                                    'p3' => $warranty,
+                                                    'p4' => $xl,
+                                                    'p5' => $run_flat,
 												);
 												if ($stud !== null) {
 													$save_data['stud'] = $stud;
@@ -3493,6 +3522,492 @@ class ImportController extends AppController {
                                 }
                             }
                             break;
+
+                        // шины собственный расширенный
+                        case 10:
+                            $category_id = 1;
+                            $brand_slugs = $this->Brand->find('list', array('fields' => array('Brand.slug', 'Brand.id')));
+                            $all_brands = $this->Brand->find('list', array('conditions' => array('Brand.category_id' => $category_id), 'fields' => array('Brand.title', 'Brand.id')));
+                            $all_models = $this->BrandModel->find('all', array('conditions' => array('BrandModel.category_id' => $category_id), 'fields' => array('BrandModel.id', 'BrandModel.brand_id', 'BrandModel.title'), 'order' => array('LENGTH(BrandModel.title)' => 'desc')));
+                            $model_synonyms = $this->ModelSynonym->find('all');
+                            $brand_synonyms = $this->BrandSynonym->find('all');
+                            $brands = array();
+                            $models = array();
+                            foreach ($all_brands as $brand => $id) {
+                                $brand = $this->_clean_text($brand);
+                                $brands[$brand] = $id;
+                                foreach ($brand_synonyms as $synonym) {
+                                    if ($synonym['BrandSynonym']['brand_id'] == $id) {
+                                        $brand = trim($this->_clean_text($synonym['BrandSynonym']['title']));
+                                        $brands[$brand] = $id;
+                                    }
+                                }
+                            }
+                            foreach ($all_models as $item) {
+                                if (!isset($models[$item['BrandModel']['brand_id']])) {
+                                    $models[$item['BrandModel']['brand_id']] = array();
+                                }
+                                $model = $this->_clean_text($item['BrandModel']['title'], false);
+                                $models[$item['BrandModel']['brand_id']][$model] = $item['BrandModel']['id'];
+                                foreach ($model_synonyms as $synonym) {
+                                    if ($synonym['ModelSynonym']['model_id'] == $item['BrandModel']['id']) {
+                                        $model = trim($this->_clean_text($synonym['ModelSynonym']['title'], false));
+                                        $models[$item['BrandModel']['brand_id']][$model] = $item['BrandModel']['id'];
+                                    }
+                                }
+                            }
+                            //debug($data->sheets[0]['cells']);exit();
+                            for ($i = 1; $i <= $data->sheets[0]['numRows']; $i++) {
+                                if (isset($data->sheets[0]['cells'][$i][1]) && !empty($data->sheets[0]['cells'][$i][1])) {
+                                    $total_rows ++;
+                                    $brand_id = null;
+                                    $model_id = null;
+                                    $brand_name = trim($data->sheets[0]['cells'][$i][2]);
+                                    $title = trim($data->sheets[0]['cells'][$i][3]);
+                                    $brand = $this->_clean_text($brand_name);
+                                    $size = trim($data->sheets[0]['cells'][$i][1]);
+                                    $axis_text = mb_strtolower(trim($data->sheets[0]['cells'][$i][17]));
+                                    $auto = 'cars';
+                                    $axis = '';
+                                    if (substr_count($axis_text, 'руль+прицеп')) {
+                                        $auto = 'trucks';
+                                        $axis = 'универсальная';
+                                    }
+                                    elseif (substr_count($axis_text, 'прицеп+руль')) {
+                                        $auto = 'trucks';
+                                        $axis = 'универсальная';
+                                    }
+                                    elseif (substr_count($axis_text, 'тяга+руль')) {
+                                        $auto = 'trucks';
+                                        $axis = 'универсальная';
+                                    }
+                                    elseif (substr_count($axis_text, 'руль+тяга')) {
+                                        $auto = 'trucks';
+                                        $axis = 'универсальная';
+                                    }
+                                    elseif (substr_count($axis_text, 'прицеп')) {
+                                        $auto = 'trucks';
+                                        $axis = 'прицеп';
+                                    }
+                                    elseif (substr_count($axis_text, 'тяга')) {
+                                        $auto = 'trucks';
+                                        $axis = 'тяга';
+                                    }
+                                    elseif (substr_count($axis_text, 'руль')) {
+                                        $auto = 'trucks';
+                                        $axis = 'руль';
+                                    }
+                                    elseif (substr_count($axis_text, 'универсальная')) {
+                                        $auto = 'trucks';
+                                        $axis = 'универсальная';
+                                    }
+                                    if (isset($data->sheets[0]['cells'][$i][16])) {
+                                        $type = mb_strtolower(trim($data->sheets[0]['cells'][$i][16]));
+                                        if ($type == 'г') {
+                                            $auto = 'trucks';
+                                        }
+                                        elseif ($type == 'лг') {
+                                            $auto = 'light_trucks';
+                                        }
+                                        elseif ($type == 'сх') {
+                                            $auto = 'agricultural';
+                                        }
+                                        elseif ($type == 'мото') {
+                                            $auto = 'moto';
+                                        }
+                                        elseif ($type == 'джип') {
+                                            $auto = 'cars';
+                                        }
+                                        elseif ($type == 'спецтранспорт') {
+                                            $auto = 'special';
+                                        }
+                                    }
+                                    $stud = 0;
+                                    if (isset($data->sheets[0]['cells'][$i][17])) {
+                                        $stud_text = mb_strtolower(trim($data->sheets[0]['cells'][$i][17]));
+                                        if ($stud_text == 'шип' || $stud_text == 'ш') {
+                                            $stud = 1;
+                                        }
+                                        elseif ($stud_text == 'подшип' || $stud_text == 'пш') {
+                                            $stud = 0;
+                                        }
+                                        else {
+                                            $stud = 0;
+                                        }
+                                    }
+
+                                    $autodom_count = trim($data->sheets[0]['cells'][$i][6]);
+                                    $tiptop_count = trim($data->sheets[0]['cells'][$i][7]);
+                                    $bam_count = trim($data->sheets[0]['cells'][$i][8]);
+                                    $atp_count = trim($data->sheets[0]['cells'][$i][9]);
+                                    $taksopark_count = trim($data->sheets[0]['cells'][$i][10]);
+                                    $vianorshop_count = trim($data->sheets[0]['cells'][$i][11]);
+                                    $hundai_count = trim($data->sheets[0]['cells'][$i][12]);
+                                    $tavrida_count = trim($data->sheets[0]['cells'][$i][13]);
+                                    $gruz_count = trim($data->sheets[0]['cells'][$i][14]);
+
+                                    if (empty($autodom_count)) {
+                                        $autodom_count = 0;
+                                    }
+                                    if (empty($tiptop_count)) {
+                                        $tiptop_count = 0;
+                                    }
+                                    if (empty($bam_count)) {
+                                        $bam_count = 0;
+                                    }
+                                    if (empty($atp_count)) {
+                                        $atp_count = 0;
+                                    }
+                                    if (empty($taksopark_count)) {
+                                        $taksopark_count = 0;
+                                    }
+                                    if (empty($vianorshop_count)) {
+                                        $vianorshop_count = 0;
+                                    }
+                                    if (empty($hundai_count)) {
+                                        $hundai_count = 0;
+                                    }
+                                    if (empty($tavrida_count)) {
+                                        $tavrida_count = 0;
+                                    }
+                                    if (empty($gruz_count)) {
+                                        $gruz_count = 0;
+                                    }
+
+                                    $stock_places = $autodom_count.'|'.$tiptop_count.'|'.$bam_count.'|'.$atp_count.'|'.$taksopark_count.'|'.$vianorshop_count.'|'.$hundai_count.'|'.$tavrida_count.'|'.$gruz_count;
+                                    $free_tyremount = trim($data->sheets[0]['cells'][$i][18]);
+                                    $free_storage = trim($data->sheets[0]['cells'][$i][19]);
+                                    $warranty = trim($data->sheets[0]['cells'][$i][20]);
+
+                                    if (!empty($free_tyremount)) {
+                                        $free_tyremount = 1;
+                                    }
+                                    if (!empty($free_storage)) {
+                                        $free_storage = 1;
+                                    }
+                                    if (!empty($warranty)) {
+                                        $warranty = 1;
+                                    }
+
+                                    $xl = 0;
+                                    $run_flat = 0;
+                                    $tyre_title = mb_strtolower($title);
+
+                                    if (substr_count($tyre_title, ' xl')) {
+                                        $xl = 1;
+                                    }
+                                    if (substr_count($tyre_title, 'extra load')) {
+                                        $xl = 1;
+                                    }
+                                    if (substr_count($title, ' RF')) {
+                                        $run_flat = 1;
+                                    }
+                                    if (substr_count($tyre_title, 'run flat')) {
+                                        $run_flat = 1;
+                                    }
+                                    if (substr_count($tyre_title, 'run-flat')) {
+                                        $run_flat = 1;
+                                    }
+                                    if (substr_count($tyre_title, 'runflat')) {
+                                        $run_flat = 1;
+                                    }
+
+                                    $last_space = mb_strrpos($title, ' ');
+                                    if ($last_space === false) {
+                                        $error_lines[] = $i;
+                                        $skipped_rows ++;
+                                        continue;
+                                    }
+                                    $f = mb_substr($title, $last_space + 1);
+                                    if (mb_strlen($f) < 3) {
+                                        $error_lines[] = $i;
+                                        $skipped_rows ++;
+                                        continue;
+                                    }
+                                    $f1 = mb_substr($f, 0, -1);
+                                    $f2 = mb_substr($f, -1);
+                                    $model_name = trim(str_replace($f, '', $title));
+                                    $model = $this->_clean_text($model_name, false);
+                                    $delimiter = null;
+                                    if (substr_count($size, '/') == 1) {
+                                        $size = str_replace('R', '/', $size);
+                                    }
+                                    elseif (substr_count($size, '-') == 1) {
+                                        $size = str_replace('R', '-', $size);
+                                    }
+                                    if (substr_count($size, '/') == 2) {
+                                        $delimiter = '/';
+                                    }
+                                    elseif (substr_count($size, '-') == 2) {
+                                        $delimiter = '-';
+                                    }
+                                    else {
+                                        $size = str_replace(' ', '', $size);
+                                        if (substr_count($size, 'R') == 1) {
+                                            list($size1, $size3) = explode('R', $size);
+                                            $size1 = intval($size1);
+                                            $size = implode('/', array($size1, '', $size3));
+                                            $delimiter = '/';
+                                        }
+                                        elseif (substr_count($size, '/') == 1) {
+                                            list($size1, $size3) = explode('/', $size);
+                                            $size1 = intval($size1);
+                                            $size = implode('/', array($size1, '', $size3));
+                                            $delimiter = '/';
+                                        }
+                                    }
+                                    if (!empty($delimiter)) {
+                                        list($size1, $size2, $size3) = explode($delimiter, $size);
+                                        $price = floatval(trim($data->sheets[0]['cells'][$i][5])) / $rate;
+                                        $stock_count = intval(trim($data->sheets[0]['cells'][$i][15]));
+                                        $season = 'summer';
+                                        $season_text = mb_strtolower($data->sheets[0]['cells'][$i][4]);
+                                        if (!empty($season_text)) {
+                                            if ($season_text == 'в') {
+                                                $season = 'all';
+                                            }
+                                            elseif ($season_text == 'з') {
+                                                $season = 'winter';
+                                            }
+                                            elseif ($season_text == 'л') {
+                                                $season = 'summer';
+                                            }
+                                        }
+                                        if (isset($brands[$brand])) {
+                                            $brand_id = $brands[$brand];
+                                            if (isset($models[$brand_id][$model])) {
+                                                $model_id = $models[$brand_id][$model];
+                                            }
+                                            else {
+                                                $save_data = array(
+                                                    'is_active' => 1,
+                                                    'brand_id' => $brand_id,
+                                                    'category_id' => $category_id,
+                                                    'title' => $model_name,
+                                                    'meta_title' => $model_name,
+                                                    'slug' => $this->_transliterate($model_name)
+                                                );
+                                                $this->BrandModel->create();
+                                                if ($this->BrandModel->save($save_data)) {
+                                                    $created_models ++;
+                                                    $model_id = $this->BrandModel->id;
+                                                    $recount_models[] = $model_id;
+                                                    $model_photos[$model_id] = false;
+                                                    $models[$brand_id][$model] = $model_id;
+                                                }
+                                            }
+                                        }
+                                        else {
+                                            if (isset($need_to_create_brands[$brand_name])) {
+                                                $need_to_create_brands[$brand_name][] = $i;
+                                            }
+                                            else {
+                                                $need_to_create_brands[$brand_name] = array($i);
+                                            }
+                                            /*
+                                            $slug = $this->_transliterate($brand_name);
+                                            $check_slug = $slug;
+                                            $j = 2;
+                                            while (isset($brand_slugs[$check_slug])) {
+                                                $check_slug = $slug . $j;
+                                                $j ++;
+                                            }
+                                            $brand_slugs[$check_slug] = 1;
+                                            $slug = $check_slug;
+                                            $save_data = array(
+                                                'is_active' => 1,
+                                                'category_id' => $category_id,
+                                                'title' => $brand_name,
+                                                'slug' => $slug,
+                                                'meta_title' => $brand_name
+                                            );
+                                            $this->Brand->create();
+                                            if ($this->Brand->save($save_data)) {
+                                                $created_brands ++;
+                                                $brand_id = $this->Brand->id;
+                                                $recount_brands[] = $brand_id;
+                                                $brands[$brand] = $brand_id;
+                                                $save_data = array(
+                                                    'is_active' => 1,
+                                                    'brand_id' => $brand_id,
+                                                    'category_id' => $category_id,
+                                                    'title' => $model_name,
+                                                    'meta_title' => $model_name
+                                                );
+                                                $this->BrandModel->create();
+                                                if ($this->BrandModel->save($save_data)) {
+                                                    $created_models ++;
+                                                    $model_id = $this->BrandModel->id;
+                                                    $recount_models[] = $model_id;
+                                                    $models[$brand_id][$model] = $model_id;
+                                                }
+                                            }
+                                            */
+                                        }
+                                        if (!empty($brand_id) && !empty($model_id)) {
+                                            if (!in_array($brand_id, $recount_brands)) {
+                                                $recount_brands[] = $brand_id;
+                                            }
+                                            if (!in_array($model_id, $recount_models)) {
+                                                $recount_models[] = $model_id;
+                                            }
+                                            $conditions = array(
+                                                'Product.brand_id' => $brand_id,
+                                                'Product.model_id' => $model_id,
+                                                'Product.category_id' => $category_id,
+                                                'Product.size1' => $size1,
+                                                'Product.size2' => $size2,
+                                                'Product.size3' => $size3,
+                                                'Product.f1' => $f1,
+                                                'Product.f2' => $f2
+                                            );
+                                            if ($stud !== null) {
+                                                $conditions['Product.stud'] = $stud;
+                                            }
+                                            if ($only_prices) {
+                                                if ($product = $this->Product->find('first', array('conditions' => $conditions, 'fields' => array('Product.id', 'Product.price', 'Product.supplier_id')))) {
+                                                    if ($price != $product['Product']['price'] || $ignore_prices) {
+                                                        if (!$only_suppliers || ($only_suppliers && $supplier_id == $product['Product']['supplier_id'])) {
+                                                            $this->Product->id = $product['Product']['id'];
+                                                            if ($this->Product->saveField('price', $price)) {
+                                                                $this->Product->saveField('supplier_id', $supplier_id);
+                                                                $updated_products ++;
+                                                            }
+                                                            else {
+                                                                $not_updated_products ++;
+                                                                debug($this->Product->validationErrors);
+                                                            }
+                                                        }
+                                                        else {
+                                                            $nothing_update_products ++;
+                                                        }
+                                                    }
+                                                    else {
+                                                        $nothing_update_products ++;
+                                                    }
+                                                }
+                                            }
+                                            else {
+                                                if ($product = $this->Product->find('first', array('conditions' => $conditions, 'fields' => array('Product.id', 'Product.price', 'Product.stock_count', 'Product.in_stock', 'Product.stud', 'Product.season', 'Product.axis', 'Product.auto', 'Product.supplier_id')))) {
+                                                    $save_data = array();
+                                                    if ($price < $product['Product']['price'] || $ignore_prices) {
+                                                        if (!$only_suppliers || ($only_suppliers && $supplier_id == $product['Product']['supplier_id'])) {
+                                                            $save_data['price'] = $price;
+                                                            $save_data['supplier_id'] = $supplier_id;
+                                                            if ($stock_count != $product['Product']['stock_count']) {
+                                                                $save_data['stock_count'] = $stock_count;
+                                                            }
+                                                            if ($in_stock != $product['Product']['in_stock']) {
+                                                                $save_data['in_stock'] = $in_stock;
+                                                            }
+                                                            if ($season != $product['Product']['season']) {
+                                                                $save_data['season'] = $season;
+                                                            }
+                                                            if ($auto != $product['Product']['auto']) {
+                                                                $save_data['auto'] = $auto;
+                                                            }
+                                                            if ($axis != $product['Product']['axis']) {
+                                                                $save_data['axis'] = $axis;
+                                                            }
+                                                            if ($stud !== null && $stud != $product['Product']['stud']) {
+                                                                $save_data['stud'] = $stud;
+                                                            }
+                                                            if (!empty($save_data)) {
+                                                                $this->Product->id = $product['Product']['id'];
+                                                                if ($this->Product->save($save_data, false)) {
+                                                                    $updated_products ++;
+                                                                }
+                                                                else {
+                                                                    $not_updated_products ++;
+                                                                    debug($this->Product->validationErrors);
+                                                                }
+                                                            }
+                                                            else {
+                                                                $nothing_update_products ++;
+                                                            }
+                                                        }
+                                                        else {
+                                                            $nothing_update_products ++;
+                                                        }
+                                                    }
+                                                    elseif ($price == $product['Product']['price']) {
+                                                        if ($stock_count != $product['Product']['stock_count']) {
+                                                            $save_data['stock_count'] = $stock_count;
+                                                        }
+                                                        if ($in_stock != $product['Product']['in_stock']) {
+                                                            $save_data['in_stock'] = $in_stock;
+                                                        }
+                                                        $save_data['supplier_id'] = $supplier_id;
+                                                        if (!empty($save_data)) {
+                                                            $this->Product->id = $product['Product']['id'];
+                                                            if ($this->Product->save($save_data, false)) {
+                                                                $updated_products ++;
+                                                            }
+                                                            else {
+                                                                $not_updated_products ++;
+                                                                debug($this->Product->validationErrors);
+                                                            }
+                                                        }
+                                                        else {
+                                                            $nothing_update_products ++;
+                                                        }
+                                                    }
+                                                    else {
+                                                        $nothing_update_products ++;
+                                                    }
+                                                }
+                                                else {
+                                                    $save_data = array(
+                                                        'is_active' => 1,
+                                                        'supplier_id' => $supplier_id,
+                                                        'brand_id' => $brand_id,
+                                                        'model_id' => $model_id,
+                                                        'category_id' => $category_id,
+                                                        'size1' => $size1,
+                                                        'size2' => $size2,
+                                                        'size3' => $size3,
+                                                        'sku' => $title,
+                                                        'f1' => $f1,
+                                                        'f2' => $f2,
+                                                        'season' => $season,
+                                                        'auto' => $auto,
+                                                        'axis' => $axis,
+                                                        'price' => $price,
+                                                        'stock_count' => $stock_count,
+                                                        'in_stock' => $in_stock,
+                                                        'stock_places' => $stock_places,
+                                                        'p1' => $free_tyremount,
+                                                        'p2' => $free_storage,
+                                                        'p3' => $warranty,
+                                                        'p4' => $xl,
+                                                        'p5' => $run_flat,
+                                                    );
+                                                    if ($stud !== null) {
+                                                        $save_data['stud'] = $stud;
+                                                    }
+                                                    $this->Product->create();
+                                                    if ($this->Product->save($save_data)) {
+                                                        $created_products ++;
+                                                    }
+                                                    else {
+                                                        $not_created_products ++;
+                                                        debug($this->Product->validationErrors);
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                    else {
+                                        $error_lines[] = $i;
+                                        $skipped_rows ++;
+                                    }
+                                }
+                                else {
+                                    $skipped_rows ++;
+                                }
+                            }
+                            break;
+
 					}
 					/****** конец switch **********/
 					
@@ -4412,6 +4927,32 @@ class ImportController extends AppController {
 										if (!isset($save_data['auto']) && !empty($product_auto)) {
 											$save_data['auto'] = $product_auto;
 										}
+                                        // find run flat and xl
+
+                                        $tyre_title = mb_strtolower($title);
+
+                                        $save_data['p4'] = 0;
+                                        $save_data['p5'] = 0;
+
+                                        if (substr_count($tyre_title, ' xl')) {
+                                            $save_data['p4'] = 1;
+                                        }
+                                        if (substr_count($tyre_title, 'extra load')) {
+                                            $save_data['p4'] = 1;
+                                        }
+                                        if (substr_count($title, ' RF')) {
+                                            $save_data['p5'] = 1;
+                                        }
+                                        if (substr_count($tyre_title, 'run flat')) {
+                                            $save_data['p5'] = 1;
+                                        }
+                                        if (substr_count($tyre_title, 'run-flat')) {
+                                            $save_data['p5'] = 1;
+                                        }
+                                        if (substr_count($tyre_title, 'runflat')) {
+                                            $save_data['p5'] = 1;
+                                        }
+
 										if (!isset($save_data['axis']) && isset($title)) {
 											foreach ($product_axis as $key => $value) {
 												if (preg_match('/\b' . preg_quote($key, '/') . '\b/ui', $title, $mathces)) {
@@ -4545,6 +5086,12 @@ class ImportController extends AppController {
 								if (isset($item['axis'])) {
 									$objPHPExcel->setActiveSheetIndex(0)->setCellValueExplicit('E' . $i, $item['axis']);
 								}
+                                if (isset($item['p4']) && $item['p4'] != 0) {
+                                    $objPHPExcel->setActiveSheetIndex(0)->setCellValueExplicit('T' . $i, 'XL');
+                                }
+                                if (isset($item['p5']) && $item['p5'] != 0) {
+                                    $objPHPExcel->setActiveSheetIndex(0)->setCellValueExplicit('U' . $i, 'RUN FLAT');
+                                }
 								$i ++;
 							}
 							$objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel5');

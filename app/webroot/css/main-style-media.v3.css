@@ -20,7 +20,7 @@
 }
 @media screen and (min-width: 550px) {
     .boxList {
-        width: 42%;
+        width: 41%
     }
     .selection .item {
         width: 45%;
@@ -48,7 +48,7 @@
         max-width: var(--container-md)
     }
     .boxList {
-        width: 27.3%;
+        width: 44%;
     }
     .width-disk {
         justify-content: flex-start;
@@ -285,7 +285,7 @@
         min-height: 20px;
     }
     .boxList {
-        width: 26.9%;
+        width: 43.6%;
     }
     .boxList2 {
         flex-wrap: nowrap;
@@ -351,7 +351,7 @@
     /*    background-image: url(../img/tyres_winter.png);*/
     /*}*/
     .boxList {
-        width: 28.39%;
+        width: 28.14%;
     }
     .selection .item {
         width: 17%;
@@ -450,6 +450,6 @@
         left: 160px;
     }
     .boxList {
-        width: 28.839%
+        width: 28.6%;
     }
 }

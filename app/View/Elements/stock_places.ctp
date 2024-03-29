@@ -5,10 +5,17 @@ if (empty($stock_places)) {
 if (empty($text)) {
     $text = '';
 }
+if (empty($position)) {
+    $position = 'center';
+}
 $place_list = explode('|', $stock_places);
 ?>
 
-<div class="tooltip-places <?php if (empty($stock_places)) { echo 'tooltip-places-empty'; } ?>">
+<div class="tooltip-places
+<?php if ($position == 'left') { echo 'tooltip-places-left'; } ?>
+<?php if ($position == 'center') { echo 'tooltip-places-center'; } ?>
+<?php if (empty($stock_places)) { echo 'tooltip-places-empty'; } ?>
+">
     <?php echo $text; ?>
     <?php if (!empty($stock_places)) { ?>
     <div class="tooltiptext">
