@@ -30,7 +30,7 @@
 				<th>Вылет</th>
 				<th>Ступица</th>
 				<th>Цвет</th>
-				<th>Кол.</th>
+				<th>Кол-во</th>
 				<th>Цена</th>
 				<th></th>
 			</tr>
@@ -41,7 +41,13 @@
 				<td><?php echo $product['et']; ?></td>
 				<td><?php echo $product['hub']; ?></td>
 				<td><?php echo $product['color']; ?></td>
-				<td><?php echo $this->Frontend->getStockCount($product['stock_count']); ?></td>
+				<td>
+                    <?php
+                    $in_stock_mark = $product['in_stock'] ? '<img title="в наличии" alt="в наличии" src="/img/yes.png">' : '';
+                    $in_stock_text = $product['in_stock'] ? 'В наличии: ' : 'Под заказ: ';
+                    echo $this->element('stock_places', array('stock_places' => $product['stock_places'], 'text' => '<div class="namber tyres">'.$in_stock_text.$this->Frontend->getStockCount($product['stock_count']).' шт. '.$in_stock_mark.'</div>', 'position' => 'right'));
+                    ?>
+                </td>
 				<td><strong><?php
 					if ($this->Frontend->canShowDiskPrice($product['not_show_price'])) {
 						echo $this->Frontend->getPrice($product['price'], 'disks');

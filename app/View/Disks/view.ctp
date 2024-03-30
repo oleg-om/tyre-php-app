@@ -47,8 +47,16 @@
 					<td><?php echo $this->Frontend->getStockCount($product['Product']['stock_count']); ?></td>
 				</tr>
 			</table>
+
 		</div>
 	</div>
+    <div class="product__info-instock my-1">
+        <?php
+        $in_stock_mark = $product['Product']['in_stock'] ? '<img title="в наличии" alt="в наличии" src="/img/yes.png">' : '';
+        $in_stock_text = $product['Product']['in_stock'] ? 'В наличии: ' : 'Под заказ: ';
+        echo $this->element('stock_places', array('stock_places' => $product['Product']['stock_places'], 'text' => '<div class="namber tyres">'.$in_stock_text.$this->Frontend->getStockCount($product['Product']['stock_count']).' шт. '.$in_stock_mark.'</div>', 'position' => 'right'));
+        ?>
+    </div>
 	<div class="boxRightInfo">
 		<?php if ($this->Frontend->canShowDiskPrice($product['Product']['not_show_price'])) { ?>
 		<div class="boxPriceProd">
@@ -65,7 +73,7 @@
 		<?php } ?>
 		<div class="orderCall">
             <h3>Либо заказать по телефону:</h3>
-            <span><?php echo CONST_STORAGE_CELLPHONE; ?></span>
+            <a href="tel:<?php echo CONST_STORAGE_CELLPHONE; ?>"><?php echo CONST_STORAGE_CELLPHONE; ?></a>
 		</div>
 	</div>
 	<div class="clear"></div>

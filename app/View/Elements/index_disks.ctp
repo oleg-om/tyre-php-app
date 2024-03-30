@@ -98,7 +98,7 @@
 
                             <?php
                             $in_stock_mark = $item['Product'][0]['in_stock'] ? '<img title="в наличии" alt="в наличии" src="/img/yes.png">' : '';
-                            echo $this->element('stock_places', array('stock_places' => $item['Product'][0]['stock_places'], 'text' => '<div class="number disks">'.$this->Frontend->getStockCount($item['Product'][0]['stock_count']).' шт. '.$in_stock_mark.'</div>', 'position' => 'left')); ?>
+                            echo $this->element('stock_places', array('stock_places' => $item['Product'][0]['stock_places'], 'text' => '<div class="number disks">'.$this->Frontend->getStockCount($item['Product'][0]['stock_count']).' шт. '.$in_stock_mark.'</div>', 'position' => 'center')); ?>
 
 						</div>
 						<div class="buy-button">

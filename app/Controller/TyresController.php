@@ -423,7 +423,6 @@ class TyresController extends AppController {
                         $current_season = 'winter';
                     }
                     if ($select2['POPULAR_SORT_SEASON']['лето'] == 1) {
-
                         $current_season = 'summer';
                     }
                 }

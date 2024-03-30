@@ -1674,7 +1674,8 @@ h3.title-tyres a:hover {
   margin-bottom: 10px;
   padding: 10px;
   text-align: center;
-  width: 240px;
+  width: auto;
+  min-width: 250px;
 }
 .boxPriceProd em {
   font-style: normal;
@@ -1693,8 +1694,7 @@ h3.title-tyres a:hover {
   background-color: #e7ecf1;
   float: right;
   padding: 5px 0;
-  max-width: 260px;
-  width: 100%;
+  width: auto;
 }
 .orderCall h3 {
   margin: 0px;
@@ -1707,7 +1707,7 @@ h3.title-tyres a:hover {
   padding-bottom: 5px;
   font-family: "Open Sans Condensed", sans-serif;
 }
-.orderCall span {
+.orderCall a {
   display: inline-block;
   font-family: "Open Sans Condensed", sans-serif;
   color: #000000;
@@ -2709,10 +2709,12 @@ top: -1px;
 .boxPriceProd.akb-price-box {
 float: right;
 margin-top: 10px;
-width: 364px;
+  width: auto;
+  min-width: 250px;
 }
 .boxPriceProd .buy-button {
-padding-top: 26px;
+  padding-top: 18px;
+  justify-content: end;
 }
 .boxPriceProd.akb-price-box span {
 font-size: 38px;
@@ -3949,6 +3951,16 @@ table.withlines {
   left: 85%;
 }
 
+.tooltip-places-right .tooltiptext {
+  left: 0;
+  right: auto;
+  margin-left: 0;
+  margin-right: auto;
+}
+.tooltip-places-right .tooltiptext::after {
+  left: 10%;
+}
+
 .tooltip-places .tooltiptext {
   visibility: hidden;
   width: 250px;
@@ -3972,6 +3984,9 @@ table.withlines {
 .tooltip-places .tooltiptext table tbody tr td {
   padding: 2px 2px 5px 2px;
   border: 1px solid #316b16;
+  background-color: #fff !important;
+  white-space: inherit !important;
+  text-align: left !important;
 }
 
 .tooltip-places .tooltiptext::after {

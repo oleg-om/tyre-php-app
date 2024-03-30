@@ -31,7 +31,7 @@ if (empty($current_season)) {
                     <div class="logo logo__autodom"><img src="/img/kerchshina.png" alt="Шинный центр" /><span class="logo__years">25 лет</span></div>
                     <div class="logo logo__vianor"><img src="/img/vianor-logo.webp" alt="Vianor" /></div>
                 </div>
-			<div class="cart"><button onclick="window.location='/checkout';"><?php if (isset($cart) && !empty($cart['items'])) { ?><em><?php echo count($cart['items']); ?></em><?php } ?><span>Корзина</span></button></div>
+			<div class="cart"><button onclick="window.location='/checkout';"><?php if (isset($cart) && !empty($cart['items'])) { ?><em id="checkout-count"><?php echo count($cart['items']); ?></em><?php } ?><span>Корзина</span></button></div>
             </div>
 			<div id="nav" class="toggle__menu">
 				<ul>

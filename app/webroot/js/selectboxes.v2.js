@@ -501,7 +501,7 @@ function open_popup(opt) {
 function close_popup() {
   $("#popup-overlay").remove();
   $("#popup").remove();
-  $("body").css('overflow', 'auto')
+  $("body").css('overflow', 'auto');
 }
 function search(query) {
   if (query.length > 2) {
