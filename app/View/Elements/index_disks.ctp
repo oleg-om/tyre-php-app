@@ -54,6 +54,7 @@
 							<?php } ?>
 							<table cellpadding="0" cellspacing="0">
 								<tr>
+                                    <?php echo $this->element('tyre_icons', array('product' => $item['Product'], 'brandModel' => $item['BrandModel'])); ?>
 									<td>
 										<?php
 											$image = $this->Html->image('no-disk-little.jpg', array('class' => 'no-img-disk'));
@@ -93,7 +94,12 @@
 						<div class="priceMore disks">
 							<?php if ($this->Frontend->canShowDiskPrice($item['Product'][0]['not_show_price'])) { ?>
 								<span><?php echo $this->Frontend->getPrice($item['Product'][0]['price'], 'disks', array('between' => '&nbsp;<span>', 'after' => '</span>')); ?></span>
-							<?php } ?><div class="number disks"><?php echo $this->Frontend->getStockCount($item['Product'][0]['stock_count']); ?> шт. <?php echo $item['Product'][0]['in_stock'] ? '<img title="в наличии" alt="в наличии" src="/img/yes.png">' : ''; ?></div>
+							<?php } ?>
+
+                            <?php
+                            $in_stock_mark = $item['Product'][0]['in_stock'] ? '<img title="в наличии" alt="в наличии" src="/img/yes.png">' : '';
+                            echo $this->element('stock_places', array('stock_places' => $item['Product'][0]['stock_places'], 'text' => '<div class="number disks">'.$this->Frontend->getStockCount($item['Product'][0]['stock_count']).' шт. '.$in_stock_mark.'</div>', 'position' => 'left')); ?>
+
 						</div>
 						<div class="buy-button">
                                 <a href="javascript:void(0);" class="btVer2" onclick="buy_wheel(<?php echo $item['Product'][0]['id']; ?>);">Купить</a>
@@ -218,6 +224,7 @@
 						<div class="prodImg floatl prodImg-disks">
 							<table cellpadding="0" cellspacing="0">
 								<tr>
+                                    <?php echo $this->element('tyre_icons', array('product' => $item['Product'], 'brandModel' => $item['BrandModel'])); ?>
 									<td>
 										<?php
 											$image = $this->Html->image('no-disk-little.jpg', array('class' => 'no-img-disk'));

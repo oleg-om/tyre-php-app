@@ -1453,13 +1453,15 @@ h3.title-tyres a:hover {
 }
 .border-b .priceMore.disks {
   text-wrap: nowrap;
-  overflow: hidden;
   display: flex;
   align-items: center;
   margin-top: 0;
   width: auto;
   padding: 10px;
   flex-wrap: wrap;
+}
+.border-b .priceMore.disks .tooltip-places {
+  margin-left: 10px;
 }
 .priceMore.disks span {
   color: #c72e30;
@@ -1472,7 +1474,6 @@ h3.title-tyres a:hover {
 .number.disks {
   display: inline;
   font-weight: bold;
-  margin-left: 10px;
 }
 .boxList.disks {
   height: 320px;
@@ -3966,6 +3967,7 @@ table.withlines {
 .tooltip-places .tooltiptext table {
   width: 100%;
   background: #f2f2f2;
+  white-space: pre-wrap;
 }
 .tooltip-places .tooltiptext table tbody tr td {
   padding: 2px 2px 5px 2px;
@@ -3989,7 +3991,8 @@ table.withlines {
   text-wrap: nowrap;
 }
 .tooltip-places-title {
-  color: #FFFFFF;
+  color: #FFFFFF !important;
+  font-size: 14px !important;
   padding-bottom: 5px;
   font-weight: 600;
   display: block;
@@ -4072,6 +4075,7 @@ table.withlines {
   flex-direction: column;
   width: 90%;
 }
-.prodImg-disks {
+.prodImg-disks table tbody tr td img {
   max-width: 195px;
+  margin: auto;
 }

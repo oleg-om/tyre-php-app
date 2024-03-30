@@ -12,9 +12,9 @@ $place_list = explode('|', $stock_places);
 ?>
 
 <div class="tooltip-places
-<?php if ($position == 'left') { echo 'tooltip-places-left'; } ?>
-<?php if ($position == 'center') { echo 'tooltip-places-center'; } ?>
-<?php if (empty($stock_places)) { echo 'tooltip-places-empty'; } ?>
+<?php if ($position == 'left') { echo 'tooltip-places-left '; } ?>
+<?php if ($position == 'center') { echo 'tooltip-places-center '; } ?>
+<?php if (empty($stock_places)) { echo 'tooltip-places-empty '; } ?>
 ">
     <?php echo $text; ?>
     <?php if (!empty($stock_places)) { ?>

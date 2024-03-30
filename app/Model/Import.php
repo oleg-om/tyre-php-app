@@ -27,6 +27,7 @@ class Import extends AppModel {
             9 => __d('admin_import', 'type_9'),
 			2 => __d('admin_import', 'type_2'),
             8 => __d('admin_import', 'type_8'),
+            11 => __d('admin_import', 'type_11'),
 			3 => __d('admin_import', 'type_3'),
 			4 => __d('admin_import', 'type_4'),
 			5 => __d('admin_import', 'type_5'),
