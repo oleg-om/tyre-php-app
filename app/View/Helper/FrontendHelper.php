@@ -158,7 +158,7 @@ class FrontendHelper extends AppHelper {
 		else {
 			$rate_price = ceil($rate_price / $currency['round']) * $currency['round'];
 		}
-		return number_format($rate_price, $currency['decimals'], ',', '');
+		return number_format($rate_price, $currency['decimals'], ',', ' ');
 	}
 	public function getPrice($price, $type = 'tyres', $options = array()) {
 		$currencies = $this->_View->getVar('currencies');

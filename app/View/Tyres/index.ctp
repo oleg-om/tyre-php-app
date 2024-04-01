@@ -17,7 +17,7 @@ $this->Paginator->options(array('url' => $url));
 <h1 class="title">Шины <?php if (!empty($brand['Brand']['slug'])) echo $brand['Brand']['title'] ?>
     <?php if (!empty($car_brand['CarBrand']['slug'])) echo ' на '.$car_brand['CarBrand']['title'].' '.$car_model['CarModel']['title'].' '.$car_generation['CarGeneration']['title'].' '.$car_modification['CarModification']['title'] ?>
 </h1>
-
+    <h3 class="tyres-free-header"><img src="/img/icons/free-tyremount.png" alt="Шиномонтаж бесплатно" />При покупке 4 шин шиномонтаж бесплатно!</h3>
 
 <div class="<?php if (empty($modification_slug)) { echo 'd-none'; } else { echo 'car__sizes car__sizes-tyres'; } ?>">
         <div class="car__sizes__wrap">

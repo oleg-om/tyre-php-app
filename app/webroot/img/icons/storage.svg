@@ -1,13 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg width="34px" height="34px" viewBox="0 0 34 34" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-    <!-- Generator: sketchtool 51.2 (57519) - http://www.bohemiancoding.com/sketch -->
-    <title>7339DB16-5F59-4AA2-A5F8-917D4499E1B0</title>
-    <desc>Created with sketchtool.</desc>
-    <defs></defs>
     <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-        <g id="Каталог-Иконки" transform="translate(-320.000000, -660.000000)">
-            <g id="tire" transform="translate(320.000000, 660.000000)">
-                <circle id="Oval-5" fill="#BD4848" cx="17" cy="17" r="17"></circle>
+        <g transform="translate(-320.000000, -660.000000)">
+            <g transform="translate(320.000000, 660.000000)">
+                <circle id="Oval-5" fill="#2f9ae9" cx="17" cy="17" r="17"></circle>
                 <path d="M24.4,14 L24.4,8 C24.4,7.44771525 24.8477153,7 25.4,7 L26,7 C26.5522847,7 27,7.44771525 27,8 L27,27 L24.4,27 L24.4,25 L9.6,25 L9.6,27 L7,27 L7,8 C7,7.44771525 7.44771525,7 8,7 L8.6,7 C9.15228475,7 9.6,7.44771525 9.6,8 L9.6,14 L24.4,14 Z M24.4,15 L9.6,15 L9.6,24 L24.4,24 L24.4,15 Z" id="Combined-Shape" fill="#FFFFFF"></path>
                 <rect id="Rectangle" fill="#FFFFFF" x="12" y="7" width="4" height="6" rx="1"></rect>
                 <rect id="Rectangle" fill="#FFFFFF" x="12" y="17" width="4" height="6" rx="1"></rect>

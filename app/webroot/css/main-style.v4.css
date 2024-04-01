@@ -1296,7 +1296,7 @@ a.btVer3:hover {
 .border-b-tyres .boxList.season-winter,
 .border-b-tyres .boxList.season-summer,
 .border-b-tyres .boxList.season-all {
-  height: 320px;
+  height: 335px;
   padding-top: 15px;
 }
 .info-top {
@@ -1317,6 +1317,7 @@ a.btVer3:hover {
 .info-top a {
   text-decoration: none;
   color: #2f9ae9;
+  font-weight: 400;
 }
 .info-top a:hover {
   text-decoration: underline;
@@ -1353,6 +1354,15 @@ a.btVer3:hover {
   width: 100%;
   max-width: 255px;
   min-height: 195px;
+}
+.prodImg-tyres {
+  height: 220px;
+  min-height: 220px;
+}
+.prodImg-disks {
+  max-width: 255px;
+  height: 255px;
+  min-height: 255px;
 }
 .prodImg img {
   width: 100%;
@@ -1409,7 +1419,7 @@ a.btVer3:hover {
   display: flex;
   flex-direction: column;
   margin-right: auto;
-  margin-top: 10px;
+  margin-top: 6px;
 }
 .with-season .priceMore-range {
   text-align: center;
@@ -1417,6 +1427,9 @@ a.btVer3:hover {
   flex-direction: row;
   gap: 5px;
 }
+.with-season .priceMore-range em {
+  margin-top: 2px;
+ }
 .priceMore span {
   color: #333333;
   display: inline-block;
@@ -1428,22 +1441,22 @@ a.btVer3:hover {
 .with-season .priceMore span {
   color: #c72e30;
   display: inline-block;
-  font-size: 15px;
+  font-size: 17px;
   font-weight: bold;
 }
 h3.title-tyres {
   font-size: 17px;
-  height: 40px;
-  min-height: 40px;
+  height: 20px;
+  min-height: 20px;
   margin: 0 0 5px;
   padding: 0;
   text-align: center;
   line-height: 20px;
-
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
+  font-weight: 400;
   overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 100%;
 }
 h3.title-tyres a {
   text-decoration: none;
@@ -1459,9 +1472,11 @@ h3.title-tyres a:hover {
   width: auto;
   padding: 10px;
   flex-wrap: wrap;
+  row-gap: 3px;
+  column-gap: 10px;
 }
 .border-b .priceMore.disks .tooltip-places {
-  margin-left: 10px;
+  margin-left: 0;
 }
 .priceMore.disks span {
   color: #c72e30;
@@ -1476,7 +1491,7 @@ h3.title-tyres a:hover {
   font-weight: bold;
 }
 .boxList.disks {
-  height: 320px;
+  height: 350px;
   padding-top: 8px;
   text-align: center;
 }
@@ -1840,7 +1855,7 @@ h3.title-tyres a:hover {
   text-transform: uppercase;
   padding: 2px 15px;
   font-size: 16px;
-  height: 35px;
+  height: 27px;
   border-radius: 4px;
   display: flex;
   align-items: center;
@@ -3453,10 +3468,16 @@ table.withlines {
   font-family: "Open Sans Condensed", sans-serif;
   color: #ff6600;
   text-align: center;
-  margin: 0;
-  margin-bottom: 10px;
+  margin: 0 0 6px 0;
+  display: flex;
+  justify-content: center;
 }
-
+.tyres-free-header img {
+  width: 35px;
+  max-width: 35px;
+  max-height: 32px;
+  margin-right: 6px;
+}
 .logos__wrapper {
   display: flex;
   flex-wrap: wrap;
@@ -3746,7 +3767,6 @@ table.withlines {
   background-color: #ffffff;
   border: 1px solid #e0e0e0;
   border-radius: 8px;
-  padding: 20px;
   gap: 30px;
   grid-template-rows: repeat(3, auto);
   grid-template-columns: auto;
@@ -3756,6 +3776,9 @@ table.withlines {
   border-color: transparent;
   transition: .15s ease-out;
   box-shadow: 0 10px 25px 0 rgba(0,0,0,.13);
+}
+.list-view__info-col {
+  padding: 20px 0 20px 20px;
 }
 .list-view__info-col .akb-polarity {
   display: none;
@@ -3781,13 +3804,21 @@ table.withlines {
 }
 .list-view__info-col table tbody tr td {
   padding-left: 10px;
+  font-weight: 600;
+}
+.list-view__brand {
+  margin-bottom: 5px;
+}
+.list-view__brand h3 {
+  margin: 0 0 0 50px !important;
 }
 .list-view__img-col .prodImg {
-  height: 100%;
-  max-height: 200px;
-  max-width: 200px;
+  height: 230px;
+  max-height: 230px;
+  max-width: 230px;
   width: 100%;
   display: grid;
+  margin: auto;
 }
 .list-view__img-col .prodImg a {
   cursor: zoom-in;
@@ -3809,7 +3840,7 @@ table.withlines {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-
+  padding: 20px 20px 20px 0;
   align-items: center;
   gap: 5px;
 }
@@ -3818,7 +3849,8 @@ table.withlines {
   flex-direction: column;
   gap: 10px;
   align-self: flex-start;
-  margin-left: 10px;
+  margin: auto;
+
 }
 .product__info-price {
   display: flex;
@@ -3828,6 +3860,7 @@ table.withlines {
 .product__info-number {
   font-size: 17px;
   color: #000000;
+  white-space: nowrap;
 }
 .product__info-number-red {
   font-size: 20px;
@@ -3910,10 +3943,12 @@ table.withlines {
   max-width: 202px;
   width: calc(100% + 2px);
   margin-top: -30px;
+  margin-bottom: 10px;
   border: 1px solid #40b252;
   border-radius: 20px;
   font-size: 12px;
   z-index: 1;
+  align-self: center;
 }
 .product__info__buy-group {
   display: flex;
@@ -4023,9 +4058,10 @@ table.withlines {
   display: flex;
   justify-content: space-around;
   width: 100%;
+  margin-top: auto;
 }
 .prodImg-tyres table tbody a img {
-  margin: 0;
+  margin: 0 -10px 0 0;
 }
 .tyre__icons {
   display: flex;
@@ -4041,6 +4077,14 @@ table.withlines {
   height: 31px;
   max-width: 31px;
   position: relative;
+}
+.tyre__icon-tyremount {
+  width: 37px;
+  max-width: 37px;
+  margin-left: -6px;
+}
+.tyre__icon-tyremount .tyre__icon-tooltip {
+  left: 45px;
 }
 .tyre__icon-tooltip {
   display: none;
@@ -4091,6 +4135,7 @@ table.withlines {
   width: 90%;
 }
 .prodImg-disks table tbody tr td img {
-  max-width: 195px;
+  /*max-width: 225px;*/
+  /*max-height: 225px;*/
   margin: auto;
 }

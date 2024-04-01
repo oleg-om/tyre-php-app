@@ -2,7 +2,7 @@
     <?php $i = 0; foreach ($products as $item) { ?>
         <div class="list-view__item akb">
             <div class="list-view__info-col">
-                <table>
+                <table class="list-view__brand">
                     <tr>
                         <th>Бренд</th>
                         <td><h3>
@@ -12,6 +12,8 @@
                                 $url = array('controller' => 'akb', 'action' => 'view', 'slug' => $item['Brand']['slug'], 'id' => $item['Product']['id']);
                                 ?></h3></td>
                     </tr>
+                </table>
+                <table>
                     <tr>
                         <th>Емкость</th>
                         <td><?php echo $item['Product']['ah'].' Ач'; ?></td>
@@ -28,11 +30,15 @@
                     </tr>
                     <tr>
                         <th>Пусковой ток</th>
-                        <td><?php echo $item['Product']['current']; ?></td>
+                        <td><?php echo $item['Product']['current'].' A (EN)'; ?></td>
                     </tr>
                     <tr>
-                        <th>Габариты (ДхШхВ)</th>
-                        <td><?php echo $item['Product']['length'].' x '.$item['Product']['width'].' x '.$item['Product']['height'].' мм'.' '.$item['Product']['type']; ?></td>
+                        <th>Габариты (мм)</th>
+                        <td><?php echo $item['Product']['length'].' x '.$item['Product']['width'].' x '.$item['Product']['height'].' '.$item['Product']['type']; ?></td>
+                    </tr>
+                    <tr>
+                        <th>(длина, ширина, высота)</th>
+                        <td></td>
                     </tr>
                     <tr>
                         <th>Технология изготовления</th>

@@ -1349,7 +1349,7 @@ class BackendHelper extends AppHelper {
 			$thumbnail->sx = 30;
 			$thumbnail->sy = 0;
 			$thumbnail->sw = 400;
-			$thumbnail->sh = 284;
+			$thumbnail->sh = 320;
 			$tyre_400 = TMP . $cacheFilename;
 			$thumbnail->src = $tyre_400;
 			$thumbnail->config_imagemagick_path = IMAGEMAGICK . 'convert';

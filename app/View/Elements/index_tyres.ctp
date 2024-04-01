@@ -93,7 +93,6 @@ foreach ($models as $item) {
 					<?php if ($mode == 'block') { ?>
 						<div class="prodImg floatl prodImg-tyres">
 							<?php if ($item['BrandModel']['new']) { ?>
-							<div class="action-prod new"></div>
 							<?php } elseif ($item['BrandModel']['popular']) { ?>
 							<div class="action-prod hit"></div>
 							<?php } ?>
@@ -105,7 +104,7 @@ foreach ($models as $item) {
 											$image = $this->Html->image('no-tyre-little.jpg', array('class' => 'no-img-tyre'));
 											$image_big = false;
 											if (!empty($item['BrandModel']['filename'])) {
-												$image = $this->Html->image($this->Backend->thumbnail(array('id' => $item['BrandModel']['id'], 'filename' => $item['BrandModel']['filename'], 'path' => 'models', 'width' => 284, 'height' => 284, 'tyre' => true, 'crop' => false, 'folder' => false)), array('alt' => $item['BrandModel']['title']));
+												$image = $this->Html->image($this->Backend->thumbnail(array('id' => $item['BrandModel']['id'], 'filename' => $item['BrandModel']['filename'], 'path' => 'models', 'width' => 280, 'height' => 320, 'tyre' => true, 'crop' => false, 'folder' => false)), array('alt' => $item['BrandModel']['title']));
 												$image_big = $this->Backend->thumbnail(array('id' => $item['BrandModel']['id'], 'filename' => $item['BrandModel']['filename'], 'path' => 'models', 'width' => 800, 'height' => 600, 'crop' => false, 'folder' => false, 'watermark' => 'wm.png'), array('alt' => $item['BrandModel']['title']));
 											}
 											if ($image_big) {
@@ -173,7 +172,6 @@ foreach ($models as $item) {
 						<div class="priceMore tyres">
 							<?php if ($this->Frontend->canShowTyrePrice($item['Product'][0]['auto'], $item['Product'][0]['not_show_price']) && ($show_size || $has_params)) { ?>
 							<span><?php echo $this->Frontend->getPrice($item['Product'][0]['price'], 'tyres', array('between' => '&nbsp;<span>', 'after' => '</span>')); ?></span>
-
 
 							<?php } ?>
 						</div>
@@ -323,9 +321,7 @@ foreach ($models as $item) {
 					<?php if ($mode == 'block') { ?>
 						<div class="prodImg floatl prodImg-tyres">
                             <?php if ($item['BrandModel']['new']) { ?>
-                                <div class="action-prod new"></div>
                             <?php } elseif ($item['BrandModel']['popular']) { ?>
-                                <div class="action-prod hit"></div>
                             <?php } ?>
 							<table cellpadding="0" cellspacing="0">
 								<tr>
@@ -335,14 +331,8 @@ foreach ($models as $item) {
 											$image = $this->Html->image('no-tyre-little.jpg', array('class' => 'no-img-tyre'));
 											$image_big = false;
 											if (!empty($item['BrandModel']['filename'])) {
-												$image = $this->Html->image($this->Backend->thumbnail(array('id' => $item['BrandModel']['id'], 'filename' => $item['BrandModel']['filename'], 'path' => 'models', 'width' => 284, 'height' => 284, 'tyre' => true, 'crop' => false, 'folder' => false)), array('alt' => $item['BrandModel']['title']));
+												$image = $this->Html->image($this->Backend->thumbnail(array('id' => $item['BrandModel']['id'], 'filename' => $item['BrandModel']['filename'], 'path' => 'models', 'width' => 280, 'height' => 320, 'tyre' => true, 'crop' => false, 'folder' => false)), array('alt' => $item['BrandModel']['title']));
 												$image_big = $this->Backend->thumbnail(array('id' => $item['BrandModel']['id'], 'filename' => $item['BrandModel']['filename'], 'path' => 'models', 'width' => 800, 'height' => 600, 'crop' => false, 'folder' => false, 'watermark' => 'wm.png'), array('alt' => $item['BrandModel']['title']));
-											}
-											if ($item['BrandModel']['new']) {
-												$image = '<div class="action-prod new"></div>' . $image;
-											}
-											elseif ($item['BrandModel']['popular']) {
-												$image = '<div class="action-prod hit"></div>' . $image;
 											}
 											if ($image_big) {
 												echo $this->Html->link($image, $image_big, array('escape' => false, 'class' => 'lightbox rel-box', 'id' => $item['BrandModel']['id']));
