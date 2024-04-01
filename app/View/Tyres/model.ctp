@@ -5,7 +5,7 @@
 		$image_small = $this->Html->image('no-tyre-big.jpg');
 		$image_big = '/img/tyre.jpg';
 		if (!empty($model['BrandModel']['filename'])) {
-			$image_small = $this->Html->image($this->Backend->thumbnail(array('id' => $model['BrandModel']['id'], 'filename' => $model['BrandModel']['filename'], 'path' => 'models', 'width' => 315, 'height' => 1000, 'crop' => false, 'folder' => false)), array('alt' => $model['BrandModel']['title']));
+			$image_small = $this->Html->image($this->Backend->thumbnail(array('id' => $model['BrandModel']['id'], 'filename' => $model['BrandModel']['filename'], 'path' => 'models', 'width' => 400, 'height' => 1000, 'crop' => false, 'folder' => false)), array('alt' => $model['BrandModel']['title']));
 			$image_big = $this->Backend->thumbnail(array('id' => $model['BrandModel']['id'], 'filename' => $model['BrandModel']['filename'], 'path' => 'models', 'width' => 800, 'height' => 600, 'crop' => false, 'folder' => false, 'watermark' => 'wm.png'), array('alt' => $model['BrandModel']['title']));
 
 		}
@@ -83,7 +83,11 @@
 				<td><?php echo $product['size1']; ?> / <?php echo $product['size2']; ?> R<?php echo $product['size3']; ?></td>
 				<td class="desc-table"><?php echo h($product['f1'] . $product['f2']) . ' &ndash; ' .  $this->Frontend->getFF($product['f1'], $product['f2']); ?></td>
 				<td class="desc-table"><?php echo $product['stud'] ? '<img src="/img/studded.png" alt="шипованная" />' : ''; ?></td>
-				<td class="desc-table"><?php echo $this->Frontend->getStockCount($product['stock_count']); ?> шт.</td>
+				<td class="desc-table"><?php
+                    $in_stock_mark = $product['in_stock'] ? '<img title="в наличии" alt="в наличии" src="/img/yes.png">' : '';
+                    $in_stock_text = $product['in_stock'] ? 'В наличии: ' : 'Под заказ: ';
+                    echo $this->element('stock_places', array('stock_places' => $product['stock_places'], 'text' => '<div class="namber tyres">'.$in_stock_text.$this->Frontend->getStockCount($product['stock_count']).' шт. '.$in_stock_mark.'</div>', 'position' => 'right'));
+                    ?></td>
 				<td><strong><?php
 					if ($this->Frontend->canShowTyrePrice($product['auto'], $product['not_show_price'])) {
 						echo $this->Frontend->getPrice($product['price'], 'tyres');

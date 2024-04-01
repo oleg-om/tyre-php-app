@@ -5,7 +5,7 @@
 		$image_small = $this->Html->image('no-tyre-big.jpg');
 		$image_big = '/img/tyre.jpg';
 		if (!empty($product['BrandModel']['filename'])) {
-			$image_small = $this->Html->image($this->Backend->thumbnail(array('id' => $product['BrandModel']['id'], 'filename' => $product['BrandModel']['filename'], 'path' => 'models', 'width' => 315, 'height' => 1000, 'crop' => false, 'folder' => false)), array('alt' => $product['BrandModel']['title']));
+			$image_small = $this->Html->image($this->Backend->thumbnail(array('id' => $product['BrandModel']['id'], 'filename' => $product['BrandModel']['filename'], 'path' => 'models', 'width' => 400, 'height' => 1000, 'crop' => false, 'folder' => false)), array('alt' => $product['BrandModel']['title']));
 			$image_big = $this->Backend->thumbnail(array('id' => $product['BrandModel']['id'], 'filename' => $product['BrandModel']['filename'], 'path' => 'models', 'width' => 800, 'height' => 600, 'crop' => false, 'folder' => false, 'watermark' => 'wm.png'), array('alt' => $product['BrandModel']['title']));
 
 		}
@@ -50,13 +50,29 @@
 					<th>Сезонность</th>
 					<td><?php echo $seasons[$season];?></td>
 				</tr>
+                <tr>
+                    <th>RUN FLAT</th>
+                    <td><?php if ($product['Product']['p5'] == 1) { echo 'Да'; } else { echo 'Нет'; } ?></td>
+                </tr>
+                <tr>
+                    <th>XL (Extra Load)</th>
+                    <td><?php if ($product['Product']['p4'] == 1) { echo 'Да'; } else { echo 'Нет'; } ?></td>
+                </tr>
 				<tr>
 					<th>Наличие</th>
 					<td><?php echo $this->Frontend->getStockCount($product['Product']['stock_count']); ?> шт.</td>
 				</tr>
 			</table>
+
 		</div>
 	</div>
+    <div class="product__info-instock my-1">
+        <?php
+        $in_stock_mark = $product['Product']['in_stock'] ? '<img title="в наличии" alt="в наличии" src="/img/yes.png">' : '';
+        $in_stock_text = $product['Product']['in_stock'] ? 'В наличии: ' : 'Под заказ: ';
+        echo $this->element('stock_places', array('stock_places' => $product['Product']['stock_places'], 'text' => '<div class="namber tyres">'.$in_stock_text.$this->Frontend->getStockCount($product['Product']['stock_count']).' шт. '.$in_stock_mark.'</div>', 'position' => 'right'));
+        ?>
+    </div>
 	<div class="boxRightInfo">
 		<?php if ($this->Frontend->canShowTyrePrice($product['Product']['auto'], $product['Product']['not_show_price'])) { ?>
 		<div class="boxPriceProd">
@@ -73,7 +89,7 @@
 		<?php } ?>
 		<div class="orderCall">
 			<h3>Либо заказать по телефону:</h3>
-			<span><?php echo CONST_STORAGE_CELLPHONE; ?></span>
+            <a href="tel:<?php echo CONST_STORAGE_CELLPHONE; ?>"><?php echo CONST_STORAGE_CELLPHONE; ?></a>
 		</div>
 		<div class="clear"></div>
 	</div>

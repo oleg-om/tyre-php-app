@@ -44,17 +44,7 @@
 						}
 					?>
 					<?php if ($mode == 'block') { ?>
-						<h3 class="title-tyres">
-							<?php
-								$link_filter = array('model_id' => $item['BrandModel']['id']);
-								$link_filter = array_merge($link_filter, $filter);
-								unset($link_filter['mode']);
-								$url = array('controller' => 'disks', 'action' => 'brand', 'slug' => $item['Brand']['slug'], '?' => $link_filter);
-								echo $this->Html->link($item['Brand']['title']. ' '. $item['BrandModel']['title'], $url, array('escape' => false));
-								$url = array('controller' => 'disks', 'action' => 'view', 'slug' => $item['Brand']['slug'], 'id' => $item['Product'][0]['id']);
-							?>
-						</h3>
-						<div class="prodImg floatl">
+						<div class="prodImg floatl prodImg-disks">
 							<?php if ($item['BrandModel']['new']) { ?>
 							<div class="action-prod new"></div>
 							<?php } elseif ($item['BrandModel']['popular']) { ?>
@@ -64,12 +54,13 @@
 							<?php } ?>
 							<table cellpadding="0" cellspacing="0">
 								<tr>
+                                    <?php echo $this->element('tyre_icons', array('product' => $item['Product'], 'brandModel' => $item['BrandModel'])); ?>
 									<td>
 										<?php
 											$image = $this->Html->image('no-disk-little.jpg', array('class' => 'no-img-disk'));
 											$image_big = false;
 											if (!empty($item['BrandModel']['filename'])) {
-												$image = $this->Html->image($this->Backend->thumbnail(array('id' => $item['BrandModel']['id'], 'filename' => $item['BrandModel']['filename'], 'path' => 'models', 'width' => 182, 'height' => 143, 'crop' => false, 'folder' => false)), array('alt' => $item['BrandModel']['title']));
+												$image = $this->Html->image($this->Backend->thumbnail(array('id' => $item['BrandModel']['id'], 'filename' => $item['BrandModel']['filename'], 'path' => 'models', 'width' => 250, 'height' => 250, 'crop' => false, 'folder' => false)), array('alt' => $item['BrandModel']['title']));
 												$image_big = $this->Backend->thumbnail(array('id' => $item['BrandModel']['id'], 'filename' => $item['BrandModel']['filename'], 'path' => 'models', 'width' => 800, 'height' => 601, 'crop' => false, 'folder' => false), array('alt' => $item['BrandModel']['title']));
 											}
 											if ($image_big) {
@@ -85,16 +76,35 @@
 						</div>
 						<div class="infoList">
 							<div class="detalProd disks">
-								<a href="<?php echo Router::url($url); ?>"><?php echo $item['Product'][0]['size1']; ?>" <?php echo $item['Product'][0]['size2']; ?>&nbsp;&nbsp;<?php echo $this->Frontend->getSize3($item['Product'][0]['size3']); ?>J&nbsp;&nbsp;ET<?php echo (int)$item['Product'][0]['et']; ?>&nbsp;DIA<?php echo $item['Product'][0]['hub']; ?></a>
+								<a href="<?php
+								 $url = array('controller' => 'disks', 'action' => 'view', 'slug' => $item['Brand']['slug'], 'id' => $item['Product'][0]['id']);
+								 echo Router::url($url); ?>"><?php echo $item['Product'][0]['size1']; ?>" <?php echo $item['Product'][0]['size2']; ?>&nbsp;&nbsp;<?php echo $this->Frontend->getSize3($item['Product'][0]['size3']); ?>J&nbsp;&nbsp;ET<?php echo (int)$item['Product'][0]['et']; ?>&nbsp;DIA<?php echo $item['Product'][0]['hub']; ?></a>
 							</div>
 						</div>
-						<div class="clear"></div>
+						<h3 class="title-tyres">
+							<?php
+								$link_filter = array('model_id' => $item['BrandModel']['id']);
+								$link_filter = array_merge($link_filter, $filter);
+								unset($link_filter['mode']);
+								$url = array('controller' => 'disks', 'action' => 'brand', 'slug' => $item['Brand']['slug'], '?' => $link_filter);
+								echo $this->Html->link($item['Brand']['title']. ' '. $item['BrandModel']['title'], $url, array('escape' => false));
+							?>
+						</h3>
+						<div class="priceMore__row">
 						<div class="priceMore disks">
 							<?php if ($this->Frontend->canShowDiskPrice($item['Product'][0]['not_show_price'])) { ?>
 								<span><?php echo $this->Frontend->getPrice($item['Product'][0]['price'], 'disks', array('between' => '&nbsp;<span>', 'after' => '</span>')); ?></span>
-							<?php } ?><div class="number disks">&nbsp;&nbsp;&nbsp;&nbsp;<?php echo $this->Frontend->getStockCount($item['Product'][0]['stock_count']); ?> шт.</div>
-						</div>
+							<?php } ?>
 
+                            <?php
+                            $in_stock_mark = $item['Product'][0]['in_stock'] ? '<img title="в наличии" alt="в наличии" src="/img/yes.png">' : '';
+                            echo $this->element('stock_places', array('stock_places' => $item['Product'][0]['stock_places'], 'text' => '<div class="number disks">'.$this->Frontend->getStockCount($item['Product'][0]['stock_count']).' шт. '.$in_stock_mark.'</div>', 'position' => 'center')); ?>
+
+						</div>
+						<div class="buy-button">
+                                <a href="javascript:void(0);" class="btVer2" onclick="buy_wheel(<?php echo $item['Product'][0]['id']; ?>);">Купить</a>
+                        </div>
+                        </div>
 						<div class="clear"></div>
 					<?php } elseif ($mode == 'list') { ?>
 						<div class="prodImg2 floatl">
@@ -211,22 +221,16 @@
 						
 				?>
 					<?php if ($mode == 'block') { ?>
-						<h3 class="title-tyres">
-							<?php
-							$link_filter = array('model_id' => $item['BrandModel']['id']);
-							$link_filter = array_merge($link_filter, $filter);
-								echo $this->Html->link($item['Brand']['title']. ' '. $item['BrandModel']['title'], array('controller' => 'disks', 'action' => 'brand', 'slug' => $item['Brand']['slug'], '?' => $link_filter), array('escape' => false));
-							?>
-						</h3>
-						<div class="prodImg floatl">
+						<div class="prodImg floatl prodImg-disks">
 							<table cellpadding="0" cellspacing="0">
 								<tr>
+                                    <?php echo $this->element('tyre_icons', array('product' => $item['Product'], 'brandModel' => $item['BrandModel'])); ?>
 									<td>
 										<?php
 											$image = $this->Html->image('no-disk-little.jpg', array('class' => 'no-img-disk'));
 											$image_big = false;
 											if (!empty($item['BrandModel']['filename'])) {
-												$image = $this->Html->image($this->Backend->thumbnail(array('id' => $item['BrandModel']['id'], 'filename' => $item['BrandModel']['filename'], 'path' => 'models', 'width' => 182, 'height' => 143, 'crop' => false, 'folder' => false)), array('alt' => $item['BrandModel']['title']));
+												$image = $this->Html->image($this->Backend->thumbnail(array('id' => $item['BrandModel']['id'], 'filename' => $item['BrandModel']['filename'], 'path' => 'models', 'width' => 250, 'height' => 250, 'crop' => false, 'folder' => false)), array('alt' => $item['BrandModel']['title']));
 												$image_big = $this->Backend->thumbnail(array('id' => $item['BrandModel']['id'], 'filename' => $item['BrandModel']['filename'], 'path' => 'models', 'width' => 800, 'height' => 601, 'crop' => false, 'folder' => false), array('alt' => $item['BrandModel']['title']));
 											}
 											if ($image_big) {
@@ -254,10 +258,17 @@
 								<?php } ?>
 							</div>
 						</div>
+						<h3 class="title-tyres">
+							<?php
+							$link_filter = array('model_id' => $item['BrandModel']['id']);
+							$link_filter = array_merge($link_filter, $filter);
+								echo $this->Html->link($item['Brand']['title']. ' '. $item['BrandModel']['title'], array('controller' => 'disks', 'action' => 'brand', 'slug' => $item['Brand']['slug'], '?' => $link_filter), array('escape' => false));
+							?>
+						</h3>
 						<div class="clear"></div>
 						<div class="priceMore disks">
 							<?php if ($this->Frontend->canShowDiskPrice($item['Product'][0]['not_show_price'])) { ?>
-								<em>от</em> <span><?php echo $this->Frontend->getPrice($min_price, 'disks', array('between' => '&nbsp;<span>', 'after' => '</span>')); ?></span>
+								<em>от&nbsp;</em> <span><?php echo $this->Frontend->getPrice($min_price, 'disks', array('between' => '&nbsp;<span>', 'after' => '</span>')); ?></span>
 							<?php } ?>
 						</div>
 						<div class="clear"></div>
@@ -443,3 +454,16 @@ $(function(){
 //-->
 </script>
 <?php } ?>
+
+        <script type="text/javascript">
+            function buy_wheel(itemId) {
+                open_popup({
+                    url: '/cart',
+                    type: 'post',
+                    data: {
+                        'data[Product][0][count]': 4,
+                        'data[Product][0][product_id]': itemId
+                    },
+                });
+            }
+        </script>

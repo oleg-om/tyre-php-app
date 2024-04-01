@@ -1343,13 +1343,13 @@ class BackendHelper extends AppHelper {
 			}
 			// second resize
 			$thumbnail = new phpthumb;
-			$thumbnail->w = 184;
-			$thumbnail->h = 184;
+			$thumbnail->w = 400;
+			$thumbnail->h = 400;
 			$thumbnail->zc = '0';
-			$thumbnail->sx = 75;
+			$thumbnail->sx = 30;
 			$thumbnail->sy = 0;
-			$thumbnail->sw = 184;
-			$thumbnail->sh = 184;
+			$thumbnail->sw = 400;
+			$thumbnail->sh = 320;
 			$tyre_400 = TMP . $cacheFilename;
 			$thumbnail->src = $tyre_400;
 			$thumbnail->config_imagemagick_path = IMAGEMAGICK . 'convert';
@@ -1373,39 +1373,7 @@ class BackendHelper extends AppHelper {
 			$thumbnail->q = $quality;
 			$tyre_original = TMP . $cacheFilename;
 			$thumbnail->src = $tyre_original;
-			/*
-			// first resize
-			$thumbnail->zc = 'C';
-			$thumbnail->w = 300;
-			$thumbnail->h = 300;
-			$thumbnail->config_imagemagick_path = IMAGEMAGICK . 'convert';
-			$thumbnail->config_prefer_imagemagick = PREFER_IMAGEMAGICK;
-			$thumbnail->config_output_format = substr($filename, -3);
-			$thumbnail->config_error_die_on_error = false;
-			$thumbnail->config_document_root = '';
-			$thumbnail->config_temp_directory = TMP;
-			$thumbnail->config_cache_directory = TMP;
-			$thumbnail->config_cache_disable_warning = true;
-			$cacheFilename = '300x300_' . $filename;
-			$thumbnail->cache_filename = $thumbnail->config_cache_directory . $cacheFilename;  
-			if ($thumbnail->GenerateThumbnail()) {
-				$thumbnail->RenderToFile($thumbnail->cache_filename);
-				chmod($thumbnail->cache_filename, 0777);
-			}
-			// second resize
-			$thumbnail = new phpthumb;
-			$thumbnail->w = $width;
-			$thumbnail->h = $height;
-			$thumbnail->q = $quality;
-			$tyre_original = TMP . $cacheFilename;
-			$thumbnail->src = $tyre_original;
-			$thumbnail->zc = '0';
-			$thumbnail->sx = 44;
-			$thumbnail->sy = 0;
-			$thumbnail->sw = $width;
-			$thumbnail->sh = $height;
-			$height = $height . 'qw';
-			*/
+
 		}
 		$thumbnail->config_imagemagick_path = IMAGEMAGICK . 'convert';
 		$thumbnail->config_prefer_imagemagick = PREFER_IMAGEMAGICK;
