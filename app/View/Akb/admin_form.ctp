@@ -96,11 +96,12 @@ $this->Backend->addHtml('<div class="clear"></div>');
 $this->Backend->addSelect('auto', array(
     'label' => __d('admin_akb', 'label_auto'),
     'options' => $auto,
-    'empty' => false,
     'div' => 'item_div third'
 ));
-$this->Backend->addText('sku', array(
+$this->Backend->addText('truck', array(
     'label' => __d('admin_akb', 'label_start_stop'),
+    'required' => false,
+    'empty' => true,
     'div' => 'item_div third'
 ));
 $this->Backend->addText('axis', array(

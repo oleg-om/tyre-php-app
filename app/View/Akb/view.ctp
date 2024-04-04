@@ -66,7 +66,7 @@
 				</tr>
                 <tr>
                     <th>Технология изготовления</th>
-                    <td><?php echo $product['Product']['color'] ? $product['Product']['color'] : '-'; ?> <?php echo $product['Product']['sku'] ? '<strong>'.$product['Product']['sku'].'</strong>' : ''; ?></td>
+                    <td><?php echo $product['Product']['color'] ? $product['Product']['color'] : '-'; ?> <?php echo $product['Product']['truck'] ? '<strong>'.$product['Product']['truck'].'</strong>' : ''; ?></td>
                 </tr>
                 <tr>
                     <th>Страна-производитель</th>

@@ -3498,7 +3498,7 @@ class ImportController extends AppController {
                                                         'color' => $manufacturing_technology,
                                                         'price_with_exchange' => $price_with_exchange,
                                                         'type' => $is_short,
-                                                        'sku' => $start_stop,
+                                                        'truck' => $start_stop,
                                                         'axis' => $warranty,
                                                         'auto' => $auto,
 

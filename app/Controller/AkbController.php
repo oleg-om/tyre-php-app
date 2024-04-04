@@ -96,7 +96,7 @@ class AkbController extends AppController {
 	}
 	public function index() {
         $mode = 'list';
-        if (isset($this->request->query['mode']) && in_array($this->request->query['mode'], array('block', 'list', 'table'))) {
+        if (isset($this->request->query['mode']) && in_array($this->request->query['mode'], array('list', 'table'))) {
             $mode = $this->request->query['mode'];
         }
         $view = 'models';
@@ -245,7 +245,7 @@ class AkbController extends AppController {
             false
         );
 //		$conditions = array('Product.is_active' => 1, 'Product.category_id' => 3, 'Product.price > ' => 0, 'Product.stock_count > ' => 0);
-		if (isset($this->request->query['brand_id']) && !empty($this->request->query['brand_id'])) {
+		if (isset($this->request->query['brand_id']) && !empty($this->request->query['brand_id'] && strpos($this->request->query['brand_id'], ',') === false)) {
 			$brand_id = intval($this->request->query['brand_id']);
 			if ($brand_id != 0) {
 				$this->loadModel('Brand');
@@ -284,6 +284,9 @@ class AkbController extends AppController {
 		if (isset($this->request->query['length']) && !empty($this->request->query['length'])) {
 			$conditions['Product.length'] = $this->request->query['length'];
 		}
+        if (isset($this->request->query['brand_id']) && strpos($this->request->query['brand_id'], ',') !== false) {
+            $conditions['Product.brand_id'] = explode(',', $this->request->query['brand_id']);
+        }
 		$this->request->data['Product'] = $this->request->query;
 
 
@@ -339,7 +342,7 @@ class AkbController extends AppController {
 	}
 	public function brand($slug) {
         $mode = 'list';
-        if (isset($this->request->query['mode']) && in_array($this->request->query['mode'], array('block', 'table'))) {
+        if (isset($this->request->query['mode']) && in_array($this->request->query['mode'], array('list', 'table'))) {
             $mode = $this->request->query['mode'];
         }
         $this->set('mode', $mode);
@@ -678,7 +681,31 @@ class AkbController extends AppController {
 		$brand_conditions['Brand.id'] = $brand_ids;
 		$this->loadModel('Brand');
 		$brands = $this->Brand->find('list', array('order' => array('Brand.title' => 'asc'), 'conditions' => $brand_conditions, 'fields' => array('Brand.id', 'Brand.title')));
-		if ($this->request->is('ajax')) {
+
+        // get auto
+        if (empty($auto)) {
+            //print_r($conditions);
+
+            $temp_cond = $conditions;
+            foreach ($temp_cond as $i => $cond) {
+                if (is_array($cond) && isset($cond['or']) && isset($cond['or'][0]['BrandModel.auto'])) {
+                    unset($temp_cond[$i]);
+                    break;
+                }
+            }
+
+            $products = $this->Product->find('all', array('conditions' => $temp_cond, 'fields' => 'DISTINCT(IF(BrandModel.auto IS NULL,Product.auto,BrandModel.auto)) AS auto', 'order' => 'Product.auto'));
+            $auto = array();
+            foreach ($products as $item) {
+                if (isset($this->Product->auto[$item[0]['auto']])) {
+                    $auto[$item[0]['auto']] = $this->Product->auto[$item[0]['auto']];
+                }
+            }
+            //print_r($auto);
+        }
+        // get auto
+
+        if ($this->request->is('ajax')) {
 			$result = array(
 				'ah' => $akb_ah,
 				'current' => $akb_current,
@@ -699,6 +726,7 @@ class AkbController extends AppController {
 			$this->set('akb_f1', $akb_f1);
 			$this->set('show_filter', 3);
 			$this->set('filter_brands', $brands);
+            $this->set('filter_auto', $auto);
 		}
 	}
 }

@@ -513,60 +513,34 @@ $settings = Cache::read('settings', 'long');
 	?>
 	<div class="item">
         <div class="item-group">
-		<div class="item-inner">
-			<label class="name" for="ProductAh">Ah:</label>
-			<div class="inp"><?php
-				echo $this->Form->input('ah', array('class' => 'filter-select sel-style1', 'type' => 'select', 'label' => false, 'options' => $akb_ah, 'empty' => array('' => 'Все'), 'div' => false));
-			?></div>
-			<div class="clear"></div>
-		</div>
-		<div class="item-inner">
-			<label class="name" for="ProductCurrent">Ток:</label>
-			<div class="inp"><?php
-				echo $this->Form->input('current', array('class' => 'filter-select sel-style1', 'type' => 'select', 'label' => false, 'options' => $akb_current, 'empty' => array('' => 'Все'), 'div' => false));
-			?></div>
-			<div class="clear"></div>
-		</div>
+            <?php echo $this->element('custom_select', array('label' => 'Вид аккумулятора', 'name' => 'auto', 'options' => $filter_auto, 'multiple' => false, 'search' => false)); ?>
         </div>
-		<div class="item-inner">
-			<label class="name" for="Productf1">Тип:</label>
-			<div class="inp"><?php
-				echo $this->Form->input('f1', array('class' => 'filter-select sel-style1', 'type' => 'select', 'label' => false, 'options' => $akb_f1, 'empty' => array('' => 'Все'), 'div' => false));
-			?></div>
-			<div class="clear"></div>
-		</div>
+        <div class="item-group">
+            <?php echo $this->element('custom_select', array('label' => 'Емкость, Ah', 'name' => 'ah_from', 'placeholder' => 'От', 'options' => $akb_ah, 'multiple' => false, 'search' => false)); ?>
+            <?php echo $this->element('custom_select', array('label' => 'Пусковой ток, A', 'name' => 'current_from', 'placeholder' => 'От', 'options' => $akb_current, 'multiple' => false, 'search' => false)); ?>
+        </div>
+        <div class="item-group">
+            <?php echo $this->element('custom_select', array('name' => 'ah_to', 'placeholder' => 'До', 'options' => $akb_ah, 'multiple' => false, 'search' => false)); ?>
+            <?php echo $this->element('custom_select', array('name' => 'current_to', 'placeholder' => 'До', 'options' => $akb_current, 'multiple' => false, 'search' => false)); ?>
+        </div>
+        <span class="item-name">Тип корпуса:</span>
+        <div class="item-group">
+            <?php echo $this->element('custom_radio', array('label' => 'Евро', 'query'=> 'f1', 'value' => 'euro')); ?>
+            <?php echo $this->element('custom_radio', array('label' => 'Азия', 'query'=> 'f1', 'value' => 'asia')); ?>
+        </div>
 	</div>
 	<div class="item item2">
         <div class="item-group">
-		<div class="item-inner">
-			<label class="name" for="ProductWidth">Ширина:</label>
-			<div class="inp"><?php
-				echo $this->Form->input('width', array('class' => 'filter-select sel-style1', 'type' => 'select', 'label' => false, 'options' => $akb_width, 'empty' => array('' => 'Все'), 'div' => false));
-			?></div>
-			<div class="clear"></div>
-		</div>
-		<div class="item-inner" for="ProductLength">
-			<label class="name">Длина:</label>
-			<div class="inp"><?php
-				echo $this->Form->input('length', array('class' => 'filter-select sel-style1', 'type' => 'select', 'label' => false, 'options' => $akb_length, 'empty' => array('' => 'Все'), 'div' => false));
-			?></div>
-			<div class="clear"></div>
-		</div>
-		<div class="item-inner">
-			<label class="name" for="ProductHeight">Высота:</label>
-			<div class="inp"><?php
-				echo $this->Form->input('height', array('class' => 'filter-select sel-style1', 'type' => 'select', 'label' => false, 'options' => $akb_height, 'empty' => array('' => 'Все'), 'div' => false));
-			?></div>
-			<div class="clear"></div>
-		</div>
+            <?php echo $this->element('custom_select', array('label' => 'Длина', 'placeholder' => 'От', 'name'=> 'length_from', 'options' => $akb_length, 'multiple' => false, 'search' => false, 'hideClearButton' => true)); ?>
+            <?php echo $this->element('custom_select', array('label' => 'Ширина', 'placeholder' => 'От', 'name'=> 'width_from', 'options' => $akb_width, 'multiple' => false, 'search' => false, 'hideClearButton' => true)); ?>
+            <?php echo $this->element('custom_select', array('label' => 'Высота', 'placeholder' => 'От', 'name'=> 'height_from', 'options' => $akb_height, 'multiple' => false, 'search' => false, 'hideClearButton' => true)); ?>
         </div>
-		<div class="item-inner">
-			<label class="name" for="ProductBrandId">Производитель:</label>
-			<div class="inp"><?php
-				echo $this->Form->input('brand_id', array('class' => 'filter-select sel-style1', 'type' => 'select', 'label' => false, 'options' => $filter_brands, 'empty' => array('' => 'Все'), 'div' => false, 'required' => false));
-			?></div>
-			<div class="clear"></div>
-		</div>		
+        <div class="item-group">
+            <?php echo $this->element('custom_select', array('name'=> 'length_to', 'placeholder' => 'До', 'options' => $akb_length, 'multiple' => false, 'search' => false, 'hideClearButton' => true)); ?>
+            <?php echo $this->element('custom_select', array('name'=> 'width_to', 'placeholder' => 'До', 'options' => $akb_width, 'multiple' => false, 'search' => false, 'hideClearButton' => true)); ?>
+            <?php echo $this->element('custom_select', array('name'=> 'height_to', 'placeholder' => 'До', 'options' => $akb_height, 'multiple' => false, 'search' => false, 'hideClearButton' => true)); ?>
+        </div>
+        <?php echo $this->element('custom_select', array('label' => 'Производитель', 'name'=> 'brand_id', 'options' => $filter_brands, 'multiple' => true, 'search' => true)); ?>
 	</div>
 	<div class="item">
 		<button class="bt-style1">ПОИСК</button>

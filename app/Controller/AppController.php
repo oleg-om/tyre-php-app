@@ -1062,7 +1062,6 @@ class AppController extends Controller {
 			$this->set('seasons', $this->Product->seasons);
 			$this->set('auto', $this->Product->auto);
 		}
-		
 	}
 	protected function _filter_disc_params($filter_conditions = null) {
 		$this->loadModel('Product');

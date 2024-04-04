@@ -12,12 +12,12 @@ echo $this->Html->meta('description', $meta_description);
 <link href="http://fonts.googleapis.com/css?family=Open+Sans:400,700&subset=latin,cyrillic" rel="stylesheet" type="text/css">
 <link href="http://fonts.googleapis.com/css?family=Open+Sans+Condensed:300,700&subset=latin,cyrillic" rel="stylesheet" type="text/css">
 <?php
-	$css = array('main-style.v4', 'main-style-media.v4');
+	$css = array('main-style.v4', 'main-style-media.v4', 'virtual-select.min');
 	if (isset($additional_css)) {
 		$css = array_merge($css, $additional_css);
 	}
 	echo $this->Html->css($css);
-	$js = array('jquery.min', 'selectboxes.v2');
+	$js = array('jquery.min', 'selectboxes.v2', 'virtual-select.min');
 	if (isset($additional_js)) {
 		$js = array_merge($js, $additional_js);
 	}
