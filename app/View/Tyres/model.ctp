@@ -82,7 +82,12 @@
 			<tr class="body r<?php echo $product['size3']; ?> <?php echo $class; ?>">
 				<td><?php echo $product['size1']; ?> / <?php echo $product['size2']; ?> R<?php echo $product['size3']; ?></td>
 				<td class="desc-table"><?php echo h($product['f1'] . $product['f2']) . ' &ndash; ' .  $this->Frontend->getFF($product['f1'], $product['f2']); ?></td>
-				<td class="desc-table"><?php echo $product['stud'] ? '<img src="/img/studded.png" alt="шипованная" />' : ''; ?></td>
+				<td class="desc-table">
+                    <div class="desc-icons">
+                        <?php echo $product['stud'] ? '<img src="/img/studded.png" alt="шипованная" />' : ''; ?>
+                        <?php echo $this->element('tyre_icons', array('product' => $product)); ?>
+                    </div>
+                </td>
 				<td class="desc-table"><?php
                     $in_stock_mark = $product['in_stock'] ? '<img title="в наличии" alt="в наличии" src="/img/yes.png">' : '';
                     $in_stock_text = $product['in_stock'] ? 'В наличии: ' : 'Под заказ: ';

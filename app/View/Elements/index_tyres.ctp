@@ -325,7 +325,6 @@ foreach ($models as $item) {
                             <?php } ?>
 							<table cellpadding="0" cellspacing="0">
 								<tr>
-                                    <?php echo $this->element('tyre_icons', array('product' => $item['Product'][0], 'brandModel' => $item['BrandModel'])); ?>
 									<td>
 										<?php
 											$image = $this->Html->image('no-tyre-little.jpg', array('class' => 'no-img-tyre'));

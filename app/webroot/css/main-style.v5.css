@@ -4139,3 +4139,19 @@ table.withlines {
   /*max-height: 225px;*/
   margin: auto;
 }
+.desc-icons {
+  display: flex !important;
+  gap: 3px;
+  border: none;
+}
+.desc-icons .tyre__icons {
+  position: relative;
+  flex-direction: row;
+}
+.desc-icons .tyre__icons .tyre__icon-tyremount img {
+  width: 23px;
+}
+.desc-icons img, .desc-icons .tyre__icon {
+  width: 20px;
+  height: 20px;
+}
