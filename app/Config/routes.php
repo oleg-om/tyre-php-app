@@ -600,78 +600,6 @@ Router::connect(
 	)
 );
 
-// побдор по марке авто
-//Router::connect(
-//    '/selection/:brand_slug/:model_slug/:year/:modification_slug',
-//    array(
-//        'controller' => 'cars',
-//        'action' => 'car_view'
-//    ),
-//    array(
-//        'pass' => array(
-//            'brand_slug',
-//            'model_slug',
-//            'year',
-//            'modification_slug'
-//        ),
-//        'brand_slug' => '[A-z0-9_-]+',
-//        'model_slug' => '[A-z0-9_-]+',
-//        'year' => '[0-9]{4}',
-//        'modification_slug' => '[A-z0-9_-]+'
-//    )
-//);
-//
-//// побдор по марке авто - выбор модификации
-//Router::connect(
-//    '/selection/:brand_slug/:model_slug/:year',
-//    array(
-//        'controller' => 'car_modifications',
-//        'action' => 'view'
-//    ),
-//    array(
-//        'pass' => array(
-//            'brand_slug',
-//            'model_slug',
-//            'year'
-//        ),
-//        'brand_slug' => '[A-z0-9_-]+',
-//        'model_slug' => '[A-z0-9_-]+',
-//        'year' => '[0-9]{4}'
-//    )
-//);
-//
-//// побдор по марке авто - выбор года
-//Router::connect(
-//    '/selection/:brand_slug/:model_slug',
-//    array(
-//        'controller' => 'car_models',
-//        'action' => 'view'
-//    ),
-//    array(
-//        'pass' => array(
-//            'brand_slug',
-//            'model_slug'
-//        ),
-//        'brand_slug' => '[A-z0-9_-]+',
-//        'model_slug' => '[A-z0-9_-]+'
-//    )
-//);
-
-// побдор по марке авто - выбор марки
-//Router::connect(
-//    '/selection-modal/:slug',
-//    array(
-//        'controller' => 'selection_modal',
-//        'action' => 'car_brands'
-//    ),
-//    array(
-//        'pass' => array(
-//            'slug'
-//        ),
-//        'slug' => '[A-z0-9_-]+'
-//    )
-//);
-
 Router::connect(
     '/selection-modal/:path',
     array(
@@ -734,6 +662,22 @@ Router::connect(
         'brand_slug' => '[A-z0-9_-]+',
         'model_slug' => '[A-z0-9_-]+',
         'generation_slug' => '[A-z0-9_-]+',
+    )
+);
+
+Router::connect(
+    '/api/update_session/:field/:value',
+    array(
+        'controller' => 'selection_modal',
+        'action' => 'update_session'
+    ),
+    array(
+        'pass' => array(
+            'field',
+            'value'
+        ),
+        'field' => '[A-z0-9_-]+',
+        'value' => '[A-z0-9_-]+',
     )
 );
 

@@ -1,4 +1,4 @@
-<div class="list-view__grid">
+<div class="list-view__grid" id="product-section">
     <?php $i = 0; foreach ($products as $item) { ?>
         <div class="list-view__item akb">
             <div class="list-view__info-col">

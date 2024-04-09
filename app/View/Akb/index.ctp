@@ -6,9 +6,10 @@
 <?php if ($mode == 'brands')
 echo '<p class="akb__promo"><img src="http://kerchshina.com/files/1/akb4.jpg" alt="" width="870" height="218" /></p>'
 ?>
-
+<?php echo json_encode($this->Session->read('car_modification_slug')); ?>
 
 <div class="<?php if (empty($modification_slug)) { echo 'd-none'; } else { echo 'car__sizes car__sizes-wheels'; } ?>">
+
     <div class="car__sizes__wrap">
         <div class="car__sizes__info">
 
@@ -63,6 +64,13 @@ echo '<p class="akb__promo"><img src="http://kerchshina.com/files/1/akb4.jpg" al
         }
         echo $image;
         ?>
+        <button type="reset" class="filter-reset" id="filter-reset" onclick="resetAkb()">Сбросить все<span>x</span>
+            <script type="text/javascript">
+                function resetAkb() {
+                    window.location = '/akb'
+                }
+            </script>
+        </button>
     </div>
 </div>
 

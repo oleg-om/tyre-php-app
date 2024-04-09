@@ -264,7 +264,7 @@ input {
   box-shadow: none;
 }
 .left-nav {
-  background-color: #f5f5f5;
+  background-color: #eee;
 
   .filter-group {
     display: none;
@@ -721,9 +721,10 @@ input {
 .filter-group .item .item-inner .name, .item-name {
   float: left;
   width: 115px;
-  color: #000000;
-  font-size: 14px;
+  color: #828282;
+  font-size: 12px;
   padding-top: 7px;
+  margin-bottom: 3px;
 }
 #CarViewForm .item .item-inner .name {
   width: 115px !important;
@@ -840,6 +841,7 @@ input {
   box-shadow: 0 1px 0 rgba(0, 0, 0, 0.3);
   width: 148px;
   align-self: center;
+  display: none;
 }
 .bt-style1:hover {
   background-image: none;
@@ -4147,7 +4149,7 @@ table.withlines {
   position: relative;
   padding-left: 27px;
   cursor: pointer;
-  font-size: 16px;
+  font-size: 14px;
   line-height: 20px;
   -webkit-user-select: none;
   -moz-user-select: none;
@@ -4170,10 +4172,11 @@ table.withlines {
   position: absolute;
   top: 0;
   left: 0;
-  height: 20px;
-  width: 20px;
+  height: 18px;
+  width: 18px;
   background-color: #fff;
   border: 1px solid #b5b5b5;
+  border-radius: 4px;
 }
 
 /* On mouse-over, add a grey background color */
@@ -4209,4 +4212,20 @@ table.withlines {
   -webkit-transform: rotate(45deg);
   -ms-transform: rotate(45deg);
   transform: rotate(45deg);
+}
+.is-loading .list-view__item, .is-loading .boxList {
+  opacity: 0.5;
+  pointer-events: none;
+  cursor: progress;
+}
+.filter-reset {
+  background: none;
+  border: none;
+  margin-bottom: 4px;
+  margin-left: auto;
+  display: none;
+}
+.filter-reset span {
+  color: red;
+  margin-left: 3px;
 }

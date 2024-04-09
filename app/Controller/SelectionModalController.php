@@ -67,4 +67,10 @@ class SelectionModalController extends AppController
             return;
         }
     }
+
+    function update_session($field, $slug) {
+        $this->Session->write($field, $slug);
+        print_r(json_encode($this->Session->read($field)));
+        exit();
+    }
 }

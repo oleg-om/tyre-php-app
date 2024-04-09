@@ -25,7 +25,7 @@ foreach ($models as $item) {
 <?php if (!empty($models)) { ?>
 	<?php if ($mode == 'block') { ?>
 	<div class="border-b border-b-tyres">
-	<div class="width-disk">
+	<div class="width-disk" id="product-section">
 	<?php } elseif ($mode == 'table') { ?>
 	<div class="tab-prod">
 		<table cellpadding="0" cellspacing="0">

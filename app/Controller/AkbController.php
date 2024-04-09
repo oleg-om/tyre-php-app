@@ -109,7 +109,9 @@ class AkbController extends AppController {
 		$this->category_id = 3;
 
         // modification
-        $modification_slug = '';
+        if ($this->Session->check('car_modification_slug')) {
+            $modification_slug = $this->Session->read('car_modification_slug');
+        }
         if (isset($this->request->query['modification']) && !empty($this->request->query['modification'])) {
             $modification_slug = $this->request->query['modification'];
         }
@@ -685,7 +687,6 @@ class AkbController extends AppController {
         // get auto
         if (empty($auto)) {
             //print_r($conditions);
-
             $temp_cond = $conditions;
             foreach ($temp_cond as $i => $cond) {
                 if (is_array($cond) && isset($cond['or']) && isset($cond['or'][0]['BrandModel.auto'])) {

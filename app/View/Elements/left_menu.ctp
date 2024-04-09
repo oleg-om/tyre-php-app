@@ -90,7 +90,6 @@
         function getTab() {
             if ('<?php echo $modification_slug; ?>') {
                 setTimeout(()=> {
-                    // switchTab('auto');
                     setAuto();
                     }, 1);
             }
@@ -507,6 +506,13 @@ $settings = Cache::read('settings', 'long');
 </div>
 <?php } elseif ($show_filter == 3) { $path = 'akb';?>
 <div class="filter-group" id="filter" style="<?php if (!empty($modification_slug)) { echo 'display: none'; } ?>">
+    <button type="reset" class="filter-reset" id="filter-reset" onclick="resetAkb()">Сбросить все<span>x</span>
+    <script type="text/javascript">
+        function resetAkb() {
+            window.location = '/akb'
+        }
+    </script>
+    </button>
 	<?php
 		$url = array('controller' => 'akb', 'action' => 'index');
 		echo $this->Form->create('Product', array('type' => 'get', 'id' => 'filter-form', 'url' => $url));
@@ -541,6 +547,7 @@ $settings = Cache::read('settings', 'long');
             <?php echo $this->element('custom_select', array('name'=> 'height_to', 'placeholder' => 'До', 'options' => $akb_height, 'multiple' => false, 'search' => false, 'hideClearButton' => true)); ?>
         </div>
         <?php echo $this->element('custom_select', array('label' => 'Производитель', 'name'=> 'brand_id', 'options' => $filter_brands, 'multiple' => true, 'search' => true)); ?>
+        <input class="d-none" type="hidden" value="<?php echo $modification_slug; ?>" />
 	</div>
 	<div class="item">
 		<button class="bt-style1">ПОИСК</button>
@@ -940,4 +947,5 @@ function onSearchModifications() {
             });
         </script>
 <?php } ?>
-</div></div>
+</div>
+</div>

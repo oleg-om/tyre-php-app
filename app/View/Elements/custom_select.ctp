@@ -25,6 +25,9 @@ $query = '';
 if (isset($this->request->query[$name])) {
     $query = $this->request->query[$name];
 }
+if ($this->Session->check('car_modification_slug')) {
+    $modification_slug = $this->Session->read('car_modification_slug');
+}
 ?>
 
 <div class="item-inner">
@@ -52,4 +55,58 @@ if (isset($this->request->query[$name])) {
         hideClearButton: <?php echo json_encode($hideClearButton); ?>,
         selectedValue: <?php echo json_encode(explode(',', $query)); ?>
     });
+</script>
+<script type="text/javascript">
+    $(function(){
+        $('<?php echo '#'.$id; ?>').change(function(e) {
+            var multiple = e.currentTarget.virtualSelect.multiple;
+
+            window.onbeforeunload = function(e) {
+                // save scroll position
+                localStorage.setItem('ks-scroll-position', window.scrollY);
+                // save chosen filter was multiple
+                if (multiple) {
+                    localStorage.setItem('ks-last-multiple-filter', <?php echo json_encode('#'.$id); ?>);
+                }
+            };
+            // set loading class
+            setLoading();
+            // submit form
+            return setTimeout(() => {
+                $('#filter-form').submit();
+            }, 100)
+        });
+    });
+    function setLoading() {
+        $('#product-section').addClass('is-loading');
+    }
+</script>
+<script type="text/javascript">
+    // get scroll position
+    document.addEventListener("DOMContentLoaded", function(e) {
+        // open select if multiple
+        var multipleFilter = localStorage.getItem('ks-last-multiple-filter');
+        if (multipleFilter) {
+            document.querySelector(multipleFilter).open();
+            localStorage.removeItem('ks-last-multiple-filter');
+        }
+        // scroll to last position before reload
+        var scrollPosition = localStorage.getItem('ks-scroll-position');
+        if (scrollPosition) {
+            window.scrollTo(0, scrollPosition);
+            localStorage.removeItem('ks-scroll-position');
+            // show reset filter
+            $('#filter-reset').show();
+            checkFormIsChanged();
+        }
+    });
+
+    // choose filter type (params/auto) after choosing select
+    function checkFormIsChanged() {
+        var modification = '<?php echo $modification_slug; ?>';
+        console.log('modification', modification);
+        if (modification) {
+            switchTab('params');
+        }
+    }
 </script>
