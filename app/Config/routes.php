@@ -681,6 +681,20 @@ Router::connect(
     )
 );
 
+Router::connect(
+    '/api/remove_session/:field',
+    array(
+        'controller' => 'selection_modal',
+        'action' => 'update_session'
+    ),
+    array(
+        'pass' => array(
+            'field'
+        ),
+        'field' => '[A-z0-9_-]+'
+    )
+);
+
 //Router::connect('/*', array('controller' => 'Errors', 'action' => 'error404')); 
 
 

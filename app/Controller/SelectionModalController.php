@@ -73,4 +73,10 @@ class SelectionModalController extends AppController
         print_r(json_encode($this->Session->read($field)));
         exit();
     }
+
+    function remove_session($field) {
+        $this->Session->delete($field);
+        print_r('OK');
+        exit();
+    }
 }

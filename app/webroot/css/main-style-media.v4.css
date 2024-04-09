@@ -313,8 +313,10 @@
     .car__sizes__wrap {
         flex-direction: row;
     }
-    .car__sizes img {
+    .car__sizes-right {
         max-width: 30%;
+    }
+    .car__sizes-right img {
         margin: 0;
     }
 }
