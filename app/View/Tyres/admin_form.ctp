@@ -110,6 +110,11 @@ $this->Backend->addText('truck', array(
 	'label' => __d('admin_tyres', 'label_truck')
 ));
 */
+$this->Backend->addHtml('<div class="clear"></div>');
+$this->Backend->addText('stock_places', array(
+    'label' => __d('admin_akb', 'label_stock_places'),
+    'div' => 'item_div'
+));
 $this->Backend->addHidden('id');
 $this->Backend->addHidden('old_brand_id');
 $this->Backend->addHidden('old_model_id');
