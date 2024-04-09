@@ -17,8 +17,9 @@ $this->Paginator->options(array('url' => $url));
 <h1 class="title">Шины <?php if (!empty($brand['Brand']['slug'])) echo $brand['Brand']['title'] ?>
     <?php if (!empty($car_brand['CarBrand']['slug'])) echo ' на '.$car_brand['CarBrand']['title'].' '.$car_model['CarModel']['title'].' '.$car_generation['CarGeneration']['title'].' '.$car_modification['CarModification']['title'] ?>
 </h1>
+<?php if (empty($modification_slug)) { ?>
     <h3 class="tyres-free-header"><img src="/img/icons/free-tyremount.png" alt="Шиномонтаж бесплатно" />При покупке 4 шин шиномонтаж бесплатно!</h3>
-
+<?php } ?>
 <div class="<?php if (empty($modification_slug)) { echo 'd-none'; } else { echo 'car__sizes car__sizes-tyres'; } ?>">
         <div class="car__sizes__wrap">
     <div class="car__sizes__info">
@@ -63,6 +64,7 @@ $this->Paginator->options(array('url' => $url));
             </div>
         <?php } ?>
   </div>
+  <div class="car__sizes-right">
     <?php
     $image = '';
     if (!empty($car_image)) {
@@ -70,7 +72,8 @@ $this->Paginator->options(array('url' => $url));
     }
     echo $image;
     ?>
-        </div>
+  </div>
+   </div>
 </div>
 
 

@@ -71,6 +71,7 @@ $this->Paginator->options(array('url' => $url));
 
                 <?php } ?>
             </div>
+            <div class="car__sizes-right">
             <?php
             $image = '';
             if (!empty($car_image)) {
@@ -78,6 +79,7 @@ $this->Paginator->options(array('url' => $url));
             }
             echo $image;
             ?>
+            </div>
         </div>
     </div>
 

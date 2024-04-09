@@ -522,11 +522,11 @@ $settings = Cache::read('settings', 'long');
             <?php echo $this->element('custom_select', array('label' => 'Вид аккумулятора', 'name' => 'auto', 'options' => $filter_auto, 'multiple' => false, 'search' => false)); ?>
         </div>
         <div class="item-group">
-            <?php echo $this->element('custom_select', array('label' => 'Емкость, Ah', 'name' => 'ah_from', 'placeholder' => 'От', 'options' => $akb_ah, 'multiple' => false, 'search' => false)); ?>
+            <?php echo $this->element('custom_select', array('label' => 'Емкость, Ah', 'options_postfix' => 'ач', 'name' => 'ah_from', 'placeholder' => 'От', 'options' => $akb_ah, 'multiple' => false, 'search' => false)); ?>
             <?php echo $this->element('custom_select', array('label' => 'Пусковой ток, A', 'name' => 'current_from', 'placeholder' => 'От', 'options' => $akb_current, 'multiple' => false, 'search' => false)); ?>
         </div>
         <div class="item-group">
-            <?php echo $this->element('custom_select', array('name' => 'ah_to', 'placeholder' => 'До', 'options' => $akb_ah, 'multiple' => false, 'search' => false)); ?>
+            <?php echo $this->element('custom_select', array('name' => 'ah_to', 'options_postfix' => 'ач', 'placeholder' => 'До', 'options' => $akb_ah, 'multiple' => false, 'search' => false)); ?>
             <?php echo $this->element('custom_select', array('name' => 'current_to', 'placeholder' => 'До', 'options' => $akb_current, 'multiple' => false, 'search' => false)); ?>
         </div>
         <span class="item-name">Тип корпуса:</span>

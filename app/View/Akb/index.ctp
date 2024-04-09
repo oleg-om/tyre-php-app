@@ -8,7 +8,7 @@ echo '<p class="akb__promo"><img src="http://kerchshina.com/files/1/akb4.jpg" al
 ?>
 <div class="<?php if (empty($modification_slug)) { echo 'd-none'; } else { echo 'car__sizes car__sizes-wheels'; } ?>">
     <div class="car__sizes__wrap">
-        <div class="car__sizes__info">
+        <div class="car__sizes__info">121
                  <?php if (!empty($start_stop) && $start_stop == 1) { ?>
             <div class="car__sizes__extra__text">
                 <?php echo 'На ваш автомобиль предусмотрена установка аккумуляторов с технологией Start-Stop' ;?>
@@ -62,14 +62,14 @@ echo '<p class="akb__promo"><img src="http://kerchshina.com/files/1/akb4.jpg" al
             ?>
             <button type="reset" class="filter-reset-car" id="filter-reset-car" onclick="resetAkb()">Сбросить авто<span>x</span>
                 <script type="text/javascript">
-                    function resetAkb() {
-                        $.ajax({
-                            url: '/api/remove_session/car_modification_slug',
-                            success: function() {
-                                window.location = '/akb';
-                            }
-                        });
-                    }
+                    // function resetAkb() {
+                    //     $.ajax({
+                    //         url: '/api/remove_session/car_modification_slug',
+                    //         success: function() {
+                    //             window.location = '/akb';
+                    //         }
+                    //     });
+                    // }
                 </script>
             </button>
         </div>

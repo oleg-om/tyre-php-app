@@ -169,6 +169,9 @@ class TyresController extends AppController {
         }
         // modification
         $modification_slug = '';
+        if ($this->Session->check('car_modification_slug')) {
+            $modification_slug = $this->Session->read('car_modification_slug');
+        }
         if (isset($this->request->query['modification']) && !empty($this->request->query['modification'])) {
             $modification_slug = $this->request->query['modification'];
         }
@@ -202,8 +205,8 @@ class TyresController extends AppController {
             $diameter = $this->request->query['diameter'];
 
             // if no sizes in query url use first factory size
-            if (empty($this->request->query['size1']) && empty($this->request->query['size2']) && empty($this->request->query['size3']) && empty($diameter)) {
-
+//            if (empty($this->request->query['size1']) && empty($this->request->query['size2']) && empty($this->request->query['size3']) && empty($diameter)) {
+            if (empty($diameter)) {
                 $this->set('factory_sizes', $factory_tyres);
                 $this->set('tuning_sizes', $tuning_tyres);
 

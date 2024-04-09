@@ -22,14 +22,27 @@ foreach ($options as $index => $option) {
     $output[] = array('label' => $option, 'value' => $index);
 }
 $query = '';
+if (isset($query) && $query != '') {
+    if (!in_array(array('label' => $query, 'value' => intval($query)), $output)) {
+        $output[] = array('label' => $query, 'value' => $query);
+    }
+}
+
 if (isset($this->request->query[$name])) {
     $query = $this->request->query[$name];
+}
+if (isset($query) && $query != '') {
+    if (!in_array(array('label' => $options_prefix.$query.$options_postfix, 'value' => intval($query)), $output)) {
+        $output[] = array('label' => $options_prefix.$query.$options_postfix, 'value' => $query);
+        usort($output, function($a, $b) {
+            return $a['value'] - $b['value'];
+        });
+    }
 }
 if ($this->Session->check('car_modification_slug')) {
     $modification_slug = $this->Session->read('car_modification_slug');
 }
 ?>
-
 <div class="item-inner">
     <?php
      if (!empty($label)) { ?>
@@ -104,7 +117,7 @@ if ($this->Session->check('car_modification_slug')) {
     // choose filter type (params/auto) after choosing select
     function checkFormIsChanged() {
         var modification = '<?php echo $modification_slug; ?>';
-        console.log('modification', modification);
+
         if (modification) {
             switchTab('params');
         }
