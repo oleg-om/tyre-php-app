@@ -216,6 +216,9 @@ class AppController extends Controller {
 				define('CONST_' . $key, $value);
 			}
 		}
+        define('CONST_DEFAULT_TYRES_PATH', '?auto=&axis=&size1=205&size2=55&size3=16&season=&brand_id=&stud=0&in_stock4=0&in_stock=2&upr_all=1');
+        define('CONST_DEFAULT_DISKS_PATH', '?size3=&size1=18&material=&et_from=&et_to=&size2=&hub=&brand_id=&in_stock4=0&in_stock=2');
+        define('CONST_DEFAULT_AKB_PATH', '?ah_from=60&current=&f1=&width=&length=&height=&brand_id=');
 	}
 	private function setCurrencies() {
 		$currencies = Cache::read('currencies', 'long');

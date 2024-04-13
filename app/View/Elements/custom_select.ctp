@@ -31,7 +31,7 @@ if (isset($query) && $query != '') {
 if (isset($this->request->query[$name])) {
     $query = $this->request->query[$name];
 }
-if (isset($query) && $query != '') {
+if (isset($query) && $query != '' && !empty($auto_add_options)) {
     if (!in_array(array('label' => $options_prefix.$query.$options_postfix, 'value' => intval($query)), $output)) {
         $output[] = array('label' => $options_prefix.$query.$options_postfix, 'value' => $query);
         usort($output, function($a, $b) {
@@ -42,7 +42,16 @@ if (isset($query) && $query != '') {
 if ($this->Session->check('car_modification_slug')) {
     $modification_slug = $this->Session->read('car_modification_slug');
 }
+
+if ($query !== '') {
+    $placeholder_name = $query;
+} else {
+    $placeholder_name = $placeholder;
+}
+
 ?>
+<?php if ($multiple == true) { ?>
+<!--multi custom select-->
 <div class="item-inner">
     <?php
      if (!empty($label)) { ?>
@@ -58,7 +67,7 @@ if ($this->Session->check('car_modification_slug')) {
         options: <?php echo json_encode($output); ?>,
         multiple: <?php echo json_encode($multiple); ?>,
         search: <?php echo json_encode($search); ?>,
-        placeholder: <?php if ($query !== '') { echo json_encode($query); } else { echo json_encode($placeholder); } ?>,
+        placeholder: <?php echo json_encode($placeholder_name); ?>,
         searchPlaceholderText: 'Поиск...',
         noSearchResultsText: 'Не найдено',
         allOptionsSelectedText: 'Все',
@@ -66,13 +75,35 @@ if ($this->Session->check('car_modification_slug')) {
         optionSelectedText: 'опция выбрана',
         noOptionsText: 'Опций не найдено',
         hideClearButton: <?php echo json_encode($hideClearButton); ?>,
-        selectedValue: <?php echo json_encode(explode(',', $query)); ?>
+        selectedValue: <?php echo json_encode(explode(',', $query)); ?>,
+        disabled: !!'<?php if (!empty($disabled)) { echo true; } else { echo false; } ?>'
     });
 </script>
+
+<!--usual select-->
+<?php } else { ?>
+    <?php
+        foreach ($output as $option) {
+            $usual_options[$option['value']] = $option['label'];
+        }
+    ?>
+    <div class="item-inner valve">
+        <?php if (!empty($label)) { ?>
+            <label class="name" for="<?php echo $id; ?>"><?php echo $label; ?>:</label>
+        <?php } ?>
+        <div class="inp">
+            <?php
+                echo $this->Form->input($query, array('id' => $id, 'name' => $id, 'type' => 'select', 'label' => false, 'options' => $usual_options, 'empty' => array('' => $placeholder_name), 'div' => false, 'class' => 'sel-style1 filter-select'));
+            ?>
+        </div>
+    </div>
+<?php } ?>
+
+
 <script type="text/javascript">
     $(function(){
         $('<?php echo '#'.$id; ?>').change(function(e) {
-            var multiple = e.currentTarget.virtualSelect.multiple;
+            var multiple = e?.currentTarget?.virtualSelect?.multiple;
 
             window.onbeforeunload = function(e) {
                 // save scroll position
@@ -94,14 +125,17 @@ if ($this->Session->check('car_modification_slug')) {
         $('#product-section').addClass('is-loading');
     }
 </script>
+
 <script type="text/javascript">
     // get scroll position
     document.addEventListener("DOMContentLoaded", function(e) {
         // open select if multiple
         var multipleFilter = localStorage.getItem('ks-last-multiple-filter');
         if (multipleFilter) {
-            document.querySelector(multipleFilter).open();
             localStorage.removeItem('ks-last-multiple-filter');
+            setTimeout(()=> {
+                document.querySelector(multipleFilter).open();
+            }, 100)
         }
         // scroll to last position before reload
         var scrollPosition = localStorage.getItem('ks-scroll-position');

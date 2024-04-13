@@ -720,7 +720,6 @@ input {
 }
 .filter-group .item .item-inner .name, .item-name {
   float: left;
-  width: 115px;
   color: #828282;
   font-size: 12px;
   padding-top: 7px;
@@ -791,9 +790,6 @@ input {
 }
 .filter-group .item.item2 {
 
-}
-.filter-group .item.item2 .item-inner .name {
-  width: 70px;
 }
 .filter-group .item .item-inner .checkbox {
   cursor: pointer;
@@ -4173,16 +4169,25 @@ table.withlines {
 }
 
 /* Create a custom checkbox */
-.checkmark {
+.checkbox__container .checkmark {
   position: absolute;
-  top: 0;
-  left: 0;
   height: 18px;
   width: 18px;
   background-color: #fff;
   border: 1px solid #b5b5b5;
+}
+.checkbox__container-checkbox .checkmark {
+  top: 0;
+  left: 0;
   border-radius: 4px;
 }
+
+.checkbox__container-radio .checkmark {
+  top: 0;
+  left: 0;
+  border-radius: 50%;
+}
+
 
 /* On mouse-over, add a grey background color */
 .checkbox__container:hover input ~ .checkmark {
@@ -4190,8 +4195,12 @@ table.withlines {
 }
 
 /* When the checkbox is checked, add a blue background */
-.checkbox__container input:checked ~ .checkmark {
+.checkbox__container-checkbox input:checked ~ .checkmark {
   background-color: #2196F3;
+}
+
+.checkbox__container-radio input:checked ~ .checkmark {
+  background-color: #000000;
 }
 
 /* Create the checkmark/indicator (hidden when not checked) */
@@ -4207,17 +4216,26 @@ table.withlines {
 }
 
 /* Style the checkmark/indicator */
-.checkbox__container .checkmark:after {
-  left: 8px;
+.checkbox__container-checkbox .checkmark:after {
+  left: 7px;
   top: 2px;
   width: 3px;
-  height: 10px;
+  height: 8px;
   border: solid white;
   border-width: 0 3px 3px 0;
   -webkit-transform: rotate(45deg);
   -ms-transform: rotate(45deg);
   transform: rotate(45deg);
 }
+.checkbox__container-radio .checkmark:after {
+  border-radius: 50%;
+  width: 12px;
+  height: 12px;
+  background-color: #fff;
+  top: 3px;
+  left: 3px;
+}
+
 .is-loading .list-view__item, .is-loading .boxList {
   opacity: 0.5;
   pointer-events: none;

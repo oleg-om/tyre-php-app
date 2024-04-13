@@ -1,9 +1,11 @@
 <h2 class="title">Аккумуляторы <?php
     echo $brand['Brand']['title'];
+    if (!empty($car_brand['CarBrand']['slug'])) echo ' на ' . $car_brand['CarBrand']['title'] . ' ' . $car_model['CarModel']['title'] . ' ' . $car_generation['CarGeneration']['title'] . ' ' . $car_modification['CarModification']['title']
     ?></h2>
 <?php
 $this->Paginator->options(array('url' => array('controller' => 'akb', 'action' => 'brand', 'slug' => $brand['Brand']['slug'], '?' => $filter)));
 ?>
+<?php echo $this->element('akb_car', array('modification_slug' => $modification_slug, 'start_stop' => $start_stop, 'car_factory_sizes' => $car_factory_sizes, 'car_tuning_sizes' => $car_tuning_sizes, 'car_image' => $car_image))?>
 <div id="vmMainPage">
     <?php
     $url = array('controller' => 'akb', 'action' => 'brand', 'slug' => $brand['Brand']['slug'], '?' => $filter);

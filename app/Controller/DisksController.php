@@ -1559,6 +1559,9 @@ endforeach;
 
         // modification
         $modification_slug = '';
+        if ($this->Session->check('car_modification_slug')) {
+            $modification_slug = $this->Session->read('car_modification_slug');
+        }
         if (isset($this->request->query['modification']) && !empty($this->request->query['modification'])) {
             $modification_slug = $this->request->query['modification'];
         }
@@ -1584,14 +1587,6 @@ endforeach;
 
             $material = $this->request->query['material'];
             $this->set('material', $material);
-
-//            if (!empty($diameter)) {
-//                $car_factory_sizes = $this->CarWheels->find('all', array('conditions' => array('CarWheels.modification_slug' => $modification_slug, 'CarWheels.factory' => 1 , 'CarWheels.front_axle_diameter' => str_replace('R', '', $diameter))));
-//                $car_tuning_sizes = $this->CarWheels->find('all', array('conditions' => array('CarWheels.modification_slug' => $modification_slug, 'CarWheels.factory' => 0, 'CarWheels.front_axle_diameter' => str_replace('R', '', $diameter))));
-//            } else {
-//                $car_factory_sizes = $this->CarWheels->find('all', array('conditions' => array('CarWheels.modification_slug' => $modification_slug, 'CarWheels.factory' => 1)));
-//                $car_tuning_sizes = $this->CarWheels->find('all', array('conditions' => array('CarWheels.modification_slug' => $modification_slug, 'CarWheels.factory' => 0)));
-//            }
 
             $car_factory_sizes = $this->CarWheels->find('all', array('conditions' => array('CarWheels.modification_slug' => $modification_slug, 'CarWheels.factory' => 1)));
 
