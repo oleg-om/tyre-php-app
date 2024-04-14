@@ -522,39 +522,46 @@ $settings = Cache::read('settings', 'long');
             <?php echo $this->element('custom_select', array('label' => 'Вид аккумулятора', 'name' => 'auto', 'options' => $filter_auto, 'multiple' => false, 'search' => false)); ?>
         </div>
         <div class="item-group">
-            <?php echo $this->element('custom_select', array('label' => 'Емкость, Ah', 'options_postfix' => 'ач', 'auto_add_options' => true, 'name' => 'ah_from', 'placeholder' => 'От', 'options' => $akb_ah, 'multiple' => false, 'search' => false)); ?>
-            <?php echo $this->element('custom_select', array('label' => 'Пусковой ток, A', 'name' => 'current_from', 'auto_add_options' => true, 'placeholder' => 'От', 'options' => $akb_current, 'multiple' => false, 'search' => false)); ?>
+            <?php echo $this->element('custom_select', array('label' => 'Емкость, Ah', 'options_postfix' => 'ач', 'add_prefix' => 'От: ', 'auto_add_options' => true, 'name' => 'ah_from', 'placeholder' => 'От', 'options' => $akb_ah, 'multiple' => false, 'search' => false)); ?>
+            <?php echo $this->element('custom_select', array('label' => 'Пусковой ток, A', 'name' => 'current_from', 'add_prefix' => 'От: ', 'auto_add_options' => true, 'placeholder' => 'От', 'options' => $akb_current, 'multiple' => false, 'search' => false)); ?>
         </div>
         <div class="item-group">
-            <?php echo $this->element('custom_select', array('name' => 'ah_to', 'options_postfix' => 'ач', 'auto_add_options' => true, 'placeholder' => 'До', 'options' => $akb_ah, 'multiple' => false, 'search' => false)); ?>
-            <?php echo $this->element('custom_select', array('name' => 'current_to', 'auto_add_options' => true, 'placeholder' => 'До', 'options' => $akb_current, 'multiple' => false, 'search' => false)); ?>
+            <?php echo $this->element('custom_select', array('name' => 'ah_to', 'options_postfix' => 'ач', 'add_prefix' => 'До: ', 'auto_add_options' => true, 'placeholder' => 'До', 'options' => $akb_ah, 'multiple' => false, 'search' => false)); ?>
+            <?php echo $this->element('custom_select', array('name' => 'current_to', 'auto_add_options' => true, 'add_prefix' => 'До: ', 'placeholder' => 'До', 'options' => $akb_current, 'multiple' => false, 'search' => false)); ?>
         </div>
+        <?php
+            echo $this->element('akb_polarity_filter');
+        ?>
         <?php
             $f1_options = array('euro' => array('label' => 'Евро', 'query' => 'f1'), 'asia' => array('label' => 'Азия', 'query' => 'f1'));
             echo $this->element('custom_radio', array('label' => 'Тип корпуса:', 'options' => $f1_options));
         ?>
         <?php
+        $size__options = array('short' => array('label' => 'Низкий'), 'tight' => array('label' => 'Узкий'));
+        echo $this->element('custom_checkbox', array('options' => $size__options));
+        ?>
+        <?php
         $start_stop__options = array('efb' => array('label' => 'EFB'), 'agm' => array('label' => 'AGM'));
-        echo $this->element('custom_checkbox', array('options' => $start_stop__options, 'query' => 'start_stop_type'));
+        echo $this->element('custom_checkbox', array('label' => 'Start-stop:', 'options' => $start_stop__options));
         ?>
 	</div>
 	<div class="item item2">
         <div class="item-group">
-            <?php echo $this->element('custom_select', array('label' => 'Длина', 'disabled' => $modification_slug, 'placeholder' => 'От', 'auto_add_options' => true, 'name'=> 'length_from', 'options' => $akb_length, 'multiple' => false, 'search' => false, 'hideClearButton' => true)); ?>
-            <?php echo $this->element('custom_select', array('label' => 'Ширина', 'disabled' => $modification_slug, 'placeholder' => 'От', 'auto_add_options' => true, 'name'=> 'width_from', 'options' => $akb_width, 'multiple' => false, 'search' => false, 'hideClearButton' => true)); ?>
-            <?php echo $this->element('custom_select', array('label' => 'Высота', 'placeholder' => 'От', 'auto_add_options' => true, 'name'=> 'height_from', 'options' => $akb_height, 'multiple' => false, 'search' => false, 'hideClearButton' => true)); ?>
+            <?php echo $this->element('custom_select', array('label' => 'Длина', 'disabled' => $modification_slug, 'placeholder' => 'От', 'add_prefix' => 'От: ', 'auto_add_options' => true, 'name'=> 'length_from', 'options' => $akb_length, 'multiple' => false, 'search' => false, 'hideClearButton' => true)); ?>
+            <?php echo $this->element('custom_select', array('label' => 'Ширина', 'disabled' => $modification_slug, 'placeholder' => 'От', 'add_prefix' => 'От: ', 'auto_add_options' => true, 'name'=> 'width_from', 'options' => $akb_width, 'multiple' => false, 'search' => false, 'hideClearButton' => true)); ?>
+            <?php echo $this->element('custom_select', array('label' => 'Высота', 'placeholder' => 'От', 'auto_add_options' => true, 'add_prefix' => 'От: ', 'name'=> 'height_from', 'options' => $akb_height, 'multiple' => false, 'search' => false, 'hideClearButton' => true)); ?>
         </div>
         <div class="item-group">
-            <?php echo $this->element('custom_select', array('name'=> 'length_to', 'disabled' => $modification_slug, 'placeholder' => 'До', 'auto_add_options' => true, 'options' => $akb_length, 'multiple' => false, 'search' => false, 'hideClearButton' => true)); ?>
-            <?php echo $this->element('custom_select', array('name'=> 'width_to', 'disabled' => $modification_slug, 'placeholder' => 'До', 'auto_add_options' => true, 'options' => $akb_width, 'multiple' => false, 'search' => false, 'hideClearButton' => true)); ?>
-            <?php echo $this->element('custom_select', array('name'=> 'height_to', 'placeholder' => 'До', 'auto_add_options' => true, 'options' => $akb_height, 'multiple' => false, 'search' => false, 'hideClearButton' => true)); ?>
+            <?php echo $this->element('custom_select', array('name'=> 'length_to', 'disabled' => $modification_slug, 'placeholder' => 'До', 'add_prefix' => 'До: ', 'auto_add_options' => true, 'options' => $akb_length, 'multiple' => false, 'search' => false, 'hideClearButton' => true)); ?>
+            <?php echo $this->element('custom_select', array('name'=> 'width_to', 'disabled' => $modification_slug, 'placeholder' => 'До', 'add_prefix' => 'До: ', 'auto_add_options' => true, 'options' => $akb_width, 'multiple' => false, 'search' => false, 'hideClearButton' => true)); ?>
+            <?php echo $this->element('custom_select', array('name'=> 'height_to', 'placeholder' => 'До', 'auto_add_options' => true, 'add_prefix' => 'До: ', 'options' => $akb_height, 'multiple' => false, 'search' => false, 'hideClearButton' => true)); ?>
         </div>
-        <?php echo $this->element('custom_select', array('label' => 'Страна-производитель', 'name' => 'material', 'options' => $akb_country)); ?>
+        <?php echo $this->element('custom_select', array('label' => 'Бренд', 'name'=> 'brand_id', 'options' => $filter_brands, 'multiple' => true, 'search' => true)); ?>
         <div class="item-group">
             <?php echo $this->element('custom_select', array('label' => 'Технология изг.', 'name' => 'color', 'options' => $akb_technology)); ?>
             <?php echo $this->element('custom_select', array('label' => 'Гарантия', 'name' => 'axis', 'options' => $akb_warranty)); ?>
         </div>
-        <?php echo $this->element('custom_select', array('label' => 'Бренд', 'name'=> 'brand_id', 'options' => $filter_brands, 'multiple' => true, 'search' => true)); ?>
+        <?php echo $this->element('custom_select', array('label' => 'Страна-производитель', 'name' => 'material', 'options' => $akb_country)); ?>
         <input class="d-none" type="hidden" value="<?php echo $modification_slug; ?>" />
 	</div>
 	<div class="item">

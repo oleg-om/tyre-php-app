@@ -191,6 +191,11 @@ class AkbController extends AppController {
             'name' => array('BrandModel.full_title' => 'ASC'),
         );
 
+        if (isset($this->request->query['start_stop']) && $this->request->query['start_stop'] == 1) {
+            print_r('START');
+            $sort_orders['price_asc'] = array('BrandModel.full_title' => 'ASC');
+        }
+
         $sort = 'price_asc';
         if (isset($this->request->query['sort']) && in_array($this->request->query['sort'], array('name', 'price_asc', 'price_desc'))) {
             $sort = $this->request->query['sort'];
@@ -229,9 +234,6 @@ class AkbController extends AppController {
 		if (isset($this->request->query['ah']) && !empty($this->request->query['ah'])) {
 			$conditions['Product.ah'] = $this->request->query['ah'];
 		}
-		if (isset($this->request->query['f1']) && !empty($this->request->query['f1'])) {
-			$conditions['Product.f1'] = $this->request->query['f1'];
-		}
         if (isset($this->request->query['f2']) && !empty($this->request->query['f2'])) {
             $conditions['Product.f2'] = $this->request->query['f2'] === 'left' ? 'L+' : 'R+';
         }
@@ -252,6 +254,41 @@ class AkbController extends AppController {
         }
         if (isset($this->request->query['material']) && !empty($this->request->query['material'])) {
             $conditions['Product.material'] = $this->request->query['material'];
+        }
+        if (isset($this->request->query['f1']) && !empty($this->request->query['f1'])) {
+            if ($this->request->query['f1'] === 'euro') {
+                $conditions['Product.f1'] = array('Euro', 'Еuro');
+            } else {
+                $conditions['Product.f1'] = array('Asia', 'Аsia');
+            }
+        }
+        if (isset($this->request->query['agm']) || isset($this->request->query['efb'])) {
+            $agm = 'undefined';
+            $efb = 'undefined';
+            if (isset($this->request->query['agm'])) {
+                $agm = 'agm';
+            }
+            if (isset($this->request->query['efb'])) {
+                $efb = 'efb';
+            }
+            $conditions['Product.truck'] = array($agm, $efb);
+        }
+        if (isset($this->request->query['short']) || isset($this->request->query['tight'])) {
+            $short = 'undefined';
+            $tight = 'undefined';
+            if (isset($this->request->query['short'])) {
+                $short = 'низкий';
+            }
+            if (isset($this->request->query['tight'])) {
+                $tight = 'узкий';
+            }
+            $conditions['Product.f3'] = array($short, $tight);
+        }
+        if (isset($this->request->query['axis']) && !empty($this->request->query['axis'])) {
+            $conditions['Product.axis'] = $this->request->query['axis'];
+        }
+        if (isset($this->request->query['color']) && !empty($this->request->query['color'])) {
+            $conditions['Product.color'] = $this->request->query['color'];
         }
 		$this->request->data['Product'] = $this->request->query;
 
@@ -305,6 +342,7 @@ class AkbController extends AppController {
 		$this->set('additional_js', array('lightbox'));
 		$this->set('additional_css', array('lightbox'));
         $this->set('show_filter', 3);
+        $this->set('akb_switch', true);
 	}
 
     function setModification() {
@@ -354,7 +392,7 @@ class AkbController extends AppController {
 
                 // getAkbParams
                 $item = $first_size['CarBatteries'];
-                $filter = array('ah_from' => $item['capacity_min'], 'ah_to' => $item['capacity_max'], 'length_from' => $item['length_min'], 'length_to' => $item['length_max'], 'width_from' => $item['width_min'], 'width_to' => $item['width_max'], 'height_from' => $item['height_min'], 'height_to' => $item['height_max'], 'modification' => $item['modification_slug'], 'start_stop' => $item['start_stop']);
+                $filter = array('ah_from' => $item['capacity_min'], 'ah_to' => $item['capacity_max'], 'length_from' => $item['length_min'], 'length_to' => $item['length_max'], 'width_from' => $item['width_min'], 'width_to' => $item['width_max'], 'height_from' => $item['height_min'], 'height_to' => $item['height_max'], 'modification' => $item['modification_slug'], 'start_stop' => $item['start_stop'], 'f1' => $item['type_case_id'] === 1 ? 'euro' : 'asia', 'f2' => $item['polarity_id'] === 1 ? 'left' : 'right');
 
                 // redirect with sizes
                 $this->redirect(array('controller' => 'akb', 'action' => 'index', '?' => $filter));
@@ -379,18 +417,7 @@ class AkbController extends AppController {
         // modification
         $this->setModification();
 
-        if (isset($this->request->query['height_from']) && !empty($this->request->query['height_from'])) {
-            $ah_s = floatval(str_replace(',', '.', $this->request->query['height_from']));
-            if ($ah_s > 0) {
-                $conditions['Product.height >='] = $ah_s;
-            }
-        }
-        if (isset($this->request->query['height_to']) && !empty($this->request->query['height_to'])) {
-            $ah_s = floatval(str_replace(',', '.', $this->request->query['height_to']));
-            if ($ah_s > 0) {
-                $conditions['Product.height <='] = $ah_s;
-            }
-        }
+
 
         $sort = 'price_asc';
         if (isset($this->request->query['sort']) && in_array($this->request->query['sort'], array('name', 'price_asc', 'price_desc'))) {
@@ -445,12 +472,48 @@ class AkbController extends AppController {
 				$conditions['Product.model_id'] = $model_id;
 				$this->set('model_id', $model_id);
 			}
+
+            if (isset($this->request->query['ah_from']) && !empty($this->request->query['ah_from'])) {
+                $ah_s = floatval(str_replace(',', '.', $this->request->query['ah_from']));
+                if ($ah_s > 0) {
+                    $conditions['Product.ah >='] = $ah_s;
+                }
+            }
+            if (isset($this->request->query['ah_to']) && !empty($this->request->query['ah_to'])) {
+                $ah_s = floatval(str_replace(',', '.', $this->request->query['ah_to']));
+                if ($ah_s > 0) {
+                    $conditions['Product.ah <='] = $ah_s;
+                }
+            }
+
+            if (isset($this->request->query['height_from']) && !empty($this->request->query['height_from'])) {
+                $ah_s = floatval(str_replace(',', '.', $this->request->query['height_from']));
+                if ($ah_s > 0) {
+                    $conditions['Product.height >='] = $ah_s;
+                }
+            }
+            if (isset($this->request->query['height_to']) && !empty($this->request->query['height_to'])) {
+                $ah_s = floatval(str_replace(',', '.', $this->request->query['height_to']));
+                if ($ah_s > 0) {
+                    $conditions['Product.height <='] = $ah_s;
+                }
+            }
+
+            if (isset($this->request->query['current_from']) && !empty($this->request->query['current_from'])) {
+                $ah_s = floatval(str_replace(',', '.', $this->request->query['current_from']));
+                if ($ah_s > 0) {
+                    $conditions['Product.current >='] = $ah_s;
+                }
+            }
+            if (isset($this->request->query['current_to']) && !empty($this->request->query['current_to'])) {
+                $ah_s = floatval(str_replace(',', '.', $this->request->query['current_to']));
+                if ($ah_s > 0) {
+                    $conditions['Product.current <='] = $ah_s;
+                }
+            }
 			if (isset($this->request->query['ah']) && !empty($this->request->query['ah'])) {
 				$conditions['Product.ah'] = $this->request->query['ah'];
 			}
-			if (isset($this->request->query['f1']) && !empty($this->request->query['f1'])) {
-				$conditions['Product.f1'] = $this->request->query['f1'];
-			}			
 			if (isset($this->request->query['current']) && !empty($this->request->query['current'])) {
 				$conditions['Product.current'] = $this->request->query['current'];
 			}
@@ -465,6 +528,42 @@ class AkbController extends AppController {
 			}
             if (isset($this->request->query['material']) && !empty($this->request->query['material'])) {
                 $conditions['Product.material'] = $this->request->query['material'];
+            }
+
+            if (isset($this->request->query['f1']) && !empty($this->request->query['f1'])) {
+                if ($this->request->query['f1'] === 'euro') {
+                    $conditions['Product.f1'] = array('Euro', 'Еuro');
+                } else {
+                    $conditions['Product.f1'] = array('Asia', 'Аsia');
+                }
+            }
+            if (isset($this->request->query['agm']) || isset($this->request->query['efb'])) {
+                $agm = 'undefined';
+                $efb = 'undefined';
+                if (isset($this->request->query['agm'])) {
+                    $agm = 'agm';
+                }
+                if (isset($this->request->query['efb'])) {
+                    $efb = 'efb';
+                }
+                $conditions['Product.truck'] = array($agm, $efb);
+            }
+            if (isset($this->request->query['short']) || isset($this->request->query['tight'])) {
+                $short = 'undefined';
+                $tight = 'undefined';
+                if (isset($this->request->query['short'])) {
+                    $short = 'низкий';
+                }
+                if (isset($this->request->query['tight'])) {
+                    $tight = 'узкий';
+                }
+                $conditions['Product.f3'] = array($short, $tight);
+            }
+            if (isset($this->request->query['axis']) && !empty($this->request->query['axis'])) {
+                $conditions['Product.axis'] = $this->request->query['axis'];
+            }
+            if (isset($this->request->query['color']) && !empty($this->request->query['color'])) {
+                $conditions['Product.color'] = $this->request->query['color'];
             }
 			$this->request->data['Product'] = $this->request->query;
             $this->request->data['Product']['mode'] = $mode;
@@ -532,6 +631,7 @@ class AkbController extends AppController {
 			$this->set('active_menu', 'akb');
 			$this->set('additional_js', array('lightbox'));
 			$this->set('additional_css', array('lightbox'));
+            $this->set('akb_switch', true);
 		}
 		else {
 			$this->response->statusCode(404);
@@ -629,9 +729,6 @@ class AkbController extends AppController {
 		if (isset($this->request->query['ah']) && !empty($this->request->query['ah'])) {
 			$conditions['Product.ah'] = $this->request->query['ah'];
 		}
-		if (isset($this->request->query['f1']) && !empty($this->request->query['f1'])) {
-			$conditions['Product.f1'] = $this->request->query['f1'];
-		}
 		if (isset($this->request->query['current']) && !empty($this->request->query['current'])) {
 			$conditions['Product.current'] = $this->request->query['current'];
 		}
@@ -644,6 +741,88 @@ class AkbController extends AppController {
 		if (isset($this->request->query['length']) && !empty($this->request->query['length'])) {
 			$conditions['Product.length'] = $this->request->query['length'];
 		}
+
+        if (isset($this->request->query['ah_from']) && !empty($this->request->query['ah_from'])) {
+            $ah_s = floatval(str_replace(',', '.', $this->request->query['ah_from']));
+            if ($ah_s > 0) {
+                $conditions['Product.ah >='] = $ah_s;
+            }
+        }
+        if (isset($this->request->query['ah_to']) && !empty($this->request->query['ah_to'])) {
+            $ah_s = floatval(str_replace(',', '.', $this->request->query['ah_to']));
+            if ($ah_s > 0) {
+                $conditions['Product.ah <='] = $ah_s;
+            }
+        }
+
+        if (isset($this->request->query['height_from']) && !empty($this->request->query['height_from'])) {
+            $ah_s = floatval(str_replace(',', '.', $this->request->query['height_from']));
+            if ($ah_s > 0) {
+                $conditions['Product.height >='] = $ah_s;
+            }
+        }
+        if (isset($this->request->query['height_to']) && !empty($this->request->query['height_to'])) {
+            $ah_s = floatval(str_replace(',', '.', $this->request->query['height_to']));
+            if ($ah_s > 0) {
+                $conditions['Product.height <='] = $ah_s;
+            }
+        }
+
+        if (isset($this->request->query['current_from']) && !empty($this->request->query['current_from'])) {
+            $ah_s = floatval(str_replace(',', '.', $this->request->query['current_from']));
+            if ($ah_s > 0) {
+                $conditions['Product.current >='] = $ah_s;
+            }
+        }
+        if (isset($this->request->query['current_to']) && !empty($this->request->query['current_to'])) {
+            $ah_s = floatval(str_replace(',', '.', $this->request->query['current_to']));
+            if ($ah_s > 0) {
+                $conditions['Product.current <='] = $ah_s;
+            }
+        }
+        if (isset($this->request->query['material']) && !empty($this->request->query['material'])) {
+            $conditions['Product.material'] = $this->request->query['material'];
+        }
+
+        if (isset($this->request->query['f1']) && !empty($this->request->query['f1'])) {
+            if ($this->request->query['f1'] === 'euro') {
+                $conditions['Product.f1'] = array('Euro', 'Еuro');
+            } else {
+                $conditions['Product.f1'] = array('Asia', 'Аsia');
+            }
+        }
+        if (isset($this->request->query['agm']) || isset($this->request->query['efb'])) {
+            $agm = 'undefined';
+            $efb = 'undefined';
+            if (isset($this->request->query['agm'])) {
+                $agm = 'agm';
+            }
+            if (isset($this->request->query['efb'])) {
+                $efb = 'efb';
+            }
+            $conditions['Product.truck'] = array($agm, $efb);
+        }
+        if (isset($this->request->query['short']) || isset($this->request->query['tight'])) {
+            $short = 'undefined';
+            $tight = 'undefined';
+            if (isset($this->request->query['short'])) {
+                $short = 'низкий';
+            }
+            if (isset($this->request->query['tight'])) {
+                $tight = 'узкий';
+            }
+            $conditions['Product.f3'] = array($short, $tight);
+        }
+        if (isset($this->request->query['axis']) && !empty($this->request->query['axis'])) {
+            $conditions['Product.axis'] = $this->request->query['axis'];
+        }
+        if (isset($this->request->query['color']) && !empty($this->request->query['color'])) {
+            $conditions['Product.color'] = $this->request->query['color'];
+        }
+        if (isset($this->request->query['brand_id']) && strpos($this->request->query['brand_id'], ',') !== false) {
+            $conditions['Product.brand_id'] = explode(',', $this->request->query['brand_id']);
+        }
+
 		return $conditions;
 	}
 	private function _filter_akb_params($conditions = array()) {
@@ -669,7 +848,7 @@ class AkbController extends AppController {
 				$akb_current[$current] = $current;
 			}
 		}
-		natsort($akb_f1);
+		natsort($akb_current);
 		$temp_cond = $conditions;
 		unset($temp_cond['Product.f1']);
 		$products = $this->Product->find('all', array('conditions' => $temp_cond, 'fields' => 'DISTINCT Product.f1', 'order' => 'Product.f1'));
@@ -680,7 +859,7 @@ class AkbController extends AppController {
                 $akb_f1[$f1] = $f1;
 			}
 		}		
-		natsort($akb_current);
+		natsort($akb_f1);
 		$temp_cond = $conditions;
 		unset($temp_cond['Product.length']);
 		$products = $this->Product->find('all', array('conditions' => $temp_cond, 'fields' => 'DISTINCT Product.length', 'order' => 'Product.length'));

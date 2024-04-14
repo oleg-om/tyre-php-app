@@ -20,7 +20,6 @@ echo $this->element('currency');
 <?php if ($view == 'brands') { ?>
 <div class="selection">
 	<?php
-
 		foreach ($all_brands as $i => $item) {
 			if ($i > 0 && $i % 4 == 0) {
 				echo '<div class="clear"></div>';
@@ -96,7 +95,6 @@ echo $this->element('currency');
 				<td><?php echo $item['Product']['in_stock'] ? '.' : ''; ?></td>
 			</tr>
 			<?php $i ++; } ?>
-            <?php if (empty($products)) { echo 'По Вашему запросу ничего не найдено'; } ?>
 		</table>
         <?php } ?>
         <?php if ($mode == 'block') { ?>
@@ -167,8 +165,9 @@ echo $this->element('currency');
                         <?php $i ++; } ?>
                 </div>
             </div>
-            <?php if (empty($products)) { echo 'По Вашему запросу ничего не найдено'; } ?>
+
         <?php } ?>
+        <?php if (empty($products)) { echo '<p>По Вашему запросу ничего не найдено</p>'; } ?>
         <!--LIST MODE START-->
         <?php if ($mode == 'list') { ?>
             <?php echo $this->element('akb_list_view'); ?>

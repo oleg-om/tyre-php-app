@@ -722,7 +722,7 @@ input {
   float: left;
   color: #828282;
   font-size: 12px;
-  padding-top: 7px;
+  /*padding-top: 7px;*/
   margin-bottom: 3px;
 }
 #CarViewForm .item .item-inner .name {
@@ -4234,6 +4234,25 @@ table.withlines {
   background-color: #fff;
   top: 3px;
   left: 3px;
+}
+.checkbox__container-reverse {
+  padding-left: 0;
+  width: 90px;
+}
+.checkbox__container-reverse .checkmark {
+  right: 0;
+  left: auto;
+}
+.checkbox__container input:checked ~ .checkmark__akb:after {
+  background-image: url('/img/icons/plus.png');
+  background-size: contain;
+  background-repeat: no-repeat;
+  top: -2px;
+  right: -2px;
+  bottom: -2px;
+  left: -2px;
+  width: 24px;
+  height: 24px;
 }
 
 .is-loading .list-view__item, .is-loading .boxList {

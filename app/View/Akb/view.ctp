@@ -46,7 +46,7 @@
 				</tr>
 				<tr>
 					<th>Высота</th>
-					<td><?php echo $product['Product']['height']; ?></td>
+					<td><?php echo $product['Product']['height'].' '.$product['Product']['f3']; ?></td>
 				</tr>
 				<tr>
 					<th>Тип</th>

@@ -3246,7 +3246,7 @@ class ImportController extends AppController {
                                     $total_rows ++;
                                     $brand_id = null;
                                     $model_id = null;
-                                    $auto_text = trim($data->sheets[0]['cells'][$i][1]);
+                                    $auto_text = mb_strtolower(trim($data->sheets[0]['cells'][$i][1]));
                                     $auto = 'cars';
 
                                     if ($auto_text == 'грузовой') {
@@ -3497,7 +3497,7 @@ class ImportController extends AppController {
                                                         'material' => $country,
                                                         'color' => $manufacturing_technology,
                                                         'price_with_exchange' => $price_with_exchange,
-                                                        'type' => $is_short,
+                                                        'f3' => $is_short,
                                                         'truck' => $start_stop,
                                                         'axis' => $warranty,
                                                         'auto' => $auto,

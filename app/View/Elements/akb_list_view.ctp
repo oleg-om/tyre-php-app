@@ -34,7 +34,7 @@
                     </tr>
                     <tr>
                         <th>Габариты (мм)</th>
-                        <td><?php echo $item['Product']['length'].' x '.$item['Product']['width'].' x '.$item['Product']['height'].' '.$item['Product']['type']; ?></td>
+                        <td><?php echo $item['Product']['length'].' x '.$item['Product']['width'].' x '.$item['Product']['height'].' '.$item['Product']['f3']; ?></td>
                     </tr>
                     <tr>
                         <th>(длина, ширина, высота)</th>

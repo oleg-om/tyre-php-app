@@ -17,23 +17,18 @@ if (empty($placeholder)) {
 if (empty($options)) {
     $options = array();
 }
+
 foreach ($options as $index => $option) {
-    $letter = mb_substr($option, 0, 1, "UTF-8");
-    $output[] = array('label' => $option, 'value' => $index);
+    $output[] = array('label' => $add_prefix.$option, 'value' => $index);
 }
 $query = '';
-if (isset($query) && $query != '') {
-    if (!in_array(array('label' => $query, 'value' => intval($query)), $output)) {
-        $output[] = array('label' => $query, 'value' => $query);
-    }
-}
 
 if (isset($this->request->query[$name])) {
     $query = $this->request->query[$name];
 }
-if (isset($query) && $query != '' && !empty($auto_add_options)) {
+if (isset($query) && $query !== '' && isset($auto_add_options)) {
     if (!in_array(array('label' => $options_prefix.$query.$options_postfix, 'value' => intval($query)), $output)) {
-        $output[] = array('label' => $options_prefix.$query.$options_postfix, 'value' => $query);
+        $output[] = array('label' => $add_prefix.$options_prefix.$query.$options_postfix, 'value' => $query);
         usort($output, function($a, $b) {
             return $a['value'] - $b['value'];
         });
@@ -93,7 +88,7 @@ if ($query !== '') {
         <?php } ?>
         <div class="inp">
             <?php
-                echo $this->Form->input($query, array('id' => $id, 'name' => $id, 'type' => 'select', 'label' => false, 'options' => $usual_options, 'empty' => array('' => $placeholder_name), 'div' => false, 'class' => 'sel-style1 filter-select'));
+                echo $this->Form->input($name, array('type' => 'select', 'id' => $id, 'name' => $id, 'label' => false, 'options' => $usual_options, 'empty' => array('' => $placeholder), 'div' => false, 'class' => 'sel-style1 filter-select'));
             ?>
         </div>
     </div>

@@ -1,6 +1,6 @@
 <div class="<?php if (empty($modification_slug)) { echo 'd-none'; } else { echo 'car__sizes car__sizes-wheels'; } ?>">
     <div class="car__sizes__wrap">
-        <div class="car__sizes__info">121
+        <div class="car__sizes__info">
             <?php if (!empty($start_stop) && $start_stop == 1) { ?>
                 <div class="car__sizes__extra__text">
                     <?php echo 'На ваш автомобиль предусмотрена установка аккумуляторов с технологией Start-Stop' ;?>

@@ -35,27 +35,24 @@ $place_list = explode('|', $stock_places);
                     echo '<td>· ул. Шевякова (район авторынка), Vianor Tip-top</td>';
                 }
                 if ($i == 2) {
-                    echo '<td>· ул. Шевякова (район авторынка), Vianor Tip-top</td>';
-                }
-                if ($i == 3) {
                     echo '<td>· ул. Куль-обинское шоссе 1, MICHELIN</td>';
                 }
-                if ($i == 4) {
+                if ($i == 3) {
                     echo '<td>· АТП';
                 }
-                if ($i == 5) {
+                if ($i == 4) {
                     echo '<td>· ул. Вокзальное шоссе 36, шиномонтаж Таксо</td>';
                 }
-                if ($i == 6) {
+                if ($i == 5) {
                     echo '<td>· ул. Вокзальное шоссе 44, VIANOR</td>';
                 }
-                if ($i == 7) {
+                if ($i == 6) {
                     echo '<td>· ул. Чкалова 147А, VIANOR</td>';
                 }
-                if ($i == 8) {
+                if ($i == 7) {
                     echo '<td>· Таврида</td>';
                 }
-                if ($i == 9) {
+                if ($i == 8) {
                     echo '<td>· Грузовой склад</td>';
                 }
                 echo '<td class="tooltip-places-row-quantity">'.$place_quantity . ' шт.</td>';
