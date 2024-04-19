@@ -20,6 +20,9 @@ if (empty($value)) {
         ?>
         <div class="item-inner">
             <label class="checkbox__container checkbox__container-checkbox" for="<?php echo $index; ?>">
+                <?php if (isset($option['icon'])) { ?>
+                    <img src="<?php echo $option['icon']; ?>" class="checkbox__icon" />
+                <?php } ?>
                 <?php echo $option['label']; ?>
 
                 <input type="checkbox" name="<?php echo $index; ?>" id="<?php echo $index; ?>" value="1" <?php echo $option['checked']; ?> />

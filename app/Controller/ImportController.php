@@ -3272,6 +3272,10 @@ class ImportController extends AppController {
                                     $is_short = trim($data->sheets[0]['cells'][$i][4]);
                                     $manufacturing_technology = trim($data->sheets[0]['cells'][$i][5]);
                                     $start_stop = trim($data->sheets[0]['cells'][$i][6]);
+                                    $p1 = 0;
+                                    if (isset($data->sheets[0]['cells'][$i][6])) {
+                                        $p1 = 1;
+                                    }
                                     $warranty = trim($data->sheets[0]['cells'][$i][7]);
                                     $country = trim($data->sheets[0]['cells'][$i][8]);
                                     $size = trim($data->sheets[0]['cells'][$i][9]);
@@ -3501,6 +3505,7 @@ class ImportController extends AppController {
                                                         'truck' => $start_stop,
                                                         'axis' => $warranty,
                                                         'auto' => $auto,
+                                                        'p1' => $p1
 
                                                     );
                                                     $this->Product->create();

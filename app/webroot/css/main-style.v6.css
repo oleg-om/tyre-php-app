@@ -740,6 +740,9 @@ input {
   align-items: center;
   gap: 5px;
 }
+.filter-group .item .item-inner .inp-et .item-inner {
+  width: 100%;
+}
 .item-group {
   display: flex;
   justify-content: space-between;
@@ -749,6 +752,7 @@ input {
 .item-group .item-inner {
   width: 100%;
 }
+
 .filter-group .item-group .item-inner .name, .item-name {
   width: 100%;
 }
@@ -4146,7 +4150,7 @@ table.withlines {
 
 /* The container */
 .checkbox__container {
-  display: block;
+  display: flex;
   position: relative;
   padding-left: 27px;
   cursor: pointer;
@@ -4157,6 +4161,7 @@ table.withlines {
   -ms-user-select: none;
   user-select: none;
   margin-top: 5px;
+  white-space: nowrap;
 }
 
 /* Hide the browser's default checkbox */
@@ -4254,6 +4259,38 @@ table.withlines {
   width: 24px;
   height: 24px;
 }
+.checkbox__icon {
+  width: 20px;
+  height: 20px;
+  display: block;
+  margin-right: 4px;
+  margin-left: -2px;
+}
+.checkbox__container.small {
+  font-size: 13px;
+  padding-left: 22px;
+}
+.checkbox__container.small .checkmark {
+  height: 15px;
+  width: 15px;
+}
+.checkbox__container-radio.small .checkmark:after {
+  width: 10px;
+  height: 10px;
+  top: 2.5px;
+  left: 2.5px;
+}
+
+.checkbox__container.large {
+  line-height: 25px;
+}
+.checkbox__container.large .checkbox__icon {
+  width: 25px;
+  height: 25px;
+}
+.checkbox__container-radio.large .checkmark {
+  margin-top: 3.5px;
+}
 
 .is-loading .list-view__item, .is-loading .boxList {
   opacity: 0.5;
@@ -4275,4 +4312,10 @@ table.withlines {
 .filter-reset span, .filter-reset-car span {
   color: red;
   margin-left: 3px;
+}
+.item-inner-space-around .item-group .item-inner {
+  width: auto;
+}
+.item-inner-m-0 .checkbox__container {
+  margin: 0;
 }

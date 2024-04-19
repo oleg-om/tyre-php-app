@@ -69,6 +69,7 @@ if ($query !== '') {
         optionsSelectedText: 'опций выбрано',
         optionSelectedText: 'опция выбрана',
         noOptionsText: 'Опций не найдено',
+        selectAllText: 'Выбрать все',
         hideClearButton: <?php echo json_encode($hideClearButton); ?>,
         selectedValue: <?php echo json_encode(explode(',', $query)); ?>,
         disabled: !!'<?php if (!empty($disabled)) { echo true; } else { echo false; } ?>'

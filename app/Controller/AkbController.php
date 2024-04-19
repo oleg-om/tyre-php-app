@@ -192,8 +192,7 @@ class AkbController extends AppController {
         );
 
         if (isset($this->request->query['start_stop']) && $this->request->query['start_stop'] == 1) {
-            print_r('START');
-            $sort_orders['price_asc'] = array('BrandModel.full_title' => 'ASC');
+            $sort_orders['price_asc'] = array('Product.p1' => 'DESC', 'Product.price' => 'ASC');
         }
 
         $sort = 'price_asc';
@@ -252,8 +251,8 @@ class AkbController extends AppController {
         if (isset($this->request->query['brand_id']) && strpos($this->request->query['brand_id'], ',') !== false) {
             $conditions['Product.brand_id'] = explode(',', $this->request->query['brand_id']);
         }
-        if (isset($this->request->query['material']) && !empty($this->request->query['material'])) {
-            $conditions['Product.material'] = $this->request->query['material'];
+        if (isset($this->request->query['material']) && strpos($this->request->query['material'], ',') !== false) {
+            $conditions['Product.material'] = explode(',', $this->request->query['material']);
         }
         if (isset($this->request->query['f1']) && !empty($this->request->query['f1'])) {
             if ($this->request->query['f1'] === 'euro') {
@@ -297,7 +296,7 @@ class AkbController extends AppController {
 		if (count($conditions) > 4) {
 			$this->set('filter', $this->request->query);
 			$this->paginate['limit'] = 30;
-			$this->paginate['order'] = array('Product.price' => 'asc');
+            $this->paginate['order'] = $sort_orders[$sort];
 			$this->Product->bindModel(
 				array(
 					'belongsTo' => array(
@@ -526,8 +525,8 @@ class AkbController extends AppController {
 			if (isset($this->request->query['length']) && !empty($this->request->query['length'])) {
 				$conditions['Product.length'] = $this->request->query['length'];
 			}
-            if (isset($this->request->query['material']) && !empty($this->request->query['material'])) {
-                $conditions['Product.material'] = $this->request->query['material'];
+            if (isset($this->request->query['material']) && strpos($this->request->query['material'], ',') !== false) {
+                $conditions['Product.material'] = explode(',', $this->request->query['material']);
             }
 
             if (isset($this->request->query['f1']) && !empty($this->request->query['f1'])) {

@@ -1140,6 +1140,23 @@ class AppController extends Controller {
 
 		}
 
+        if (empty($disk_et)) {
+            $temp_cond = $conditions;
+            unset($temp_cond['Product.et']);
+            $products = $this->Product->find('all', array('conditions' => $temp_cond, 'fields' => 'DISTINCT Product.et', 'order' => 'Product.hub'));
+            $disk_et = array();
+            foreach ($products as $item) {
+                $et = number_format(floatval(str_replace(',', '.', $item['Product']['et'])), 1, '.', '');
+                if (!empty($et) && $et != '') {
+                    $et = str_replace('.0', '', $et);
+                    $disk_et[$et] = $et;
+                }
+            }
+            natsort($disk_et);
+            unset($disk_et[0]);
+
+        }
+
 		$temp_cond = $conditions;
 		$temp_cond['Product.in_stock'] = 1;
 		$in_stock = $this->Product->find('count', array('conditions' => $temp_cond));
@@ -1199,6 +1216,7 @@ class AppController extends Controller {
 			$this->set('materials', $materials);
 			$this->set('show_filter', 2);
 			$this->set('filter_brands', $brands);
+            $this->set('disk_et', $disk_et);
 		}
 		
 	}

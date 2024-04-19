@@ -5,7 +5,9 @@ if (empty($query)) {
 if (empty($value)) {
     $value = '';
 }
-
+if (empty($size)) {
+    $size = '';
+}
 ?>
 <?php if (!empty($label)) { ?>
 <span class="item-name"><?php echo $label; ?></span>
@@ -14,13 +16,24 @@ if (empty($value)) {
 <?php foreach ($options as $index => $option) { ?>
     <?php
     if (!empty($option['query'])) {
-        if ($this->request->query[$option['query']] == $index) {
-            $option['checked'] = 'checked';
+        if (isset($this->request->query[$option['query']])) {
+            if ($this->request->query[$option['query']] == $index) {
+                $option['checked'] = 'checked';
+            }
+        } else {
+            if (isset($default_value)) {
+                if ($default_value == $index) {
+                    $option['checked'] = 'checked';
+                }
+            }
         }
     }
     ?>
     <div class="item-inner">
-        <label class="checkbox__container checkbox__container-radio" for="<?php echo $index; ?>">
+        <label class="checkbox__container checkbox__container-radio <?php echo $size; ?>" for="<?php echo $index; ?>">
+            <?php if (isset($option['icon'])) { ?>
+                <img src="<?php echo $option['icon']; ?>" class="checkbox__icon" />
+            <?php } ?>
             <?php echo $option['label']; ?>
 
             <input type="radio" name="<?php echo $option['query']; ?>" id="<?php echo $index; ?>" value="<?php echo $index; ?>" <?php echo $option['checked']; ?> />
