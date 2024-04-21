@@ -540,7 +540,7 @@ class TyresController extends AppController {
                     list($size_1, $size_2) = explode('/', $size_12);
                     $filter = array('size1' => $size_1, 'size2' => $size_2, 'size3' => $size_3, 'season' => $this->request->query['season']);
                     // redirect with sizes
-                    $car_search_query = array('modification' => $modification_slug, 'size1' => $filter['size1'], 'size2' => $filter['size2'], 'size3' => $filter['size3'], 'season' => $filter['season'], 'diameter' => 'R'.$size_3);
+                    $car_search_query = array('modification' => $modification_slug, 'size1' => $filter['size1'], 'size2' => $filter['size2'], 'size3' => $filter['size3'], 'season' => $filter['season'], 'diameter' => 'R'.$size_3, 'in_stock' => 2);
                     $this->redirect(array('controller' => 'tyres', 'action' => 'index', '?' => $car_search_query));
                 }
             }

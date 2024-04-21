@@ -10,7 +10,7 @@
                 $diameters = explode('|', $car_sizes['CarTyres']['diameters']);
                 foreach ($diameters as $diameter) { ?>
                     <?php
-                    $diameter_filter = array('modification' => $modification_slug, 'diameter' => $diameter, 'season' => $season);
+                    $diameter_filter = array('modification' => $modification_slug, 'diameter' => $diameter, 'season' => $season, 'in_stock' => $this->request->query['in_stock']);
                     $diameter_class = $diameter == 'R' . $size3 ? 'active-diameter' : '';
 
                     echo $this->Html->link($diameter, array('controller' => 'tyres', 'action' => 'index', '?' => $diameter_filter), array('escape' => false, 'class' => $diameter_class)); ?>

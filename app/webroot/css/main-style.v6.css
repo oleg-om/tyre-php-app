@@ -717,6 +717,7 @@ input {
 .filter-group .item .item-inner-et {
   display: flex;
   flex-direction: column;
+  padding-bottom: 0;
 }
 .filter-group .item .item-inner .name, .item-name {
   float: left;

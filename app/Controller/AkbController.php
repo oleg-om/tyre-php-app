@@ -251,7 +251,7 @@ class AkbController extends AppController {
         if (isset($this->request->query['brand_id']) && strpos($this->request->query['brand_id'], ',') !== false) {
             $conditions['Product.brand_id'] = explode(',', $this->request->query['brand_id']);
         }
-        if (isset($this->request->query['material'])) {
+        if (isset($this->request->query['material']) && !empty($this->request->query['material'])) {
             if (strpos($this->request->query['material'], ',') !== false) {
                 $conditions['Product.material'] = explode(',', $this->request->query['material']);
             } else {
@@ -529,7 +529,7 @@ class AkbController extends AppController {
 			if (isset($this->request->query['length']) && !empty($this->request->query['length'])) {
 				$conditions['Product.length'] = $this->request->query['length'];
 			}
-            if (isset($this->request->query['material'])) {
+            if (isset($this->request->query['material']) && !empty($this->request->query['material'])) {
                 if (strpos($this->request->query['material'], ',') !== false) {
                     $conditions['Product.material'] = explode(',', $this->request->query['material']);
                 } else {
