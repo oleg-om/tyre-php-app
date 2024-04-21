@@ -3,6 +3,7 @@
 <?php if (!empty($label)) { ?>
     <span class="item-name"><?php echo $label; ?></span>
 <?php } ?>
+<label class="name" for="f2">Полярность:</label>
 <div class="item-group">
     <?php
         if ($this->request->query['f2'] == 'right') {
@@ -14,7 +15,7 @@
     ?>
     <div class="item-inner">
         <label class="checkbox__container checkbox__container-radio" for="left">
-            Прямая
+            Прямая, L+
             <input type="radio" name="f2" id="left" value="left" <?php echo $is_left; ?> />
             <span class="checkmark checkmark__akb"></span>
         </label>
@@ -41,8 +42,8 @@
     </script>
 
     <div class="item-inner">
-        <label class="checkbox__container checkbox__container-radio checkbox__container-reverse" for="right">
-            Обратная
+        <label class="checkbox__container checkbox__container-radio" for="right">
+            Обратная, R+
             <input type="radio" name="f2" id="right" value="right" <?php echo $is_right; ?> />
             <span class="checkmark checkmark__akb"></span>
         </label>

@@ -266,7 +266,10 @@
                     </script>
                 </button>
                 <div class="item">
-                    <?php echo $this->element('custom_select', array('label' => 'Диаметр', 'placeholder' => 'Все', 'auto_add_options' => true, 'name' => 'size1', 'options' => $disk_size1, 'multiple' => false, 'search' => false, 'hideClearButton' => true)); ?>
+                    <div class="item-group">
+                    <?php echo $this->element('custom_select', array('label' => 'Диаметр обода', 'placeholder' => 'Все', 'auto_add_options' => true, 'name' => 'size1', 'options' => $disk_size1, 'multiple' => false, 'search' => false, 'hideClearButton' => true)); ?>
+                    <?php echo $this->element('custom_select', array('label' => 'Сверловка (PCD)', 'placeholder' => 'Все', 'auto_add_options' => true, 'name' => 'size2', 'options' => $disk_size2, 'multiple' => false, 'search' => false, 'hideClearButton' => true)); ?>
+                    </div>
                 </div>
                 <div class="item item-icon__disk">
                     <?php
@@ -276,7 +279,7 @@
                 </div>
                 <div class="item item2">
                     <div class="item-inner item-inner-et">
-                        <label class="name" for="ProductEtFrom">ET:</label>
+                        <label class="name" for="ProductEtFrom">Вылет (ET), мм:</label>
                         <div class="inp inp-et">
                             <?php echo $this->element('custom_select', array('add_prefix' => 'От: ', 'auto_add_options' => true, 'name' => 'et_from', 'placeholder' => 'От', 'options' => $disk_et, 'multiple' => false, 'search' => false)); ?>
                             <?php echo $this->element('custom_select', array('add_prefix' => 'До: ', 'auto_add_options' => true, 'name' => 'et_to', 'placeholder' => 'До', 'options' => $disk_et, 'multiple' => false, 'search' => false)); ?>
@@ -284,8 +287,7 @@
                         <div class="clear"></div>
                     </div>
                     <div class="item-group">
-                        <?php echo $this->element('custom_select', array('label' => 'PCD', 'placeholder' => 'Все', 'auto_add_options' => true, 'name' => 'size2', 'options' => $disk_size2, 'multiple' => false, 'search' => false, 'hideClearButton' => true)); ?>
-                        <?php echo $this->element('custom_select', array('label' => 'Ступица', 'placeholder' => 'Все', 'auto_add_options' => true, 'name' => 'hub', 'options' => $disk_hub, 'multiple' => false, 'search' => false, 'hideClearButton' => true)); ?>
+                        <?php echo $this->element('custom_select', array('label' => 'Диаметр ступицы, мм', 'placeholder' => 'Все', 'auto_add_options' => true, 'name' => 'hub', 'options' => $disk_hub, 'multiple' => false, 'search' => false, 'hideClearButton' => true)); ?>
                     </div>
                     <?php echo $this->element('custom_select', array('label' => 'Бренд', 'name' => 'brand_id', 'options' => $filter_brands, 'multiple' => true, 'search' => true)); ?>
                 </div>

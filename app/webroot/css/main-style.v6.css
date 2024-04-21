@@ -3822,9 +3822,9 @@ table.withlines {
   margin: 0 0 0 50px !important;
 }
 .list-view__img-col .prodImg {
-  height: 230px;
-  max-height: 230px;
-  max-width: 230px;
+  height: 270px;
+  max-height: 270px;
+  max-width: 270px;
   width: 100%;
   display: grid;
   margin: auto;
@@ -3951,7 +3951,7 @@ table.withlines {
   padding: 3px 0;
   max-width: 202px;
   width: calc(100% + 2px);
-  margin-top: -30px;
+  margin-top: 10px;
   margin-bottom: 10px;
   border: 1px solid #40b252;
   border-radius: 20px;
@@ -4240,10 +4240,6 @@ table.withlines {
   background-color: #fff;
   top: 3px;
   left: 3px;
-}
-.checkbox__container-reverse {
-  padding-left: 0;
-  width: 90px;
 }
 .checkbox__container-reverse .checkmark {
   right: 0;
