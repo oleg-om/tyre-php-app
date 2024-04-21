@@ -63,6 +63,18 @@
             }
             echo $image;
             ?>
+            <button type="reset" class="filter-reset-car" id="filter-reset-car" onclick="resetDisks()">Сбросить авто<span>x</span>
+                <script type="text/javascript">
+                    function resetDisks() {
+                        $.ajax({
+                            url: '/api/remove_session/car_modification_slug',
+                            success: function() {
+                                window.location = '<?php echo CONST_DEFAULT_DISKS_PATH;?>';
+                            }
+                        });
+                    }
+                </script>
+            </button>
         </div>
     </div>
 </div>

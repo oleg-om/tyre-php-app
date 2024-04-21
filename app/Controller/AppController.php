@@ -1036,6 +1036,19 @@ class AppController extends Controller {
 		$this->loadModel('Brand');
 		$brands = $this->Brand->find('list', array('order' => array('Brand.title' => 'asc'), 'conditions' => $brand_conditions, 'fields' => array('Brand.id', 'Brand.title')));
 
+        function mb_ucfirst($string, $encoding)
+        {
+            $firstChar = mb_substr($string, 0, 1, $encoding);
+            $then = mb_substr($string, 1, null, $encoding);
+            return mb_strtoupper($firstChar, $encoding) . $then;
+        }
+
+        foreach($brands as $index => $brand) {
+            $brands[$index] = mb_ucfirst(mb_strtolower($brand, 'UTF-8'), 'UTF-8');
+        }
+
+//        $brands = array_map('strtolower', $yourArray);
+
 		if ($this->request->is('ajax')) {
 			$result = array(
 				'size1' => $tyre_size1,

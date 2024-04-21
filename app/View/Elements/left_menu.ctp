@@ -257,6 +257,14 @@
                 echo $this->Form->create('Product', array('type' => 'get', 'id' => 'filter-form', 'url' => $url));
                 echo $this->Form->hidden('size3');
                 ?>
+                <button type="reset" class="filter-reset" id="filter-reset" onclick="resetDisksFilter()">Сбросить
+                    фильтр<span>x</span>
+                    <script type="text/javascript">
+                        function resetDisksFilter() {
+                            window.location = '/disks';
+                        }
+                    </script>
+                </button>
                 <div class="item">
                     <?php echo $this->element('custom_select', array('label' => 'Диаметр', 'placeholder' => 'Все', 'auto_add_options' => true, 'name' => 'size1', 'options' => $disk_size1, 'multiple' => false, 'search' => false, 'hideClearButton' => true)); ?>
                 </div>
@@ -268,7 +276,7 @@
                 </div>
                 <div class="item item2">
                     <div class="item-inner item-inner-et">
-                        <label class="name" for="ProductEtFrom">ET</label>
+                        <label class="name" for="ProductEtFrom">ET:</label>
                         <div class="inp inp-et">
                             <?php echo $this->element('custom_select', array('add_prefix' => 'От: ', 'auto_add_options' => true, 'name' => 'et_from', 'placeholder' => 'От', 'options' => $disk_et, 'multiple' => false, 'search' => false)); ?>
                             <?php echo $this->element('custom_select', array('add_prefix' => 'До: ', 'auto_add_options' => true, 'name' => 'et_to', 'placeholder' => 'До', 'options' => $disk_et, 'multiple' => false, 'search' => false)); ?>
@@ -295,6 +303,9 @@
                 </div>
                 <?php
                 echo $this->Form->hidden('modification', array('value' => $modification_slug));
+                echo $this->Form->hidden('diameter', array('value' => $this->request->query['diameter']));
+                echo $this->Form->hidden('hub_from', array('value' => $this->request->query['hub_from']));
+                echo $this->Form->hidden('hub_to', array('value' => $this->request->query['hub_to']));
                 ?>
                 <div class="item">
                     <button class="bt-style1 bt-style1-disks">ПОИСК</button>
