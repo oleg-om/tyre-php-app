@@ -261,7 +261,7 @@
                     фильтр<span>x</span>
                     <script type="text/javascript">
                         function resetDisksFilter() {
-                            window.location = '/disks';
+                            window.location = '/disks?in_stock=2';
                         }
                     </script>
                 </button>
