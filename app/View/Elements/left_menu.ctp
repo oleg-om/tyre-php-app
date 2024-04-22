@@ -244,6 +244,14 @@
             <div class="filter-group disks" id="filter" style="<?php if (!empty($modification_slug)) {
                 echo 'display: none';
             } ?>">
+                <button type="reset" class="filter-reset" id="filter-reset" onclick="resetDisksFilter()">Сбросить
+                    фильтр<span>x</span>
+                    <script type="text/javascript">
+                        function resetDisksFilter() {
+                            window.location = '/disks?in_stock=2';
+                        }
+                    </script>
+                </button>
                 <?php
                 if (!isset($this->request->data['Product']['in_stock'])) {
                     if ($settings['SHOW_DISKS_BAR'] == 1) {
@@ -257,14 +265,6 @@
                 echo $this->Form->create('Product', array('type' => 'get', 'id' => 'filter-form', 'url' => $url));
                 echo $this->Form->hidden('size3');
                 ?>
-                <button type="reset" class="filter-reset" id="filter-reset" onclick="resetDisksFilter()">Сбросить
-                    фильтр<span>x</span>
-                    <script type="text/javascript">
-                        function resetDisksFilter() {
-                            window.location = '/disks?in_stock=2';
-                        }
-                    </script>
-                </button>
                 <div class="item">
                     <div class="item-group">
                     <?php echo $this->element('custom_select', array('label' => 'Диаметр обода', 'placeholder' => 'Все', 'auto_add_options' => true, 'name' => 'size1', 'options' => $disk_size1, 'multiple' => false, 'search' => false, 'hideClearButton' => true)); ?>
