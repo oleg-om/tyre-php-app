@@ -42,7 +42,7 @@
                     </tr>
                     <tr>
                         <th>Страна-производитель</th>
-                        <td><?php echo $item['Product']['material'] ? $item['Product']['material'] : ''; ?></td>
+                        <td class="list-view__flag-cell"><?php echo $item['Product']['material'] ? $item['Product']['material'] : ''; ?> <?php echo $this->element('akb_flag', array('country' => $item['Product']['material'])); ?> </td>
                     </tr>
                 </table>
                 <span class="list-view__img-warranty">Гарантия:&nbsp;&nbsp;<strong><?php echo $item['Product']['axis']; ?></strong></span>

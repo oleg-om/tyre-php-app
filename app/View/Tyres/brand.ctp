@@ -20,7 +20,7 @@ $this->Paginator->options(array('url' => array('controller' => 'tyres', 'action'
 				<th>Бренд</th>
 				<th>Модель</th>
 				<th><img src="/img/season-all.png" alt="Сезон" title="Сезон" /></th>
-				<th><img src="/img/studded.png" alt="Шипы" title="Шипы" /></th>
+				<th><img src="/img/icons/studded.png" alt="Шипы" title="Шипы" /></th>
 				<th>Тип</th>
 				<th width="50">Цена</th>
 				<th>Кол.</th>
@@ -45,7 +45,7 @@ $this->Paginator->options(array('url' => array('controller' => 'tyres', 'action'
 				<td><?php echo h($brand['Brand']['title']); ?></td>
 				<td><?php echo h($models[$item['Product']['model_id']]); ?></td>
 				<td><img src="/img/season-<?php echo $season; ?>.png" alt="<?php echo $seasons[$season]; ?>" title="<?php echo $seasons[$season]; ?>" /></td>
-				<td><?php if ($item['Product']['stud'] == 1) { ?><img src="/img/studded.png" alt="Шипованная" title="Шипованная" /><?php } ?></td>
+				<td><?php if ($item['Product']['stud'] == 1) { ?><img src="/img/icons/studded.png" alt="Шипованная" title="Шипованная" /><?php } ?></td>
 				<td><img src="/img/auto-<?php echo $item['Product']['auto']; ?>.png" alt="<?php echo $auto[$item['Product']['auto']]; ?>" title="<?php echo $auto[$item['Product']['auto']]; ?>" /></td>
 				<td>
 					<span class="productPrice"><?php //echo $this->Frontend->getPrice($item['Product']['price']); ?></span>

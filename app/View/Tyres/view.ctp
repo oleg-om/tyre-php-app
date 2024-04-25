@@ -26,7 +26,7 @@
 			}
 		?>
 		<div class="productSeason<?php if ($season=='winter') {echo '2';} elseif ($season=='all') {echo '3';}?>" title="<?php echo $seasons[$season];?>"><?php echo $seasons[$season];?></div>
-		<div class="stud"><?php echo $product['Product']['stud'] ? '<img src="/img/studded.png" alt="шипованная" />' : ''; ?></div>
+		<div class="stud"><?php echo $product['Product']['stud'] ? '<img src="/img/icons/studded.png" alt="шипованная" />' : ''; ?></div>
 		<div class="clear"></div>
 		<div class="tableProd">
 			<table cellpadding="0" cellspacing="0">

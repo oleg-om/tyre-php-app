@@ -40,7 +40,7 @@
 					<td class="radius"><?php echo $item['Product']['size1'] . '/' . $item['Product']['size2'] . '&nbsp;R' . $item['Product']['size3']; ?></td>
 					<td><?php echo $current_auto == 'trucks' ? h($item['Product']['axis']) : h($item['Product']['f1'] . $item['Product']['f2']); ?></td>
 					<td><img src="/img/season-<?php echo $season; ?>.png" alt="<?php echo $seasons[$season]; ?>" title="<?php echo $seasons[$season]; ?>" /></td>
-					<td><?php if ($item['Product']['stud'] == 1) { ?><img src="/img/studded.png" alt="Шипованная" title="Шипованная" /><?php } ?></td>
+					<td><?php if ($item['Product']['stud'] == 1) { ?><img src="/img/icons/studded.png" alt="Шипованная" title="Шипованная" /><?php } ?></td>
 					<td><img src="/img/auto-<?php echo $item['Product']['auto']; ?>.png" alt="<?php echo $auto[$item['Product']['auto']]; ?>" title="<?php echo $auto[$item['Product']['auto']]; ?>" /></td>
 					<td><strong class="nowrap"><?php 
 						if ($this->Frontend->canShowTyrePrice($item['Product']['auto'], $item['Product']['not_show_price'])) {
@@ -68,7 +68,7 @@
 			<th>Бренд</th>
 			<th>Модель</th>
 			<th><img src="/img/season-all.png" alt="Сезон" title="Сезон" /></th>
-			<th><img src="/img/studded.png" alt="Шипы" title="Шипы" /></th>
+			<th><img src="/img/icons/studded.png" alt="Шипы" title="Шипы" /></th>
 			<th>Тип</th>
 			<th width="50">Цена</th>
 			<th>Кол.</th>
@@ -95,7 +95,7 @@
 				}
 			?>
 			<td><img src="/img/season-<?php echo $season; ?>.png" alt="<?php echo $seasons[$season]; ?>" title="<?php echo $seasons[$season]; ?>" /></td>
-			<td><?php if ($item['Product']['stud'] == 1) { ?><img src="/img/studded.png" alt="Шипованная" title="Шипованная" /><?php } ?></td>
+			<td><?php if ($item['Product']['stud'] == 1) { ?><img src="/img/icons/studded.png" alt="Шипованная" title="Шипованная" /><?php } ?></td>
 			<td><img src="/img/auto-<?php echo $item['Product']['auto']; ?>.png" alt="<?php echo $auto[$item['Product']['auto']]; ?>" title="<?php echo $auto[$item['Product']['auto']]; ?>" /></td>
 			<td>
 				<span class="productPrice"><?php
