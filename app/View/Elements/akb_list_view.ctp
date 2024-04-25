@@ -1,4 +1,4 @@
-<div class="list-view__grid">
+<div class="list-view__grid" id="product-section">
     <?php $i = 0; foreach ($products as $item) { ?>
         <div class="list-view__item akb">
             <div class="list-view__info-col">
@@ -33,23 +33,19 @@
                         <td><?php echo $item['Product']['current'].' A (EN)'; ?></td>
                     </tr>
                     <tr>
-                        <th>Габариты (мм)</th>
-                        <td><?php echo $item['Product']['length'].' x '.$item['Product']['width'].' x '.$item['Product']['height'].' '.$item['Product']['type']; ?></td>
-                    </tr>
-                    <tr>
-                        <th>(длина, ширина, высота)</th>
-                        <td></td>
+                        <th>Габариты (ДхШхВ)</th>
+                        <td><?php echo $item['Product']['length'].' x '.$item['Product']['width'].' x '.$item['Product']['height'].' '.$item['Product']['f3']; ?></td>
                     </tr>
                     <tr>
                         <th>Технология изготовления</th>
-                        <td><?php echo $item['Product']['color'] ? $item['Product']['color'] : ''; ?> <?php echo $item['Product']['sku'] ? '<strong>'.$item['Product']['sku'].'</strong>' : ''; ?></td>
+                        <td><?php echo $item['Product']['color'] ? $item['Product']['color'] : ''; ?> <?php echo $item['Product']['truck'] ? '<strong>'.$item['Product']['truck'].'</strong>' : ''; ?></td>
                     </tr>
                     <tr>
                         <th>Страна-производитель</th>
                         <td><?php echo $item['Product']['material'] ? $item['Product']['material'] : ''; ?></td>
                     </tr>
                 </table>
-
+                <span class="list-view__img-warranty">Гарантия:&nbsp;&nbsp;<strong><?php echo $item['Product']['axis']; ?></strong></span>
             </div>
             <div class="list-view__img-col">
                 <div class="prodImg floatl">
@@ -72,6 +68,7 @@
                                 if (!empty($filename)) {
                                     $imgBig = $this->Backend->thumbnail(array('id' => $id, 'filename' => $filename, 'path' => $pathAkb, 'width' => 800, 'height' => 600, 'crop' => false, 'folder' => false));
                                     $imgSmall = $this->Backend->thumbnail(array('id' => $id, 'filename' => $filename, 'path' => $pathAkb, 'width' => 220, 'height' => 220, 'crop' => false, 'folder' => false));
+
                                     echo $this->Html->link($this->Html->image($imgSmall, array('alt' => $brand['Brand']['title'] . ' ' . $item['BrandModel']['title'])), $imgBig, array('escape' => false, 'class' => 'lightbox', 'title' => $brand['Brand']['title'] . ' ' . $item['BrandModel']['title']));
                                 }
                                 else {
@@ -83,7 +80,6 @@
                         </tr>
                     </table>
                 </div>
-                <span class="list-view__img-warranty">Гарантия:&nbsp;&nbsp;<strong><?php echo $item['Product']['axis']; ?></strong></span>
             </div>
             <div class="list-view__price-col">
                 <div class="product__info-prices">

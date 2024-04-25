@@ -35,10 +35,11 @@ if (empty($current_season)) {
             </div>
 			<div id="nav" class="toggle__menu">
 				<ul>
+                    <?php $modification = $this->Session->read('car_modification_slug'); ?>
 					<li<?php if ($active_menu == 'home') { ?> class="activ"<?php } ?>><a href="/">Главная</a></li>
-					<li<?php if ($active_menu == 'tyres') { ?> class="activ"<?php } ?>><a href="/tyres<?php if (!empty($modification_slug) && $active_menu != 'tyres') { echo '?modification='.$modification_slug; } else { echo '?auto=&axis=&size1=205&size2=55&size3=16&season=&brand_id=&stud=0&in_stock4=0&in_stock=2&upr_all=1'; } ?>">Шины</a></li>
-					<li<?php if ($active_menu == 'disks') { ?> class="activ"<?php } ?>><a href="/disks<?php if (!empty($modification_slug) && $active_menu != 'disks') { echo '?modification='.$modification_slug; } else { echo '?size3=&size1=18&material=&et_from=&et_to=&size2=&hub=&brand_id=&in_stock4=0&in_stock=2'; } ?>">Диски</a></li>
-					<li<?php if ($active_menu == 'akb') { ?> class="activ"<?php } ?>><a href="/akb<?php if (!empty($modification_slug) && $active_menu != 'akb') { echo '?modification='.$modification_slug; } else { echo '?ah=60&current=&f1=&width=&length=&height=&brand_id='; } ?>">АКБ</a></li>
+					<li<?php if ($active_menu == 'tyres') { ?> class="activ"<?php } ?>><a href="/tyres<?php if (!empty($modification)) { echo '?modification='.$modification; } else { echo CONST_DEFAULT_TYRES_PATH; } ?>">Шины</a></li>
+					<li<?php if ($active_menu == 'disks') { ?> class="activ"<?php } ?>><a href="/disks<?php if (!empty($modification)) { echo '?modification='.$modification; } else { echo CONST_DEFAULT_DISKS_PATH; } ?>">Диски</a></li>
+					<li<?php if ($active_menu == 'akb') { ?> class="activ"<?php } ?>><a href="/akb<?php if (!empty($modification)) { echo '?modification='.$modification; } else { echo CONST_DEFAULT_AKB_PATH; } ?>">АКБ</a></li>
 					<li<?php if ($active_menu == 'sales') { ?> class="activ"<?php } ?>><a href="/page-sales">Масла</a></li>
 					<li<?php if ($active_menu == 'selection') { ?> class="activ"<?php } ?>><a href="/selection">Подбор</a></li>
 					<li<?php if ($active_menu == 'stations') { ?> class="activ"<?php } ?>><a href="/page-stations">Сервис</a></li>

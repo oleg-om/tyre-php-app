@@ -15,8 +15,7 @@ $modes = array(
 );
 if ($akb_switch == true) {
     $modes = array(
-        'list' => '<span class="mode__brands">Бренды</span>',
-        'block' => '<img src="/img/block.gif" alt="блоками" />',
+        'list' => '<img src="/img/list.gif" alt="списком" />',
         'table' => '<img src="/img/table.gif" alt="таблицей" />'
     );
 }

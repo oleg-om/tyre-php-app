@@ -216,6 +216,9 @@ class AppController extends Controller {
 				define('CONST_' . $key, $value);
 			}
 		}
+        define('CONST_DEFAULT_TYRES_PATH', '?auto=&axis=&size1=205&size2=55&size3=16&season=&brand_id=&stud=0&in_stock4=0&in_stock=2&upr_all=1');
+        define('CONST_DEFAULT_DISKS_PATH', '?size3=&size1=18&material=&et_from=&et_to=&size2=&hub=&brand_id=&in_stock4=0&in_stock=2');
+        define('CONST_DEFAULT_AKB_PATH', '?ah_from=60&current=&f1=&width=&length=&height=&brand_id=');
 	}
 	private function setCurrencies() {
 		$currencies = Cache::read('currencies', 'long');
@@ -1033,6 +1036,19 @@ class AppController extends Controller {
 		$this->loadModel('Brand');
 		$brands = $this->Brand->find('list', array('order' => array('Brand.title' => 'asc'), 'conditions' => $brand_conditions, 'fields' => array('Brand.id', 'Brand.title')));
 
+        function mb_ucfirst($string, $encoding)
+        {
+            $firstChar = mb_substr($string, 0, 1, $encoding);
+            $then = mb_substr($string, 1, null, $encoding);
+            return mb_strtoupper($firstChar, $encoding) . $then;
+        }
+
+        foreach($brands as $index => $brand) {
+            $brands[$index] = mb_ucfirst(mb_strtolower($brand, 'UTF-8'), 'UTF-8');
+        }
+
+//        $brands = array_map('strtolower', $yourArray);
+
 		if ($this->request->is('ajax')) {
 			$result = array(
 				'size1' => $tyre_size1,
@@ -1062,7 +1078,6 @@ class AppController extends Controller {
 			$this->set('seasons', $this->Product->seasons);
 			$this->set('auto', $this->Product->auto);
 		}
-		
 	}
 	protected function _filter_disc_params($filter_conditions = null) {
 		$this->loadModel('Product');
@@ -1138,6 +1153,23 @@ class AppController extends Controller {
 
 		}
 
+        if (empty($disk_et)) {
+            $temp_cond = $conditions;
+            unset($temp_cond['Product.et']);
+            $products = $this->Product->find('all', array('conditions' => $temp_cond, 'fields' => 'DISTINCT Product.et', 'order' => 'Product.hub'));
+            $disk_et = array();
+            foreach ($products as $item) {
+                $et = number_format(floatval(str_replace(',', '.', $item['Product']['et'])), 1, '.', '');
+                if (!empty($et) && $et != '') {
+                    $et = str_replace('.0', '', $et);
+                    $disk_et[$et] = $et;
+                }
+            }
+            natsort($disk_et);
+            unset($disk_et[0]);
+
+        }
+
 		$temp_cond = $conditions;
 		$temp_cond['Product.in_stock'] = 1;
 		$in_stock = $this->Product->find('count', array('conditions' => $temp_cond));
@@ -1197,6 +1229,7 @@ class AppController extends Controller {
 			$this->set('materials', $materials);
 			$this->set('show_filter', 2);
 			$this->set('filter_brands', $brands);
+            $this->set('disk_et', $disk_et);
 		}
 		
 	}

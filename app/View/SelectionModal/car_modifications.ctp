@@ -52,8 +52,17 @@
             function setModification(title, slug) {
                 $("#CarModificationSlug").html(title);
                 $("#CarModificationSlug").attr('value', slug);
-                close_popup();
-                goToGoods(<?php echo $path; ?>, slug)
+
+                $.ajax({
+                    url: '/api/update_session/car_modification_slug/' + slug,
+                    success: function() {
+                        close_popup();
+                        goToGoods(<?php echo $path; ?>, slug);
+                    },
+                    failure: function() {
+                        close_popup();
+                    }
+                });
             }
 
             function backToYear() {

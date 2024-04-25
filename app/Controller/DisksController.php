@@ -1558,135 +1558,7 @@ endforeach;
 		$this->set('limit', $limit);
 
         // modification
-        $modification_slug = '';
-        if (isset($this->request->query['modification']) && !empty($this->request->query['modification'])) {
-            $modification_slug = $this->request->query['modification'];
-        }
-        if ($modification_slug) {
-            $diameter = $this->request->query['diameter'];
-
-            $this->loadModel('CarWheels');
-            $this->loadModel('CarBrand');
-            $this->loadModel('CarModel');
-            $this->loadModel('CarGeneration');
-            $this->loadModel('CarModification');
-
-            $car_modification = $this->CarModification->find('first', array('conditions' => array('CarModification.is_active' => 1, 'CarModification.slug' => $modification_slug)));
-            $car_generation = $this->CarGeneration->find('first', array('conditions' => array('CarGeneration.is_active' => 1, 'CarGeneration.slug' => $car_modification['CarModification']['generation_slug'])));
-            $car_model = $this->CarModel->find('first', array('conditions' => array('CarModel.is_active' => 1, 'CarModel.slug' => $car_generation['CarGeneration']['model_slug'])));
-            $car_brand = $this->CarBrand->find('first', array('conditions' => array('CarBrand.is_active' => 1, 'CarBrand.slug' => $car_model['CarModel']['brand_slug'])));
-
-            $this->set('car_modification', $car_modification);
-            $this->set('car_generation', $car_generation);
-            $this->set('car_model', $car_model);
-            $this->set('car_brand', $car_brand);
-            $this->set('modification_slug',$modification_slug);
-
-            $material = $this->request->query['material'];
-            $this->set('material', $material);
-
-//            if (!empty($diameter)) {
-//                $car_factory_sizes = $this->CarWheels->find('all', array('conditions' => array('CarWheels.modification_slug' => $modification_slug, 'CarWheels.factory' => 1 , 'CarWheels.front_axle_diameter' => str_replace('R', '', $diameter))));
-//                $car_tuning_sizes = $this->CarWheels->find('all', array('conditions' => array('CarWheels.modification_slug' => $modification_slug, 'CarWheels.factory' => 0, 'CarWheels.front_axle_diameter' => str_replace('R', '', $diameter))));
-//            } else {
-//                $car_factory_sizes = $this->CarWheels->find('all', array('conditions' => array('CarWheels.modification_slug' => $modification_slug, 'CarWheels.factory' => 1)));
-//                $car_tuning_sizes = $this->CarWheels->find('all', array('conditions' => array('CarWheels.modification_slug' => $modification_slug, 'CarWheels.factory' => 0)));
-//            }
-
-            $car_factory_sizes = $this->CarWheels->find('all', array('conditions' => array('CarWheels.modification_slug' => $modification_slug, 'CarWheels.factory' => 1)));
-
-            if (!empty($car_factory_sizes[0])) {
-                $factory_pcd = $car_factory_sizes[0]['CarWheels']['front_axle_pcd'];
-            }
-
-            $car_tuning_sizes = $this->CarWheels->find('all', array('conditions' => array('CarWheels.modification_slug' => $modification_slug, 'CarWheels.factory' => 0)));
-            if (!empty($factory_pcd)) {
-                $car_tuning_sizes = $this->CarWheels->find('all', array('conditions' => array('CarWheels.modification_slug' => $modification_slug, 'CarWheels.factory' => 0, 'CarWheels.front_axle_pcd' => $factory_pcd)));
-            }
-
-            $this->set('car_image', $car_generation['CarGeneration']['image_default']);
-
-            // get diameters
-            $car_diameters = array();
-            foreach ($car_factory_sizes as $car_size) {
-                $car_diameters[] = 'R'.$car_size['CarWheels']['front_axle_diameter'];
-            }
-            foreach ($car_tuning_sizes as $car_size) {
-                $car_diameters[] = 'R'.$car_size['CarWheels']['front_axle_diameter'];
-            }
-
-
-            $this->set('car_diameters', array_unique($car_diameters));
-
-//             if no sizes in query url use first factory size
-            if (empty($this->request->query['size1']) && empty($this->request->query['size2']) && empty($this->request->query['et_from'])
-                && empty($this->request->query['et_to']) && empty($this->request->query['hub_from']) && empty($diameter)
-            ) {
-
-                if (!empty($car_factory_sizes[0])) {
-                    $first_size = $car_factory_sizes[0];
-                } else {
-                    $first_size = $car_tuning_sizes[0];
-                }
-
-                // getDiskParams
-
-                $item = $first_size['CarWheels'];
-                $filter = array('size1' => $item['front_axle_diameter'], 'size2' => $item['front_axle_pn'].'x'.$item['front_axle_pcd'], 'et_from' => $item['front_axle_et_min'], 'et_to' => $item['front_axle_et_max'], 'hub_from' => strval($item['front_axle_co_min']), 'hub_to' => strval($item['front_axle_co_max']), 'in_stock4' => 0, 'in_stock' => 2, 'width_from' => $item['front_axle_width_min'], 'width_to' => $item['front_axle_width_max'], 'modification' => $item['modification_slug'], 'diameter' => 'R'.$item['front_axle_diameter'], 'material' => $material);
-
-                $this->set('car_factory_sizes', $car_factory_sizes);
-                $this->set('car_tuning_sizes', $car_tuning_sizes);
-
-                $this->redirect(array('controller' => 'disks', 'action' => 'index', '?' => $filter));
-            }
-
-            // if paginate with diameter
-            if (!empty($diameter)) {
-                function filterDiameters($val)
-                {
-                    return function($item) use ($val) {
-                        if (strpos('R'.$item['CarWheels']['front_axle_diameter'], $val) !== FALSE) {
-                            return 1;
-                        } else {
-                            return 0;
-                        }
-                    };
-                }
-
-                $filteredFactoryTyres = array_filter($car_factory_sizes, filterDiameters($diameter));
-                $filteredTuningTyres = array_filter($car_tuning_sizes, filterDiameters($diameter));
-
-                $this->set('car_factory_sizes', $filteredFactoryTyres);
-                $this->set('car_tuning_sizes', $filteredTuningTyres);
-
-
-
-                if (empty($this->request->query['size1']) && empty($this->request->query['size2']) && empty($this->request->query['et_from'])
-                    && empty($this->request->query['et_to']) && empty($this->request->query['hub_from'])) {
-
-                    if (!empty($filteredFactoryTyres)) {
-                        $first_size = array_values($filteredFactoryTyres)[0];
-                    } else {
-                        $first_size = array_values($filteredTuningTyres)[0];
-                    }
-
-                    // getDiskParams
-                    $item = $first_size['CarWheels'];
-                    $filter = array('size1' => $item['front_axle_diameter'], 'size2' => $item['front_axle_pn'].'x'.$item['front_axle_pcd'], 'et_from' => $item['front_axle_et_min'], 'et_to' => $item['front_axle_et_max'], 'hub_from' => strval($item['front_axle_co_min']), 'hub_to' => strval($item['front_axle_co_max']), 'in_stock4' => 0, 'in_stock' => 2, 'width_from' => $item['front_axle_width_min'], 'width_to' => $item['front_axle_width_max'], 'modification' => $item['modification_slug'], 'diameter' => $diameter, 'material' => $material);
-
-                    // redirect with sizes
-                    $this->redirect(array('controller' => 'disks', 'action' => 'index', '?' => $filter));
-                }
-
-
-            }
-
-
-
-            $this->set('size1', $this->request->query['size1']);
-            $this->set('size2', $this->request->query['size2']);
-            $this->set('size3', $this->request->query['size3']);
-        }
+        $this->setModification();
 
 		/*
 		if($this->sett_var('SHOW_DISKS_IMG_TOVAR')==1):
@@ -1739,7 +1611,7 @@ endforeach;
 		}
 		$this->request->data['Product']['mode'] = $mode;
 		$this->set('mode', $mode);
-		if (isset($this->request->query['brand_id']) && !empty($this->request->query['brand_id'])) {
+		if (isset($this->request->query['brand_id']) && !empty($this->request->query['brand_id']) && strpos($this->request->query['brand_id'], ',') === false) {
 			if (!is_array($this->request->query['brand_id'])) {
 				$brand_id = intval($this->request->query['brand_id']);
 				if ($brand_id != 0) {
@@ -1758,6 +1630,10 @@ endforeach;
 				}
 			}
 		}
+
+        if (isset($this->request->query['brand_id']) && strpos($this->request->query['brand_id'], ',') !== false) {
+            $conditions['Product.brand_id'] = explode(',', $this->request->query['brand_id']);
+        }
 		
 		$product_conditions = $conditions = $this->get_conditions($conditions);
 		
@@ -1989,6 +1865,7 @@ endforeach;
 		}
 		$this->set('mode', $mode);
 		$sort = 'price_asc';
+
 		if (isset($this->request->query['sort']) && in_array($this->request->query['sort'], array('name', 'price_asc', 'price_desc'))) {
 			$sort = $this->request->query['sort'];
 		}
@@ -2006,6 +1883,9 @@ endforeach;
 				'name' => array('BrandModel.full_title' => 'ASC'),
 			);
 		}
+
+        // modification
+        $this->setModification();
 	
 		$this->loadModel('Brand');
 		if ($brand = $this->Brand->find('first', array('conditions' => array('Brand.is_active' => 1, 'Brand.category_id' => 2, 'Brand.slug' => $slug)))) {
@@ -2565,4 +2445,131 @@ endforeach;
 		$this->set('new', $new);
 		$this->set('popular', $popular);
 	}
+
+    function setModification() {
+        $modification_slug = '';
+        if ($this->Session->check('car_modification_slug')) {
+            $modification_slug = $this->Session->read('car_modification_slug');
+        }
+        if (isset($this->request->query['modification']) && !empty($this->request->query['modification'])) {
+            $modification_slug = $this->request->query['modification'];
+        }
+        if ($modification_slug) {
+            $diameter = $this->request->query['diameter'];
+
+            $this->loadModel('CarWheels');
+            $this->loadModel('CarBrand');
+            $this->loadModel('CarModel');
+            $this->loadModel('CarGeneration');
+            $this->loadModel('CarModification');
+
+            $car_modification = $this->CarModification->find('first', array('conditions' => array('CarModification.is_active' => 1, 'CarModification.slug' => $modification_slug)));
+            $car_generation = $this->CarGeneration->find('first', array('conditions' => array('CarGeneration.is_active' => 1, 'CarGeneration.slug' => $car_modification['CarModification']['generation_slug'])));
+            $car_model = $this->CarModel->find('first', array('conditions' => array('CarModel.is_active' => 1, 'CarModel.slug' => $car_generation['CarGeneration']['model_slug'])));
+            $car_brand = $this->CarBrand->find('first', array('conditions' => array('CarBrand.is_active' => 1, 'CarBrand.slug' => $car_model['CarModel']['brand_slug'])));
+
+            $this->set('car_modification', $car_modification);
+            $this->set('car_generation', $car_generation);
+            $this->set('car_model', $car_model);
+            $this->set('car_brand', $car_brand);
+            $this->set('modification_slug',$modification_slug);
+
+            $material = $this->request->query['material'];
+            $this->set('material', $material);
+
+            $car_factory_sizes = $this->CarWheels->find('all', array('conditions' => array('CarWheels.modification_slug' => $modification_slug, 'CarWheels.factory' => 1)));
+
+            if (!empty($car_factory_sizes[0])) {
+                $factory_pcd = $car_factory_sizes[0]['CarWheels']['front_axle_pcd'];
+            }
+
+            $car_tuning_sizes = $this->CarWheels->find('all', array('conditions' => array('CarWheels.modification_slug' => $modification_slug, 'CarWheels.factory' => 0)));
+            if (!empty($factory_pcd)) {
+                $car_tuning_sizes = $this->CarWheels->find('all', array('conditions' => array('CarWheels.modification_slug' => $modification_slug, 'CarWheels.factory' => 0, 'CarWheels.front_axle_pcd' => $factory_pcd)));
+            }
+
+            $this->set('car_image', $car_generation['CarGeneration']['image_default']);
+
+            // get diameters
+            $car_diameters = array();
+            foreach ($car_factory_sizes as $car_size) {
+                $car_diameters[] = 'R'.$car_size['CarWheels']['front_axle_diameter'];
+            }
+            foreach ($car_tuning_sizes as $car_size) {
+                $car_diameters[] = 'R'.$car_size['CarWheels']['front_axle_diameter'];
+            }
+
+
+            $this->set('car_diameters', array_unique($car_diameters));
+
+//             if no sizes in query url use first factory size
+            if (empty($this->request->query['size1']) && empty($this->request->query['size2']) && empty($this->request->query['et_from'])
+                && empty($this->request->query['et_to']) && empty($this->request->query['hub_from']) && empty($diameter)
+            ) {
+
+                if (!empty($car_factory_sizes[0])) {
+                    $first_size = $car_factory_sizes[0];
+                } else {
+                    $first_size = $car_tuning_sizes[0];
+                }
+
+                // getDiskParams
+
+                $item = $first_size['CarWheels'];
+                $filter = array('size1' => $item['front_axle_diameter'], 'size2' => $item['front_axle_pn'].'x'.$item['front_axle_pcd'], 'et_from' => $item['front_axle_et_min'], 'et_to' => $item['front_axle_et_max'], 'hub_from' => strval($item['front_axle_co_min']), 'hub_to' => strval($item['front_axle_co_max']), 'in_stock4' => 0, 'in_stock' => 2, 'width_from' => $item['front_axle_width_min'], 'width_to' => $item['front_axle_width_max'], 'modification' => $item['modification_slug'], 'diameter' => 'R'.$item['front_axle_diameter'], 'material' => $material);
+
+                $this->set('car_factory_sizes', $car_factory_sizes);
+                $this->set('car_tuning_sizes', $car_tuning_sizes);
+
+                $this->redirect(array('controller' => 'disks', 'action' => 'index', '?' => $filter));
+            }
+
+            // if paginate with diameter
+            if (!empty($diameter)) {
+                function filterDiameters($val)
+                {
+                    return function($item) use ($val) {
+                        if (strpos('R'.$item['CarWheels']['front_axle_diameter'], $val) !== FALSE) {
+                            return 1;
+                        } else {
+                            return 0;
+                        }
+                    };
+                }
+
+                $filteredFactoryTyres = array_filter($car_factory_sizes, filterDiameters($diameter));
+                $filteredTuningTyres = array_filter($car_tuning_sizes, filterDiameters($diameter));
+
+                $this->set('car_factory_sizes', $filteredFactoryTyres);
+                $this->set('car_tuning_sizes', $filteredTuningTyres);
+
+
+
+                if (empty($this->request->query['size1']) && empty($this->request->query['size2']) && empty($this->request->query['et_from'])
+                    && empty($this->request->query['et_to']) && empty($this->request->query['hub_from'])) {
+
+                    if (!empty($filteredFactoryTyres)) {
+                        $first_size = array_values($filteredFactoryTyres)[0];
+                    } else {
+                        $first_size = array_values($filteredTuningTyres)[0];
+                    }
+
+                    // getDiskParams
+                    $item = $first_size['CarWheels'];
+                    $filter = array('size1' => $item['front_axle_diameter'], 'size2' => $item['front_axle_pn'].'x'.$item['front_axle_pcd'], 'et_from' => $item['front_axle_et_min'], 'et_to' => $item['front_axle_et_max'], 'hub_from' => strval($item['front_axle_co_min']), 'hub_to' => strval($item['front_axle_co_max']), 'in_stock4' => 0, 'in_stock' => 2, 'width_from' => $item['front_axle_width_min'], 'width_to' => $item['front_axle_width_max'], 'modification' => $item['modification_slug'], 'diameter' => $diameter, 'material' => $material);
+
+                    // redirect with sizes
+                    $this->redirect(array('controller' => 'disks', 'action' => 'index', '?' => $filter));
+                }
+
+
+            }
+
+
+
+            $this->set('size1', $this->request->query['size1']);
+            $this->set('size2', $this->request->query['size2']);
+            $this->set('size3', $this->request->query['size3']);
+        }
+    }
 }

@@ -3246,7 +3246,7 @@ class ImportController extends AppController {
                                     $total_rows ++;
                                     $brand_id = null;
                                     $model_id = null;
-                                    $auto_text = trim($data->sheets[0]['cells'][$i][1]);
+                                    $auto_text = mb_strtolower(trim($data->sheets[0]['cells'][$i][1]));
                                     $auto = 'cars';
 
                                     if ($auto_text == 'грузовой') {
@@ -3272,6 +3272,10 @@ class ImportController extends AppController {
                                     $is_short = trim($data->sheets[0]['cells'][$i][4]);
                                     $manufacturing_technology = trim($data->sheets[0]['cells'][$i][5]);
                                     $start_stop = trim($data->sheets[0]['cells'][$i][6]);
+                                    $p1 = 0;
+                                    if (isset($data->sheets[0]['cells'][$i][6])) {
+                                        $p1 = 1;
+                                    }
                                     $warranty = trim($data->sheets[0]['cells'][$i][7]);
                                     $country = trim($data->sheets[0]['cells'][$i][8]);
                                     $size = trim($data->sheets[0]['cells'][$i][9]);
@@ -3497,10 +3501,11 @@ class ImportController extends AppController {
                                                         'material' => $country,
                                                         'color' => $manufacturing_technology,
                                                         'price_with_exchange' => $price_with_exchange,
-                                                        'type' => $is_short,
-                                                        'sku' => $start_stop,
+                                                        'f3' => $is_short,
+                                                        'truck' => $start_stop,
                                                         'axis' => $warranty,
                                                         'auto' => $auto,
+                                                        'p1' => $p1
 
                                                     );
                                                     $this->Product->create();

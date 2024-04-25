@@ -6,66 +6,7 @@
 <?php if ($mode == 'brands')
 echo '<p class="akb__promo"><img src="http://kerchshina.com/files/1/akb4.jpg" alt="" width="870" height="218" /></p>'
 ?>
-
-
-<div class="<?php if (empty($modification_slug)) { echo 'd-none'; } else { echo 'car__sizes car__sizes-wheels'; } ?>">
-    <div class="car__sizes__wrap">
-        <div class="car__sizes__info">
-
-                 <?php if (!empty($start_stop) && $start_stop == 1) { ?>
-            <div class="car__sizes__extra__text">
-                <?php echo 'На ваш автомобиль предусмотрена установка аккумуляторов с технологией Start-Stop' ;?>
-            </div>
-                 <?php } ?>
-
-            <?php if (!empty($car_factory_sizes)) { ?>
-                <div class="car__sizes__wrapper">
-                    <div class="car__sizes__title">Рекомендация автопроизводителя</div>
-                    <ul class="car__sizes__list">
-                        <?php
-                        foreach ($car_factory_sizes as $size) {
-                            $filter = $this->Frontend->getAkbParams($size);
-                            ?>
-                            <li>
-                                    <span class="<?php if ($filter['is_active'] == 1) { echo 'is_active'; }?>">
-                                        <?php if ($filter['is_active'] == 1) { echo '• '; }?><?php echo $this->Html->link($size['CarBatteries']['capacity_min'].'-'.$size['CarBatteries']['capacity_max'].' Ач, '.$size['CarBatteries']['polarity'].' полярность, '.$size['CarBatteries']['type_case'].', размер (ДхШхВ) '.$size['CarBatteries']['length_min'].'-'.$size['CarBatteries']['length_max'].'x'.$size['CarBatteries']['width_min'].'-'.$size['CarBatteries']['width_max'].'x'.$size['CarBatteries']['height_min'].'-'.$size['CarBatteries']['height_max'].' мм', array('controller' => 'akb', 'action' => 'index', '?' => $filter), array('escape' => false));?>
-                                    </span>
-                            </li>
-                        <?php } ?>
-                    </ul>
-
-                </div>
-            <?php } ?>
-
-            <?php if (!empty($car_tuning_sizes)) { ?>
-                <div class="car__sizes__wrapper">
-                    <div class="car__sizes__title">Варианты замены</div>
-                    <ul class="car__sizes__list">
-                        <?php
-                        foreach ($car_tuning_sizes as $size) {
-                            $filter = $this->Frontend->getAkbParams($size);
-                            ?>
-                            <li>
-                                    <span class="<?php if ($filter['is_active'] == 1) { echo 'is_active'; }?>">
-                                        <?php if ($filter['is_active'] == 1) { echo '• '; }?><?php echo $this->Html->link($size['CarBatteries']['capacity_min'].'-'.$size['CarBatteries']['capacity_max'].' Ач, '.$size['CarBatteries']['polarity'].' полярность, '.$size['CarBatteries']['type_case'].', размер (ДхШхВ) '.$size['CarBatteries']['length_min'].'-'.$size['CarBatteries']['length_max'].'x'.$size['CarBatteries']['width_min'].'-'.$size['CarBatteries']['width_max'].'x'.$size['CarBatteries']['height_min'].'-'.$size['CarBatteries']['height_max'].' мм', array('controller' => 'akb', 'action' => 'index', '?' => $filter), array('escape' => false));?>
-                                    </span>
-                            </li>
-                        <?php } ?>
-                    </ul>
-                </div>
-
-            <?php } ?>
-        </div>
-        <?php
-        $image = '';
-        if (!empty($car_image)) {
-            $image = $this->Html->image('car_generations/' . $car_image, array('alt' => $car_brand['CarBrand']['title']));
-        }
-        echo $image;
-        ?>
-    </div>
-</div>
-
+<?php echo $this->element('akb_car', array('modification_slug' => $modification_slug, 'start_stop' => $start_stop, 'car_factory_sizes' => $car_factory_sizes, 'car_tuning_sizes' => $car_tuning_sizes, 'car_image' => $car_image))?>
 
 <?php
 $url = array('controller' => 'akb', 'action' => 'index', '?' => $filter);
@@ -79,7 +20,6 @@ echo $this->element('currency');
 <?php if ($view == 'brands') { ?>
 <div class="selection">
 	<?php
-
 		foreach ($all_brands as $i => $item) {
 			if ($i > 0 && $i % 4 == 0) {
 				echo '<div class="clear"></div>';
@@ -155,7 +95,6 @@ echo $this->element('currency');
 				<td><?php echo $item['Product']['in_stock'] ? '.' : ''; ?></td>
 			</tr>
 			<?php $i ++; } ?>
-            <?php if (empty($products)) { echo 'По Вашему запросу ничего не найдено'; } ?>
 		</table>
         <?php } ?>
         <?php if ($mode == 'block') { ?>
@@ -226,8 +165,9 @@ echo $this->element('currency');
                         <?php $i ++; } ?>
                 </div>
             </div>
-            <?php if (empty($products)) { echo 'По Вашему запросу ничего не найдено'; } ?>
+
         <?php } ?>
+        <?php if (empty($products)) { echo '<p>По Вашему запросу ничего не найдено</p>'; } ?>
         <!--LIST MODE START-->
         <?php if ($mode == 'list') { ?>
             <?php echo $this->element('akb_list_view'); ?>

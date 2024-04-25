@@ -96,7 +96,7 @@ class AkbController extends AppController {
 	}
 	public function index() {
         $mode = 'list';
-        if (isset($this->request->query['mode']) && in_array($this->request->query['mode'], array('block', 'list', 'table'))) {
+        if (isset($this->request->query['mode']) && in_array($this->request->query['mode'], array('list', 'table'))) {
             $mode = $this->request->query['mode'];
         }
         $view = 'models';
@@ -109,56 +109,7 @@ class AkbController extends AppController {
 		$this->category_id = 3;
 
         // modification
-        $modification_slug = '';
-        if (isset($this->request->query['modification']) && !empty($this->request->query['modification'])) {
-            $modification_slug = $this->request->query['modification'];
-        }
-        if ($modification_slug) {
-
-            $this->loadModel('CarBatteries');
-            $this->loadModel('CarBrand');
-            $this->loadModel('CarModel');
-            $this->loadModel('CarGeneration');
-            $this->loadModel('CarModification');
-
-            $car_modification = $this->CarModification->find('first', array('conditions' => array('CarModification.is_active' => 1, 'CarModification.slug' => $modification_slug)));
-            $car_generation = $this->CarGeneration->find('first', array('conditions' => array('CarGeneration.is_active' => 1, 'CarGeneration.slug' => $car_modification['CarModification']['generation_slug'])));
-            $car_model = $this->CarModel->find('first', array('conditions' => array('CarModel.is_active' => 1, 'CarModel.slug' => $car_generation['CarGeneration']['model_slug'])));
-            $car_brand = $this->CarBrand->find('first', array('conditions' => array('CarBrand.is_active' => 1, 'CarBrand.slug' => $car_model['CarModel']['brand_slug'])));
-
-            $this->set('car_modification', $car_modification);
-            $this->set('car_generation', $car_generation);
-            $this->set('car_model', $car_model);
-            $this->set('car_brand', $car_brand);
-            $this->set('modification_slug',$modification_slug);
-
-            $factory_sizes = $this->CarBatteries->find('all', array('conditions' => array('CarBatteries.modification_slug' => $modification_slug, 'CarBatteries.is_factory' => 1)));
-            $tuning_sizes = $this->CarBatteries->find('all', array('conditions' => array('CarBatteries.modification_slug' => $modification_slug, 'CarBatteries.is_factory' => 0)));
-
-            $this->set('car_image', $car_generation['CarGeneration']['image_default']);
-
-            $this->set('car_factory_sizes', $factory_sizes);
-            $this->set('car_tuning_sizes', $tuning_sizes);
-            $this->set('start_stop', $this->request->query['start_stop']);
-
-            // if no sizes in query url use first factory size
-            if (empty($this->request->query['ah_from']) && empty($this->request->query['ah_to']) && empty($this->request->query['length_from'])) {
-
-                if (!empty($factory_sizes)) {
-                    $first_size = array_values($factory_sizes)[0];
-                } else {
-                    $first_size = array_values($tuning_sizes)[0];
-                }
-
-                // getAkbParams
-                $item = $first_size['CarBatteries'];
-                $filter = array('ah_from' => $item['capacity_min'], 'ah_to' => $item['capacity_max'], 'length_from' => $item['length_min'], 'length_to' => $item['length_max'], 'width_from' => $item['width_min'], 'width_to' => $item['width_max'], 'height_from' => $item['height_min'], 'height_to' => $item['height_max'], 'modification' => $item['modification_slug'], 'start_stop' => $item['start_stop']);
-
-                // redirect with sizes
-                $this->redirect(array('controller' => 'akb', 'action' => 'index', '?' => $filter));
-            }
-
-        }
+        $this->setModification();
 
         $conditions = array('Product.is_active' => 1, 'Product.category_id' => 3, 'Product.price > ' => 0, 'Product.stock_count > ' => 0);
 
@@ -213,6 +164,18 @@ class AkbController extends AppController {
                 $conditions['Product.height <='] = $ah_s;
             }
         }
+        if (isset($this->request->query['current_from']) && !empty($this->request->query['current_from'])) {
+            $ah_s = floatval(str_replace(',', '.', $this->request->query['current_from']));
+            if ($ah_s > 0) {
+                $conditions['Product.current >='] = $ah_s;
+            }
+        }
+        if (isset($this->request->query['current_to']) && !empty($this->request->query['current_to'])) {
+            $ah_s = floatval(str_replace(',', '.', $this->request->query['current_to']));
+            if ($ah_s > 0) {
+                $conditions['Product.current <='] = $ah_s;
+            }
+        }
 
 
         $this->loadModel('Brand');
@@ -227,6 +190,10 @@ class AkbController extends AppController {
             'price_desc' => array('Product.price' => 'DESC'),
             'name' => array('BrandModel.full_title' => 'ASC'),
         );
+
+        if (isset($this->request->query['start_stop']) && $this->request->query['start_stop'] == 1) {
+            $sort_orders['price_asc'] = array('Product.p1' => 'DESC', 'Product.price' => 'ASC');
+        }
 
         $sort = 'price_asc';
         if (isset($this->request->query['sort']) && in_array($this->request->query['sort'], array('name', 'price_asc', 'price_desc'))) {
@@ -245,7 +212,7 @@ class AkbController extends AppController {
             false
         );
 //		$conditions = array('Product.is_active' => 1, 'Product.category_id' => 3, 'Product.price > ' => 0, 'Product.stock_count > ' => 0);
-		if (isset($this->request->query['brand_id']) && !empty($this->request->query['brand_id'])) {
+		if (isset($this->request->query['brand_id']) && !empty($this->request->query['brand_id'] && strpos($this->request->query['brand_id'], ',') === false)) {
 			$brand_id = intval($this->request->query['brand_id']);
 			if ($brand_id != 0) {
 				$this->loadModel('Brand');
@@ -266,9 +233,6 @@ class AkbController extends AppController {
 		if (isset($this->request->query['ah']) && !empty($this->request->query['ah'])) {
 			$conditions['Product.ah'] = $this->request->query['ah'];
 		}
-		if (isset($this->request->query['f1']) && !empty($this->request->query['f1'])) {
-			$conditions['Product.f1'] = $this->request->query['f1'];
-		}
         if (isset($this->request->query['f2']) && !empty($this->request->query['f2'])) {
             $conditions['Product.f2'] = $this->request->query['f2'] === 'left' ? 'L+' : 'R+';
         }
@@ -284,6 +248,51 @@ class AkbController extends AppController {
 		if (isset($this->request->query['length']) && !empty($this->request->query['length'])) {
 			$conditions['Product.length'] = $this->request->query['length'];
 		}
+        if (isset($this->request->query['brand_id']) && strpos($this->request->query['brand_id'], ',') !== false) {
+            $conditions['Product.brand_id'] = explode(',', $this->request->query['brand_id']);
+        }
+        if (isset($this->request->query['material']) && !empty($this->request->query['material'])) {
+            if (strpos($this->request->query['material'], ',') !== false) {
+                $conditions['Product.material'] = explode(',', $this->request->query['material']);
+            } else {
+                $conditions['Product.material'] = $this->request->query['material'];
+            }
+        }
+        if (isset($this->request->query['f1']) && !empty($this->request->query['f1'])) {
+            if ($this->request->query['f1'] === 'euro') {
+                $conditions['Product.f1'] = array('Euro', 'Еuro');
+            } else {
+                $conditions['Product.f1'] = array('Asia', 'Аsia');
+            }
+        }
+        if (isset($this->request->query['agm']) || isset($this->request->query['efb'])) {
+            $agm = 'undefined';
+            $efb = 'undefined';
+            if (isset($this->request->query['agm'])) {
+                $agm = 'agm';
+            }
+            if (isset($this->request->query['efb'])) {
+                $efb = 'efb';
+            }
+            $conditions['Product.truck'] = array($agm, $efb);
+        }
+        if (isset($this->request->query['short']) || isset($this->request->query['tight'])) {
+            $short = 'undefined';
+            $tight = 'undefined';
+            if (isset($this->request->query['short'])) {
+                $short = 'низкий';
+            }
+            if (isset($this->request->query['tight'])) {
+                $tight = 'узкий';
+            }
+            $conditions['Product.f3'] = array($short, $tight);
+        }
+        if (isset($this->request->query['axis']) && !empty($this->request->query['axis'])) {
+            $conditions['Product.axis'] = $this->request->query['axis'];
+        }
+        if (isset($this->request->query['color']) && !empty($this->request->query['color'])) {
+            $conditions['Product.color'] = $this->request->query['color'];
+        }
 		$this->request->data['Product'] = $this->request->query;
 
 
@@ -291,7 +300,7 @@ class AkbController extends AppController {
 		if (count($conditions) > 4) {
 			$this->set('filter', $this->request->query);
 			$this->paginate['limit'] = 30;
-			$this->paginate['order'] = array('Product.price' => 'asc');
+            $this->paginate['order'] = $sort_orders[$sort];
 			$this->Product->bindModel(
 				array(
 					'belongsTo' => array(
@@ -336,18 +345,82 @@ class AkbController extends AppController {
 		$this->set('additional_js', array('lightbox'));
 		$this->set('additional_css', array('lightbox'));
         $this->set('show_filter', 3);
+        $this->set('akb_switch', true);
 	}
+
+    function setModification() {
+        // modification
+        if ($this->Session->check('car_modification_slug')) {
+            $modification_slug = $this->Session->read('car_modification_slug');
+        }
+        if (isset($this->request->query['modification']) && !empty($this->request->query['modification'])) {
+            $modification_slug = $this->request->query['modification'];
+        }
+        if ($modification_slug) {
+
+            $this->loadModel('CarBatteries');
+            $this->loadModel('CarBrand');
+            $this->loadModel('CarModel');
+            $this->loadModel('CarGeneration');
+            $this->loadModel('CarModification');
+
+            $car_modification = $this->CarModification->find('first', array('conditions' => array('CarModification.is_active' => 1, 'CarModification.slug' => $modification_slug)));
+            $car_generation = $this->CarGeneration->find('first', array('conditions' => array('CarGeneration.is_active' => 1, 'CarGeneration.slug' => $car_modification['CarModification']['generation_slug'])));
+            $car_model = $this->CarModel->find('first', array('conditions' => array('CarModel.is_active' => 1, 'CarModel.slug' => $car_generation['CarGeneration']['model_slug'])));
+            $car_brand = $this->CarBrand->find('first', array('conditions' => array('CarBrand.is_active' => 1, 'CarBrand.slug' => $car_model['CarModel']['brand_slug'])));
+
+            $this->set('car_modification', $car_modification);
+            $this->set('car_generation', $car_generation);
+            $this->set('car_model', $car_model);
+            $this->set('car_brand', $car_brand);
+            $this->set('modification_slug',$modification_slug);
+
+            $factory_sizes = $this->CarBatteries->find('all', array('conditions' => array('CarBatteries.modification_slug' => $modification_slug, 'CarBatteries.is_factory' => 1)));
+            $tuning_sizes = $this->CarBatteries->find('all', array('conditions' => array('CarBatteries.modification_slug' => $modification_slug, 'CarBatteries.is_factory' => 0)));
+
+            $this->set('car_image', $car_generation['CarGeneration']['image_default']);
+
+            $this->set('car_factory_sizes', $factory_sizes);
+            $this->set('car_tuning_sizes', $tuning_sizes);
+            $this->set('start_stop', $this->request->query['start_stop']);
+
+            // if no sizes in query url use first factory size
+            if (empty($this->request->query['ah_from']) && empty($this->request->query['ah_to']) && empty($this->request->query['length_from'])) {
+
+                if (!empty($factory_sizes)) {
+                    $first_size = array_values($factory_sizes)[0];
+                } else {
+                    $first_size = array_values($tuning_sizes)[0];
+                }
+
+                // getAkbParams
+                $item = $first_size['CarBatteries'];
+                $filter = array('ah_from' => $item['capacity_min'], 'ah_to' => $item['capacity_max'], 'length_from' => $item['length_min'], 'length_to' => $item['length_max'], 'width_from' => $item['width_min'], 'width_to' => $item['width_max'], 'height_from' => $item['height_min'], 'height_to' => $item['height_max'], 'modification' => $item['modification_slug'], 'start_stop' => $item['start_stop'], 'f1' => $item['type_case_id'] === 1 ? 'euro' : 'asia', 'f2' => $item['polarity_id'] === 1 ? 'left' : 'right');
+
+                // redirect with sizes
+                $this->redirect(array('controller' => 'akb', 'action' => 'index', '?' => $filter));
+            }
+
+        }
+    }
+
 	public function brand($slug) {
         $mode = 'list';
-        if (isset($this->request->query['mode']) && in_array($this->request->query['mode'], array('block', 'table'))) {
+        if (isset($this->request->query['mode']) && in_array($this->request->query['mode'], array('list', 'table'))) {
             $mode = $this->request->query['mode'];
         }
         $this->set('mode', $mode);
 
 		$this->category_id = 3;
+
 		$this->loadModel('Brand');
         $this->loadModel('BrandModel');
         $this->loadModel('Product');
+
+        // modification
+        $this->setModification();
+
+
 
         $sort = 'price_asc';
         if (isset($this->request->query['sort']) && in_array($this->request->query['sort'], array('name', 'price_asc', 'price_desc'))) {
@@ -402,12 +475,48 @@ class AkbController extends AppController {
 				$conditions['Product.model_id'] = $model_id;
 				$this->set('model_id', $model_id);
 			}
+
+            if (isset($this->request->query['ah_from']) && !empty($this->request->query['ah_from'])) {
+                $ah_s = floatval(str_replace(',', '.', $this->request->query['ah_from']));
+                if ($ah_s > 0) {
+                    $conditions['Product.ah >='] = $ah_s;
+                }
+            }
+            if (isset($this->request->query['ah_to']) && !empty($this->request->query['ah_to'])) {
+                $ah_s = floatval(str_replace(',', '.', $this->request->query['ah_to']));
+                if ($ah_s > 0) {
+                    $conditions['Product.ah <='] = $ah_s;
+                }
+            }
+
+            if (isset($this->request->query['height_from']) && !empty($this->request->query['height_from'])) {
+                $ah_s = floatval(str_replace(',', '.', $this->request->query['height_from']));
+                if ($ah_s > 0) {
+                    $conditions['Product.height >='] = $ah_s;
+                }
+            }
+            if (isset($this->request->query['height_to']) && !empty($this->request->query['height_to'])) {
+                $ah_s = floatval(str_replace(',', '.', $this->request->query['height_to']));
+                if ($ah_s > 0) {
+                    $conditions['Product.height <='] = $ah_s;
+                }
+            }
+
+            if (isset($this->request->query['current_from']) && !empty($this->request->query['current_from'])) {
+                $ah_s = floatval(str_replace(',', '.', $this->request->query['current_from']));
+                if ($ah_s > 0) {
+                    $conditions['Product.current >='] = $ah_s;
+                }
+            }
+            if (isset($this->request->query['current_to']) && !empty($this->request->query['current_to'])) {
+                $ah_s = floatval(str_replace(',', '.', $this->request->query['current_to']));
+                if ($ah_s > 0) {
+                    $conditions['Product.current <='] = $ah_s;
+                }
+            }
 			if (isset($this->request->query['ah']) && !empty($this->request->query['ah'])) {
 				$conditions['Product.ah'] = $this->request->query['ah'];
 			}
-			if (isset($this->request->query['f1']) && !empty($this->request->query['f1'])) {
-				$conditions['Product.f1'] = $this->request->query['f1'];
-			}			
 			if (isset($this->request->query['current']) && !empty($this->request->query['current'])) {
 				$conditions['Product.current'] = $this->request->query['current'];
 			}
@@ -420,6 +529,49 @@ class AkbController extends AppController {
 			if (isset($this->request->query['length']) && !empty($this->request->query['length'])) {
 				$conditions['Product.length'] = $this->request->query['length'];
 			}
+            if (isset($this->request->query['material']) && !empty($this->request->query['material'])) {
+                if (strpos($this->request->query['material'], ',') !== false) {
+                    $conditions['Product.material'] = explode(',', $this->request->query['material']);
+                } else {
+                    $conditions['Product.material'] = $this->request->query['material'];
+                }
+            }
+
+            if (isset($this->request->query['f1']) && !empty($this->request->query['f1'])) {
+                if ($this->request->query['f1'] === 'euro') {
+                    $conditions['Product.f1'] = array('Euro', 'Еuro');
+                } else {
+                    $conditions['Product.f1'] = array('Asia', 'Аsia');
+                }
+            }
+            if (isset($this->request->query['agm']) || isset($this->request->query['efb'])) {
+                $agm = 'undefined';
+                $efb = 'undefined';
+                if (isset($this->request->query['agm'])) {
+                    $agm = 'agm';
+                }
+                if (isset($this->request->query['efb'])) {
+                    $efb = 'efb';
+                }
+                $conditions['Product.truck'] = array($agm, $efb);
+            }
+            if (isset($this->request->query['short']) || isset($this->request->query['tight'])) {
+                $short = 'undefined';
+                $tight = 'undefined';
+                if (isset($this->request->query['short'])) {
+                    $short = 'низкий';
+                }
+                if (isset($this->request->query['tight'])) {
+                    $tight = 'узкий';
+                }
+                $conditions['Product.f3'] = array($short, $tight);
+            }
+            if (isset($this->request->query['axis']) && !empty($this->request->query['axis'])) {
+                $conditions['Product.axis'] = $this->request->query['axis'];
+            }
+            if (isset($this->request->query['color']) && !empty($this->request->query['color'])) {
+                $conditions['Product.color'] = $this->request->query['color'];
+            }
 			$this->request->data['Product'] = $this->request->query;
             $this->request->data['Product']['mode'] = $mode;
 			$this->request->data['Product']['brand_id'] = $brand['Brand']['id'];
@@ -486,6 +638,7 @@ class AkbController extends AppController {
 			$this->set('active_menu', 'akb');
 			$this->set('additional_js', array('lightbox'));
 			$this->set('additional_css', array('lightbox'));
+            $this->set('akb_switch', true);
 		}
 		else {
 			$this->response->statusCode(404);
@@ -583,9 +736,6 @@ class AkbController extends AppController {
 		if (isset($this->request->query['ah']) && !empty($this->request->query['ah'])) {
 			$conditions['Product.ah'] = $this->request->query['ah'];
 		}
-		if (isset($this->request->query['f1']) && !empty($this->request->query['f1'])) {
-			$conditions['Product.f1'] = $this->request->query['f1'];
-		}
 		if (isset($this->request->query['current']) && !empty($this->request->query['current'])) {
 			$conditions['Product.current'] = $this->request->query['current'];
 		}
@@ -598,6 +748,88 @@ class AkbController extends AppController {
 		if (isset($this->request->query['length']) && !empty($this->request->query['length'])) {
 			$conditions['Product.length'] = $this->request->query['length'];
 		}
+
+        if (isset($this->request->query['ah_from']) && !empty($this->request->query['ah_from'])) {
+            $ah_s = floatval(str_replace(',', '.', $this->request->query['ah_from']));
+            if ($ah_s > 0) {
+                $conditions['Product.ah >='] = $ah_s;
+            }
+        }
+        if (isset($this->request->query['ah_to']) && !empty($this->request->query['ah_to'])) {
+            $ah_s = floatval(str_replace(',', '.', $this->request->query['ah_to']));
+            if ($ah_s > 0) {
+                $conditions['Product.ah <='] = $ah_s;
+            }
+        }
+
+        if (isset($this->request->query['height_from']) && !empty($this->request->query['height_from'])) {
+            $ah_s = floatval(str_replace(',', '.', $this->request->query['height_from']));
+            if ($ah_s > 0) {
+                $conditions['Product.height >='] = $ah_s;
+            }
+        }
+        if (isset($this->request->query['height_to']) && !empty($this->request->query['height_to'])) {
+            $ah_s = floatval(str_replace(',', '.', $this->request->query['height_to']));
+            if ($ah_s > 0) {
+                $conditions['Product.height <='] = $ah_s;
+            }
+        }
+
+        if (isset($this->request->query['current_from']) && !empty($this->request->query['current_from'])) {
+            $ah_s = floatval(str_replace(',', '.', $this->request->query['current_from']));
+            if ($ah_s > 0) {
+                $conditions['Product.current >='] = $ah_s;
+            }
+        }
+        if (isset($this->request->query['current_to']) && !empty($this->request->query['current_to'])) {
+            $ah_s = floatval(str_replace(',', '.', $this->request->query['current_to']));
+            if ($ah_s > 0) {
+                $conditions['Product.current <='] = $ah_s;
+            }
+        }
+        if (isset($this->request->query['material']) && !empty($this->request->query['material'])) {
+            $conditions['Product.material'] = $this->request->query['material'];
+        }
+
+        if (isset($this->request->query['f1']) && !empty($this->request->query['f1'])) {
+            if ($this->request->query['f1'] === 'euro') {
+                $conditions['Product.f1'] = array('Euro', 'Еuro');
+            } else {
+                $conditions['Product.f1'] = array('Asia', 'Аsia');
+            }
+        }
+        if (isset($this->request->query['agm']) || isset($this->request->query['efb'])) {
+            $agm = 'undefined';
+            $efb = 'undefined';
+            if (isset($this->request->query['agm'])) {
+                $agm = 'agm';
+            }
+            if (isset($this->request->query['efb'])) {
+                $efb = 'efb';
+            }
+            $conditions['Product.truck'] = array($agm, $efb);
+        }
+        if (isset($this->request->query['short']) || isset($this->request->query['tight'])) {
+            $short = 'undefined';
+            $tight = 'undefined';
+            if (isset($this->request->query['short'])) {
+                $short = 'низкий';
+            }
+            if (isset($this->request->query['tight'])) {
+                $tight = 'узкий';
+            }
+            $conditions['Product.f3'] = array($short, $tight);
+        }
+        if (isset($this->request->query['axis']) && !empty($this->request->query['axis'])) {
+            $conditions['Product.axis'] = $this->request->query['axis'];
+        }
+        if (isset($this->request->query['color']) && !empty($this->request->query['color'])) {
+            $conditions['Product.color'] = $this->request->query['color'];
+        }
+        if (isset($this->request->query['brand_id']) && strpos($this->request->query['brand_id'], ',') !== false) {
+            $conditions['Product.brand_id'] = explode(',', $this->request->query['brand_id']);
+        }
+
 		return $conditions;
 	}
 	private function _filter_akb_params($conditions = array()) {
@@ -623,7 +855,7 @@ class AkbController extends AppController {
 				$akb_current[$current] = $current;
 			}
 		}
-		natsort($akb_f1);
+		natsort($akb_current);
 		$temp_cond = $conditions;
 		unset($temp_cond['Product.f1']);
 		$products = $this->Product->find('all', array('conditions' => $temp_cond, 'fields' => 'DISTINCT Product.f1', 'order' => 'Product.f1'));
@@ -634,7 +866,7 @@ class AkbController extends AppController {
                 $akb_f1[$f1] = $f1;
 			}
 		}		
-		natsort($akb_current);
+		natsort($akb_f1);
 		$temp_cond = $conditions;
 		unset($temp_cond['Product.length']);
 		$products = $this->Product->find('all', array('conditions' => $temp_cond, 'fields' => 'DISTINCT Product.length', 'order' => 'Product.length'));
@@ -657,6 +889,39 @@ class AkbController extends AppController {
 			}
 		}
 		natsort($akb_width);
+        $temp_cond = $conditions;
+        unset($temp_cond['Product.material']);
+        $products = $this->Product->find('all', array('conditions' => $temp_cond, 'fields' => 'DISTINCT Product.material', 'order' => 'Product.material'));
+        $akb_country = array();
+        foreach ($products as $item) {
+            $country = $item['Product']['material'];
+            if (!empty($country)) {
+                $akb_country[$country] = $country;
+            }
+        }
+        natsort($akb_country);
+        $temp_cond = $conditions;
+        unset($temp_cond['Product.color']);
+        $products = $this->Product->find('all', array('conditions' => $temp_cond, 'fields' => 'DISTINCT Product.color', 'order' => 'Product.color'));
+        $akb_technology = array();
+        foreach ($products as $item) {
+            $technology = $item['Product']['color'];
+            if (!empty($technology)) {
+                $akb_technology[$technology] = $technology;
+            }
+        }
+        natsort($akb_technology);
+        $temp_cond = $conditions;
+        unset($temp_cond['Product.axis']);
+        $products = $this->Product->find('all', array('conditions' => $temp_cond, 'fields' => 'DISTINCT Product.axis', 'order' => 'Product.axis'));
+        $akb_warranty = array();
+        foreach ($products as $item) {
+            $warranty = $item['Product']['axis'];
+            if (!empty($warranty)) {
+                $akb_warranty[$warranty] = $warranty;
+            }
+        }
+        natsort($akb_warranty);
 		$temp_cond = $conditions;
 		unset($temp_cond['Product.height']);
 		$products = $this->Product->find('all', array('conditions' => $temp_cond, 'fields' => 'DISTINCT Product.height', 'order' => 'Product.height'));
@@ -678,7 +943,30 @@ class AkbController extends AppController {
 		$brand_conditions['Brand.id'] = $brand_ids;
 		$this->loadModel('Brand');
 		$brands = $this->Brand->find('list', array('order' => array('Brand.title' => 'asc'), 'conditions' => $brand_conditions, 'fields' => array('Brand.id', 'Brand.title')));
-		if ($this->request->is('ajax')) {
+
+        // get auto
+        if (empty($auto)) {
+            //print_r($conditions);
+            $temp_cond = $conditions;
+            foreach ($temp_cond as $i => $cond) {
+                if (is_array($cond) && isset($cond['or']) && isset($cond['or'][0]['BrandModel.auto'])) {
+                    unset($temp_cond[$i]);
+                    break;
+                }
+            }
+
+            $products = $this->Product->find('all', array('conditions' => $temp_cond, 'fields' => 'DISTINCT(IF(BrandModel.auto IS NULL,Product.auto,BrandModel.auto)) AS auto', 'order' => 'Product.auto'));
+            $auto = array();
+            foreach ($products as $item) {
+                if (isset($this->Product->auto[$item[0]['auto']])) {
+                    $auto[$item[0]['auto']] = $this->Product->auto[$item[0]['auto']];
+                }
+            }
+            //print_r($auto);
+        }
+        // get auto
+
+        if ($this->request->is('ajax')) {
 			$result = array(
 				'ah' => $akb_ah,
 				'current' => $akb_current,
@@ -699,6 +987,10 @@ class AkbController extends AppController {
 			$this->set('akb_f1', $akb_f1);
 			$this->set('show_filter', 3);
 			$this->set('filter_brands', $brands);
+            $this->set('filter_auto', $auto);
+            $this->set('akb_country', $akb_country);
+            $this->set('akb_technology', $akb_technology);
+            $this->set('akb_warranty', $akb_warranty);
 		}
 	}
 }
