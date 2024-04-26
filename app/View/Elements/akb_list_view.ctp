@@ -24,7 +24,16 @@
                     </tr>
                     <tr>
                         <th>Полярность</th>
-                        <td class="position-relative"><?php echo $item['Product']['f2'] == 'R+' ? 'Обратная' : 'Прямая'; ?>
+                        <td class="position-relative">
+                            <?php
+                            $polarity;
+                            if ($item['Product']['f2'] == 'R+') {
+                                $polarity = 'Обратная';
+                            } else {
+                                $polarity = 'Прямая';
+                            }
+                            echo $polarity;
+                            ?>
                             <?php echo $this->element('akb_polarity', array('polarity' => $item['Product']['f2'])); ?>
                         </td>
                     </tr>
