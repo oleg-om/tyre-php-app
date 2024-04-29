@@ -30,7 +30,7 @@
 		</div>
 		<?php } ?>
 		<?php if (!empty($model['Product'][0])) { ?>
-		<div class="stud"><?php echo $model['Product'][0]['stud'] ? '<img src="/img/studded.png" alt="шипованная" />' : ''; ?></div>
+		<div class="stud"><?php echo $model['Product'][0]['stud'] ? '<img src="/img/icons/studded.png" alt="шипованная" />' : ''; ?></div>
 		<?php } ?>
 		<div class="clear"></div>
 	</div>
@@ -84,7 +84,7 @@
 				<td class="desc-table"><?php echo h($product['f1'] . $product['f2']) . ' &ndash; ' .  $this->Frontend->getFF($product['f1'], $product['f2']); ?></td>
 				<td class="desc-table">
                     <div class="desc-icons">
-                        <?php echo $product['stud'] ? '<img src="/img/studded.png" alt="шипованная" />' : ''; ?>
+                        <?php echo $product['stud'] ? '<img src="/img/icons/studded.png" alt="шипованная" />' : ''; ?>
                         <?php echo $this->element('tyre_icons', array('product' => $product)); ?>
                     </div>
                 </td>

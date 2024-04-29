@@ -214,7 +214,7 @@
                     <?php echo $this->element('custom_select', array('label' => 'Бренд', 'name' => 'brand_id', 'options' => $filter_brands, 'multiple' => true, 'search' => true)); ?>
 
                     <?php
-                    $extra_options = array('run_flat' => array('label' => 'RunFlat'), 'stud' => array('label' => 'Шипованная', 'icon' => '/img/studded.png'));
+                    $extra_options = array('run_flat' => array('label' => 'RunFlat', 'icon' => '/img/icons/runflat.png'), 'stud' => array('label' => 'Шипованная', 'icon' => '/img/icons/studded.png'));
                     echo $this->element('custom_checkbox', array('options' => $extra_options));
                     ?>
                     <?php

@@ -24,7 +24,16 @@
                     </tr>
                     <tr>
                         <th>Полярность</th>
-                        <td class="position-relative"><?php echo $item['Product']['f2'] == 'R+' ? 'Обратная' : 'Прямая'; ?>
+                        <td class="position-relative">
+                            <?php
+                            $polarity;
+                            if ($item['Product']['f2'] == 'R+') {
+                                $polarity = 'Обратная';
+                            } else {
+                                $polarity = 'Прямая';
+                            }
+                            echo $polarity;
+                            ?>
                             <?php echo $this->element('akb_polarity', array('polarity' => $item['Product']['f2'])); ?>
                         </td>
                     </tr>
@@ -42,7 +51,7 @@
                     </tr>
                     <tr>
                         <th>Страна-производитель</th>
-                        <td><?php echo $item['Product']['material'] ? $item['Product']['material'] : ''; ?></td>
+                        <td class="list-view__flag-cell"><?php echo $item['Product']['material'] ? $item['Product']['material'] : ''; ?> <?php echo $this->element('akb_flag', array('country' => $item['Product']['material'])); ?> </td>
                     </tr>
                 </table>
                 <span class="list-view__img-warranty">Гарантия:&nbsp;&nbsp;<strong><?php echo $item['Product']['axis']; ?></strong></span>

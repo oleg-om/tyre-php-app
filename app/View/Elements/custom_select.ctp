@@ -120,6 +120,13 @@ if ($query !== '') {
     function setLoading() {
         $('#product-section').addClass('is-loading');
     }
+    $('<?php echo '#'.$id; ?>').on('beforeClose', removeMultipleFilterFromLocalStorage);
+    function removeMultipleFilterFromLocalStorage() {
+        var multipleFilter = localStorage.getItem('ks-last-multiple-filter');
+        if (multipleFilter) {
+            localStorage.removeItem('ks-last-multiple-filter');
+        }
+    }
 </script>
 
 <script type="text/javascript">

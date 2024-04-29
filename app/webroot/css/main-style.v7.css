@@ -1633,6 +1633,30 @@ h3.title-tyres a:hover {
 .desc-table, .desc-col {
   display: none;
 }
+.desc-table .desc-icons {
+  position: relative;
+}
+.desc-table .desc-icons .tyre__icons {
+  flex-direction: row;
+  position: relative;
+  gap: 10px;
+}
+.desc-table .desc-icons .tyre__icons .tyre__icon {
+  width: 20px;
+  height: 20px;
+  display: flex;
+}
+.desc-table .desc-icons .tyre__icons .tyre__icon img {
+  z-index: -1;
+}
+.desc-table .desc-icons .tyre__icons .tyre__icon-tyremount {
+  margin-left: 0;
+}
+.desc-table .desc-icons .tyre__icons .tyre__icon-tooltip {
+  left: 25px;
+  top: -5px;
+  z-index: 1;
+}
 .boxLeftInfo {
   margin-bottom: 15px;
 }
@@ -3958,6 +3982,19 @@ table.withlines {
   font-size: 12px;
   z-index: 1;
   align-self: center;
+}
+.list-view__flag-cell {
+  display: flex;
+  align-items: center;
+}
+.flag__icon {
+  width: 30px;
+  height: 20px;
+  display: inline-flex;
+  padding: 2px 0 2px 6px;
+}
+.flag__icon img {
+  border: 1px solid #cacaca;
 }
 .product__info__buy-group {
   display: flex;

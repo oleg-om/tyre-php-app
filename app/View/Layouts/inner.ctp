@@ -12,7 +12,7 @@ echo $this->Html->meta('description', $meta_description);
 <link href="http://fonts.googleapis.com/css?family=Open+Sans:400,700&subset=latin,cyrillic" rel="stylesheet" type="text/css">
 <link href="http://fonts.googleapis.com/css?family=Open+Sans+Condensed:300,700&subset=latin,cyrillic" rel="stylesheet" type="text/css">
 <?php
-	$css = array('main-style.v6', 'main-style-media.v6', 'virtual-select.min');
+	$css = array('main-style.v7', 'main-style-media.v7', 'virtual-select.min');
 	if (isset($additional_css)) {
 		$css = array_merge($css, $additional_css);
 	}

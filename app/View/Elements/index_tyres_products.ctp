@@ -45,7 +45,7 @@
 								<span class="productSeason<?php if ($item['Product']['season']=='winter') {echo '2';} elseif ($item['Product']['season']=='all') {echo '3';}?>" title="<?php echo $seasons[$item['Product']['season']];?>">
 									<?php echo $seasons[$item['Product']['season']];?>
 								</span>
-								<div class="stud"><?php echo $item['Product']['stud'] ? '<img src="/img/studded.png" alt="шипованная" />' : ''; ?></div>
+								<div class="stud"><?php echo $item['Product']['stud'] ? '<img src="/img/icons/studded.png" alt="шипованная" />' : ''; ?></div>
 							</h3>
 						</div>
 						<div class="prodImg floatl">
@@ -140,7 +140,7 @@
 									<td>
 										<div class="productSeason<?php if ($item['Product']['season']=='winter') {echo '2';} elseif ($item['Product']['season']=='all') {echo '3';}?>" title="<?php echo $seasons[$item['Product']['season']];?>"><?php echo $seasons[$item['Product']['season']];?></div>
 									</td>
-									<td><?php echo $item['Product']['stud'] ? '<img src="/img/studded.png" alt="шипованная" />' : ''; ?></td>
+									<td><?php echo $item['Product']['stud'] ? '<img src="/img/icons/studded.png" alt="шипованная" />' : ''; ?></td>
 									<td><strong><?php
 										if ($this->Frontend->canShowTyrePrice($item['Product']['auto'], $item['Product']['not_show_price'])) {
 											echo $this->Frontend->getPrice($item['Product']['price'], 'tyres');
@@ -182,7 +182,7 @@
 								echo $this->Html->link($item['BrandModel']['title'], array('controller' => 'tyres', 'action' => 'brand', 'slug' => $item['Brand']['slug'], '?' => $link_filter), array('escape' => false));
 							?></td>
 							<td><div class="productSeason<?php if ($item['Product']['season']=='winter') {echo '2';} elseif ($item['Product']['season']=='all') {echo '3';}?>" title="<?php echo $seasons[$item['Product']['season']];?>"><?php echo $seasons[$item['Product']['season']];?></div></td>
-							<td><?php echo $item['Product']['stud'] ? '<img src="/img/studded.png" alt="шипованная" />' : ''; ?></td>
+							<td><?php echo $item['Product']['stud'] ? '<img src="/img/icons/studded.png" alt="шипованная" />' : ''; ?></td>
 							<td><?php echo $this->Frontend->getStockCount($item['Product']['stock_count']); ?> шт.</td>
 							<td class="price"><strong><?php
 								if ($this->Frontend->canShowTyrePrice($item['Product']['auto'], $item['Product']['not_show_price'])) {
