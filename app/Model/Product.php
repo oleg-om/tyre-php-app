@@ -99,7 +99,13 @@ class Product extends AppModel {
 		if (isset($this->data[$this->name]['category_id']) && $this->data[$this->name]['category_id'] == 4) {
 			$this->files_path = IMAGES . 'tubes';
 		}
+
+        if (isset($this->data[$this->name]['category_id']) && $this->data[$this->name]['category_id'] == 3) {
+            $id = 'akb_images';
+        }
+
 		$folder = $this->files_path . DS . $id . DS;
+
 		if (!is_dir($folder)) {
 			mkdir($folder);
 			chmod($folder, 0777);
@@ -223,6 +229,41 @@ class Product extends AppModel {
 			rename($from, $to);
 			chmod($to, 0777);
 		}
+
+
+            $this->BrandModel = ClassRegistry::init('BrandModel');
+            $model_id = $this->data[$this->name]['model_id'];
+
+            $brand_model = $this->BrandModel->find('first', array('conditions' => array('BrandModel.id' => $model_id)));
+            $existing_file_names = explode('|', $brand_model['BrandModel']['extra_filenames']);
+
+            $file_names_array = array();
+
+            $new_file_params = intval($this->data[$this->name]['ah']).'-'.$this->data[$this->name]['f2'];
+            $new_file_path = $this->data[$this->name]['filename'];
+
+            if ($existing_file_names != '' && !empty($existing_file_names)) {
+                foreach ($existing_file_names as $key => $img) {
+                    list($ah_value, $f2_value) = explode(':', $img);
+                    if (!empty($f2_value)) {
+                        $file_names_array[$ah_value] = $f2_value;
+                    }
+                }
+            }
+            $file_names_array[$new_file_params] = $new_file_path;
+
+            foreach ($file_names_array as $params => $img) {
+                if (!empty($img)) {
+                    $file_names_array[$params] = $params.':'.$img;
+                }
+            }
+            $file_names_array = array_filter($file_names_array);
+
+            if (!empty($file_names_array)) {
+                $update_data = array('BrandModel' => array('id' => $model_id, 'extra_filenames' => implode('|', $file_names_array)));
+                $this->BrandModel->save($update_data, false);
+            }
+
 		Cache::delete('brands_1', 'long');
 		Cache::delete('brands_2', 'long');
 		Cache::delete('brands_3', 'long');
@@ -249,15 +290,15 @@ class Product extends AppModel {
 			}
 		}
 		$folder = $this->_getFolderById();
-		if ($dh = opendir($folder)) {
-			while ($file = readdir($dh)) {
-				if ($file != '.' && $file != '..') {
-					unlink($folder . $file);
-				}
-			}
-			closedir($dh);
-		}
-		rmdir($folder);
+//		if ($dh = opendir($folder)) {
+//			while ($file = readdir($dh)) {
+//				if ($file != '.' && $file != '..') {
+//					unlink($folder . $file);
+//				}
+//			}
+//			closedir($dh);
+//		}
+//		rmdir($folder);
 		Cache::delete('brands_1', 'long');
 		Cache::delete('brands_2', 'long');
 		Cache::delete('brands_3', 'long');

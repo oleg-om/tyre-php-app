@@ -303,12 +303,18 @@ class BackendHelper extends AppHelper {
 				'remove' => false,
 				'crop' => false,
 				'watermark' => null,
-				'quality' => 85
+				'quality' => 85,
+                'custom_id' => null
 			),
 			$options
 		);
 		if (isset($this->data[$this->options['model']][$fieldName]) && $this->data[$this->options['model']][$fieldName] != '') {
-			$out = $this->Html->div('item_div', $this->Html->image($this->thumbnail(array('filename' => $this->data[$this->options['model']][$fieldName], 'id' => $this->data[$this->options['model']]['id'], 'path' => $options['path'], 'width' => $options['width'], 'height' => $options['height'], 'folder' => $options['folder'], 'quality' => $options['quality'], 'watermark' => $options['watermark'], 'crop' => $options['crop']))));
+            if ($options['custom_id'] != null) {
+                $id = $options['custom_id'];
+            } else {
+                $id = $this->data[$this->options['model']]['id'];
+            }
+			$out = $this->Html->div('item_div', $this->Html->image($this->thumbnail(array('filename' => $this->data[$this->options['model']][$fieldName], 'id' => $id, 'path' => $options['path'], 'width' => $options['width'], 'height' => $options['height'], 'folder' => $options['folder'], 'quality' => $options['quality'], 'watermark' => $options['watermark'], 'crop' => $options['crop']))));
 			$out .= $this->Form->hidden($fieldName);
 			if ($options['remove'] != false) {
 				$unlink_options = array(
@@ -1301,6 +1307,7 @@ class BackendHelper extends AppHelper {
 		$thumbnail = new phpthumb;
 		if ($folder) {
 			$folder = (floor($id / 5000) + 1);
+
 			$thumbnail->src = IMAGES . $path . DS . $folder . DS . $id . DS . $filename;
 		}
 		else {
@@ -1516,5 +1523,20 @@ class BackendHelper extends AppHelper {
 		}
 		return $html;
 	}
+
+    public function getExtraImages($extra_filenames, $brand_model_id, $brand_id) {
+        print_r($extra_filenames);
+        if (!empty($extra_filenames) && !empty($brand_model_id) && !empty($brand_id)) {
+            $this->addHtml('<label for="extra_filenames">Дополнительные изображения:</label><br/>');
+            $extra_filenames = explode('|', $extra_filenames);
+
+            foreach ($extra_filenames as $key => $filename) {
+                list($params, $img) = explode(':', $filename);
+                list($ah, $f2) = explode('-', $params);
+                $this->addHtml('<a href="/admin/akb/list/Product.id:/Product.brand_id:'.$brand_id.'/Product.model_id:'.$brand_model_id.'/page:1">'.$ah.' ач. '.$f2.'</a><br/>');
+            }
+        }
+
+    }
 }
 ?>
