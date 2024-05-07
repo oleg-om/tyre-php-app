@@ -2506,16 +2506,35 @@ endforeach;
             if (empty($this->request->query['size1']) && empty($this->request->query['size2']) && empty($this->request->query['et_from'])
                 && empty($this->request->query['et_to']) && empty($this->request->query['hub_from']) && empty($diameter)
             ) {
+                // check count
+                $sizes = array($car_factory_sizes[0], $car_tuning_sizes[0], $car_factory_sizes[1], $car_tuning_sizes[1]);
+                $sizes_count = array();
 
-                if (!empty($car_factory_sizes[0])) {
-                    $first_size = $car_factory_sizes[0];
-                } else {
-                    $first_size = $car_tuning_sizes[0];
+                $this->Product->virtualFields['width_number'] = 'CONVERT(size3,DECIMAL(5,1))';
+                foreach ($sizes as $key => $size_item) {
+                    $item = $size_item['CarWheels'];
+                    $count_filter = array('Product.size1' => $item['front_axle_diameter']);
+                    $count_filter['Product.category_id'] = 2;
+                    $count_filter['or'] = 'Product.size2 LIKE "' . $item['front_axle_pn'] . 'x%/' . $item['front_axle_pcd'] . '"';
+                    $count_filter['Product.et >='] = $item['front_axle_et_min'];
+                    $count_filter['Product.et <='] = $item['front_axle_et_max'];
+                    $count_filter['Product.hub >='] = $item['front_axle_co_min'];
+                    $count_filter['Product.hub <='] = $item['front_axle_co_max'];
+                    $count_filter['Product.width_number >='] = $item['front_axle_width_min'];
+                    $count_filter['Product.width_number <='] = $item['front_axle_width_max'];
+
+                    $product_count = $this->Product->find('count', array('conditions' => $count_filter));
+                    $sizes_count[$key] = $product_count;
                 }
 
-                // getDiskParams
+                // get the highest count
+                $max_count = max($sizes_count);
 
-                $item = $first_size['CarWheels'];
+                // find the key of the product with the highest price
+                $product_key = array_search($max_count, $sizes_count);
+
+                $item = $sizes[$product_key]['CarWheels'];
+                //
                 $filter = array('size1' => $item['front_axle_diameter'], 'size2' => $item['front_axle_pn'].'x'.$item['front_axle_pcd'], 'et_from' => $item['front_axle_et_min'], 'et_to' => $item['front_axle_et_max'], 'hub_from' => strval($item['front_axle_co_min']), 'hub_to' => strval($item['front_axle_co_max']), 'in_stock4' => 0, 'in_stock' => 2, 'width_from' => $item['front_axle_width_min'], 'width_to' => $item['front_axle_width_max'], 'modification' => $item['modification_slug'], 'diameter' => 'R'.$item['front_axle_diameter'], 'material' => $material);
 
                 $this->set('car_factory_sizes', $car_factory_sizes);
