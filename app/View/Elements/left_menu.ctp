@@ -588,8 +588,6 @@
                 </form>
             </div>
             <script type="text/javascript">
-            < !-
-                    -
                     $(function () {
                         $('#sel_submit').click(function () {
                             if ($('#CarBrandSlug').val() == 0 || $('#CarBrandSlug').val() == '') {
@@ -597,8 +595,6 @@
                             }
                         });
                     });
-                //
-                -- >
             </script>
         <?php } elseif ($show_filter == 5) { ?>
             <div class="filter-group" id="filter" style="<?php if (!empty($modification_slug)) {
@@ -881,9 +877,6 @@
                     window.location = `${origin}/akb?modification=${mod}`;
                 }
             }
-
-            //
-            -- >
         </script>
         <?php if (CONST_SELECTION_WITH_MODALS == '1') { ?>
             <script type="text/javascript">
