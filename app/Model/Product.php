@@ -218,7 +218,7 @@ class Product extends AppModel {
 			$folder = $this->_getFolderById();
 			$from = TMP . $this->tmp_file;
 			$to = $folder . $this->tmp_name . '.' . $this->tmp_ext;
-			if ($dh = opendir($folder)) {
+			if ($dh = opendir($folder) && $this->id != 3) {
 				while ($file = readdir($dh)) {
 					if ($file != '.' && $file != '..') {
 						unlink($folder . $file);

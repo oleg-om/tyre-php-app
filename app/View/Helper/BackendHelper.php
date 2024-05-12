@@ -1525,7 +1525,6 @@ class BackendHelper extends AppHelper {
 	}
 
     public function getExtraImages($extra_filenames, $brand_model_id, $brand_id) {
-        print_r($extra_filenames);
         if (!empty($extra_filenames) && !empty($brand_model_id) && !empty($brand_id)) {
             $this->addHtml('<label for="extra_filenames">Дополнительные изображения:</label><br/>');
             $extra_filenames = explode('|', $extra_filenames);
