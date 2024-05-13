@@ -71,7 +71,7 @@ if ($query !== '') {
         noOptionsText: 'Опций не найдено',
         selectAllText: 'Выбрать все',
         hideClearButton: <?php echo json_encode($hideClearButton); ?>,
-        selectedValue: <?php echo json_encode(explode(',', $query)); ?>,
+        selectedValue: <?php echo json_encode(array_filter(explode(',', $query))); ?>,
         disabled: !!'<?php if (!empty($disabled)) { echo true; } else { echo false; } ?>'
     });
 </script>
@@ -98,29 +98,32 @@ if ($query !== '') {
 
 <script type="text/javascript">
     $(function(){
-        $('<?php echo '#'.$id; ?>').change(function(e) {
-            var multiple = e?.currentTarget?.virtualSelect?.multiple;
-
-            window.onbeforeunload = function(e) {
-                // save scroll position
-                localStorage.setItem('ks-scroll-position', window.scrollY);
-                // save chosen filter was multiple
-                if (multiple) {
-                    localStorage.setItem('ks-last-multiple-filter', <?php echo json_encode('#'.$id); ?>);
-                }
-            };
-            // set loading class
-            setLoading();
-            // submit form
-            return setTimeout(() => {
-                $('#filter-form').submit();
-            }, 100)
-        });
+        function onChange() {
+            $('<?php echo '#'.$id; ?>').change(function(e) {
+                    var multiple = e?.currentTarget?.virtualSelect?.multiple;
+                    // set loading class
+                    setLoading();
+                    // submit form
+                    var timeoutID = setTimeout(() => {
+                        // save scroll position
+                        localStorage.setItem('ks-scroll-position', window.scrollY);
+                        // save chosen filter was multiple
+                        if (multiple) {
+                            localStorage.setItem('ks-last-multiple-filter', <?php echo json_encode('#' . $id); ?>);
+                        }
+                        $('#filter-form').submit();
+                        clearTimeout(timeoutID);
+                    }, 100)
+            });
+        }
+        $('<?php echo '#'.$id; ?>').on('afterOpen', onChange);
     });
+
     function setLoading() {
         $('#product-section').addClass('is-loading');
     }
     $('<?php echo '#'.$id; ?>').on('beforeClose', removeMultipleFilterFromLocalStorage);
+
     function removeMultipleFilterFromLocalStorage() {
         var multipleFilter = localStorage.getItem('ks-last-multiple-filter');
         if (multipleFilter) {
@@ -134,14 +137,15 @@ if ($query !== '') {
     document.addEventListener("DOMContentLoaded", function(e) {
         // open select if multiple
         var multipleFilter = localStorage.getItem('ks-last-multiple-filter');
+        console.log('multipleFilter', multipleFilter);
         if (multipleFilter) {
-            localStorage.removeItem('ks-last-multiple-filter');
-            setTimeout(()=> {
+            setTimeout(() => {
                 document.querySelector(multipleFilter).open();
+                localStorage.removeItem('ks-last-multiple-filter');
             }, 100)
         }
         // scroll to last position before reload
-        var scrollPosition = localStorage.getItem('ks-scroll-position');
+        var scrollPosition = Number(localStorage.getItem('ks-scroll-position'));
         if (scrollPosition) {
             window.scrollTo(0, scrollPosition);
             localStorage.removeItem('ks-scroll-position');

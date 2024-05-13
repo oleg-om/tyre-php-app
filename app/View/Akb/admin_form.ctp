@@ -31,7 +31,8 @@ $this->Backend->addPhoto('filename', array(
 	'height' => 121,
 	'crop' => false,
 	'folder' => false,
-	'remove' => true
+	'remove' => true,
+    'custom_id' => 'akb_images'
 ));
 $this->Backend->addFile('file', array(
 	'label' => __d('admin_akb', 'label_file')

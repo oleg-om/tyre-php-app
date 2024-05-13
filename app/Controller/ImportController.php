@@ -3212,11 +3212,12 @@ class ImportController extends AppController {
                             $category_id = 3;
                             $brand_slugs = $this->Brand->find('list', array('fields' => array('Brand.slug', 'Brand.id')));
                             $all_brands = $this->Brand->find('list', array('conditions' => array('Brand.category_id' => $category_id), 'fields' => array('Brand.title', 'Brand.id')));
-                            $all_models = $this->BrandModel->find('all', array('conditions' => array('BrandModel.category_id' => $category_id), 'fields' => array('BrandModel.id', 'BrandModel.brand_id', 'BrandModel.title')));
+                            $all_models = $this->BrandModel->find('all', array('conditions' => array('BrandModel.category_id' => $category_id), 'fields' => array('BrandModel.id', 'BrandModel.brand_id', 'BrandModel.title', 'BrandModel.extra_filenames')));
                             $model_synonyms = $this->ModelSynonym->find('all');
                             $brand_synonyms = $this->BrandSynonym->find('all');
                             $brands = array();
                             $models = array();
+                            $model_extra_filenames = array();
                             foreach ($all_brands as $brand => $id) {
                                 $brand = $this->_clean_text($brand);
                                 $brands[$brand] = $id;
@@ -3233,10 +3234,13 @@ class ImportController extends AppController {
                                 }
                                 $model = $this->_clean_text($item['BrandModel']['title'], false);
                                 $models[$item['BrandModel']['brand_id']][$model] = $item['BrandModel']['id'];
+                                $model_extra_filenames[$item['BrandModel']['id']] = $item['BrandModel']['extra_filenames'];
+
                                 foreach ($model_synonyms as $synonym) {
                                     if ($synonym['ModelSynonym']['model_id'] == $item['BrandModel']['id']) {
                                         $model = trim($this->_clean_text($synonym['ModelSynonym']['title'], false));
                                         $models[$item['BrandModel']['brand_id']][$model] = $item['BrandModel']['id'];
+                                        $model_extra_filenames[$item['BrandModel']['id']] = $item['BrandModel']['extra_filenames'];
                                     }
                                 }
                             }
@@ -3481,6 +3485,24 @@ class ImportController extends AppController {
                                                     }
                                                 }
                                                 else {
+                                                    // product extra images
+                                                    $filename = '';
+
+                                                    if (!empty($model_extra_filenames[$model_id])) {
+                                                        $existing_file_names = explode('|', $model_extra_filenames[$model_id]);
+
+                                                        if ($existing_file_names != '' && !empty($existing_file_names)) {
+                                                            foreach ($existing_file_names as $key => $img_item) {
+                                                                list($params, $img) = explode(':', $img_item);
+                                                                list($ah_value, $f2_value) = explode('-', $params);
+
+                                                                if (intval($ah_value) == intval($ah) && trim($f2) == trim($f2_value)) {
+                                                                    $filename = $img;
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+
                                                     $save_data = array(
                                                         'is_active' => 1,
                                                         'supplier_id' => $supplier_id,
@@ -3505,7 +3527,8 @@ class ImportController extends AppController {
                                                         'truck' => $start_stop,
                                                         'axis' => $warranty,
                                                         'auto' => $auto,
-                                                        'p1' => $p1
+                                                        'p1' => $p1,
+                                                        'filename' => $filename,
 
                                                     );
                                                     $this->Product->create();
