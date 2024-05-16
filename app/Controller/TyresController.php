@@ -498,7 +498,8 @@ class TyresController extends AppController {
                 }
 
                 // getTyreParams
-                list($size_12, $size_3) = explode(' ', $first_size);
+                list($front_size, $back_size) = explode(':', $first_size);
+                list($size_12, $size_3) = explode(' ', $front_size);
                 $size_3 = str_replace('R', '', $size_3);
                 list($size_1, $size_2) = explode('/', $size_12);
                 $filter = array('size1' => $size_1, 'size2' => $size_2, 'size3' => $size_3, 'season' => $this->request->query['season']);
@@ -535,7 +536,8 @@ class TyresController extends AppController {
                         $first_size = array_values($filteredTuningTyres)[0];
                     }
                     // getTyreParams
-                    list($size_12, $size_3) = explode(' ', $first_size);
+                    list($front_size, $back_size) = explode(':', $first_size);
+                    list($size_12, $size_3) = explode(' ', $front_size);
                     $size_3 = str_replace('R', '', $size_3);
                     list($size_1, $size_2) = explode('/', $size_12);
                     $filter = array('size1' => $size_1, 'size2' => $size_2, 'size3' => $size_3, 'season' => $this->request->query['season']);

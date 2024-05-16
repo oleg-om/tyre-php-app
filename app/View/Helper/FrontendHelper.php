@@ -343,7 +343,6 @@ class FrontendHelper extends AppHelper {
 	public function getTyreParams($tyre, $modification_slug, $query_size1, $query_size2, $query_size3) {
 		list($size12, $size3) = explode(' ', $tyre);
 		$size3 = str_replace('R', '', $size3);
-		list($size1, $size2) = explode('/', $size12);
         $filter = array('size1' => $size1, 'size2' => $size2, 'size3' => $size3, 'diameter' => 'R'.$size3, 'season' => $this->request->query['season'], 'in_stock' => 2);
         if (isset($modification_slug)) {
             $filter['modification'] = $modification_slug;
@@ -352,6 +351,9 @@ class FrontendHelper extends AppHelper {
             $filter['is_active'] = 1;
         } else {
             $filter['is_active'] = 0;
+        }
+        if (strpos($tyre, ':') !== false) {
+            $filter['double'] = 1;
         }
 		return $filter;
 	}
