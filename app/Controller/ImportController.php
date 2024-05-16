@@ -3334,7 +3334,8 @@ class ImportController extends AppController {
 
                                     $stock_count = intval(trim($data->sheets[0]['cells'][$i][25]));
 
-                                    $stock_places = $autodom_count.'|'.$tiptop_count.'|'.$bam_count.'|'.$atp_count.'|'.$taksopark_count.'|'.$vianorshop_count.'|'.$hundai_count.'|'.$tavrida_count.'|'.$gruz_count;
+                                    // $stock_places = $autodom_count.'|'.$tiptop_count.'|'.$bam_count.'|'.$atp_count.'|'.$taksopark_count.'|'.$vianorshop_count.'|'.$hundai_count.'|'.$tavrida_count.'|'.$gruz_count;
+
 
                                     if (substr_count($size, 'x') == 2) {
                                         list($length, $width, $height) = explode('x', $size);
@@ -3519,7 +3520,6 @@ class ImportController extends AppController {
                                                         'price' => $price,
                                                         'stock_count' => $stock_count,
                                                         'in_stock' => $in_stock,
-                                                        'stock_places' => $stock_places,
                                                         'material' => $country,
                                                         'color' => $manufacturing_technology,
                                                         'price_with_exchange' => $price_with_exchange,
@@ -3529,6 +3529,15 @@ class ImportController extends AppController {
                                                         'auto' => $auto,
                                                         'p1' => $p1,
                                                         'filename' => $filename,
+                                                        'count_place_0' => $autodom_count,
+                                                        'count_place_1' => $tiptop_count,
+                                                        'count_place_2' => $bam_count,
+                                                        'count_place_3' => $atp_count,
+                                                        'count_place_4' => $taksopark_count,
+                                                        'count_place_5' => $vianorshop_count,
+                                                        'count_place_6' => $hundai_count,
+                                                        'count_place_7' => $tavrida_count,
+                                                        'count_place_8' => $gruz_count,
 
                                                     );
                                                     $this->Product->create();
@@ -3702,7 +3711,7 @@ class ImportController extends AppController {
                                         $gruz_count = 0;
                                     }
 
-                                    $stock_places = $autodom_count.'|'.$tiptop_count.'|'.$bam_count.'|'.$atp_count.'|'.$taksopark_count.'|'.$vianorshop_count.'|'.$hundai_count.'|'.$tavrida_count.'|'.$gruz_count;
+                                    // $stock_places = $autodom_count.'|'.$tiptop_count.'|'.$bam_count.'|'.$atp_count.'|'.$taksopark_count.'|'.$vianorshop_count.'|'.$hundai_count.'|'.$tavrida_count.'|'.$gruz_count;
                                     $free_tyremount = trim($data->sheets[0]['cells'][$i][18]);
                                     $free_storage = trim($data->sheets[0]['cells'][$i][19]);
                                     $warranty = trim($data->sheets[0]['cells'][$i][20]);
@@ -4003,12 +4012,20 @@ class ImportController extends AppController {
                                                         'price' => $price,
                                                         'stock_count' => $stock_count,
                                                         'in_stock' => $in_stock,
-                                                        'stock_places' => $stock_places,
                                                         'p1' => $free_tyremount,
                                                         'p2' => $free_storage,
                                                         'p3' => $warranty,
                                                         'p4' => $xl,
                                                         'p5' => $run_flat,
+                                                        'count_place_0' => $autodom_count,
+                                                        'count_place_1' => $tiptop_count,
+                                                        'count_place_2' => $bam_count,
+                                                        'count_place_3' => $atp_count,
+                                                        'count_place_4' => $taksopark_count,
+                                                        'count_place_5' => $vianorshop_count,
+                                                        'count_place_6' => $hundai_count,
+                                                        'count_place_7' => $tavrida_count,
+                                                        'count_place_8' => $gruz_count,
                                                     );
                                                     if ($stud !== null) {
                                                         $save_data['stud'] = $stud;
@@ -4130,7 +4147,7 @@ class ImportController extends AppController {
                                         $gruz_count = 0;
                                     }
 
-                                    $stock_places = $autodom_count.'|'.$tiptop_count.'|'.$bam_count.'|'.$atp_count.'|'.$taksopark_count.'|'.$vianorshop_count.'|'.$hundai_count.'|'.$tavrida_count.'|'.$gruz_count;
+                                    // $stock_places = $autodom_count.'|'.$tiptop_count.'|'.$bam_count.'|'.$atp_count.'|'.$taksopark_count.'|'.$vianorshop_count.'|'.$hundai_count.'|'.$tavrida_count.'|'.$gruz_count;
 
                                     list($size1, $size2) = explode(' ', preg_replace('/ +/', ' ', $size));
                                     if (isset($brands[$brand])) {
@@ -4302,7 +4319,15 @@ class ImportController extends AppController {
                                                     'price' => $price,
                                                     'in_stock' => $in_stock,
                                                     'stock_count' => $stock_count,
-                                                    'stock_places' => $stock_places,
+                                                    'count_place_0' => $autodom_count,
+                                                    'count_place_1' => $tiptop_count,
+                                                    'count_place_2' => $bam_count,
+                                                    'count_place_3' => $atp_count,
+                                                    'count_place_4' => $taksopark_count,
+                                                    'count_place_5' => $vianorshop_count,
+                                                    'count_place_6' => $hundai_count,
+                                                    'count_place_7' => $tavrida_count,
+                                                    'count_place_8' => $gruz_count,
                                                 );
                                                 $this->Product->create();
                                                 if ($this->Product->save($save_data)) {

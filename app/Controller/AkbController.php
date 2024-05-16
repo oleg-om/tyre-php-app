@@ -177,10 +177,14 @@ class AkbController extends AppController {
             }
         }
 
+        if (isset($this->request->query['stock_place']) && $this->request->query['stock_place'] != '') {
+                $conditions['Product.count_place_'.$this->request->query['stock_place'].' >='] = 1;
+        }
 
+        $this->loadModel('Product');
         $this->loadModel('Brand');
         $this->loadModel('BrandModel');
-        $this->loadModel('Product');
+
         $models = $this->BrandModel->find('list', array('conditions' => array('BrandModel.brand_id' => $brand['Brand']['id'], 'BrandModel.is_active' => 1, 'BrandModel.active_products_count > 0'), 'order' => array('BrandModel.title' => 'asc'), 'fields' => array('BrandModel.id', 'BrandModel.title')));
         $this->set('models', $models);
 
@@ -532,6 +536,11 @@ class AkbController extends AppController {
                     $conditions['Product.current <='] = $ah_s;
                 }
             }
+
+            if (isset($this->request->query['stock_place']) && $this->request->query['stock_place'] != '') {
+                $conditions['Product.count_place_'.$this->request->query['stock_place'].' >='] = 1;
+            }
+
 			if (isset($this->request->query['ah']) && !empty($this->request->query['ah'])) {
 				$conditions['Product.ah'] = $this->request->query['ah'];
 			}
@@ -876,6 +885,7 @@ class AkbController extends AppController {
 		}
 		natsort($akb_current);
 		$temp_cond = $conditions;
+
 		unset($temp_cond['Product.f1']);
 		$products = $this->Product->find('all', array('conditions' => $temp_cond, 'fields' => 'DISTINCT Product.f1', 'order' => 'Product.f1'));
 		$akb_f1 = array();
@@ -896,6 +906,7 @@ class AkbController extends AppController {
 				$akb_length[$length] = $length;
 			}
 		}
+
 		natsort($akb_length);
 		$temp_cond = $conditions;
 		unset($temp_cond['Product.width']);

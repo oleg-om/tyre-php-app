@@ -166,7 +166,7 @@ foreach ($models as $item) {
 						</div>
                                 <?php
                                 $in_stock_mark = $item['Product'][0]['in_stock'] ? '<img title="в наличии" alt="в наличии" src="/img/yes.png">' : '';
-                                echo $this->element('stock_places', array('stock_places' => $item['Product'][0]['stock_places'], 'text' => '<div class="namber tyres">'.$this->Frontend->getStockCount($item['Product'][0]['stock_count']).' шт. '.$in_stock_mark.'</div>', 'position' => 'left')); ?>
+                                echo $this->element('stock_places', array('stock_places' => $item['Product'][0], 'text' => '<div class="namber tyres">'.$this->Frontend->getStockCount($item['Product'][0]['stock_count']).' шт. '.$in_stock_mark.'</div>', 'position' => 'left')); ?>
                         </div>
                         <div class="product__info">
 						<div class="priceMore tyres">

@@ -1603,6 +1603,10 @@ endforeach;
                 $conditions['Product.width_number <='] = $width;
             }
         }
+
+        if (isset($this->request->query['stock_place']) && $this->request->query['stock_place'] != '') {
+            $conditions['Product.count_place_'.$this->request->query['stock_place'].' >='] = 1;
+        }
 		
 		$this->request->data['Product'] = $this->request->query;
 		$mode = 'block';
@@ -2011,6 +2015,9 @@ endforeach;
 			if (isset($this->request->query['price_to']) && !empty($this->request->query['price_to'])) {
 				$conditions['Product.price <='] = intval($this->request->query['price_to']);
 			}
+            if (isset($this->request->query['stock_place']) && $this->request->query['stock_place'] != '') {
+                $conditions['Product.count_place_'.$this->request->query['stock_place'].' >='] = 1;
+            }
 			$product_conditions = $conditions;
 			
 			//$product_conditions['Product.filename !='] = '';

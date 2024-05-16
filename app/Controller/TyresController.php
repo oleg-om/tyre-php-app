@@ -817,6 +817,9 @@ class TyresController extends AppController {
             if (isset($this->request->query['run_flat']) && !empty($this->request->query['run_flat'])) {
                 $conditions['Product.p5'] = $this->request->query['run_flat'];
             }
+            if (isset($this->request->query['stock_place']) && $this->request->query['stock_place'] != '') {
+                $conditions['Product.count_place_'.$this->request->query['stock_place'].' >='] = 1;
+            }
             if (isset($slug)) {
                 $has_params = true;
             }
@@ -1435,6 +1438,9 @@ class TyresController extends AppController {
         }
         if (isset($this->request->query['brand_id']) && strpos($this->request->query['brand_id'], ',') !== false) {
             $conditions['Product.brand_id'] = explode(',', $this->request->query['brand_id']);
+        }
+        if (isset($this->request->query['stock_place']) && $this->request->query['stock_place'] != '') {
+            $conditions['Product.count_place_'.$this->request->query['stock_place'].' >='] = 1;
         }
 
         //print_r($conditions);

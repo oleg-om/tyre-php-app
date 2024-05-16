@@ -219,6 +219,12 @@ class AppController extends Controller {
         define('CONST_DEFAULT_TYRES_PATH', '?auto=&axis=&size1=205&size2=55&size3=16&season=&brand_id=&stud=0&in_stock4=0&in_stock=2&upr_all=1');
         define('CONST_DEFAULT_DISKS_PATH', '?size3=&size1=18&material=&et_from=&et_to=&size2=&hub=&brand_id=&in_stock4=0&in_stock=2');
         define('CONST_DEFAULT_AKB_PATH', '?ah_from=60&current=&f1=&width=&length=&height=&brand_id=');
+
+        $stock_places = array(0 => 'ул. Мирошника 5, Автодом', 1 => 'ул. Шевякова (район авторынка), Vianor Tip-top', 2 => 'ул. Куль-обинское шоссе 1, MICHELIN',
+            3 => 'АТП', 4 => 'ул. Вокзальное шоссе 36, шиномонтаж Таксо', 5 => 'ул. Вокзальное шоссе 44, VIANOR', 6 => 'ул. Чкалова 147А, VIANOR',
+            7 => 'Таврида', 8 => 'Грузовой склад');
+
+        $this->set('filter_all_places', $stock_places);
 	}
 	private function setCurrencies() {
 		$currencies = Cache::read('currencies', 'long');

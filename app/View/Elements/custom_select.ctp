@@ -98,25 +98,27 @@ if ($query !== '') {
 
 <script type="text/javascript">
     $(function(){
-        function onChange() {
+        $(window).load(function() {
+            //dom not only ready, but everything is loaded
             $('<?php echo '#'.$id; ?>').change(function(e) {
-                    var multiple = e?.currentTarget?.virtualSelect?.multiple;
-                    // set loading class
-                    setLoading();
-                    // submit form
-                    var timeoutID = setTimeout(() => {
-                        // save scroll position
-                        localStorage.setItem('ks-scroll-position', window.scrollY);
-                        // save chosen filter was multiple
-                        if (multiple) {
-                            localStorage.setItem('ks-last-multiple-filter', <?php echo json_encode('#' . $id); ?>);
-                        }
-                        $('#filter-form').submit();
-                        clearTimeout(timeoutID);
-                    }, 100)
+                var multiple = e?.currentTarget?.virtualSelect?.multiple;
+
+                console.log('on change 1');
+                // set loading class
+                setLoading();
+                // submit form
+                var timeoutID = setTimeout(() => {
+                    // save scroll position
+                    localStorage.setItem('ks-scroll-position', window.scrollY);
+                    // save chosen filter was multiple
+                    if (multiple) {
+                        localStorage.setItem('ks-last-multiple-filter', <?php echo json_encode('#' . $id); ?>);
+                    }
+                    $('#filter-form').submit();
+                    clearTimeout(timeoutID);
+                }, 100)
             });
-        }
-        $('<?php echo '#'.$id; ?>').on('afterOpen', onChange);
+        });
     });
 
     function setLoading() {
@@ -137,7 +139,7 @@ if ($query !== '') {
     document.addEventListener("DOMContentLoaded", function(e) {
         // open select if multiple
         var multipleFilter = localStorage.getItem('ks-last-multiple-filter');
-        console.log('multipleFilter', multipleFilter);
+
         if (multipleFilter) {
             setTimeout(() => {
                 document.querySelector(multipleFilter).open();
