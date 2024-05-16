@@ -15,7 +15,7 @@
 
                     echo $this->Html->link($diameter, array('controller' => 'tyres', 'action' => 'index', '?' => $diameter_filter), array('escape' => false, 'class' => $diameter_class)); ?>
                 <?php } ?>
-            </div>7865
+            </div>
 
             <?php if (!empty($factory_sizes)) { ?>
                 <div class="car__sizes__wrapper">
