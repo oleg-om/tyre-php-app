@@ -109,11 +109,6 @@ $this->Backend->addText('axis', array(
     'label' => __d('admin_akb', 'label_warranty'),
     'div' => 'item_div third'
 ));
-$this->Backend->addHtml('<div class="clear"></div>');
-$this->Backend->addText('stock_places', array(
-    'label' => __d('admin_akb', 'label_stock_places'),
-    'div' => 'item_div'
-));
 
 $this->Backend->addHtml('<div class="clear"></div>');
 $this->Backend->addHidden('id');

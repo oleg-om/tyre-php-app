@@ -3273,34 +3273,60 @@ class ImportController extends AppController {
                                     $model_name = trim($data->sheets[0]['cells'][$i][3]);
                                     $brand = $this->_clean_text($brand_name);
                                     $model = $this->_clean_text($model_name, false);
-                                    $is_short = trim($data->sheets[0]['cells'][$i][4]);
-                                    $manufacturing_technology = trim($data->sheets[0]['cells'][$i][5]);
-                                    $start_stop = trim($data->sheets[0]['cells'][$i][6]);
-                                    $p1 = 0;
-                                    if (isset($data->sheets[0]['cells'][$i][6])) {
-                                        $p1 = 1;
-                                    }
-                                    $warranty = trim($data->sheets[0]['cells'][$i][7]);
-                                    $country = trim($data->sheets[0]['cells'][$i][8]);
-                                    $size = trim($data->sheets[0]['cells'][$i][9]);
-                                    $size = str_replace('х', 'x', $size);
-                                    $ah = trim($data->sheets[0]['cells'][$i][10]);
-                                    $current = trim($data->sheets[0]['cells'][$i][11]);
-                                    $f1 = '';
-                                    if (isset($data->sheets[0]['cells'][$i][12])) {
-                                        $f1 = trim($data->sheets[0]['cells'][$i][12]);
-                                    }
-                                    $f2 = trim($data->sheets[0]['cells'][$i][13]);
-                                    $price = floatval(trim($data->sheets[0]['cells'][$i][14])) / $rate;
-                                    $price_with_exchange = floatval(trim($data->sheets[0]['cells'][$i][15])) / $rate;
+                                    $manufacturing_technology = trim($data->sheets[0]['cells'][$i][4]);
 
-                                    $autodom_count = trim($data->sheets[0]['cells'][$i][16]);
-                                    $tiptop_count = trim($data->sheets[0]['cells'][$i][17]);
-                                    $bam_count = trim($data->sheets[0]['cells'][$i][18]);
-                                    $atp_count = trim($data->sheets[0]['cells'][$i][19]);
-                                    $taksopark_count = trim($data->sheets[0]['cells'][$i][20]);
-                                    $vianorshop_count = trim($data->sheets[0]['cells'][$i][21]);
-                                    $hundai_count = trim($data->sheets[0]['cells'][$i][22]);
+                                    $extra_params = trim($data->sheets[0]['cells'][$i][5]);
+                                    // height && start&stop
+                                    $p1 = 0;
+                                    $start_stop = '';
+                                    $f3 = '';
+                                    if (!empty($extra_params)) {
+                                        $extra_params = mb_strtolower($extra_params);
+                                        $manuf_tech = mb_strtolower($manufacturing_technology);
+
+                                        if (strpos($extra_params, 'узкий') !== false) {
+                                            $f3 = 'Узкий';
+                                        }
+                                        if (strpos($extra_params, 'низкий') !== false) {
+                                            $f3 = 'Низкий';
+                                        }
+                                        if (strpos($extra_params, 'efb') !== false) {
+                                            $start_stop = 'EFB';
+                                            $p1 = 1;
+                                        }
+                                        if (strpos($extra_params, 'agm') !== false) {
+                                            $start_stop = 'AGM';
+                                            $p1 = 1;
+                                        }
+                                        if (strpos($manuf_tech, 'agm') !== false) {
+                                            $start_stop = 'AGM';
+                                            $p1 = 1;
+                                        }
+                                    }
+
+                                    $warranty = trim($data->sheets[0]['cells'][$i][6]);
+                                    $country = trim($data->sheets[0]['cells'][$i][7]);
+                                    $length = trim($data->sheets[0]['cells'][$i][8]);
+                                    $width = trim($data->sheets[0]['cells'][$i][9]);
+                                    $height = trim($data->sheets[0]['cells'][$i][10]);
+                                    $size = $length.'x'.$width.'x'.$height;
+                                    $ah = trim($data->sheets[0]['cells'][$i][11]);
+                                    $current = trim($data->sheets[0]['cells'][$i][12]);
+                                    $f1 = '';
+                                    if (isset($data->sheets[0]['cells'][$i][13])) {
+                                        $f1 = trim($data->sheets[0]['cells'][$i][13]);
+                                    }
+                                    $f2 = trim($data->sheets[0]['cells'][$i][15]);
+                                    $price = floatval(trim($data->sheets[0]['cells'][$i][16])) / $rate;
+                                    $price_with_exchange = floatval(trim($data->sheets[0]['cells'][$i][17])) / $rate;
+
+                                    $autodom_count = trim($data->sheets[0]['cells'][$i][18]);
+                                    // $tiptop_count = trim($data->sheets[0]['cells'][$i][17]);
+                                    $bam_count = trim($data->sheets[0]['cells'][$i][19]);
+                                    // $atp_count = trim($data->sheets[0]['cells'][$i][19]);
+                                    // $taksopark_count = trim($data->sheets[0]['cells'][$i][19]);
+                                    $vianorshop_count = trim($data->sheets[0]['cells'][$i][20]);
+                                    $hundai_count = trim($data->sheets[0]['cells'][$i][21]);
                                     $tavrida_count = trim($data->sheets[0]['cells'][$i][23]);
                                     $gruz_count = trim($data->sheets[0]['cells'][$i][24]);
 
@@ -3332,7 +3358,7 @@ class ImportController extends AppController {
                                         $gruz_count = 0;
                                     }
 
-                                    $stock_count = intval(trim($data->sheets[0]['cells'][$i][25]));
+                                    $stock_count = intval($autodom_count) + intval($tiptop_count) + intval($bam_count) + intval($atp_count) + intval($taksopark_count) + intval($vianorshop_count) + intval($hundai_count) + intval($tavrida_count) + intval($gruz_count);
 
                                     // $stock_places = $autodom_count.'|'.$tiptop_count.'|'.$bam_count.'|'.$atp_count.'|'.$taksopark_count.'|'.$vianorshop_count.'|'.$hundai_count.'|'.$tavrida_count.'|'.$gruz_count;
 
@@ -3523,7 +3549,7 @@ class ImportController extends AppController {
                                                         'material' => $country,
                                                         'color' => $manufacturing_technology,
                                                         'price_with_exchange' => $price_with_exchange,
-                                                        'f3' => $is_short,
+                                                        'f3' => $f3,
                                                         'truck' => $start_stop,
                                                         'axis' => $warranty,
                                                         'auto' => $auto,
