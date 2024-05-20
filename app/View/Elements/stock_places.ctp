@@ -9,16 +9,17 @@ if (empty($position)) {
     $position = 'center';
 }
 $place_list = array(0 => $stock_places['count_place_0'], 1 => $stock_places['count_place_1'], 2 => $stock_places['count_place_2'], 3 => $stock_places['count_place_3'], 4 => $stock_places['count_place_4'], 5 => $stock_places['count_place_5'], 6 => $stock_places['count_place_6'], 7 => $stock_places['count_place_7'], 8 => $stock_places['count_place_8']);
+$place_list_filtered = array_filter($place_list);
 ?>
 
 <div class="tooltip-places
 <?php if ($position == 'left') { echo 'tooltip-places-left '; } ?>
 <?php if ($position == 'right') { echo 'tooltip-places-right '; } ?>
 <?php if ($position == 'center') { echo 'tooltip-places-center '; } ?>
-<?php if (empty($stock_places)) { echo 'tooltip-places-empty '; } ?>
+<?php if (empty($place_list_filtered)) { echo 'tooltip-places-empty '; } ?>
 ">
     <?php echo $text; ?>
-    <?php if (!empty($stock_places)) { ?>
+    <?php if (!empty($place_list_filtered)) { ?>
     <div class="tooltiptext">
         <span class="tooltip-places-title">Наличие по шинным центрам:</span>
         <table>
