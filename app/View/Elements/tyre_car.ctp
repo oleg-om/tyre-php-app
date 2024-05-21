@@ -29,8 +29,21 @@
                             } ?>">
                                 <?php if ($size_filter['is_active'] == 1) {
                                     echo '• ';
-                                } ?>Шины
-                                <?php echo $this->Html->link($tyre, array('controller' => 'tyres', 'action' => 'index', '?' => $size_filter), array('escape' => false)); ?>
+                                } ?>
+                                <?php
+                                    if ($size_filter['double'] == 1) {
+                                        list($tyre1, $tyre2) = explode(':', $tyre);
+                                        $size_filter1 = $this->Frontend->getTyreParams($tyre1, $car_sizes['CarTyres']['modification_slug'], $size1, $size2, $size3);
+                                        $size_filter2 = $this->Frontend->getTyreParams($tyre2, $car_sizes['CarTyres']['modification_slug'], $size1, $size2, $size3);
+                                        ?>
+                                            <?php if ($size_filter1['is_active'] == 1 || $size_filter2['is_active'] == 1 ) { echo '• '; } ?>
+                                            <span class="<?php if ($size_filter1['is_active'] == 1) { echo 'is_active'; } ?>"><?php echo 'Передние '.$this->Html->link($tyre1, array('controller' => 'tyres', 'action' => 'index', '?' => $size_filter1, 'class' => 'is_active'), array('escape' => false)); ?></span>
+                                            <span class="<?php if ($size_filter2['is_active'] == 1) { echo 'is_active'; } ?>"><?php echo ', задние '.$this->Html->link($tyre2, array('controller' => 'tyres', 'action' => 'index', '?' => $size_filter2, 'class' => 'is_active'), array('escape' => false)); ?></span>
+                                        <?php
+                                    } else {
+                                        echo 'Шины '.$this->Html->link($tyre, array('controller' => 'tyres', 'action' => 'index', '?' => $size_filter), array('escape' => false));
+                                    }
+                                ?>
                             </li>
                         <?php } ?>
                     </ul>
@@ -50,8 +63,21 @@
                             } ?>">
                                 <?php if ($size_filter['is_active'] == 1) {
                                     echo '• ';
-                                } ?>Шины
-                                <?php echo $this->Html->link($tyre, array('controller' => 'tyres', 'action' => 'index', '?' => $size_filter), array('escape' => false)); ?>
+                                } ?>
+                                <?php
+                                if ($size_filter['double'] == 1) {
+                                    list($tyre1, $tyre2) = explode(':', $tyre);
+                                    $size_filter1 = $this->Frontend->getTyreParams($tyre1, $car_sizes['CarTyres']['modification_slug'], $size1, $size2, $size3);
+                                    $size_filter2 = $this->Frontend->getTyreParams($tyre2, $car_sizes['CarTyres']['modification_slug'], $size1, $size2, $size3);
+                                    ?>
+                                    <?php if ($size_filter1['is_active'] == 1 || $size_filter2['is_active'] == 1 ) { echo '• '; } ?>
+                                    <span class="<?php if ($size_filter1['is_active'] == 1) { echo 'is_active'; } ?>"><?php echo 'Передние '.$this->Html->link($tyre1, array('controller' => 'tyres', 'action' => 'index', '?' => $size_filter1, 'class' => 'is_active'), array('escape' => false)); ?></span>
+                                    <span class="<?php if ($size_filter2['is_active'] == 1) { echo 'is_active'; } ?>"><?php echo ', задние '.$this->Html->link($tyre2, array('controller' => 'tyres', 'action' => 'index', '?' => $size_filter2, 'class' => 'is_active'), array('escape' => false)); ?></span>
+                                    <?php
+                                } else {
+                                    echo 'Шины '.$this->Html->link($tyre, array('controller' => 'tyres', 'action' => 'index', '?' => $size_filter), array('escape' => false));
+                                }
+                                ?>
                             </li>
                         <?php } ?>
                     </ul>

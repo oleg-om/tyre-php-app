@@ -498,7 +498,8 @@ class TyresController extends AppController {
                 }
 
                 // getTyreParams
-                list($size_12, $size_3) = explode(' ', $first_size);
+                list($front_size, $back_size) = explode(':', $first_size);
+                list($size_12, $size_3) = explode(' ', $front_size);
                 $size_3 = str_replace('R', '', $size_3);
                 list($size_1, $size_2) = explode('/', $size_12);
                 $filter = array('size1' => $size_1, 'size2' => $size_2, 'size3' => $size_3, 'season' => $this->request->query['season']);
@@ -535,7 +536,8 @@ class TyresController extends AppController {
                         $first_size = array_values($filteredTuningTyres)[0];
                     }
                     // getTyreParams
-                    list($size_12, $size_3) = explode(' ', $first_size);
+                    list($front_size, $back_size) = explode(':', $first_size);
+                    list($size_12, $size_3) = explode(' ', $front_size);
                     $size_3 = str_replace('R', '', $size_3);
                     list($size_1, $size_2) = explode('/', $size_12);
                     $filter = array('size1' => $size_1, 'size2' => $size_2, 'size3' => $size_3, 'season' => $this->request->query['season']);
@@ -814,6 +816,9 @@ class TyresController extends AppController {
             }
             if (isset($this->request->query['run_flat']) && !empty($this->request->query['run_flat'])) {
                 $conditions['Product.p5'] = $this->request->query['run_flat'];
+            }
+            if (isset($this->request->query['stock_place']) && $this->request->query['stock_place'] != '') {
+                $conditions['Product.count_place_'.$this->request->query['stock_place'].' >='] = 1;
             }
             if (isset($slug)) {
                 $has_params = true;
@@ -1433,6 +1438,9 @@ class TyresController extends AppController {
         }
         if (isset($this->request->query['brand_id']) && strpos($this->request->query['brand_id'], ',') !== false) {
             $conditions['Product.brand_id'] = explode(',', $this->request->query['brand_id']);
+        }
+        if (isset($this->request->query['stock_place']) && $this->request->query['stock_place'] != '') {
+            $conditions['Product.count_place_'.$this->request->query['stock_place'].' >='] = 1;
         }
 
         //print_r($conditions);

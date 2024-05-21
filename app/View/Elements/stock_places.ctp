@@ -8,17 +8,18 @@ if (empty($text)) {
 if (empty($position)) {
     $position = 'center';
 }
-$place_list = explode('|', $stock_places);
+$place_list = array(0 => $stock_places['count_place_0'], 1 => $stock_places['count_place_1'], 2 => $stock_places['count_place_2'], 3 => $stock_places['count_place_3'], 4 => $stock_places['count_place_4'], 5 => $stock_places['count_place_5'], 6 => $stock_places['count_place_6'], 7 => $stock_places['count_place_7'], 8 => $stock_places['count_place_8']);
+$place_list_filtered = array_filter($place_list);
 ?>
 
 <div class="tooltip-places
 <?php if ($position == 'left') { echo 'tooltip-places-left '; } ?>
 <?php if ($position == 'right') { echo 'tooltip-places-right '; } ?>
 <?php if ($position == 'center') { echo 'tooltip-places-center '; } ?>
-<?php if (empty($stock_places)) { echo 'tooltip-places-empty '; } ?>
+<?php if (empty($place_list_filtered)) { echo 'tooltip-places-empty '; } ?>
 ">
     <?php echo $text; ?>
-    <?php if (!empty($stock_places)) { ?>
+    <?php if (!empty($place_list_filtered)) { ?>
     <div class="tooltiptext">
         <span class="tooltip-places-title">Наличие по шинным центрам:</span>
         <table>
@@ -28,33 +29,7 @@ $place_list = explode('|', $stock_places);
             <?php
             if ($place_quantity != 0) {
                 echo '<tr>';
-                if ($i == 0) {
-                    echo '<td>· ул. Мирошника 5, Автодом</td>';
-                }
-                if ($i == 1) {
-                    echo '<td>· ул. Шевякова (район авторынка), Vianor Tip-top</td>';
-                }
-                if ($i == 2) {
-                    echo '<td>· ул. Куль-обинское шоссе 1, MICHELIN</td>';
-                }
-                if ($i == 3) {
-                    echo '<td>· АТП';
-                }
-                if ($i == 4) {
-                    echo '<td>· ул. Вокзальное шоссе 36, шиномонтаж Таксо</td>';
-                }
-                if ($i == 5) {
-                    echo '<td>· ул. Вокзальное шоссе 44, VIANOR</td>';
-                }
-                if ($i == 6) {
-                    echo '<td>· ул. Чкалова 147А, VIANOR</td>';
-                }
-                if ($i == 7) {
-                    echo '<td>· Таврида</td>';
-                }
-                if ($i == 8) {
-                    echo '<td>· Грузовой склад</td>';
-                }
+                echo '<td>· '.$filter_all_places[$i].'</td>';
                 echo '<td class="tooltip-places-row-quantity">'.$place_quantity . ' шт.</td>';
                 echo '</tr>';
             }
