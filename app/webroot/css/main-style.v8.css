@@ -4066,8 +4066,12 @@ table.withlines {
   padding: 2px 2px 5px 2px;
   border: 1px solid #316b16;
   background-color: #fff !important;
-  white-space: inherit !important;
   text-align: left !important;
+  max-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 82%;
+  white-space: nowrap;
 }
 
 .tooltip-places .tooltiptext::after {
