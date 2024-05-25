@@ -72,6 +72,7 @@
         $in_stock_text = $product['Product']['in_stock'] ? 'В наличии: ' : 'Под заказ: ';
         echo $this->element('stock_places', array('stock_places' => $product['Product'], 'text' => '<div class="namber tyres">'.$in_stock_text.$this->Frontend->getStockCount($product['Product']['stock_count']).' шт. '.$in_stock_mark.'</div>', 'position' => 'right'));
         ?>
+        <?php echo $this->element('stock_out_of_stock', array('item' => $product['Product'], 'prefix' => ', под заказ: ')); ?>
     </div>
 	<div class="boxRightInfo">
 		<?php if ($this->Frontend->canShowTyrePrice($product['Product']['auto'], $product['Product']['not_show_price'])) { ?>

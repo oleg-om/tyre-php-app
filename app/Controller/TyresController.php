@@ -170,6 +170,14 @@ class TyresController extends AppController {
         // modification
         $this->setModification();
 
+        $this->loadModel('Supplier');
+        $suppliers = $this->Supplier->find('all', array('fields' => array('Supplier.id', 'Supplier.title', 'Supplier.delivery_time_from', 'Supplier.delivery_time_to'), 'order' => array('Supplier.title' => 'asc')));
+        $suppliers_output = array();
+        foreach ($suppliers as $supplier) {
+            $suppliers_output[$supplier['Supplier']['id']] = array('delivery_time_from' => $supplier['Supplier']['delivery_time_from'], 'delivery_time_to' => $supplier['Supplier']['delivery_time_to']);
+        }
+        $this->set('suppliers', $suppliers_output);
+
         $this->request->data['Product']['mode'] = $mode;
         $this->set('mode', $mode);
         $auto = 'cars';
@@ -568,6 +576,14 @@ class TyresController extends AppController {
 
         // modification
         $this->setModification();
+
+        $this->loadModel('Supplier');
+        $suppliers = $this->Supplier->find('all', array('fields' => array('Supplier.id', 'Supplier.title', 'Supplier.delivery_time_from', 'Supplier.delivery_time_to'), 'order' => array('Supplier.title' => 'asc')));
+        $suppliers_output = array();
+        foreach ($suppliers as $supplier) {
+            $suppliers_output[$supplier['Supplier']['id']] = array('delivery_time_from' => $supplier['Supplier']['delivery_time_from'], 'delivery_time_to' => $supplier['Supplier']['delivery_time_to']);
+        }
+        $this->set('suppliers', $suppliers_output);
 
         if ($brand = $this->Brand->find('first', array('conditions' => array('Brand.is_active' => 1, 'Brand.category_id' => 1, 'Brand.slug' => $slug)))) {
             if (isset($this->request->query['brand_id']) && !empty($this->request->query['brand_id'])) {
@@ -1021,6 +1037,15 @@ class TyresController extends AppController {
     public function view($slug, $id) {
 
         $this->loadModel('Brand');
+
+        $this->loadModel('Supplier');
+        $suppliers = $this->Supplier->find('all', array('fields' => array('Supplier.id', 'Supplier.title', 'Supplier.delivery_time_from', 'Supplier.delivery_time_to'), 'order' => array('Supplier.title' => 'asc')));
+        $suppliers_output = array();
+        foreach ($suppliers as $supplier) {
+            $suppliers_output[$supplier['Supplier']['id']] = array('delivery_time_from' => $supplier['Supplier']['delivery_time_from'], 'delivery_time_to' => $supplier['Supplier']['delivery_time_to']);
+        }
+        $this->set('suppliers', $suppliers_output);
+
         if ($brand = $this->Brand->find('first', array('conditions' => array('Brand.is_active' => 1, 'Brand.category_id' => 1, 'Brand.slug' => $slug)))) {
             $this->loadModel('Product');
             $this->Product->bindModel(

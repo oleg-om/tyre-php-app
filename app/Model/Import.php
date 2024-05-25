@@ -23,17 +23,17 @@ class Import extends AppModel {
 	public function __construct() {
 		parent::__construct();
 		$this->types = array(
-			1 => __d('admin_import', 'type_1'),
+//			1 => __d('admin_import', 'type_1'),
             9 => __d('admin_import', 'type_9'),
-			2 => __d('admin_import', 'type_2'),
-            8 => __d('admin_import', 'type_8'),
+//			2 => __d('admin_import', 'type_2'),
+//            8 => __d('admin_import', 'type_8'),
             11 => __d('admin_import', 'type_11'),
 			3 => __d('admin_import', 'type_3'),
-			4 => __d('admin_import', 'type_4'),
-			5 => __d('admin_import', 'type_5'),
+//			4 => __d('admin_import', 'type_4'),
+//			5 => __d('admin_import', 'type_5'),
 			6 => __d('admin_import', 'type_6'),
             10 => __d('admin_import', 'type_10'),
-			7 => __d('admin_import', 'type_7')
+//			7 => __d('admin_import', 'type_7')
 		);
 	}
 	public function beforeValidate($options = array()) {

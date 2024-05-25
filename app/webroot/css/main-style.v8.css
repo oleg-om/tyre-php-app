@@ -4093,6 +4093,16 @@ table.withlines {
   font-weight: 600;
   display: block;
 }
+.tooltip-out-of-stock {
+  height: 20px;
+  white-space: nowrap;
+}
+.tooltip-out-of-stock .tooltiptext {
+  width: 200px;
+}
+.tooltip-out-of-stock-icon {
+  padding-left: 3px;
+}
 .t1, .t2 {
   display: flex;
   flex-direction: column;
@@ -4163,6 +4173,10 @@ table.withlines {
   display: flex;
   gap: 5px;
   margin-right: -3px;
+  position: absolute;
+  top: 0;
+  right: 0;
+  z-index: 1;
 }
 .tyre-block__season img {
   width: 23px;

@@ -401,8 +401,8 @@ class OrdersController extends AppController {
 		$this->loadModel('Product');
 		if (!empty($this->request->data['Product'])) {
 			foreach ($this->request->data['Product'] as $item) {
-				if ($product = $this->Product->find('first', array('conditions' => array('Product.id' => $item['product_id'], 'Product.is_active' => 1, 'Product.price > ' => 0, 'Product.stock_count > ' => 0), 'fields' => array('Product.id', 'Product.stock_count')))) {
-					$cart['items'][$product['Product']['id']] = min($item['count'], $product['Product']['stock_count']);
+				if ($product = $this->Product->find('first', array('conditions' => array('Product.id' => $item['product_id'], 'Product.is_active' => 1, 'Product.price > ' => 0, 'Product.stock_count > ' => 0), 'fields' => array('Product.id', 'Product.stock_count', 'Product.count_out_of_stock')))) {
+					$cart['items'][$product['Product']['id']] = min($item['count'], $product['Product']['stock_count'] + $product['Product']['count_out_of_stock']);
 				}
 			}
 		}
@@ -443,7 +443,7 @@ class OrdersController extends AppController {
 					else {
 						$type = 'bolts';
 					}
-					$cart_items[$product['Product']['id']] = min($count, $product['Product']['stock_count']);
+					$cart_items[$product['Product']['id']] = min($count, $product['Product']['stock_count'] + $product['Product']['count_out_of_stock']);
 					$products[$product['Product']['id']] = $product;
 					$cart['total'] += $this->calculateCartPrice($product['Product']['price'] * $cart_items[$product['Product']['id']], $type);
 				}
