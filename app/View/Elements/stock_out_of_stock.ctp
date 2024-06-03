@@ -10,7 +10,7 @@
 
 <?php if (!empty($item[$count_name])) { ?>
     <?php
-        $text = $item[$count_name].' шт.';
+        $text = $this->Frontend->getStockCount($item[$count_name]).' шт.';
         $supplier = $suppliers[$item[$supplier_name]];
 
         $last_digit = $supplier['delivery_time_from'] % 10;
