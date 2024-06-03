@@ -79,7 +79,8 @@
             $stock_out_of_stock_params['original_stock'] = true;
             $stock_out_of_stock_params['prefix'] = ' под заказ: ';
         }
-        echo $this->element('stock_out_of_stock', $stock_out_of_stock_params); ?>
+        if ($product['Product']['stock_count'] < 4 || $product['Product']['in_stock'] == 0) {
+        echo $this->element('stock_out_of_stock', $stock_out_of_stock_params); } ?>
     </div>
 	<div class="boxRightInfo">
 		<?php if ($this->Frontend->canShowTyrePrice($product['Product']['auto'], $product['Product']['not_show_price'])) { ?>
