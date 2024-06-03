@@ -26,7 +26,7 @@
 			}
 		?>
 		<div class="productSeason<?php if ($season=='winter') {echo '2';} elseif ($season=='all') {echo '3';}?>" title="<?php echo $seasons[$season];?>"><?php echo $seasons[$season];?></div>
-		<div class="stud"><?php echo $product['Product']['stud'] ? '<img src="/img/icons/studded.png" alt="шипованная" />' : ''; ?></div>
+		<div class="stud"><?php echo $product['Product']['stud'] ? '<img width="18" height="18" src="/img/icons/studded.png" alt="шипованная" />' : ''; ?></div>
 		<div class="clear"></div>
 		<div class="tableProd">
 			<table cellpadding="0" cellspacing="0">
@@ -68,11 +68,18 @@
 	</div>
     <div class="product__info-instock my-1">
         <?php
-        $in_stock_mark = $product['Product']['in_stock'] ? '<img title="в наличии" alt="в наличии" src="/img/yes.png">' : '';
-        $in_stock_text = $product['Product']['in_stock'] ? 'В наличии: ' : 'Под заказ: ';
-        echo $this->element('stock_places', array('stock_places' => $product['Product'], 'text' => '<div class="namber tyres">'.$in_stock_text.$this->Frontend->getStockCount($product['Product']['stock_count']).' шт. '.$in_stock_mark.'</div>', 'position' => 'right'));
+        $in_stock_mark =  '<img title="в наличии" alt="в наличии" src="/img/yes.png">';
+        $in_stock_text = 'В наличии: ';
+        if ($product['Product']['in_stock'] == 1)
+            echo $this->element('stock_places', array('stock_places' => $product['Product'], 'text' => '<div class="namber tyres">'.$in_stock_text.$this->Frontend->getStockCount($product['stock_count']).' шт. '.$in_stock_mark.'</div>', 'position' => 'right'));
         ?>
-        <?php echo $this->element('stock_out_of_stock', array('item' => $product['Product'], 'prefix' => ', под заказ: ')); ?>
+        <?php
+        $stock_out_of_stock_params = array('item' => $product['Product'], 'prefix' => ' | под заказ: ');
+        if ($product['Product']['in_stock'] != 1) {
+            $stock_out_of_stock_params['original_stock'] = true;
+            $stock_out_of_stock_params['prefix'] = ' под заказ: ';
+        }
+        echo $this->element('stock_out_of_stock', $stock_out_of_stock_params); ?>
     </div>
 	<div class="boxRightInfo">
 		<?php if ($this->Frontend->canShowTyrePrice($product['Product']['auto'], $product['Product']['not_show_price'])) { ?>

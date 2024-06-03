@@ -1,8 +1,17 @@
+<?php
+    $count_name = 'count_out_of_stock';
+    $supplier_name = 'out_of_stock_supplier_id';
 
-<?php if (!empty($item['count_out_of_stock'])) { ?>
+    if (!empty($original_stock)) {
+        $count_name = 'stock_count';
+        $supplier_name = 'supplier_id';
+    }
+?>
+
+<?php if (!empty($item[$count_name])) { ?>
     <?php
-        $text = $item['count_out_of_stock'].' шт.';
-        $supplier = $suppliers[$item['out_of_stock_supplier_id']];
+        $text = $item[$count_name].' шт.';
+        $supplier = $suppliers[$item[$supplier_name]];
 
         $last_digit = $supplier['delivery_time_from'] % 10;
         if (!empty($supplier['delivery_time_to'])) {
@@ -24,7 +33,8 @@
     ?>
 
 <div class="tooltip-places tooltip-places-center tooltip-out-of-stock">
-    <?php echo $prefix.$text; ?><img class="tooltip-out-of-stock-icon" title="Шины под заказ" alt="Шины под заказ" src="/img/delivery.png" width="22" height="16">
+    <?php echo $prefix.$text; ?>
+    <?php if ($hide_icon != true) { ?><img class="tooltip-out-of-stock-icon" title="Шины под заказ" alt="Шины под заказ" src="/img/delivery.png" width="22" height="16"><?php } ?>
         <div class="tooltiptext">
             <span class="tooltip-places-title">Время доставки: <?php echo $time; ?></span>
         </div>

@@ -131,7 +131,11 @@ foreach ($models as $item) {
                                     $url = array('controller' => 'tyres', 'action' => 'view', 'slug' => $item['Brand']['slug'], 'id' => $item['Product'][0]['id']);
                                     ?>
                                 </h3>
-                                <?php echo $this->element('stock_out_of_stock', array('item' => $item['Product'][0])); ?>
+                                <?php
+                                    if ($item['Product'][0]['stock_count'] < 4) {
+                                        echo $this->element('stock_out_of_stock', array('item' => $item['Product'][0]));
+                                    }
+                                ?>
                             </div>
                         <?php } ?>
                             <div class="tyre-block__sizes">
@@ -167,7 +171,12 @@ foreach ($models as $item) {
 						</div>
                                 <?php
                                 $in_stock_mark = $item['Product'][0]['in_stock'] ? '<img title="в наличии" alt="в наличии" src="/img/yes.png">' : '';
-                                echo $this->element('stock_places', array('stock_places' => $item['Product'][0], 'text' => '<div class="namber tyres">'.$this->Frontend->getStockCount($item['Product'][0]['stock_count']).' шт. '.$in_stock_mark.'</div>', 'position' => 'left')); ?>
+                                if ($item['Product'][0]['in_stock'] == 1) {
+                                    echo $this->element('stock_places', array('stock_places' => $item['Product'][0], 'text' => '<div class="namber tyres">' . $this->Frontend->getStockCount($item['Product'][0]['stock_count']) . ' шт. ' . $in_stock_mark . '</div>', 'position' => 'left'));
+                                } else {
+                                    echo $this->element('stock_out_of_stock', array('item' => $item['Product'][0], 'original_stock' => true, 'hide_icon' => true));
+                                }
+                                ?>
                         </div>
                         <div class="product__info">
 						<div class="priceMore tyres">
