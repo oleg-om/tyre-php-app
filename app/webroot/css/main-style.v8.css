@@ -4098,8 +4098,10 @@ table.withlines {
   display: block;
 }
 .tooltip-out-of-stock {
-  height: 20px;
   white-space: nowrap;
+}
+.tooltip-out-of-stock:has(img) {
+  height: 20px;
 }
 .tooltip-out-of-stock .tooltiptext {
   width: 200px;
