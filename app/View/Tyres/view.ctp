@@ -71,7 +71,7 @@
         $in_stock_mark =  '<img title="в наличии" alt="в наличии" src="/img/yes.png">';
         $in_stock_text = 'В наличии: ';
         if ($product['Product']['in_stock'] == 1)
-            echo $this->element('stock_places', array('stock_places' => $product['Product'], 'text' => '<div class="namber tyres">'.$in_stock_text.$this->Frontend->getStockCount($product['stock_count']).' шт. '.$in_stock_mark.'</div>', 'position' => 'right'));
+            echo $this->element('stock_places', array('stock_places' => $product['Product'], 'text' => '<div class="namber tyres">'.$in_stock_text.$this->Frontend->getStockCount($product['Product']['stock_count']).' шт. '.$in_stock_mark.'</div>', 'position' => 'right'));
         ?>
         <?php
         $stock_out_of_stock_params = array('item' => $product['Product'], 'prefix' => ' | под заказ: ');
