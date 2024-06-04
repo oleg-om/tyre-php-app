@@ -4066,8 +4066,12 @@ table.withlines {
   padding: 2px 2px 5px 2px;
   border: 1px solid #316b16;
   background-color: #fff !important;
-  white-space: inherit !important;
   text-align: left !important;
+  max-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 82%;
+  white-space: nowrap;
 }
 
 .tooltip-places .tooltiptext::after {
@@ -4092,6 +4096,18 @@ table.withlines {
   padding-bottom: 5px;
   font-weight: 600;
   display: block;
+}
+.tooltip-out-of-stock {
+  white-space: nowrap;
+}
+.tooltip-out-of-stock:has(img) {
+  height: 20px;
+}
+.tooltip-out-of-stock .tooltiptext {
+  width: 200px;
+}
+.tooltip-out-of-stock-icon {
+  padding-left: 3px;
 }
 .t1, .t2 {
   display: flex;
@@ -4163,6 +4179,10 @@ table.withlines {
   display: flex;
   gap: 5px;
   margin-right: -3px;
+  position: absolute;
+  top: 0;
+  right: 0;
+  z-index: 1;
 }
 .tyre-block__season img {
   width: 23px;

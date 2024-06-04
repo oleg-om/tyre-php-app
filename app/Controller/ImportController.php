@@ -967,6 +967,11 @@ class ImportController extends AppController {
 														'stock_count' => $stock_count,
 														'in_stock' => $in_stock
 													);
+
+                                                    if ($in_stock != 1 && $stock_count != $product['Product']['count_out_of_stock']) {
+                                                        $save_data['count_out_of_stock'] = $stock_count;
+                                                    }
+
 													$this->Product->create();
 													if ($this->Product->save($save_data)) {
 
@@ -3962,7 +3967,25 @@ class ImportController extends AppController {
                                                             }
                                                             if ($in_stock != $product['Product']['in_stock']) {
                                                                 $save_data['in_stock'] = $in_stock;
+
+                                                                if ($in_stock == 1) {
+                                                                    $save_data['count_place_0'] = $autodom_count;
+                                                                    $save_data['count_place_1'] = $tiptop_count;
+                                                                    $save_data['count_place_2'] = $bam_count;
+                                                                    $save_data['count_place_3'] = $atp_count;
+                                                                    $save_data['count_place_4'] = $taksopark_count;
+                                                                    $save_data['count_place_5'] = $vianorshop_count;
+                                                                    $save_data['count_place_6'] = $hundai_count;
+                                                                    $save_data['count_place_7'] = $tavrida_count;
+                                                                    $save_data['count_place_8'] = $gruz_count;
+                                                                }
                                                             }
+                                                            // save supplier data
+                                                            if ($product['Product']['in_stock'] != 1) {
+                                                                $save_data['count_out_of_stock'] = $product['Product']['stock_count'];
+                                                                $save_data['out_of_stock_supplier_id'] = $product['Product']['supplier_id'];
+                                                            }
+                                                            // save supplier data
                                                             if ($season != $product['Product']['season']) {
                                                                 $save_data['season'] = $season;
                                                             }
@@ -3975,6 +3998,7 @@ class ImportController extends AppController {
                                                             if ($stud !== null && $stud != $product['Product']['stud']) {
                                                                 $save_data['stud'] = $stud;
                                                             }
+
                                                             if (!empty($save_data)) {
                                                                 $this->Product->id = $product['Product']['id'];
                                                                 if ($this->Product->save($save_data, false)) {

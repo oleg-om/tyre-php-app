@@ -225,6 +225,12 @@ class AppController extends Controller {
             7 => 'Таврида', 8 => 'Грузовой склад');
 
         $this->set('filter_all_places', $stock_places);
+
+        $stock_places_short = array(0 => 'ул. Мирошника 5, Автодом', 1 => 'ул. Шевякова (район авторынка), Vianor Tip-top', 2 => 'ул. Куль-обинское шоссе 1',
+            3 => 'АТП', 4 => 'ул. Вокзальное шоссе 36, шиномонтаж Таксо', 5 => 'ул. Вокзальное шоссе 44', 6 => 'ул. Чкалова 147А, VIANOR',
+            7 => 'Таврида', 8 => 'Грузовой склад');
+
+        $this->set('filter_all_places_short', $stock_places_short);
 	}
 	private function setCurrencies() {
 		$currencies = Cache::read('currencies', 'long');

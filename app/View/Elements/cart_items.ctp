@@ -58,7 +58,11 @@ foreach ($cart['items'] as $product_id => $count) {
 			$image = $this->Html->image($this->Backend->thumbnail(array('id' => $id, 'filename' => $filename, 'path' => $path, 'width' => 158, 'height' => 158, 'crop' => false, 'folder' => false, 'empty' => '/img/no-bolts-little.jpg')), array('alt' => $title));
 		}
 	}
-	echo '<div class="cart-prod" id="cart-item-' . $product['Product']['id'] . '"><input type="hidden" class="price" value="' . $this->Frontend->calculateCartPrice($product['Product']['price'], $type) . '"><input type="hidden" class="max_items" value="' . $product['Product']['stock_count'] . '"><input type="hidden" class="product_id" value="' . $product['Product']['id'] . '"><a href="javascript:void(0);" onclick="delete_item(' . $product['Product']['id'] . ');" class="delete"></a><div class="img">' . $this->Html->link($image, $url, array('escape' => false)) . '</div><div class="desc"><h3>' . $this->Html->link($title, $url) . '</h3><table cellpadding="0" cellspacing="0"><tr><td class="price">' . $this->Frontend->getCartPrice($product['Product']['price'], $type) . '</td><td><div class="select-namber"><a href="javascript:void(0);" onclick="items_minus_cart(' . $product['Product']['id'] . ');">-</a> <span><input type="text" value="' . $count . '" id="count-' . $product['Product']['id'] . '"> шт.</span> <a href="javascript:void(0);" onclick="items_plus_cart(' . $product['Product']['id'] . ');">+</a></div></td><td class="total">' . $this->Frontend->getCartPrice($product['Product']['price'] * $count, $type) . '</td></tr></table></div><div class="clear"></div></div>';
+    $product_count = $product['Product']['stock_count'];
+    if (isset($product['Product']['count_out_of_stock']) && !empty($product['Product']['count_out_of_stock'])) {
+        $product_count = $product['Product']['stock_count'] + $product['Product']['count_out_of_stock'];
+    }
+	echo '<div class="cart-prod" id="cart-item-' . $product['Product']['id'] . '"><input type="hidden" class="price" value="' . $this->Frontend->calculateCartPrice($product['Product']['price'], $type) . '"><input type="hidden" class="max_items" value="' . $product_count . '"><input type="hidden" class="product_id" value="' . $product['Product']['id'] . '"><a href="javascript:void(0);" onclick="delete_item(' . $product['Product']['id'] . ');" class="delete"></a><div class="img">' . $this->Html->link($image, $url, array('escape' => false)) . '</div><div class="desc"><h3>' . $this->Html->link($title, $url) . '</h3><table cellpadding="0" cellspacing="0"><tr><td class="price">' . $this->Frontend->getCartPrice($product['Product']['price'], $type) . '</td><td><div class="select-namber"><a href="javascript:void(0);" onclick="items_minus_cart(' . $product['Product']['id'] . ');">-</a> <span><input type="text" value="' . $count . '" id="count-' . $product['Product']['id'] . '"> шт.</span> <a href="javascript:void(0);" onclick="items_plus_cart(' . $product['Product']['id'] . ');">+</a></div></td><td class="total">' . $this->Frontend->getCartPrice($product['Product']['price'] * $count, $type) . '</td></tr></table></div><div class="clear"></div></div>';
 }
 $currency_template = '{value}';
 foreach ($currencies as $item) {
@@ -75,7 +79,7 @@ $currency_template = str_replace(array('{before}', '{after}', '{between}'), arra
 <!--
 var currency_template = '<?php echo $currency_template; ?>', round = <?php echo $currency['round']; ?>, round_down = <?php echo intval($currency['round_down']); ?>, decimals = <?php echo intval($currency['decimals']); ?>;
 function items_plus_cart(id) {
-	var items_count = parseInt($('#count-' + id).val().trim()), max_items = parseInt($('#cart-item-' + id + ' .max_items').val()), price = parseFloat($('#cart-item-' + id + ' .price').val().replace(/,/, '.'));
+	var items_count = parseInt($('#count-' + id).val().trim()), max_items = parseInt($('#cart-item-' + id + ' .max_items').val()), price = parseFloat($('#cart-item-' + id + ' .price').val().replace(/,/, '.').replace(' ', ''));
 	if (isNaN(items_count)) {
 		items_count = 0;
 	}
@@ -88,7 +92,7 @@ function items_plus_cart(id) {
 	recount_total();
 }
 function items_minus_cart(id) {
-	var items_count = parseInt($('#count-' + id).val().trim()), max_items = parseInt($('#cart-item-' + id + ' .max_items').val()), price = parseFloat($('#cart-item-' + id + ' .price').val().replace(/,/, '.'));
+	var items_count = parseInt($('#count-' + id).val().trim()), max_items = parseInt($('#cart-item-' + id + ' .max_items').val()), price = parseFloat($('#cart-item-' + id + ' .price').val().replace(/,/, '.').replace(' ', ''));
 	if (isNaN(items_count)) {
 		items_count = 0;
 	}
@@ -118,7 +122,7 @@ function delete_item(id) {
 function recount_total() {
 	var total = 0, params = {}, i = 0;
 	$('.cart-prod input.price').each(function(){
-		var price = parseFloat($(this).val().replace(/,/, '.')), items_count = parseInt($(this).parent().find('input[type=text]').val().trim()), product_id = parseInt($(this).parent().find('.product_id').val());
+		var price = parseFloat($(this).val().replace(/,/, '.').replace(' ', '')), items_count = parseInt($(this).parent().find('input[type=text]').val().trim()), product_id = parseInt($(this).parent().find('.product_id').val());
 		total += round_price(price * items_count);
 		params['data[Product][' + i + '][product_id]'] = product_id;
 		params['data[Product][' + i + '][count]'] = items_count;

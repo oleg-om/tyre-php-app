@@ -13,7 +13,7 @@ if ($value > 0) {
 <?php } ?>
 <script type="text/javascript">
 <!--
-var max_items = <?php echo $product['Product']['stock_count']; ?>;
+var max_items = <?php echo $product['Product']['stock_count'] + $product['Product']['count_out_of_stock']; ?>;
 function items_plus() {
 	var items_count = parseInt($('#items_count').val().trim());
 	if (isNaN(items_count)) {

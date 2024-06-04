@@ -30,7 +30,7 @@
 		</div>
 		<?php } ?>
 		<?php if (!empty($model['Product'][0])) { ?>
-		<div class="stud"><?php echo $model['Product'][0]['stud'] ? '<img src="/img/icons/studded.png" alt="шипованная" />' : ''; ?></div>
+		<div class="stud"><?php echo $model['Product'][0]['stud'] ? '<img width="20" height="20" src="/img/icons/studded.png" alt="шипованная" />' : ''; ?></div>
 		<?php } ?>
 		<div class="clear"></div>
 	</div>
@@ -84,15 +84,25 @@
 				<td class="desc-table"><?php echo h($product['f1'] . $product['f2']) . ' &ndash; ' .  $this->Frontend->getFF($product['f1'], $product['f2']); ?></td>
 				<td class="desc-table">
                     <div class="desc-icons">
-                        <?php echo $product['stud'] ? '<img src="/img/icons/studded.png" alt="шипованная" />' : ''; ?>
+                        <?php echo $product['stud'] ? '<img width="18" height="18" src="/img/icons/studded.png" alt="шипованная" />' : ''; ?>
                         <?php echo $this->element('tyre_icons', array('product' => $product)); ?>
                     </div>
                 </td>
 				<td class="desc-table"><?php
-                    $in_stock_mark = $product['in_stock'] ? '<img title="в наличии" alt="в наличии" src="/img/yes.png">' : '';
-                    $in_stock_text = $product['in_stock'] ? 'В наличии: ' : 'Под заказ: ';
-                    echo $this->element('stock_places', array('stock_places' => $product['stock_places'], 'text' => '<div class="namber tyres">'.$in_stock_text.$this->Frontend->getStockCount($product['stock_count']).' шт. '.$in_stock_mark.'</div>', 'position' => 'right'));
-                    ?></td>
+                    $in_stock_mark =  '<img title="в наличии" alt="в наличии" src="/img/yes.png">';
+                    $in_stock_text = 'В наличии: ';
+                    if ($product['in_stock'] == 1)
+                        echo $this->element('stock_places', array('stock_places' => $product, 'text' => '<div class="namber tyres">'.$in_stock_text.$this->Frontend->getStockCount($product['stock_count']).' шт. '.$in_stock_mark.'</div>', 'position' => 'right'));
+                    ?>
+                    <?php
+                    $stock_out_of_stock_params = array('item' => $product, 'prefix' => ' | под заказ: ');
+                    if ($product['in_stock'] != 1) {
+                        $stock_out_of_stock_params['original_stock'] = true;
+                        $stock_out_of_stock_params['prefix'] = ' под заказ: ';
+                    }
+                    if ($product['stock_count'] < 4 || $product['in_stock'] == 0) {
+                    echo $this->element('stock_out_of_stock', $stock_out_of_stock_params); } ?>
+                </td>
 				<td><strong><?php
 					if ($this->Frontend->canShowTyrePrice($product['auto'], $product['not_show_price'])) {
 						echo $this->Frontend->getPrice($product['price'], 'tyres');

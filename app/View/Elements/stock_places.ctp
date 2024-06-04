@@ -29,7 +29,7 @@ $place_list_filtered = array_filter($place_list);
             <?php
             if ($place_quantity != 0) {
                 echo '<tr>';
-                echo '<td>· '.$filter_all_places[$i].'</td>';
+                echo '<td>· '.$filter_all_places_short[$i].'</td>';
                 echo '<td class="tooltip-places-row-quantity">'.$place_quantity . ' шт.</td>';
                 echo '</tr>';
             }
