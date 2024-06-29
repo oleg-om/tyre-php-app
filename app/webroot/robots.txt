@@ -3,4 +3,4 @@ Allow: /
 
 Clean-param: et_from&et_to&hub&in_stock&in_stock4&brand_id&size1&material&size2&size3&hub_from&hub_to&width_from&width_to&brand_id /disks
 Clean-param: ah_from&ah_to&length_from&length_to&width_from&width_to&height_from /akb
-Clean-param: mode&sort&direction&diameter
+Clean-param: mode&sort&direction&diameter&etext

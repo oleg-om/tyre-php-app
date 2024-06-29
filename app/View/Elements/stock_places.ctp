@@ -8,7 +8,34 @@ if (empty($text)) {
 if (empty($position)) {
     $position = 'center';
 }
-$place_list = array(0 => $stock_places['count_place_0'], 1 => $stock_places['count_place_1'], 2 => $stock_places['count_place_2'], 3 => $stock_places['count_place_3'], 4 => $stock_places['count_place_4'], 5 => $stock_places['count_place_5'], 6 => $stock_places['count_place_6'], 7 => $stock_places['count_place_7'], 8 => $stock_places['count_place_8']);
+$place_list = array();
+if (!empty($stock_places['count_place_0'])) {
+    $place_list[0] = $stock_places['count_place_0'];
+}
+if (!empty($stock_places['count_place_1'])) {
+    $place_list[1] = $stock_places['count_place_1'];
+}
+if (!empty($stock_places['count_place_2'])) {
+    $place_list[2] = $stock_places['count_place_2'];
+}
+if (!empty($stock_places['count_place_3'])) {
+    $place_list[3] = $stock_places['count_place_3'];
+}
+if (!empty($stock_places['count_place_4'])) {
+    $place_list[4] = $stock_places['count_place_4'];
+}
+if (!empty($stock_places['count_place_5'])) {
+    $place_list[5] = $stock_places['count_place_5'];
+}
+if (!empty($stock_places['count_place_6'])) {
+    $place_list[6] = $stock_places['count_place_6'];
+}
+if (!empty($stock_places['count_place_7'])) {
+    $place_list[7] = $stock_places['count_place_7'];
+}
+if (!empty($stock_places['count_place_8'])) {
+    $place_list[8] = $stock_places['count_place_8'];
+}
 $place_list_filtered = array_filter($place_list);
 ?>
 
