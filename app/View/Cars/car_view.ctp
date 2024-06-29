@@ -14,7 +14,7 @@ echo $image;
         <li>Заводская комплектация
             <ul>
                 <?php foreach (array_unique($factory_tyres) as $tyre) {
-                    $filter = $this->Frontend->getTyreParams($tyre, $modification_slug); ?>
+                    $filter = $this->Frontend->getTyreParams($tyre, $modification_slug, FALSE, FALSE, FALSE); ?>
                     <li>Шины <?php echo $this->Html->link($tyre, array('controller' => 'tyres', 'action' => 'index', '?' => $filter), array('escape' => false));?></li>
                 <?php } ?>
             </ul>
@@ -26,7 +26,7 @@ echo $image;
         <li>Тюнинг
             <ul>
                 <?php foreach (array_unique($tuning_tyres) as $tyre) {
-                    $filter = $this->Frontend->getTyreParams($tyre, $modification_slug);?>
+                    $filter = $this->Frontend->getTyreParams($tyre, $modification_slug, FALSE, FALSE, FALSE);?>
                     <li>Шины <?php echo $this->Html->link($tyre, array('controller' => 'tyres', 'action' => 'index', '?' => $filter), array('escape' => false));?></li>
                 <?php } ?>
             </ul>
@@ -44,8 +44,8 @@ echo $image;
                                 <?php
 
                                 foreach ($factory_wheels as $size) {
-                                    $front_filter = $this->Frontend->getDiskParams($size)['front'];
-                                    $back_filter = $this->Frontend->getDiskParams($size)['back'];
+                                    $front_filter = $this->Frontend->getDiskParams($size, FALSE)['front'];
+                                    $back_filter = $this->Frontend->getDiskParams($size, FALSE)['back'];
                                     ?>
                                     <li>
                                     <span class="<?php if ($front_filter['is_active'] == 1) { echo 'is_active'; }?>">

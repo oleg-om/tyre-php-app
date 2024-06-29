@@ -2481,8 +2481,10 @@ endforeach;
             $this->set('car_brand', $car_brand);
             $this->set('modification_slug',$modification_slug);
 
-            $material = $this->request->query['material'];
-            $this->set('material', $material);
+            if (!empty($this->request->query['material'])) {
+                $material = $this->request->query['material'];
+                $this->set('material', $material);
+            }
 
             $car_factory_sizes = $this->CarWheels->find('all', array('conditions' => array('CarWheels.modification_slug' => $modification_slug, 'CarWheels.factory' => 1)));
 
@@ -2595,7 +2597,9 @@ endforeach;
 
             $this->set('size1', $this->request->query['size1']);
             $this->set('size2', $this->request->query['size2']);
-            $this->set('size3', $this->request->query['size3']);
+            if (!empty($this->request->query['size3'])) {
+                $this->set('size3', $this->request->query['size3']);
+            }
         }
     }
 }

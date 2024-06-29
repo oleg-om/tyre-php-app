@@ -410,7 +410,10 @@ class CarsController extends AppController {
 
             $this->set('factory_akb', $factory_akb);
             $this->set('tuning_akb', $tuning_akb);
-            $this->set('start_stop', $this->request->query['start_stop']);
+            if (!empty($this->request->query['start_stop'])) {
+                $this->set('start_stop', $this->request->query['start_stop']);
+            }
+
 
             $this->set('car_image', $car_generation['CarGeneration']['image_default']);
 
