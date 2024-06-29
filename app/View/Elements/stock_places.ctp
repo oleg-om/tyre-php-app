@@ -1,6 +1,6 @@
 <?php
 if (empty($stock_places)) {
-    $stock_places = '';
+    $stock_places = array();
 }
 if (empty($text)) {
     $text = '';

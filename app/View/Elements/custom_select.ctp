@@ -18,6 +18,8 @@ if (empty($options)) {
     $options = array();
 }
 
+$output = array();
+
 foreach ($options as $index => $option) {
     $output[] = array('label' => $add_prefix.$option, 'value' => $index);
 }
