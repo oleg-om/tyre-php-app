@@ -51,7 +51,14 @@
                 </a>
             </div>
         <?php endif ?>
-
+        <?php
+        if (empty($season)) {
+            $season = '';
+        }
+        if (empty($material)) {
+            $material = '';
+        }
+        ?>
 
 
         <script>

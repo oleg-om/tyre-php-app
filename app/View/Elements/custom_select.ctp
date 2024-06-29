@@ -17,6 +17,18 @@ if (empty($placeholder)) {
 if (empty($options)) {
     $options = array();
 }
+if (empty($add_prefix)) {
+    $add_prefix = '';
+}
+if (empty($options_postfix)) {
+    $options_postfix = '';
+}
+if (empty($options_prefix)) {
+    $options_prefix = '';
+}
+if (empty($hideClearButton)) {
+    $hideClearButton = '';
+}
 
 $output = array();
 
