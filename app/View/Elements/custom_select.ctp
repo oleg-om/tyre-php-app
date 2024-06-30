@@ -29,6 +29,9 @@ if (empty($options_prefix)) {
 if (empty($hideClearButton)) {
     $hideClearButton = '';
 }
+if (empty($modification_slug)) {
+    $modification_slug = '';
+}
 
 $output = array();
 

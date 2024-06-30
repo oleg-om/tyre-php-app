@@ -3,22 +3,26 @@
         <div class="car__sizes__info">
             <div class="car__sizes__diameters">
                 <?php
-                $diameters = $car_diameters;
-                sort($diameters);
+                $diameters = array();
+                if (!empty($car_diameters) && is_array($car_diameters)) {
+                    $diameters = $car_diameters;
+                    sort($diameters);
+                }
+                if (is_array($diameters) && !empty($diameters)) {
                 foreach ($diameters as $diameter) { ?>
                     <?php
                     $diameter_filter = array('modification' => $modification_slug, 'diameter' => $diameter, 'material' => $material);
                     $diameter_class = $diameter == 'R'.$size1 ? 'active-diameter' : '';
 
                     echo $this->Html->link($diameter, array('controller' => 'disks', 'action' => 'index', '?' => $diameter_filter), array('escape' => false, 'class' => $diameter_class));?>
-                <?php } ?>
+                <?php }} ?>
             </div>
             <?php if (!empty($car_factory_sizes)) { ?>
                 <div class="car__sizes__wrapper">
                     <div class="car__sizes__title">Заводская комплектация</div>
                     <ul class="car__sizes__list">
                         <?php
-
+                        if (is_array($car_factory_sizes) && !empty($car_factory_sizes)) {
                         foreach ($car_factory_sizes as $size) {
                             $front_filter = $this->Frontend->getDiskParams($size, $material)['front'];
                             $back_filter = $this->Frontend->getDiskParams($size, $material)['back'];
@@ -29,7 +33,7 @@
                                     </span>
                                 <?php if ($size['CarWheels']['kit'] == 1) { ?>, <span class="<?php if ($back_filter['is_active'] == 1) { echo 'is_active'; }?>">задние <?php echo $this->Html->link($size['CarWheels']['back_axle_title'], array('controller' => 'disks', 'action' => 'index', '?' => $back_filter), array('escape' => false));?></span><?php } ?>
                             </li>
-                        <?php } ?>
+                        <?php }} ?>
                     </ul>
 
                 </div>

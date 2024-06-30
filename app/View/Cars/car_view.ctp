@@ -64,8 +64,8 @@ echo $image;
                             <ul>
                                 <?php
                                 foreach ($tuning_wheels as $size) {
-                                    $front_filter = $this->Frontend->getDiskParams($size)['front'];
-                                    $back_filter = $this->Frontend->getDiskParams($size)['back']; ?>
+                                    $front_filter = $this->Frontend->getDiskParams($size, FALSE)['front'];
+                                    $back_filter = $this->Frontend->getDiskParams($size, FALSE)['back']; ?>
                                     <li>
                                     <span class="<?php if ($front_filter['is_active'] == 1) { echo 'is_active'; }?>">
                                         <?php if ($front_filter['is_active'] == 1 || $back_filter['is_active'] == 1) { echo '• '; }?><?php if ($size['CarWheels']['kit'] == 1) { echo 'Передние'; } else echo 'Диски'; ?> <?php echo $this->Html->link($size['CarWheels']['front_axle_title'], array('controller' => 'disks', 'action' => 'index', '?' => $front_filter), array('escape' => false));?>

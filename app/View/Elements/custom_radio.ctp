@@ -36,6 +36,12 @@ if (empty($size)) {
             <?php } ?>
             <?php echo $option['label']; ?>
 
+            <?php
+                if (empty($option['checked'])) {
+                    $option['checked'] = FALSE;
+                }
+            ?>
+
             <input type="radio" name="<?php echo $option['query']; ?>" id="<?php echo $index; ?>" value="<?php echo $index; ?>" <?php echo $option['checked']; ?> />
             <span class="checkmark"></span>
         </label>

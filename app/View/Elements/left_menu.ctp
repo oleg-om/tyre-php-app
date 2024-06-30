@@ -465,6 +465,11 @@
                 </div>
                 <div class="item item2">
                     <div class="item-group">
+                        <?php
+                            if (empty($modification_slug)) {
+                                $modification_slug = '';
+                            }
+                        ?>
                         <?php echo $this->element('custom_select', array('label' => 'Длина', 'disabled' => $modification_slug, 'placeholder' => 'От', 'add_prefix' => 'От: ', 'auto_add_options' => true, 'name' => 'length_from', 'options' => $akb_length, 'multiple' => false, 'search' => false, 'hideClearButton' => true)); ?>
                         <?php echo $this->element('custom_select', array('label' => 'Ширина', 'disabled' => $modification_slug, 'placeholder' => 'От', 'add_prefix' => 'От: ', 'auto_add_options' => true, 'name' => 'width_from', 'options' => $akb_width, 'multiple' => false, 'search' => false, 'hideClearButton' => true)); ?>
                         <?php echo $this->element('custom_select', array('label' => 'Высота', 'placeholder' => 'От', 'auto_add_options' => true, 'add_prefix' => 'От: ', 'name' => 'height_from', 'options' => $akb_height, 'multiple' => false, 'search' => false, 'hideClearButton' => true)); ?>
