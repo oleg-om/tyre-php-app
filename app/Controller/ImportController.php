@@ -3332,8 +3332,8 @@ class ImportController extends AppController {
                                     // $taksopark_count = trim($data->sheets[0]['cells'][$i][19]);
                                     $vianorshop_count = trim($data->sheets[0]['cells'][$i][20]);
                                     $hundai_count = trim($data->sheets[0]['cells'][$i][21]);
-                                    $tavrida_count = trim($data->sheets[0]['cells'][$i][23]);
-                                    $gruz_count = trim($data->sheets[0]['cells'][$i][24]);
+                                    $tavrida_count = trim($data->sheets[0]['cells'][$i][22]);
+                                    $gruz_count = trim($data->sheets[0]['cells'][$i][23]);
 
                                     if (empty($autodom_count)) {
                                         $autodom_count = 0;
