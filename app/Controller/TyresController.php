@@ -159,13 +159,20 @@ class TyresController extends AppController {
 
 
 
-    public function check_truck() {
-        $is_truck_page = $this->request->query['auto'] == 'trucks';
+    public function check_truck($auto) {
+        $is_truck_page = $this->request->query['auto'] == 'trucks' || $this->request->query['auto'] == 'agricultural' || $this->request->query['auto'] == 'special';
 
         $path = 'tyres';
         if ($is_truck_page) {
             $path = 'truck-tyres';
         }
+
+        if (!empty($auto)) {
+            if ($auto === 'trucks' || $auto === 'agricultural' || $auto === 'special') {
+                $path = 'truck-tyres';
+            }
+        }
+
         return array('path' => $path);
     }
 
@@ -226,8 +233,13 @@ class TyresController extends AppController {
         //print_r($conditions);
 
 
-
         $product_conditions = $conditions = $this->get_conditions($conditions);
+
+        if (empty($this->request->query['size1']) && empty($this->request->query['size2']) && empty($this->request->query['size3']) && (empty($this->request->query['auto']) || $this->request->query['auto'] === 'cars')) {
+            $conditions['Product.size1'] = 205;
+            $conditions['Product.size2'] = 55;
+            $conditions['Product.size3'] = 16;
+        }
 
         $show_size = false;
         if (isset($conditions['Product.size1']) && isset($conditions['Product.size2']) && isset($conditions['Product.size3'])) {
@@ -966,6 +978,25 @@ class TyresController extends AppController {
                     $meta_keywords = $model['BrandModel']['meta_keywords'];
                     $meta_description = $model['BrandModel']['meta_description'];
                     $this->set('model', $model);
+
+                    if (!empty($model_id) && !empty($model['Product'][0]['auto'])) {
+                        $auto = $model['Product'][0]['auto'];
+
+                        if ($auto == 'trucks') {
+                            $title = 'Грузовые шины';
+                            $filter = array('auto' => $auto);
+                        }
+                        elseif ($auto == 'agricultural') {
+                            $title = 'Сельхоз шины';
+                            $filter = array('auto' => $auto);
+                        }
+
+                        $breadcrumbs[0] = array(
+                            'url' => array('controller' => 'tyres', 'action' => 'index', '?' => array('auto' => $auto)),
+                            'title' => $title
+                        );
+                    }
+
                     $this->set('show_left_menu', false);
                     $render = 'model';
                 }
@@ -1020,6 +1051,7 @@ class TyresController extends AppController {
                 $this->set('models', $models);
                 $this->set('show_left_filter', true);
             }
+
             $this->set('breadcrumbs', $breadcrumbs);
 
             $this->set('filter', array_filter($this->request->query));
@@ -1029,7 +1061,7 @@ class TyresController extends AppController {
             $this->setMeta('description', $meta_description);
             $this->set('sort', $sort);
             $this->set('brand', $brand);
-            $path = $this->check_truck()['path'];
+            $path = $this->check_truck($auto)['path'];
             $this->set('active_menu', $path);
 
             $this->set('current_auto', $auto);
@@ -1219,7 +1251,7 @@ class TyresController extends AppController {
                 $this->setMeta('description', $product['BrandModel']['meta_description']);
                 $this->set('brand', $brand);
                 $this->set('product', $product);
-                $path = $this->check_truck()['path'];
+                $path = $this->check_truck($product['Product']['auto'])['path'];
                 $this->set('active_menu', $path);
                 $this->set('current_auto', $auto);
                 $this->set('show_left_menu', false);

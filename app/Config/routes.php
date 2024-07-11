@@ -695,6 +695,14 @@ Router::connect(
     )
 );
 
+Router::connect(
+    '/trucks',
+    array(
+        'controller' => 'trucks',
+        'action' => 'index'
+    )
+);
+
 //Router::connect('/*', array('controller' => 'Errors', 'action' => 'error404')); 
 
 
