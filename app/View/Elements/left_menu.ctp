@@ -196,13 +196,11 @@
                     <div class="item-group">
                         <?php echo $this->element('custom_select', array('label' => 'Тип авто', 'name' => 'auto', 'options' => $filter_auto, 'multiple' => false, 'search' => false)); ?>
                     </div>
-                    <div class="item-inner axis-select">
-                        <label class="name" for="ProductAxis">Ось:</label>
-                        <div class="inp"><?php
-                        echo $this->Form->input('axis', array('type' => 'select', 'label' => false, 'options' => $tyre_axis, 'empty' => array('' => 'Все'), 'div' => false, 'class' => 'sel-style1 filter-select'));
-                        ?></div>
-                        <div class="clear"></div>
+                    <?php if ($active_menu === 'truck-tyres') { ?>
+                    <div class="item-group">
+                        <?php echo $this->element('custom_select', array('label' => 'Ось', 'placeholder' => 'Все', 'auto_add_options' => true, 'name' => 'axis', 'options' => $tyre_axis, 'multiple' => false, 'search' => false, 'hideClearButton' => true)); ?>
                     </div>
+                    <?php } ?>
                     <div class="item-group">
                         <?php echo $this->element('custom_select', array('label' => 'Ширина', 'placeholder' => 'Все', 'auto_add_options' => true, 'name' => 'size1', 'options' => $tyre_size1, 'multiple' => false, 'search' => false, 'hideClearButton' => true)); ?>
                         <?php echo $this->element('custom_select', array('label' => 'Длина', 'placeholder' => 'Все', 'auto_add_options' => true, 'name' => 'size2', 'options' => $tyre_size2, 'multiple' => false, 'search' => false, 'hideClearButton' => true)); ?>

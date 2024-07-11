@@ -40,7 +40,7 @@ if (empty($current_season)) {
 					<li<?php if ($active_menu == 'tyres') { ?> class="activ"<?php } ?>><a href="/tyres<?php if (!empty($modification)) { echo '?modification='.$modification; } else { echo CONST_DEFAULT_TYRES_PATH; } ?>">Шины</a></li>
 					<li<?php if ($active_menu == 'disks') { ?> class="activ"<?php } ?>><a href="/disks<?php if (!empty($modification)) { echo '?modification='.$modification; } else { echo CONST_DEFAULT_DISKS_PATH; } ?>">Диски</a></li>
 					<li<?php if ($active_menu == 'akb') { ?> class="activ"<?php } ?>><a href="/akb<?php if (!empty($modification)) { echo '?modification='.$modification; } else { echo CONST_DEFAULT_AKB_PATH; } ?>">АКБ</a></li>
-					<li<?php if ($active_menu == 'sales') { ?> class="activ"<?php } ?>><a href="/page-sales">Масла</a></li>
+					<li<?php if ($active_menu == 'truck-tyres' || $active_menu == 'truck-wheels') { ?> class="activ"<?php } ?>><a href="/tyres?auto=trucks">Грузовые авто</a></li>
 					<li<?php if ($active_menu == 'selection') { ?> class="activ"<?php } ?>><a href="/selection">Подбор</a></li>
 					<li<?php if ($active_menu == 'stations') { ?> class="activ"<?php } ?>><a href="/page-stations">Сервис</a></li>
 					<li<?php if ($active_menu == 'contacts') { ?> class="activ"<?php } ?>><a href="/page-contacts">8 центров</a></li>

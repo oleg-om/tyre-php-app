@@ -159,7 +159,15 @@ class TyresController extends AppController {
 
 
 
+    public function check_truck() {
+        $is_truck_page = $this->request->query['auto'] == 'trucks';
 
+        $path = 'tyres';
+        if ($is_truck_page) {
+            $path = 'truck-tyres';
+        }
+        return array('path' => $path);
+    }
 
 
     public function index(){
@@ -180,7 +188,7 @@ class TyresController extends AppController {
 
         $this->request->data['Product']['mode'] = $mode;
         $this->set('mode', $mode);
-        $auto = 'cars';
+        $auto = $this->request->query['auto'];
         $this->loadModel('Brand');
         $this->loadModel('BrandModel');
         $this->loadModel('Product');
@@ -444,7 +452,8 @@ class TyresController extends AppController {
         $this->setMeta('title', $meta_title);
         $this->setMeta('keywords', $meta_keywords);
         $this->setMeta('description', $meta_description);
-        $this->set('active_menu', 'tyres');
+        $path = $this->check_truck()['path'];
+        $this->set('active_menu', $path);
         $this->set('show_left_filter', true);
         $this->set('current_auto', $auto);
         $this->set('sort', $sort);
@@ -1020,7 +1029,8 @@ class TyresController extends AppController {
             $this->setMeta('description', $meta_description);
             $this->set('sort', $sort);
             $this->set('brand', $brand);
-            $this->set('active_menu', 'tyres');
+            $path = $this->check_truck()['path'];
+            $this->set('active_menu', $path);
 
             $this->set('current_auto', $auto);
             $this->set('additional_js', array('lightbox', 'functions', 'slider'));
@@ -1209,7 +1219,8 @@ class TyresController extends AppController {
                 $this->setMeta('description', $product['BrandModel']['meta_description']);
                 $this->set('brand', $brand);
                 $this->set('product', $product);
-                $this->set('active_menu', 'tyres');
+                $path = $this->check_truck()['path'];
+                $this->set('active_menu', $path);
                 $this->set('current_auto', $auto);
                 $this->set('show_left_menu', false);
             }
@@ -1580,7 +1591,8 @@ class TyresController extends AppController {
 
         $this->set('new', $new);
         $this->set('popular', $popular);
-        $this->set('active_menu', 'tyres');
+        $path = $this->check_truck()['path'];
+        $this->set('active_menu', $path);
         $this->set('show_left_menu', true);
     }
 }
