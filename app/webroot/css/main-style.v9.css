@@ -4372,3 +4372,33 @@ table.withlines {
 .item-inner-m-0 .checkbox__container {
   margin: 0;
 }
+
+.truck-switch {
+  background-color: #eee;
+  padding: 10px;
+  margin-bottom: 20px;
+  margin-top: 10px;
+}
+.truck-switch__items {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 30px;
+}
+.truck-switch__item {
+  display: flex;
+  text-align: center;
+  gap: 10px;
+  font-size: 18px;
+  align-items: center;
+  padding: 5px;
+  border-radius: 10px;
+  overflow: hidden;
+}
+.truck-switch__item:hover {
+  opacity: 0.7;
+}
+.truck-switch__item.active {
+  background-color: #ffffff;
+  border-bottom: 3px solid #4ca123;
+}

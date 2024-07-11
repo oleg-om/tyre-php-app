@@ -1627,4 +1627,9 @@ class TyresController extends AppController {
         $this->set('active_menu', $path);
         $this->set('show_left_menu', true);
     }
+
+    public function trucks() {
+        $this->set('active_menu', 'truck-tyres');
+        $this->set('show_left_menu', true);
+    }
 }
