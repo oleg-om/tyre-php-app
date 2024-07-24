@@ -1607,6 +1607,10 @@ endforeach;
         if (isset($this->request->query['stock_place']) && $this->request->query['stock_place'] != '') {
             $conditions['Product.count_place_'.$this->request->query['stock_place'].' >='] = 1;
         }
+
+        if (empty($this->request->query['size1']) && empty($this->request->query['size3']) && empty($this->request->query['material']) && (empty($this->request->query['auto']) || $this->request->query['auto'] === 'cars')) {
+            $conditions['Product.size1'] = 18;
+        }
 		
 		$this->request->data['Product'] = $this->request->query;
 		$mode = 'block';

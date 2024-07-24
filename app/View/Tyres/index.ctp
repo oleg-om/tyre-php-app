@@ -14,15 +14,20 @@ if (!empty($brand['Brand']['slug'])) {
 }
 $this->Paginator->options(array('url' => $url));
 ?>
+<?php if ($active_menu != 'truck-tyres') { ?>
 <h1 class="title">Шины <?php if (!empty($brand['Brand']['slug']))
     echo $brand['Brand']['title'] ?>
     <?php if (!empty($car_brand['CarBrand']['slug']))
     echo ' на ' . $car_brand['CarBrand']['title'] . ' ' . $car_model['CarModel']['title'] . ' ' . $car_generation['CarGeneration']['title'] . ' ' . $car_modification['CarModification']['title'] ?>
 </h1>
-<?php if (empty($modification_slug)) { ?>
+<?php } ?>
+<?php if (empty($modification_slug) && $active_menu == 'tyres') { ?>
 <h3 class="tyres-free-header"><img src="/img/icons/free-tyremount.png" alt="Шиномонтаж бесплатно" />При покупке 4 шин
     шиномонтаж бесплатно!</h3>
 <?php } ?>
+
+<?php if ($active_menu == 'truck-tyres') echo $this->element('truck_switch'); ?>
+
 
 <?php echo $this->element('tyre_car', array('modification_slug' => $modification_slug, 'diameters' => $diameters, 'car_sizes' => $car_sizes, 'season' => $season, 'size3' => $size3, 'size1' => $size1, 'size2' => $size2, 'factory_sizes' => $factory_sizes, 'tuning_sizes' => $tuning_sizes))?>
 

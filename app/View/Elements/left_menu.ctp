@@ -1,15 +1,15 @@
 <div class="left-nav left-nav-open" id="left-nav-filter">
     <div class="left-nav__sticky">
-
-
         <?php
         if (empty(isset($show_switch_params_and_auto))) {
             $show_switch_params_and_auto = true;
 
         }
+
+        $is_truck_tyres = $active_menu === 'truck-tyres';
         ?>
 
-        <?php if ($show_switch_params_and_auto == true): ?>
+        <?php if ($show_switch_params_and_auto == true && !$is_truck_tyres): ?>
             <div class="title__switch">
                 <div class="left-nav__switch">
                     <a href="javascript:void(0);" onclick="switchTab('params');" id="left-nav__switch__button-params" class="left-nav__switch__button <?php if (empty($modification_slug)) {
@@ -17,11 +17,13 @@
                     } ?>">
                         По параметрам
                     </a>
+                    <?php if (!$is_truck_tyres) { ?>
                     <a href="javascript:void(0);" onclick="switchTab('auto');" id="left-nav__switch__button-auto" class="left-nav__switch__button <?php if (!empty($modification_slug)) {
                         echo 'active';
                     } ?>">
                         По авто
                     </a>
+                    <?php } ?>
                 </div>
                 <a href="javascript:void(0);" onclick="switchFilter();" class="left-nav__button">
                     <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="#ffffff">
@@ -171,6 +173,7 @@
             <div class="filter-group tyres" id="filter" style="<?php if (!empty($modification_slug)) {
                 echo 'display: none';
             } ?>">
+                <?php if (!$is_truck_tyres) { ?>
                 <button type="reset" class="filter-reset" id="filter-reset" onclick="resetTyresFilter()">Сбросить
                     фильтр<span>x</span>
                     <script type="text/javascript">
@@ -179,6 +182,7 @@
                         }
                     </script>
                 </button>
+                <?php } ?>
                 <?php
                 $url = array('controller' => 'tyres', 'action' => 'index');
 
@@ -194,24 +198,39 @@
                 ?>
                 <div class="item">
                     <div class="item-group">
-                        <?php echo $this->element('custom_select', array('label' => 'Тип авто', 'name' => 'auto', 'options' => $filter_auto, 'multiple' => false, 'search' => false)); ?>
+                        <?php
+                            $type_filter_options = $filter_light_auto;
+                            $hide_auto_all_option = false;
+                            if ($is_truck_tyres) {
+                                $type_filter_options = $filter_truck_auto;
+                                $hide_auto_all_option = true;
+                            }
+                            echo $this->element('custom_select', array('label' => 'Тип авто', 'name' => 'auto', 'options' => $type_filter_options, 'multiple' => false, 'search' => false, 'hide_all_option' => $hide_auto_all_option)); ?>
                     </div>
-                    <div class="item-inner axis-select">
-                        <label class="name" for="ProductAxis">Ось:</label>
-                        <div class="inp"><?php
-                        echo $this->Form->input('axis', array('type' => 'select', 'label' => false, 'options' => $tyre_axis, 'empty' => array('' => 'Все'), 'div' => false, 'class' => 'sel-style1 filter-select'));
-                        ?></div>
-                        <div class="clear"></div>
+                    <?php
+                    $auto_query = $this->request->query['auto'];
+                    if ($is_truck_tyres && $this->request->query['auto'] === 'trucks') { ?>
+                    <div>
+                        <?php
+                        $axes_options = array();
+                        foreach ($tyre_axis as $i => $axes_item) {
+                            $axes_options[$i] = array('label' => $axes_item, 'query' => 'axis');
+                        }
+                        echo $this->element('custom_radio', array('label' => 'Ось:', 'options' => $axes_options, 'direction' => 'vertical', 'hide_all_option' => true));
+                        ?>
                     </div>
+                    <?php } ?>
                     <div class="item-group">
                         <?php echo $this->element('custom_select', array('label' => 'Ширина', 'placeholder' => 'Все', 'auto_add_options' => true, 'name' => 'size1', 'options' => $tyre_size1, 'multiple' => false, 'search' => false, 'hideClearButton' => true)); ?>
                         <?php echo $this->element('custom_select', array('label' => 'Длина', 'placeholder' => 'Все', 'auto_add_options' => true, 'name' => 'size2', 'options' => $tyre_size2, 'multiple' => false, 'search' => false, 'hideClearButton' => true)); ?>
                         <?php echo $this->element('custom_select', array('label' => 'Диаметр', 'placeholder' => 'Все', 'auto_add_options' => true, 'name' => 'size3', 'options' => $tyre_size3, 'multiple' => false, 'search' => false, 'hideClearButton' => true)); ?>
                     </div>
-                    <?php
-                    $season_main_options = array('summer' => array('label' => 'Летние', 'query' => 'season', 'icon' => '/img/icons/season-summer.png'), 'winter' => array('label' => 'Зимние', 'query' => 'season', 'icon' => '/img/icons/season-winter.png'));
-                    echo $this->element('custom_radio', array('label' => 'Сезон:', 'options' => $season_main_options));
-                    ?>
+
+                    <div class="<?php if ($is_truck_tyres) { echo 'd-none'; } ?>">
+                        <?php
+                        $season_main_options = array('summer' => array('label' => 'Летние', 'query' => 'season', 'icon' => '/img/icons/season-summer.png'), 'winter' => array('label' => 'Зимние', 'query' => 'season', 'icon' => '/img/icons/season-winter.png'));
+                        echo $this->element('custom_radio', array('label' => 'Сезон:', 'options' => $season_main_options));
+                        ?>
                     <div class="item-inner-m-0">
                         <?php
                         $season_all_option = array('all' => array('label' => 'Всесезонные', 'query' => 'season', 'icon' => '/img/icons/season-all.png'));
@@ -228,6 +247,7 @@
                     $extra_options = array('in_stock4' => array('label' => 'Более 4'));
                     echo $this->element('custom_checkbox', array('options' => $extra_options));
                     ?>
+                    </div>
                     <div class="item-group">
                         <?php echo $this->element('custom_select', array('label' => 'Пункт выдачи', 'name' => 'stock_place', 'options' => $filter_all_places, 'multiple' => false)); ?>
                     </div>

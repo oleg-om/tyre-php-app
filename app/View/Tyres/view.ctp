@@ -40,6 +40,12 @@
 					<th>Индекс скорости / нагрузки</th>
 					<td><?php echo h($product['Product']['f1'] . $product['Product']['f2']) . $this->Frontend->getFF($product['Product']['f1'], $product['Product']['f2']); ?></td>
 				</tr>
+                <?php if (!empty($product['Product']['axis'])) { ?>
+                <tr>
+                    <th>Ось</th>
+                    <td><?php echo $product['Product']['axis']; ?></td>
+                </tr>
+                <?php } ?>
 				<tr>
 					<th>Тип автомобиля</th>
 					<td>

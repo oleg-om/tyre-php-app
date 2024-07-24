@@ -216,9 +216,10 @@ class AppController extends Controller {
 				define('CONST_' . $key, $value);
 			}
 		}
-        define('CONST_DEFAULT_TYRES_PATH', '?auto=&axis=&size1=205&size2=55&size3=16&season=&brand_id=&stud=0&in_stock4=0&in_stock=2&upr_all=1');
-        define('CONST_DEFAULT_DISKS_PATH', '?size3=&size1=18&material=&et_from=&et_to=&size2=&hub=&brand_id=&in_stock4=0&in_stock=2');
+        define('CONST_DEFAULT_TYRES_PATH', '?auto=&axis=&size1=&season=&brand_id=&stud=0&in_stock4=0&in_stock=2&upr_all=1');
+        define('CONST_DEFAULT_DISKS_PATH', '?size3=&size1=&material=&et_from=&et_to=&size2=&hub=&brand_id=&in_stock4=0&in_stock=2');
         define('CONST_DEFAULT_AKB_PATH', '?ah_from=60&current=&f1=&width=&length=&height=&brand_id=');
+        define('CONST_DEFAULT_TRUCK_TYRES_PATH', '?auto=trucks&in_stock4=0&in_stock=2&upr_all=1');
 
         $stock_places = array(0 => 'ул. Мирошника 5, Автодом', 1 => 'ул. Шевякова (район авторынка), Vianor Tip-top', 2 => 'ул. Куль-обинское шоссе 1, MICHELIN',
             3 => 'АТП', 4 => 'ул. Вокзальное шоссе 36, шиномонтаж Таксо', 5 => 'ул. Вокзальное шоссе 44, VIANOR', 6 => 'ул. Чкалова 147А, VIANOR',
@@ -876,6 +877,12 @@ class AppController extends Controller {
 	}
 
 	protected function _filter_params($filter_conditions = null) {
+        $truck_cars = array('trucks','agricultural','special','loader');
+        $usual_cars = array('cars','light_trucks');
+        $auto_query = $this->request->query['auto'];
+        $is_truck_cars = $auto_query == 'trucks' || $auto_query == 'agricultural' || $auto_query == 'special' || $auto_query == 'loader';
+        $is_usual_cars = empty($auto_query) || $auto_query == 'cars' || $auto_query == 'light_trucks';
+
 		$this->loadModel('Product');
 		$this->Product->bindModel(
 			array(
@@ -898,26 +905,30 @@ class AppController extends Controller {
 		
 		
 		if (empty($tyre_size1)) {
-
 			$temp_cond = $conditions;
 			unset($temp_cond['Product.size1']);
 //			echo"111111111";
 			
-			//*********** Вывод в фильтре кроме .... при выборе auto => все
-			if(empty($this->request->query['auto'])):
-				//$temp_cond['AND'] = array('Product.auto !=' => array('trucks','agricultural','special'));
-				$temp_cond['AND'] = array('Product.auto !=' => array('trucks','special'));
+			//*********** Вывод в фильтре кроме .... при выборе auto => все ... сортируем по типу авто
+			if($is_usual_cars):
+				$temp_cond['AND'] = array('Product.auto !=' => $truck_cars);
 			endif;
-			//*********** Вывод в фильтре кроме .... при выборе auto => все
+            if($is_truck_cars):
+                $temp_cond['AND'] = array('Product.auto !=' => $usual_cars);
+                $temp_cond = array('Product.auto' => $auto_query);
+            endif;
+			//*********** Вывод в фильтре кроме .... при выборе auto => все ... сортируем по типу авто
 			
 			//print_r($temp_cond);
 			$products = $this->Product->find('all', array('conditions' => $temp_cond, 'fields' => 'DISTINCT Product.size1', 'order' => 'Product.size1'));
 			
 			$tyre_size1 = array();
+
 			foreach ($products as $item) {
 				$size = number_format(str_replace(',', '.', $item['Product']['size1']), 2, '.', '');
 				$size = str_replace('.00', '', $size);
 				$tyre_size1[$size] = $size;
+
 			}
 			natsort($tyre_size1);
 			unset($tyre_size1[0]);
@@ -930,6 +941,17 @@ class AppController extends Controller {
 		if (empty($tyre_size2)) {
 			$temp_cond = $conditions;
 			unset($temp_cond['Product.size2']);
+
+            //*********** Вывод в фильтре кроме .... при выборе auto => все ... сортируем по типу авто
+            if($is_usual_cars):
+                $temp_cond['AND'] = array('Product.auto !=' => $truck_cars);
+            endif;
+            if($is_truck_cars):
+                $temp_cond['AND'] = array('Product.auto !=' => $usual_cars);
+                $temp_cond = array('Product.auto' => $auto_query);
+            endif;
+            //*********** Вывод в фильтре кроме .... при выборе auto => все ... сортируем по типу авто
+
 			$products = $this->Product->find('all', array('conditions' => $temp_cond, 'fields' => 'DISTINCT Product.size2', 'order' => 'Product.size2'));
 			$tyre_size2 = array();
 			foreach ($products as $item) {
@@ -937,6 +959,7 @@ class AppController extends Controller {
 				if (!empty($size) && $size != '') {
 					$size = str_replace('.0', '', $size);
 					$tyre_size2[$size] = $size;
+
 				}
 			}
 			natsort($tyre_size2);
@@ -948,6 +971,17 @@ class AppController extends Controller {
 		if (empty($tyre_size3)) {
 			$temp_cond = $conditions;
 			unset($temp_cond['Product.size3']);
+
+            //*********** Вывод в фильтре кроме .... при выборе auto => все ... сортируем по типу авто
+            if($is_usual_cars):
+                $temp_cond['AND'] = array('Product.auto !=' => $truck_cars);
+            endif;
+            if($is_truck_cars):
+                $temp_cond['AND'] = array('Product.auto !=' => $usual_cars);
+                $temp_cond = array('Product.auto' => $auto_query);
+            endif;
+            //*********** Вывод в фильтре кроме .... при выборе auto => все ... сортируем по типу авто
+
 			$products = $this->Product->find('all', array('conditions' => $temp_cond, 'fields' => 'DISTINCT Product.size3', 'order' => 'Product.size3'));
 			$tyre_size3 = array();
 			foreach ($products as $item) {
@@ -987,7 +1021,6 @@ class AppController extends Controller {
 			}
 		}
 		if (empty($auto)) {
-			//print_r($conditions);
 			
 			$temp_cond = $conditions;
 			foreach ($temp_cond as $i => $cond) {
@@ -999,12 +1032,21 @@ class AppController extends Controller {
 			
 			$products = $this->Product->find('all', array('conditions' => $temp_cond, 'fields' => 'DISTINCT(IF(BrandModel.auto IS NULL,Product.auto,BrandModel.auto)) AS auto', 'order' => 'Product.auto'));
 			$auto = array();
+            $truck_auto = array();
+            $light_auto = array();
 			foreach ($products as $item) {
 				if (isset($this->Product->auto[$item[0]['auto']])) {
 					$auto[$item[0]['auto']] = $this->Product->auto[$item[0]['auto']];
+
+                    if (in_array($item[0]['auto'], $truck_cars)) {
+                        $truck_auto[$item[0]['auto']] = $this->Product->auto[$item[0]['auto']];
+                    }
+                    if (in_array($item[0]['auto'], $usual_cars)) {
+                        $light_auto[$item[0]['auto']] = $this->Product->auto[$item[0]['auto']];
+                    }
 				}
 			}
-			//print_r($auto);
+
 		}
 
 		$tyre_axis = array();
@@ -1082,6 +1124,8 @@ class AppController extends Controller {
 			$this->set('tyre_axis', $tyre_axis);
 			$this->set('filter_seasons', $seasons);
 			$this->set('filter_auto', $auto);
+            $this->set('filter_truck_auto', $truck_auto);
+            $this->set('filter_light_auto', $light_auto);
 			$this->set('stud', $stud);
 			$this->set('in_stock', $in_stock);
 			$this->set('in_stock4', $in_stock4);
@@ -1089,6 +1133,7 @@ class AppController extends Controller {
 			$this->set('filter_brands', $brands);
 			$this->set('seasons', $this->Product->seasons);
 			$this->set('auto', $this->Product->auto);
+
 		}
 	}
 	protected function _filter_disc_params($filter_conditions = null) {

@@ -2398,18 +2398,24 @@ class ImportController extends AppController {
 											$season = 'winter';
 											break;
 									}
-									if (in_array($auto_text, array('прицепная', 'рулевая', 'тяга', 'универсальная', 'руль', 'прицеп', 'наварная', 'ведущая', 'руль+тяга', 'тяга+руль', 'наварка ведущая', 'наварка прицеп', 'наварка универ'))) {
+									if (in_array($auto_text, array('прицепная', 'рулевая', 'тяга', 'универсальная', 'руль', 'прицеп', 'наварная', 'ведущая', 'руль+тяга', 'тяга+руль', 'наварка ведущая', 'наварка прицеп', 'наварка универ', 'руль/прицеп', 'карьерная'))) {
 										switch ($auto_text) {
 											case 'прицепная':
 												$auto_text = 'прицеп';
 												break;
+                                            case 'карьерная':
+                                                $auto_text = 'карьерная';
+                                                break;
 											case 'ведущая':
-												$auto_text = 'тяга';
+												$auto_text = 'ведущая';
 												break;
 											case 'руль+тяга':
 											case 'тяга+руль':
 												$auto_text = 'универсальная';
 												break;
+                                            case 'руль/прицеп':
+                                                $auto_text = 'руль/прицеп';
+                                                break;
 											case 'наварка ведущая':
 											case 'наварка прицеп':
 											case 'наварка универ':
@@ -2422,6 +2428,12 @@ class ImportController extends AppController {
 									if ($auto_text == 'с/х') {
 										$auto = 'agricultural';
 									}
+                                    elseif ($auto_text == 'сх') {
+                                        $auto = 'agricultural';
+                                    }
+                                    elseif ($auto_text == 'cельхозтехника') {
+                                        $auto = 'agricultural';
+                                    }
 									elseif ($auto_text == 'легкогрузовая') {
 										$auto = 'light_trucks';
 									}
@@ -2431,6 +2443,9 @@ class ImportController extends AppController {
 									elseif ($auto_text == 'грузовой') {
 										$auto = 'trucks';
 									}
+                                    elseif ($auto_text == 'грузовая') {
+                                        $auto = 'trucks';
+                                    }
 									elseif ($auto_text == 'мото') {
 										$auto = 'moto';
 									}
@@ -2440,6 +2455,24 @@ class ImportController extends AppController {
 									elseif ($auto_text == 'внедорожник') {
 										$auto = 'cars';
 									}
+                                    elseif ($auto_text == 'спецтехника') {
+                                        $auto = 'special';
+                                    }
+                                    elseif ($auto_text == 'спецтранспорт') {
+                                        $auto = 'special';
+                                    }
+                                    elseif ($auto_text == 'индустриальная') {
+                                        $auto = 'special';
+                                    }
+                                    elseif ($auto_text == 'спецтехника(Индустриальная)') {
+                                        $auto = 'special';
+                                    }
+                                    elseif ($auto_text == 'погрузчики') {
+                                        $auto = 'loader';
+                                    }
+                                    elseif ($auto_text == 'погрузчик') {
+                                        $auto = 'loader';
+                                    }
 									$stud = 0;
 									if (isset($data->sheets[0]['cells'][$i][12])) {
 										$stud_text = trim($data->sheets[0]['cells'][$i][12]);
@@ -3639,11 +3672,15 @@ class ImportController extends AppController {
                                     $axis = '';
                                     if (substr_count($axis_text, 'руль+прицеп')) {
                                         $auto = 'trucks';
-                                        $axis = 'универсальная';
+                                        $axis = 'руль/прицеп';
                                     }
                                     elseif (substr_count($axis_text, 'прицеп+руль')) {
                                         $auto = 'trucks';
-                                        $axis = 'универсальная';
+                                        $axis = 'руль/прицеп';
+                                    }
+                                    elseif (substr_count($axis_text, 'руль/прицеп')) {
+                                        $auto = 'trucks';
+                                        $axis = 'руль/прицеп';
                                     }
                                     elseif (substr_count($axis_text, 'тяга+руль')) {
                                         $auto = 'trucks';
@@ -3663,9 +3700,17 @@ class ImportController extends AppController {
                                     }
                                     elseif (substr_count($axis_text, 'руль')) {
                                         $auto = 'trucks';
-                                        $axis = 'руль';
+                                        $axis = 'рулевая';
                                     }
-                                    elseif (substr_count($axis_text, 'универсальная')) {
+                                    elseif (substr_count($axis_text, 'ведущ')) {
+                                        $auto = 'trucks';
+                                        $axis = 'ведущая';
+                                    }
+                                    elseif (substr_count($axis_text, 'карьер')) {
+                                        $auto = 'trucks';
+                                        $axis = 'карьерная';
+                                    }
+                                    elseif (substr_count($axis_text, 'универ')) {
                                         $auto = 'trucks';
                                         $axis = 'универсальная';
                                     }
@@ -3686,8 +3731,20 @@ class ImportController extends AppController {
                                         elseif ($type == 'джип') {
                                             $auto = 'cars';
                                         }
+                                        elseif ($type == 'спецтехника') {
+                                            $auto = 'special';
+                                        }
                                         elseif ($type == 'спецтранспорт') {
                                             $auto = 'special';
+                                        }
+                                        elseif ($type == 'индустриальная') {
+                                            $auto = 'special';
+                                        }
+                                        elseif ($type == 'погрузчики') {
+                                            $auto = 'loader';
+                                        }
+                                        elseif ($type == 'погрузчик') {
+                                            $auto = 'loader';
                                         }
                                     }
                                     $stud = 0;
@@ -4516,6 +4573,7 @@ class ImportController extends AppController {
 							'залишок' => 'stock_count',
 							'сезон' => 'season',
 							'тип' => 'auto',
+                            'авто' => 'auto',
 							'ценовая группа/ номенклатура/ характеристика номенклатуры' => 'title',
 							'маг' => 'price',
 							'мин' => 'price',
@@ -4698,6 +4756,8 @@ class ImportController extends AppController {
 							'з' => 'зимняя',
 							'зимові' => 'зимняя',
 							'літні' => 'летняя',
+                            'летние и всесезонные' => 'всесезонная',
+                            'зимние и всесезонные' => 'всесезонная',
 						);
 						$product_autos = array(
 							'легкова' => 'легковой',
@@ -4706,6 +4766,7 @@ class ImportController extends AppController {
 							'грузовых' => 'грузовой',
 							'грузовой' => 'грузовой',
 							'легкогрузовые' => 'легкогрузовая',
+                            'легкогруз' => 'легкогрузовая',
 							'джипы' => 'легковой',
 							'микроавтобус' => 'легковой',
 							'внедорожник' => 'легковой',
@@ -4718,21 +4779,31 @@ class ImportController extends AppController {
 							'легковi' => 'легковой',
 							'легковантажні' => 'легкогрузовая',
 							'вантажні' => 'грузовой',
+                            'спецтехника(Индустриальная)' => 'индустриальная',
+                            'индустриальная' => 'индустриальная',
+                            'сельхозтехника' => 'с/х',
+                            'сельхозшина' => 'с/х'
 						);
 						$product_axis = array(
-							'ведущая' => 'тяга',
+							'ведущая' => 'ведущая',
+                            '(на ведущую ось)' => 'ведущая',
 							'управляемая' => 'руль',
 							'прицеп' => 'прицеп',
+                            'приц.' => 'прицеп',
 							'универсальная' => 'универсальная',
 							'рулевая/универсальная' => 'универсальная',
 							'прицепная' => 'прицеп',
 							'рулевая' => 'руль',
+                            '(на рулевую ось)' => 'руль',
 							'тяга+руль' => 'универсальная', 
 							'руль+тяга' => 'универсальная',
 							'руль+прицеп' => 'универсальная',
 							'приводная' => 'тяга',
 							'руль' => 'руль',
-							'тяга' => 'тяга'
+							'тяга' => 'тяга',
+                            'руль/прицеп' => 'руль/прицеп',
+                            'карьерная' => 'карьерная',
+                            'карьер' => 'карьерная'
 						);
 						$this->loadModel('Brand');
 						$this->loadModel('BrandModel');
