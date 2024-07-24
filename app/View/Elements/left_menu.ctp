@@ -216,6 +216,7 @@
                         foreach ($tyre_axis as $i => $axes_item) {
                             $axes_options[$i] = array('label' => $axes_item, 'query' => 'axis');
                         }
+                        $axes_options = array_filter($axes_options);
                         if (!empty($axes_options)) {
                             echo $this->element('custom_radio', array('label' => 'Ось:', 'options' => $axes_options, 'direction' => 'vertical', 'hide_all_option' => true));
                         }
