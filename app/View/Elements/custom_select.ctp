@@ -32,6 +32,9 @@ if (empty($hideClearButton)) {
 if (empty($modification_slug)) {
     $modification_slug = '';
 }
+if (empty($hide_all_option)) {
+    $hide_all_option = false;
+}
 
 $output = array();
 
@@ -106,7 +109,11 @@ if ($query !== '') {
         <?php } ?>
         <div class="inp">
             <?php
-                echo $this->Form->input($name, array('type' => 'select', 'id' => $id, 'name' => $id, 'label' => false, 'options' => $usual_options, 'empty' => array('' => $placeholder), 'div' => false, 'class' => 'sel-style1 filter-select'));
+                $usual_form_settings = array('type' => 'select', 'id' => $id, 'name' => $id, 'label' => false, 'options' => $usual_options, 'div' => false, 'class' => 'sel-style1 filter-select');
+                if ($hide_all_option === false) {
+                    $usual_form_settings['empty'] = array('' => $placeholder);
+                }
+                echo $this->Form->input($name, $usual_form_settings);
             ?>
         </div>
     </div>

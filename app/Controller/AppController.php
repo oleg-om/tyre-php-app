@@ -217,7 +217,7 @@ class AppController extends Controller {
 			}
 		}
         define('CONST_DEFAULT_TYRES_PATH', '?auto=&axis=&size1=&season=&brand_id=&stud=0&in_stock4=0&in_stock=2&upr_all=1');
-        define('CONST_DEFAULT_DISKS_PATH', '?size3=&size1=18&material=&et_from=&et_to=&size2=&hub=&brand_id=&in_stock4=0&in_stock=2');
+        define('CONST_DEFAULT_DISKS_PATH', '?size3=&size1=&material=&et_from=&et_to=&size2=&hub=&brand_id=&in_stock4=0&in_stock=2');
         define('CONST_DEFAULT_AKB_PATH', '?ah_from=60&current=&f1=&width=&length=&height=&brand_id=');
         define('CONST_DEFAULT_TRUCK_TYRES_PATH', '?auto=trucks&in_stock4=0&in_stock=2&upr_all=1');
 
@@ -877,10 +877,11 @@ class AppController extends Controller {
 	}
 
 	protected function _filter_params($filter_conditions = null) {
-        $truck_cars = array('trucks','agricultural','special');
+        $truck_cars = array('trucks','agricultural','special','loader');
         $usual_cars = array('cars','light_trucks');
-        $is_truck_cars = $this->request->query['auto'] == 'trucks' || $this->request->query['auto'] == 'agricultural' || $this->request->query['auto'] == 'special';
-        $is_usual_cars = empty($this->request->query['auto']) || $this->request->query['auto'] == 'cars' || $this->request->query['auto'] == 'light_trucks';
+        $auto_query = $this->request->query['auto'];
+        $is_truck_cars = $auto_query == 'trucks' || $auto_query == 'agricultural' || $auto_query == 'special' || $auto_query == 'loader';
+        $is_usual_cars = empty($auto_query) || $auto_query == 'cars' || $auto_query == 'light_trucks';
 
 		$this->loadModel('Product');
 		$this->Product->bindModel(
@@ -914,6 +915,7 @@ class AppController extends Controller {
 			endif;
             if($is_truck_cars):
                 $temp_cond['AND'] = array('Product.auto !=' => $usual_cars);
+                $temp_cond = array('Product.auto' => $auto_query);
             endif;
 			//*********** Вывод в фильтре кроме .... при выборе auto => все ... сортируем по типу авто
 			
@@ -921,10 +923,12 @@ class AppController extends Controller {
 			$products = $this->Product->find('all', array('conditions' => $temp_cond, 'fields' => 'DISTINCT Product.size1', 'order' => 'Product.size1'));
 			
 			$tyre_size1 = array();
+
 			foreach ($products as $item) {
 				$size = number_format(str_replace(',', '.', $item['Product']['size1']), 2, '.', '');
 				$size = str_replace('.00', '', $size);
 				$tyre_size1[$size] = $size;
+
 			}
 			natsort($tyre_size1);
 			unset($tyre_size1[0]);
@@ -944,6 +948,7 @@ class AppController extends Controller {
             endif;
             if($is_truck_cars):
                 $temp_cond['AND'] = array('Product.auto !=' => $usual_cars);
+                $temp_cond = array('Product.auto' => $auto_query);
             endif;
             //*********** Вывод в фильтре кроме .... при выборе auto => все ... сортируем по типу авто
 
@@ -954,6 +959,7 @@ class AppController extends Controller {
 				if (!empty($size) && $size != '') {
 					$size = str_replace('.0', '', $size);
 					$tyre_size2[$size] = $size;
+
 				}
 			}
 			natsort($tyre_size2);
@@ -972,6 +978,7 @@ class AppController extends Controller {
             endif;
             if($is_truck_cars):
                 $temp_cond['AND'] = array('Product.auto !=' => $usual_cars);
+                $temp_cond = array('Product.auto' => $auto_query);
             endif;
             //*********** Вывод в фильтре кроме .... при выборе auto => все ... сортируем по типу авто
 
@@ -1126,6 +1133,7 @@ class AppController extends Controller {
 			$this->set('filter_brands', $brands);
 			$this->set('seasons', $this->Product->seasons);
 			$this->set('auto', $this->Product->auto);
+
 		}
 	}
 	protected function _filter_disc_params($filter_conditions = null) {

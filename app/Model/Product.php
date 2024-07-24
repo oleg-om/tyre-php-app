@@ -75,10 +75,11 @@ class Product extends AppModel {
 		);
 		$this->auto = array(
 			'cars' => __d('admin_tyres', 'auto_cars'),
+            'light_trucks' => __d('admin_tyres', 'auto_light_trucks'),
 			'trucks' => __d('admin_tyres', 'auto_trucks'),
-			'light_trucks' => __d('admin_tyres', 'auto_light_trucks'),
-			'special' => __d('admin_tyres', 'auto_special'),
 			'agricultural' => __d('admin_tyres', 'auto_agricultural'),
+            'special' => __d('admin_tyres', 'auto_special'),
+            'loader' => __d('admin_tyres', 'auto_loader'),
 			'moto' => __d('admin_tyres', 'auto_moto')
 		);
 		$this->types = array(

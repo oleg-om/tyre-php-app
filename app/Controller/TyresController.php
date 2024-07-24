@@ -160,7 +160,7 @@ class TyresController extends AppController {
 
 
     public function check_truck($auto) {
-        $is_truck_page = $this->request->query['auto'] == 'trucks' || $this->request->query['auto'] == 'agricultural' || $this->request->query['auto'] == 'special';
+        $is_truck_page = $this->request->query['auto'] == 'trucks' || $this->request->query['auto'] == 'agricultural' || $this->request->query['auto'] == 'special'  || $this->request->query['auto'] == 'loader';
 
         $path = 'tyres';
         if ($is_truck_page) {
@@ -168,7 +168,7 @@ class TyresController extends AppController {
         }
 
         if (!empty($auto)) {
-            if ($auto === 'trucks' || $auto === 'agricultural' || $auto === 'special') {
+            if ($auto === 'trucks' || $auto === 'agricultural' || $auto === 'special' || $auto === 'loader') {
                 $path = 'truck-tyres';
             }
         }
@@ -464,7 +464,7 @@ class TyresController extends AppController {
         $this->setMeta('title', $meta_title);
         $this->setMeta('keywords', $meta_keywords);
         $this->setMeta('description', $meta_description);
-        $path = $this->check_truck()['path'];
+        $path = $this->check_truck($auto)['path'];
         $this->set('active_menu', $path);
         $this->set('show_left_filter', true);
         $this->set('current_auto', $auto);

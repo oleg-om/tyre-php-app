@@ -50,6 +50,7 @@ class BrandModel extends AppModel {
 			'trucks' => __d('admin_tyres', 'auto_trucks'),
 			'light_trucks' => __d('admin_tyres', 'auto_light_trucks'),
 			'special' => __d('admin_tyres', 'auto_special'),
+            'loader' => __d('admin_tyres', 'auto_loader'),
 			'agricultural' => __d('admin_tyres', 'auto_agricultural'),
 			'moto' => __d('admin_tyres', 'auto_moto')
 		);

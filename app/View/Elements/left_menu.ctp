@@ -173,6 +173,7 @@
             <div class="filter-group tyres" id="filter" style="<?php if (!empty($modification_slug)) {
                 echo 'display: none';
             } ?>">
+                <?php if (!$is_truck_tyres) { ?>
                 <button type="reset" class="filter-reset" id="filter-reset" onclick="resetTyresFilter()">Сбросить
                     фильтр<span>x</span>
                     <script type="text/javascript">
@@ -181,6 +182,7 @@
                         }
                     </script>
                 </button>
+                <?php } ?>
                 <?php
                 $url = array('controller' => 'tyres', 'action' => 'index');
 
@@ -198,14 +200,24 @@
                     <div class="item-group">
                         <?php
                             $type_filter_options = $filter_light_auto;
+                            $hide_auto_all_option = false;
                             if ($is_truck_tyres) {
                                 $type_filter_options = $filter_truck_auto;
+                                $hide_auto_all_option = true;
                             }
-                            echo $this->element('custom_select', array('label' => 'Тип авто', 'name' => 'auto', 'options' => $type_filter_options, 'multiple' => false, 'search' => false)); ?>
+                            echo $this->element('custom_select', array('label' => 'Тип авто', 'name' => 'auto', 'options' => $type_filter_options, 'multiple' => false, 'search' => false, 'hide_all_option' => $hide_auto_all_option)); ?>
                     </div>
-                    <?php if ($is_truck_tyres) { ?>
-                    <div class="item-group">
-                        <?php echo $this->element('custom_select', array('label' => 'Ось', 'placeholder' => 'Все', 'auto_add_options' => true, 'name' => 'axis', 'options' => $tyre_axis, 'multiple' => false, 'search' => false, 'hideClearButton' => true)); ?>
+                    <?php
+                    $auto_query = $this->request->query['auto'];
+                    if ($is_truck_tyres && $this->request->query['auto'] === 'trucks') { ?>
+                    <div>
+                        <?php
+                        $axes_options = array();
+                        foreach ($tyre_axis as $i => $axes_item) {
+                            $axes_options[$i] = array('label' => $axes_item, 'query' => 'axis');
+                        }
+                        echo $this->element('custom_radio', array('label' => 'Ось:', 'options' => $axes_options, 'direction' => 'vertical', 'hide_all_option' => true));
+                        ?>
                     </div>
                     <?php } ?>
                     <div class="item-group">
