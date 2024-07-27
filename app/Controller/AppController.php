@@ -220,6 +220,7 @@ class AppController extends Controller {
         define('CONST_DEFAULT_DISKS_PATH', '?size3=&size1=&material=&et_from=&et_to=&size2=&hub=&brand_id=&in_stock4=0&in_stock=2');
         define('CONST_DEFAULT_AKB_PATH', '?ah_from=60&current=&f1=&width=&length=&height=&brand_id=');
         define('CONST_DEFAULT_TRUCK_TYRES_PATH', '?auto=trucks&in_stock4=0&in_stock=2&upr_all=1');
+        define('CONST_DEFAULT_TRUCK_DISKS_PATH', '?auto=trucks&size3=&size1=&material=&et_from=&et_to=&size2=&hub=&brand_id=&in_stock4=0&in_stock=2');
 
         $stock_places = array(0 => 'ул. Мирошника 5, Автодом', 1 => 'ул. Шевякова (район авторынка), Vianor Tip-top', 2 => 'ул. Куль-обинское шоссе 1, MICHELIN',
             3 => 'АТП', 4 => 'ул. Вокзальное шоссе 36, шиномонтаж Таксо', 5 => 'ул. Вокзальное шоссе 44, VIANOR', 6 => 'ул. Чкалова 147А, VIANOR',
@@ -1137,6 +1138,12 @@ class AppController extends Controller {
 		}
 	}
 	protected function _filter_disc_params($filter_conditions = null) {
+        $truck_cars = array('trucks','agricultural','special','loader','light_trucks');
+        $usual_cars = array('cars');
+        $auto_query = $this->request->query['auto'];
+        $is_truck_cars = $auto_query == 'trucks' || $auto_query == 'agricultural' || $auto_query == 'special' || $auto_query == 'loader';
+        $is_usual_cars = empty($auto_query) || $auto_query == 'cars' || $auto_query == 'light_trucks';
+
 		$this->loadModel('Product');
 		$this->Product->bindModel(
 			array(
@@ -1156,9 +1163,22 @@ class AppController extends Controller {
 				$conditions = $filter_conditions;
 			}
 		}
+
+
 		if (empty($disk_size1)) {
 			$temp_cond = $conditions;
 			unset($temp_cond['Product.size1']);
+
+
+            //*********** Вывод в фильтре кроме .... при выборе auto => все ... сортируем по типу авто
+            if($is_usual_cars):
+                $temp_cond['AND'] = array('Product.auto !=' => $truck_cars);
+            endif;
+            if($is_truck_cars):
+                $temp_cond['AND'] = array('Product.auto !=' => $usual_cars);
+                $temp_cond['Product.auto'] = $auto_query;
+            endif;
+            //*********** Вывод в фильтре кроме .... при выборе auto => все ... сортируем по типу авто
 			
 			$products = $this->Product->find('all', array('conditions' => $temp_cond, 'fields' => 'DISTINCT Product.size1', 'order' => 'Product.size1'));
 
@@ -1177,6 +1197,17 @@ class AppController extends Controller {
 		if (empty($disk_size2)) {
 			$temp_cond = $conditions;
 			unset($temp_cond['Product.size2']);
+
+            //*********** Вывод в фильтре кроме .... при выборе auto => все ... сортируем по типу авто
+            if($is_usual_cars):
+                $temp_cond['AND'] = array('Product.auto !=' => $truck_cars);
+            endif;
+            if($is_truck_cars):
+                $temp_cond['AND'] = array('Product.auto !=' => $usual_cars);
+                $temp_cond['Product.auto'] = $auto_query;
+            endif;
+            //*********** Вывод в фильтре кроме .... при выборе auto => все ... сортируем по типу авто
+
 			$products = $this->Product->find('all', array('conditions' => $temp_cond, 'fields' => 'DISTINCT Product.size2', 'order' => 'Product.size2'));
 			$disk_size2 = array();
 			foreach ($products as $item) {
@@ -1265,6 +1296,33 @@ class AppController extends Controller {
 		$this->loadModel('Brand');
 		$brands = $this->Brand->find('list', array('order' => array('Brand.title' => 'asc'), 'conditions' => $brand_conditions, 'fields' => array('Brand.id', 'Brand.title')));
 
+//         GET AUTOS FOR FILTER
+            $temp_cond = $conditions;
+            foreach ($temp_cond as $i => $cond) {
+                if (is_array($cond) && isset($cond['or']) && isset($cond['or'][0]['BrandModel.auto'])) {
+                    unset($temp_cond[$i]);
+                    break;
+                }
+            }
+
+            $products = $this->Product->find('all', array('conditions' => $temp_cond, 'fields' => 'DISTINCT(IF(BrandModel.auto IS NULL,Product.auto,BrandModel.auto)) AS auto', 'order' => 'Product.auto'));
+            $auto = array();
+            $truck_auto = array();
+            $light_auto = array();
+            foreach ($products as $item) {
+                if (isset($this->Product->auto[$item[0]['auto']])) {
+                    $auto[$item[0]['auto']] = $this->Product->auto[$item[0]['auto']];
+
+                    if (in_array($item[0]['auto'], $truck_cars)) {
+                        $truck_auto[$item[0]['auto']] = $this->Product->auto[$item[0]['auto']];
+                    }
+                    if (in_array($item[0]['auto'], $usual_cars)) {
+                        $light_auto[$item[0]['auto']] = $this->Product->auto[$item[0]['auto']];
+                    }
+                }
+            }
+        //         GET AUTOS FOR FILTER
+
 		if ($this->request->is('ajax')) {
 			$result = array(
 				'size1' => $disk_size1,
@@ -1287,6 +1345,7 @@ class AppController extends Controller {
 			$this->set('show_filter', 2);
 			$this->set('filter_brands', $brands);
             $this->set('disk_et', $disk_et);
+            $this->set('filter_truck_auto', $truck_auto);
 		}
 		
 	}

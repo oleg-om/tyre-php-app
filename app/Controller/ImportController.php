@@ -1275,6 +1275,7 @@ class ImportController extends AppController {
 									$total_rows ++;
 									$brand_id = null;
 									$model_id = null;
+                                    $auto = 'cars';
 									$data->sheets[0]['cells'][$i][4] = str_replace(array('J', 'j'), '', $data->sheets[0]['cells'][$i][4]);
 									$data->sheets[0]['cells'][$i][4] = str_replace(array('.0', ',0'), '', $data->sheets[0]['cells'][$i][4]);
 									$data->sheets[0]['cells'][$i][8] = str_replace(array('.0', ',0'), '', $data->sheets[0]['cells'][$i][8]);
@@ -1282,6 +1283,7 @@ class ImportController extends AppController {
 									$model_name = trim($data->sheets[0]['cells'][$i][2]);
 									$brand = $this->_clean_text($brand_name);
 									$model = $this->_clean_text($model_name, false);
+                                    $auto_text = trim($data->sheets[0]['cells'][$i][22]);
 									$size3 = trim($data->sheets[0]['cells'][$i][4]);
 									$size1 = trim($data->sheets[0]['cells'][$i][5]);
 									$size2 = $data->sheets[0]['cells'][$i][12] . 'x' . $data->sheets[0]['cells'][$i][6];
@@ -1296,6 +1298,56 @@ class ImportController extends AppController {
 									$hub = str_replace(',', '.', $hub);
 									$price = floatval(trim($data->sheets[0]['cells'][$i][15])) / $rate;
 									$stock_count = intval(trim($data->sheets[0]['cells'][$i][14]));
+
+                                    if ($auto_text == 'с/х') {
+                                        $auto = 'agricultural';
+                                    }
+                                    elseif ($auto_text == 'сх') {
+                                        $auto = 'agricultural';
+                                    }
+                                    elseif ($auto_text == 'cельхозтехника') {
+                                        $auto = 'agricultural';
+                                    }
+                                    elseif ($auto_text == 'легкогрузовая') {
+                                        $auto = 'light_trucks';
+                                    }
+                                    elseif ($auto_text == 'грузовой') {
+                                        $auto = 'trucks';
+                                    }
+                                    elseif ($auto_text == 'грузовой') {
+                                        $auto = 'trucks';
+                                    }
+                                    elseif ($auto_text == 'грузовая') {
+                                        $auto = 'trucks';
+                                    }
+                                    elseif ($auto_text == 'мото') {
+                                        $auto = 'moto';
+                                    }
+                                    elseif ($auto_text == 'джип') {
+                                        $auto = 'cars';
+                                    }
+                                    elseif ($auto_text == 'внедорожник') {
+                                        $auto = 'cars';
+                                    }
+                                    elseif ($auto_text == 'спецтехника') {
+                                        $auto = 'special';
+                                    }
+                                    elseif ($auto_text == 'спецтранспорт') {
+                                        $auto = 'special';
+                                    }
+                                    elseif ($auto_text == 'индустриальная') {
+                                        $auto = 'special';
+                                    }
+                                    elseif ($auto_text == 'спецтехника(Индустриальная)') {
+                                        $auto = 'special';
+                                    }
+                                    elseif ($auto_text == 'погрузчики') {
+                                        $auto = 'loader';
+                                    }
+                                    elseif ($auto_text == 'погрузчик') {
+                                        $auto = 'loader';
+                                    }
+
 									if (isset($brands[$brand])) {
 										$brand_id = $brands[$brand];
 										if (isset($models[$brand_id][$model])) {
@@ -1501,7 +1553,8 @@ class ImportController extends AppController {
 													'sku' => $sku,
 													'price' => $price,
 													'stock_count' => $stock_count,
-													'in_stock' => $in_stock
+													'in_stock' => $in_stock,
+                                                    'auto' => $auto
 												);
 												$this->Product->create();
 												if ($this->Product->save($save_data)) {
@@ -2413,6 +2466,9 @@ class ImportController extends AppController {
 											case 'тяга+руль':
 												$auto_text = 'универсальная';
 												break;
+                                            case 'руль':
+                                                $auto_text = 'рулeвая';
+                                                break;
                                             case 'руль/прицеп':
                                                 $auto_text = 'руль/прицеп';
                                                 break;
@@ -3702,6 +3758,10 @@ class ImportController extends AppController {
                                         $auto = 'trucks';
                                         $axis = 'рулевая';
                                     }
+                                    elseif (substr_count($axis_text, 'рулевая')) {
+                                        $auto = 'trucks';
+                                        $axis = 'рулевая';
+                                    }
                                     elseif (substr_count($axis_text, 'ведущ')) {
                                         $auto = 'trucks';
                                         $axis = 'ведущая';
@@ -4196,6 +4256,7 @@ class ImportController extends AppController {
                                     $total_rows ++;
                                     $brand_id = null;
                                     $model_id = null;
+                                    $auto = 'cars';
 
                                     $data->sheets[0]['cells'][$i][2] = str_replace(array('J', 'j'), '', $data->sheets[0]['cells'][$i][2]);
                                     $data->sheets[0]['cells'][$i][2] = str_replace(array('.0', ',0'), '', $data->sheets[0]['cells'][$i][2]);
@@ -4213,6 +4274,7 @@ class ImportController extends AppController {
                                     $brand = $this->_clean_text($brand_name);
                                     $model = $this->_clean_text($model_name, false);
                                     $color = trim($data->sheets[0]['cells'][$i][7]);
+
                                     $price = floatval(trim($data->sheets[0]['cells'][$i][8])) / $rate;
                                     $stock_count = intval(trim($data->sheets[0]['cells'][$i][18]));
 
@@ -4225,6 +4287,40 @@ class ImportController extends AppController {
                                     $hundai_count = trim($data->sheets[0]['cells'][$i][15]);
                                     $tavrida_count = trim($data->sheets[0]['cells'][$i][16]);
                                     $gruz_count = trim($data->sheets[0]['cells'][$i][17]);
+
+                                    if (isset($data->sheets[0]['cells'][$i][18])) {
+                                        $type = mb_strtolower(trim($data->sheets[0]['cells'][$i][19]));
+                                        if ($type == 'г') {
+                                            $auto = 'trucks';
+                                        }
+                                        elseif ($type == 'лг') {
+                                            $auto = 'light_trucks';
+                                        }
+                                        elseif ($type == 'сх') {
+                                            $auto = 'agricultural';
+                                        }
+                                        elseif ($type == 'мото') {
+                                            $auto = 'moto';
+                                        }
+                                        elseif ($type == 'джип') {
+                                            $auto = 'cars';
+                                        }
+                                        elseif ($type == 'спецтехника') {
+                                            $auto = 'special';
+                                        }
+                                        elseif ($type == 'спецтранспорт') {
+                                            $auto = 'special';
+                                        }
+                                        elseif ($type == 'индустриальная') {
+                                            $auto = 'special';
+                                        }
+                                        elseif ($type == 'погрузчики') {
+                                            $auto = 'loader';
+                                        }
+                                        elseif ($type == 'погрузчик') {
+                                            $auto = 'loader';
+                                        }
+                                    }
 
                                     if (empty($autodom_count)) {
                                         $autodom_count = 0;
@@ -4435,6 +4531,7 @@ class ImportController extends AppController {
                                                     'count_place_6' => $hundai_count,
                                                     'count_place_7' => $tavrida_count,
                                                     'count_place_8' => $gruz_count,
+                                                    'auto' => $auto,
                                                 );
                                                 $this->Product->create();
                                                 if ($this->Product->save($save_data)) {
@@ -5962,8 +6059,34 @@ class ImportController extends AppController {
 							'свободный остаток' => 'stock_count',
 							'цена, руб.' => 'price',
 							'розничная, руб.' => 'price',
+                            'авто' => 'auto'
 
 						);
+                        $product_autos = array(
+                            'легкова' => 'легковой',
+                            'легковая' => 'легковой',
+                            'грузовая' => 'грузовой',
+                            'грузовых' => 'грузовой',
+                            'грузовой' => 'грузовой',
+                            'легкогрузовые' => 'легкогрузовая',
+                            'легкогруз' => 'легкогрузовая',
+                            'джипы' => 'легковой',
+                            'микроавтобус' => 'легковой',
+                            'внедорожник' => 'легковой',
+                            'легкогрузовая' => 'легкогрузовая',
+                            'сельхоз' => 'с/х',
+                            'г' => 'грузовой',
+                            'л' => 'легковой',
+                            'лг' => 'легкогрузовая',
+                            'сх' => 'с/х',
+                            'легковi' => 'легковой',
+                            'легковантажні' => 'легкогрузовая',
+                            'вантажні' => 'грузовой',
+                            'спецтехника(Индустриальная)' => 'индустриальная',
+                            'индустриальная' => 'индустриальная',
+                            'сельхозтехника' => 'с/х',
+                            'сельхозшина' => 'с/х'
+                        );
 						$required_fields = array(
 							'brand_id',
 							'model_id',
@@ -6112,13 +6235,29 @@ class ImportController extends AppController {
 								if ($sheet_number == 1) {
 									
 								}
+                                $product_auto = null;
+                                $has_auto_column = in_array('auto', $fields_order);
 								foreach ($sheet['cells'] as $i => $row) {
 									//debug($row);
 									if ($i > $first_line) {
 										$total_rows_count ++;
+
 										// find season and auto here
 										if ((count($row) + count($fill_cells))  < 3) {
 											$total_skipped_rows ++;
+                                            if (!$has_auto_column) {
+                                                foreach ($row as $cell_value) {
+                                                    $cell_value = trim(mb_strtolower($cell_value));
+                                                    if (!$has_auto_column) {
+                                                        foreach ($product_autos as $key => $value) {
+                                                            if (mb_substr_count($cell_value, $key) > 0) {
+                                                                $product_auto = $value;
+                                                                break;
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
 											continue;
 										}
 										$save_data = array();
@@ -6175,6 +6314,21 @@ class ImportController extends AppController {
 										if (isset($save_data['model'])) {
 											$save_data['model'] = trim(str_ireplace(array(' (шт.)', 'Автодиски ', 'Диск колесный ', 'пр-во ', 'БЕЗ колпаков', 'Задний', 'Передний'), ' ', $save_data['model']));
 										}
+                                        if (!isset($save_data['auto']) && !empty($product_auto)) {
+                                            $save_data['auto'] = $product_auto;
+                                        }
+
+                                        if (isset($save_data['auto'])) {
+                                            $auto = mb_strtolower($save_data['auto']);
+                                            if (isset($product_autos[$auto])) {
+                                                $save_data['auto'] = $product_autos[$auto];
+                                            }
+                                        }
+
+                                        if (empty($save_data['auto'])) {
+                                            $save_data['auto'] = 'легковой';
+                                        }
+
 										//debug($save_data);
 										//exit();
 										// find material
@@ -6925,6 +7079,9 @@ class ImportController extends AppController {
 								if (isset($item['material'])) {
 									$objPHPExcel->setActiveSheetIndex(0)->setCellValueExplicit('K' . $i, $item['material']);
 								}
+                                if (isset($item['auto'])) {
+                                    $objPHPExcel->setActiveSheetIndex(0)->setCellValueExplicit('V' . $i, $item['auto']);
+                                }
 								$i ++;
 							}
 							$objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel5');

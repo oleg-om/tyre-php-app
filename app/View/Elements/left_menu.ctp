@@ -345,6 +345,7 @@
                 echo $this->Form->hidden('diameter', array('value' => $this->request->query['diameter']));
                 echo $this->Form->hidden('hub_from', array('value' => $this->request->query['hub_from']));
                 echo $this->Form->hidden('hub_to', array('value' => $this->request->query['hub_to']));
+                echo $this->Form->hidden('auto', array('value' => $this->request->query['auto']));
                 ?>
                 <div class="item">
                     <button class="bt-style1 bt-style1-disks">ПОИСК</button>
