@@ -1227,6 +1227,17 @@ class AppController extends Controller {
 		if (empty($disk_hub)) {
 			$temp_cond = $conditions;
 			unset($temp_cond['Product.hub']);
+
+            //*********** Вывод в фильтре кроме .... при выборе auto => все ... сортируем по типу авто
+            if($is_usual_cars):
+                $temp_cond['AND'] = array('Product.auto !=' => $truck_cars);
+            endif;
+            if($is_truck_cars):
+                $temp_cond['AND'] = array('Product.auto !=' => $usual_cars);
+                $temp_cond['Product.auto'] = $auto_query;
+            endif;
+            //*********** Вывод в фильтре кроме .... при выборе auto => все ... сортируем по типу авто
+
 			$products = $this->Product->find('all', array('conditions' => $temp_cond, 'fields' => 'DISTINCT Product.hub', 'order' => 'Product.hub'));
 			$disk_hub = array();
 			foreach ($products as $item) {
@@ -1244,6 +1255,17 @@ class AppController extends Controller {
         if (empty($disk_et)) {
             $temp_cond = $conditions;
             unset($temp_cond['Product.et']);
+
+            //*********** Вывод в фильтре кроме .... при выборе auto => все ... сортируем по типу авто
+            if($is_usual_cars):
+                $temp_cond['AND'] = array('Product.auto !=' => $truck_cars);
+            endif;
+            if($is_truck_cars):
+                $temp_cond['AND'] = array('Product.auto !=' => $usual_cars);
+                $temp_cond['Product.auto'] = $auto_query;
+            endif;
+            //*********** Вывод в фильтре кроме .... при выборе auto => все ... сортируем по типу авто
+
             $products = $this->Product->find('all', array('conditions' => $temp_cond, 'fields' => 'DISTINCT Product.et', 'order' => 'Product.hub'));
             $disk_et = array();
             foreach ($products as $item) {
