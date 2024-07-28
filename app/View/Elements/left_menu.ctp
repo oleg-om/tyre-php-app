@@ -7,9 +7,10 @@
         }
 
         $is_truck_tyres = $active_menu === 'truck-tyres';
+        $is_truck_disks = $active_menu === 'truck-disks';
         ?>
 
-        <?php if ($show_switch_params_and_auto == true && !$is_truck_tyres): ?>
+        <?php if ($show_switch_params_and_auto == true && !$is_truck_tyres && !$is_truck_disks): ?>
             <div class="title__switch">
                 <div class="left-nav__switch">
                     <a href="javascript:void(0);" onclick="switchTab('params');" id="left-nav__switch__button-params" class="left-nav__switch__button <?php if (empty($modification_slug)) {
