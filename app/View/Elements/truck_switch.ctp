@@ -5,7 +5,7 @@ $menu_items[] = array('href' => '/tyres'.CONST_DEFAULT_TRUCK_TYRES_PATH, 'title'
 //$menu_items[] = array('href' => '/tubes', 'img' => '/img/truck/tube.png', 'title' => 'Камеры', 'alt' => 'Грузовые камеры');
 
 $menu_types = array();
-$menu_types['trucks'] = array('href' => '/tyres'.CONST_DEFAULT_TRUCK_TYRES_PATH, 'img' => '/img/truck/truck.png', 'title' => 'Грузовые', 'alt' => 'Грузовые', 'value' => 'trucks', 'height' => '50px');
+$menu_types['trucks'] = array('href' => '/tyres'.CONST_DEFAULT_TRUCK_TYRES_PATH, 'img' => '/img/truck/samosval.png', 'title' => 'Грузовые', 'alt' => 'Грузовые', 'value' => 'trucks', 'height' => '60px');
 $menu_types['agricultural'] = array('href' => '/tyres?auto=agricultural&in_stock4=0&in_stock=2&upr_all=1', 'img' => '/img/truck/traktor.png', 'title' => 'Сельскохозяйственные', 'alt' => 'Сельскохозяйственные', 'value' => 'agricultural', 'height' => '80px');
 $menu_types['loader'] = array('href' => '/tyres?auto=loader&in_stock4=0&in_stock=2&upr_all=1', 'img' => '/img/truck/loader.png', 'title' => 'Погрузчики', 'alt' => 'Погрузчики', 'value' => 'loader', 'height' => '75px');
 $menu_types['special'] = array('href' => '/tyres?auto=special&in_stock4=0&in_stock=2&upr_all=1', 'img' => '/img/truck/carier.png', 'title' => 'Индустриальная', 'alt' => 'Индустриальная', 'value' => 'special', 'height' => '80px');
