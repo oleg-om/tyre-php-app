@@ -1183,7 +1183,7 @@ class AppController extends Controller {
 
             //*********** Вывод в фильтре кроме .... при выборе auto => все ... сортируем по типу авто
             if($is_usual_cars):
-                $temp_cond['AND'] = array('Product.auto !=' => $truck_cars);
+                $temp_cond['OR'] = array('Product.auto !=' => $truck_cars, 'Product.auto' => NULL);
             endif;
             if($is_truck_cars):
                 $temp_cond['AND'] = array('Product.auto !=' => $usual_cars);
