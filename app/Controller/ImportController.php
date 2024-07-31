@@ -4916,7 +4916,10 @@ class ImportController extends AppController {
 							'тяга' => 'тяга',
                             'руль/прицеп' => 'руль/прицеп',
                             'карьерная' => 'карьерная',
-                            'карьер' => 'карьерная'
+                            'карьер' => 'карьерная',
+                            '(на любую ось)' => 'универсальная',
+                            '(на прицепную ось)' => 'прицеп',
+                            '(на рулевую/прицепную ось)' => 'руль/прицеп'
 						);
 						$this->loadModel('Brand');
 						$this->loadModel('BrandModel');
@@ -7073,6 +7076,20 @@ class ImportController extends AppController {
 										$model = str_replace($color, $item['color'], $model);
 									}
 								}
+
+                                $p1 = 0;
+                                $p2 = 0;
+                                $p3 = 0;
+                                if (substr_count($model, 'усилен')) {
+                                    $p1 = 1;
+                                }
+                                if (substr_count($model, 'под клинья')) {
+                                    $p2 = 1;
+                                }
+                                if (substr_count($model, 'с кольцом')) {
+                                    $p3 = 1;
+                                }
+
 								$sku = $brands_by_id[$item['brand_id']] . ' ' . $model . ' ' . $item['pcd'] . ' ' . $item['dia'] . ' ET ' . $item['et'] . ' Dia ' . $item['hub'];
 
 								$objPHPExcel->setActiveSheetIndex(0)
@@ -7099,6 +7116,15 @@ class ImportController extends AppController {
 								}
                                 if (isset($item['auto'])) {
                                     $objPHPExcel->setActiveSheetIndex(0)->setCellValueExplicit('V' . $i, $item['auto']);
+                                }
+                                if ($p1 == 1) {
+                                    $objPHPExcel->setActiveSheetIndex(0)->setCellValueExplicit('W' . $i, 'усилен');
+                                }
+                                if ($p2 == 1) {
+                                    $objPHPExcel->setActiveSheetIndex(0)->setCellValueExplicit('X' . $i, 'под клинья');
+                                }
+                                if ($p3 == 1) {
+                                    $objPHPExcel->setActiveSheetIndex(0)->setCellValueExplicit('Y' . $i, 'с кольцом');
                                 }
 								$i ++;
 							}
