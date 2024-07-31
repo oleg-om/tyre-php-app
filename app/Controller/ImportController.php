@@ -4288,6 +4288,19 @@ class ImportController extends AppController {
                                     $tavrida_count = trim($data->sheets[0]['cells'][$i][16]);
                                     $gruz_count = trim($data->sheets[0]['cells'][$i][17]);
 
+                                    $p1 = 0;
+                                    $p2 = 0;
+                                    $p3 = 0;
+                                    if (substr_count($model, 'усилен')) {
+                                        $p1 = 1;
+                                    }
+                                    if (substr_count($model, 'под клинья')) {
+                                        $p2 = 1;
+                                    }
+                                    if (substr_count($model, 'с кольцом')) {
+                                        $p3 = 1;
+                                    }
+
                                     if (isset($data->sheets[0]['cells'][$i][18])) {
                                         $type = mb_strtolower(trim($data->sheets[0]['cells'][$i][19]));
                                         if ($type == 'г') {
@@ -4532,6 +4545,9 @@ class ImportController extends AppController {
                                                     'count_place_7' => $tavrida_count,
                                                     'count_place_8' => $gruz_count,
                                                     'auto' => $auto,
+                                                    'p1' => $p1,
+                                                    'p2' => $p2,
+                                                    'p3' => $p3,
                                                 );
                                                 $this->Product->create();
                                                 if ($this->Product->save($save_data)) {
@@ -6085,7 +6101,9 @@ class ImportController extends AppController {
                             'спецтехника(Индустриальная)' => 'индустриальная',
                             'индустриальная' => 'индустриальная',
                             'сельхозтехника' => 'с/х',
-                            'сельхозшина' => 'с/х'
+                            'сельхозшина' => 'с/х',
+                            'погрузчик' => 'погрузчик',
+                            'погрузчики' => 'погрузчики'
                         );
 						$required_fields = array(
 							'brand_id',

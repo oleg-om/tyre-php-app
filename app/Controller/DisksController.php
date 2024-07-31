@@ -1634,6 +1634,18 @@ endforeach;
             && (!isset($this->request->query['auto']) || empty($this->request->query['auto']) || $this->request->query['auto'] === 'cars')) {
             $conditions['Product.size1'] = 18;
         }
+
+        if ($this->request->query['p1'] == 1 || $this->request->query['p2'] == 1 || $this->request->query['p3'] == 1) {
+            if (isset($this->request->query['p1']) && $this->request->query['p1'] == 1) {
+                $conditions['OR']['Product.p1'] = 1;
+            }
+            if (isset($this->request->query['p2']) && $this->request->query['p2'] == 1) {
+                $conditions['OR']['Product.p2'] = 1;
+            }
+            if (isset($this->request->query['p3']) && $this->request->query['p3'] == 1) {
+                $conditions['OR']['Product.p3'] = 1;
+            }
+        }
 		
 		$this->request->data['Product'] = $this->request->query;
 		$mode = 'block';
@@ -1988,9 +2000,17 @@ endforeach;
 					}
 				}
 			}
-			
-			
-			
+
+
+            if (isset($this->request->query['p1']) && $this->request->query['p1'] == 1) {
+                $conditions['Product.p1'] = 1;
+            }
+            if (isset($this->request->query['p2']) && $this->request->query['p2'] == 1) {
+                $conditions['Product.p2'] = 1;
+            }
+            if (isset($this->request->query['p3']) && $this->request->query['p3'] == 1) {
+                $conditions['Product.p3'] = 1;
+            }
 			
 		
 			if (isset($this->request->query['in_stock'])) {

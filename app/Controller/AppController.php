@@ -1076,6 +1076,17 @@ class AppController extends Controller {
 		$in_stock4 = $this->Product->find('count', array('conditions' => $temp_cond));
 
 		unset($conditions['Product.brand_id']);
+
+        //*********** Вывод в фильтре кроме .... при выборе auto => все ... сортируем по типу авто
+        if($is_usual_cars):
+            $conditions['AND'] = array('Product.auto !=' => $truck_cars);
+        endif;
+        if($is_truck_cars):
+            $conditions['AND'] = array('Product.auto !=' => $usual_cars);
+            $conditions = array('Product.auto' => $auto_query);
+        endif;
+        //*********** Вывод в фильтре кроме .... при выборе auto => все ... сортируем по типу авто
+
 		$brands = $this->Product->find('all', array(
 			'fields' => array('Product.brand_id'),
 			'conditions' => $conditions
