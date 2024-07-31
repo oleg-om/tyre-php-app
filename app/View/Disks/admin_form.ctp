@@ -44,6 +44,13 @@ $this->Backend->addText('stock_count', array(
 	'div' => 'item_div half'
 ));
 $this->Backend->addHtml('<div class="clear"></div>');
+$this->Backend->addSelect('auto', array(
+    'label' => __d('admin_tyres', 'label_auto'),
+    'options' => $auto,
+    'empty' => false,
+    'div' => 'item_div third'
+));
+$this->Backend->addHtml('<div class="clear"></div>');
 $this->Backend->addText('size1', array(
 	'label' => __d('admin_disks', 'label_size1'),
 	'required' => true,

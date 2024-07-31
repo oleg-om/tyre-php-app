@@ -1,14 +1,28 @@
 <?php
+$type = 'tyres';
+if ($active_menu == 'truck-tyres' || $active_menu == 'tyres') {
+    $type = 'tyres';
+}
+if ($active_menu == 'truck-disks' || $active_menu == 'disks') {
+    $type = 'disks';
+}
+
+
 $menu_items = array();
 $menu_items[] = array('href' => '/tyres'.CONST_DEFAULT_TRUCK_TYRES_PATH, 'title' => 'Шины', 'img' => '/img/truck/tyre.png', 'alt' => 'Грузовые шины', 'active' => $active_menu === 'truck-tyres');
-//$menu_items[] = array('href' => '/disks', 'img' => '/img/truck/wheel.png', 'title' => 'Диски', 'alt' => 'Грузовые диски');
+$menu_items[] = array('href' => '/disks'.CONST_DEFAULT_TRUCK_DISKS_PATH, 'img' => '/img/truck/wheel.png', 'title' => 'Диски', 'alt' => 'Грузовые диски', 'active' => $active_menu === 'truck-disks');
 //$menu_items[] = array('href' => '/tubes', 'img' => '/img/truck/tube.png', 'title' => 'Камеры', 'alt' => 'Грузовые камеры');
 
 $menu_types = array();
+
 $menu_types['trucks'] = array('href' => '/tyres'.CONST_DEFAULT_TRUCK_TYRES_PATH, 'img' => '/img/truck/samosval.png', 'title' => 'Грузовые', 'alt' => 'Грузовые', 'value' => 'trucks', 'height' => '60px');
+if ($type === 'disks') {
+    $menu_types['trucks']['href'] = '/disks'.CONST_DEFAULT_TRUCK_DISKS_PATH;
+}
 $menu_types['agricultural'] = array('href' => '/tyres?auto=agricultural&in_stock4=0&in_stock=2&upr_all=1', 'img' => '/img/truck/traktor.png', 'title' => 'Сельскохозяйственные', 'alt' => 'Сельскохозяйственные', 'value' => 'agricultural', 'height' => '80px');
 $menu_types['loader'] = array('href' => '/tyres?auto=loader&in_stock4=0&in_stock=2&upr_all=1', 'img' => '/img/truck/loader.png', 'title' => 'Погрузчики', 'alt' => 'Погрузчики', 'value' => 'loader', 'height' => '75px');
 $menu_types['special'] = array('href' => '/tyres?auto=special&in_stock4=0&in_stock=2&upr_all=1', 'img' => '/img/truck/carier.png', 'title' => 'Индустриальная', 'alt' => 'Индустриальная', 'value' => 'special', 'height' => '80px');
+
 
 $order = array('trucks', 'agricultural', 'loader', 'special');
 
@@ -21,7 +35,7 @@ usort($filter_truck_auto_keys, function ($a, $b) use ($order) {
 ?>
 
 <div class="truck-switch">
-    <div class="truck-switch__items" style="display: none;">
+    <div class="truck-switch__items">
         <?php
         foreach ($menu_items as $i => $item) { ?>
             <a href="<?php echo $item['href']; ?>" class="truck-switch__item <?php if ($item['active']) echo 'active'; ?>">

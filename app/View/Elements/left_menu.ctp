@@ -7,9 +7,10 @@
         }
 
         $is_truck_tyres = $active_menu === 'truck-tyres';
+        $is_truck_disks = $active_menu === 'truck-disks';
         ?>
 
-        <?php if ($show_switch_params_and_auto == true && !$is_truck_tyres): ?>
+        <?php if ($show_switch_params_and_auto == true && !$is_truck_tyres && !$is_truck_disks): ?>
             <div class="title__switch">
                 <div class="left-nav__switch">
                     <a href="javascript:void(0);" onclick="switchTab('params');" id="left-nav__switch__button-params" class="left-nav__switch__button <?php if (empty($modification_slug)) {
@@ -228,19 +229,21 @@
                         <?php echo $this->element('custom_select', array('label' => 'Диаметр', 'placeholder' => 'Все', 'auto_add_options' => true, 'name' => 'size3', 'options' => $tyre_size3, 'multiple' => false, 'search' => false, 'hideClearButton' => true)); ?>
                     </div>
 
-                    <div class="<?php if ($is_truck_tyres) { echo 'd-none'; } ?>">
+                    <div>
+                        <div class="<?php if ($is_truck_tyres) { echo 'd-none'; } ?>">
                         <?php
                         $season_main_options = array('summer' => array('label' => 'Летние', 'query' => 'season', 'icon' => '/img/icons/season-summer.png'), 'winter' => array('label' => 'Зимние', 'query' => 'season', 'icon' => '/img/icons/season-winter.png'));
                         echo $this->element('custom_radio', array('label' => 'Сезон:', 'options' => $season_main_options));
                         ?>
-                    <div class="item-inner-m-0">
+                        </div>
+                    <div class="item-inner-m-0 <?php if ($is_truck_tyres) { echo 'd-none'; } ?>">
                         <?php
                         $season_all_option = array('all' => array('label' => 'Всесезонные', 'query' => 'season', 'icon' => '/img/icons/season-all.png'));
                         echo $this->element('custom_radio', array('options' => $season_all_option));
                         ?>
                     </div>
                     <?php echo $this->element('custom_select', array('label' => 'Бренд', 'name' => 'brand_id', 'options' => $filter_brands, 'multiple' => true, 'search' => true)); ?>
-
+                    <div class="<?php if ($is_truck_tyres) { echo 'd-none'; } ?>">
                     <?php
                     $extra_options = array('run_flat' => array('label' => 'RunFlat', 'icon' => '/img/icons/runflat.png'), 'stud' => array('label' => 'Шипованная', 'icon' => '/img/icons/studded.png'));
                     echo $this->element('custom_checkbox', array('options' => $extra_options));
@@ -249,6 +252,7 @@
                     $extra_options = array('in_stock4' => array('label' => 'Более 4'));
                     echo $this->element('custom_checkbox', array('options' => $extra_options));
                     ?>
+                    </div>
                     </div>
                     <div class="item-group">
                         <?php echo $this->element('custom_select', array('label' => 'Пункт выдачи', 'name' => 'stock_place', 'options' => $filter_all_places, 'multiple' => false)); ?>
@@ -273,6 +277,7 @@
             </div>
         <?php } elseif ($show_filter == 2) {
             $path = 'disks'; ?>
+                <?php if (!$is_truck_disks) { ?>
             <div class="filter-group disks" id="filter" style="<?php if (!empty($modification_slug)) {
                 echo 'display: none';
             } ?>">
@@ -345,6 +350,7 @@
                 echo $this->Form->hidden('diameter', array('value' => $this->request->query['diameter']));
                 echo $this->Form->hidden('hub_from', array('value' => $this->request->query['hub_from']));
                 echo $this->Form->hidden('hub_to', array('value' => $this->request->query['hub_to']));
+                echo $this->Form->hidden('auto', array('value' => $this->request->query['auto']));
                 ?>
                 <div class="item">
                     <button class="bt-style1 bt-style1-disks">ПОИСК</button>
@@ -352,6 +358,75 @@
                 <div class="clear"></div>
                 </form>
             </div>
+                    <?php } else { ?>
+
+                <div class="filter-group disks" id="filter" style="<?php if (!empty($modification_slug)) {
+                    echo 'display: none';
+                } ?>">
+                    <?php
+                    if (!isset($this->request->data['Product']['in_stock'])) {
+                        if ($settings['SHOW_DISKS_BAR'] == 1) {
+                            $in_stocky = 1;
+                        } else {
+                            $in_stocky = 2;
+                        }
+                        //	$this->request->data['Product']['in_stock'] = $in_stocky;
+                    }
+                    $url = array('controller' => 'disks', 'action' => 'index');
+                    echo $this->Form->create('Product', array('type' => 'get', 'id' => 'filter-form', 'url' => $url));
+                    ?>
+                    <div class="item">
+                        <div class="item-group">
+                            <?php echo $this->element('custom_select', array('label' => 'Ширина', 'placeholder' => 'Все', 'auto_add_options' => true, 'name' => 'size1', 'options' => $disk_size3, 'multiple' => false, 'search' => false, 'hideClearButton' => true)); ?>
+                            <?php echo $this->element('custom_select', array('label' => 'Вылет', 'auto_add_options' => true, 'name' => 'et', 'placeholder' => 'Все', 'options' => $disk_et, 'multiple' => false, 'search' => false)); ?>
+                            <?php echo $this->element('custom_select', array('label' => 'Диаметр', 'placeholder' => 'Все', 'auto_add_options' => true, 'name' => 'size1', 'options' => $disk_size1, 'multiple' => false, 'search' => false, 'hideClearButton' => true)); ?>
+                        </div>
+                        <div class="item-group">
+                            <?php echo $this->element('custom_select', array('label' => 'Посадочный диаметр', 'placeholder' => 'Все', 'auto_add_options' => true, 'name' => 'hub', 'options' => $disk_hub, 'multiple' => false, 'search' => false, 'hideClearButton' => true)); ?>
+                            <?php echo $this->element('custom_select', array('label' => 'Сверловка</br>(PCD)', 'placeholder' => 'Все', 'auto_add_options' => true, 'name' => 'size2', 'options' => $disk_size2, 'multiple' => false, 'search' => false, 'hideClearButton' => true)); ?>
+                        </div>
+                        <div class="item-group">
+                            <?php echo $this->element('custom_select', array('label' => 'Бренд', 'name' => 'brand_id', 'options' => $filter_brands, 'multiple' => true, 'search' => true)); ?>
+                            <?php echo $this->element('custom_select', array('label' => 'Материал', 'placeholder' => 'Все', 'auto_add_options' => true, 'name' => 'cast', 'options' => $materials, 'multiple' => false, 'search' => false, 'hideClearButton' => true)); ?>
+
+                        </div>
+                    </div>
+
+                    <div class="item">
+
+                        <?php
+                        $extra_options = array('p1' => array('label' => 'Усиленный'), 'p2' => array('label' => 'Под клинья'));
+                        echo $this->element('custom_checkbox', array('options' => $extra_options));
+                        ?>
+                        <?php
+                        $extra_options_2 = array('p3' => array('label' => 'С кольцом'));
+                        echo $this->element('custom_checkbox', array('options' => $extra_options_2));
+                        ?>
+                        <div class="item-group">
+                            <?php echo $this->element('custom_select', array('label' => 'Пункт выдачи', 'name' => 'stock_place', 'options' => $filter_all_places, 'multiple' => false)); ?>
+                        </div>
+                        <div class="item-inner-space-around">
+                            <?php
+                            $stock_options = array('2' => array('label' => 'Все', 'query' => 'in_stock'), '1' => array('label' => 'В наличии', 'query' => 'in_stock'), '0' => array('label' => 'Под заказ', 'query' => 'in_stock'));
+                            echo $this->element('custom_radio', array('label' => 'Наличие:', 'options' => $stock_options, 'size' => 'small', 'default_value' => '2'));
+                            ?>
+                        </div>
+                    </div>
+                    <?php
+                    echo $this->Form->hidden('modification', array('value' => $modification_slug));
+                    echo $this->Form->hidden('diameter', array('value' => $this->request->query['diameter']));
+                    echo $this->Form->hidden('hub_from', array('value' => $this->request->query['hub_from']));
+                    echo $this->Form->hidden('hub_to', array('value' => $this->request->query['hub_to']));
+                    echo $this->Form->hidden('auto', array('value' => $this->request->query['auto']));
+                    ?>
+                    <div class="item">
+                        <button class="bt-style1 bt-style1-disks">ПОИСК</button>
+                    </div>
+                    <div class="clear"></div>
+                    </form>
+                </div>
+
+        <?php } ?>
         <?php } elseif ($show_filter == 7) {
             $path = 'bolts'; ?>
             <div class="filter-group" id="filter" style="<?php if (!empty($modification_slug)) {

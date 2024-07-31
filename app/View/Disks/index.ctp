@@ -11,12 +11,18 @@ if (!empty($brand['Brand']['slug'])) {
 }
 $this->Paginator->options(array('url' => $url));
 ?>
+
+<?php if ($active_menu == 'truck-disks') echo $this->element('truck_switch'); ?>
+<?php if ($active_menu != 'truck-disks') { ?>
+
 <h2 class="title">Диски <?php if (!empty($brand['Brand']['slug'])) echo $brand['Brand']['title'] ?>
     <?php if (!empty($car_brand['CarBrand']['slug'])) echo ' на '.$car_brand['CarBrand']['title'].' '.$car_model['CarModel']['title'].' '.$car_generation['CarGeneration']['title'].' '.$car_modification['CarModification']['title'] ?></h2>
 
     <?php
     echo $this->element('disk_car', array('modification_slug' => $modification_slug, 'car_diameters' => $car_diameters, 'material' => $material, 'car_factory_sizes' => $car_factory_sizes, 'car_tuning_sizes' => $car_tuning_sizes, 'car_image' => $car_image, 'car_brand' => $car_brand));
     ?>
+
+<?php } ?>
 
 <?php
 echo $this->element('currency');

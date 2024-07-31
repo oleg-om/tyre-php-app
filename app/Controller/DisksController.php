@@ -36,6 +36,7 @@ class DisksController extends AppController {
 		else {
 			$this->set('models', array('' => __d('admin_common', 'list_any_items')));
 		}
+        $this->set('auto', $this->{$this->model}->auto);
 		return $title;
 	}
 	public function admin_apply() {
@@ -1535,11 +1536,26 @@ endforeach;
 <option value="ТагАЗ">ТагАЗ</option>
 <option value="УАЗ">УАЗ</option>';*/		
 	}
-	
 
-	
-	
-	
+
+
+
+    public function check_truck($auto) {
+        $is_truck_page = $this->request->query['auto'] == 'trucks' || $this->request->query['auto'] == 'agricultural' || $this->request->query['auto'] == 'special'  || $this->request->query['auto'] == 'loader';
+
+        $path = 'disks';
+        if ($is_truck_page) {
+            $path = 'truck-disks';
+        }
+
+        if (!empty($auto)) {
+            if ($auto === 'trucks' || $auto === 'agricultural' || $auto === 'special' || $auto === 'loader') {
+                $path = 'truck-disks';
+            }
+        }
+
+        return array('path' => $path);
+    }
 	
 	
 	public function index() {
@@ -1572,6 +1588,12 @@ endforeach;
 
 		
 		$conditions = array('Product.is_active' => 1, 'Product.category_id' => 2, 'Product.price > ' => 0, 'Product.stock_count > ' => 0);
+
+        if ($this->check_truck($this->request->query['auto'])['path'] === 'truck-wheels') {
+
+        } else {
+            $conditions['Product.auto'] = $hub;
+        }
 
         if (isset($this->request->query['hub_from']) && !empty($this->request->query['hub_from'])) {
             $hub = floatval(str_replace(',', '.', $this->request->query['hub_from']));
@@ -1608,8 +1630,21 @@ endforeach;
             $conditions['Product.count_place_'.$this->request->query['stock_place'].' >='] = 1;
         }
 
-        if (empty($this->request->query['size1']) && empty($this->request->query['size3']) && empty($this->request->query['material']) && (empty($this->request->query['auto']) || $this->request->query['auto'] === 'cars')) {
+        if (empty($this->request->query['size1']) && empty($this->request->query['size3']) && empty($this->request->query['material'])
+            && (!isset($this->request->query['auto']) || empty($this->request->query['auto']) || $this->request->query['auto'] === 'cars')) {
             $conditions['Product.size1'] = 18;
+        }
+
+        if ($this->request->query['p1'] == 1 || $this->request->query['p2'] == 1 || $this->request->query['p3'] == 1) {
+            if (isset($this->request->query['p1']) && $this->request->query['p1'] == 1) {
+                $conditions['OR']['Product.p1'] = 1;
+            }
+            if (isset($this->request->query['p2']) && $this->request->query['p2'] == 1) {
+                $conditions['OR']['Product.p2'] = 1;
+            }
+            if (isset($this->request->query['p3']) && $this->request->query['p3'] == 1) {
+                $conditions['OR']['Product.p3'] = 1;
+            }
         }
 		
 		$this->request->data['Product'] = $this->request->query;
@@ -1853,7 +1888,8 @@ endforeach;
 		$this->setMeta('title', $meta_title);
 		$this->setMeta('keywords', $meta_keywords);
 		$this->setMeta('description', $meta_description);
-		$this->set('active_menu', 'disks');
+        $path = $this->check_truck($this->request->query['auto'])['path'];
+        $this->set('active_menu', $path);
 		$this->set('sort', $sort);
 		$this->set('show_left_filter', true);
 		$this->set('additional_js', array('lightbox', 'slider', 'functions'));
@@ -1865,7 +1901,6 @@ endforeach;
 	
 	public function brand($slug) {
 //		echo"******";
-		
 		$this->category_id = 2;
 		$mode = 'block';
 		if (isset($this->request->query['mode']) && in_array($this->request->query['mode'], array('block', 'list', 'table'))) {
@@ -1873,7 +1908,7 @@ endforeach;
 		}
 		$this->set('mode', $mode);
 		$sort = 'price_asc';
-
+        $auto = 'cars';
 		if (isset($this->request->query['sort']) && in_array($this->request->query['sort'], array('name', 'price_asc', 'price_desc'))) {
 			$sort = $this->request->query['sort'];
 		}
@@ -1947,6 +1982,11 @@ endforeach;
 			if (isset($this->request->query['hub']) && !empty($this->request->query['hub'])) {
 				$conditions['Product.hub'] = $this->request->query['hub'];
 			}
+
+            if (isset($this->request->query['auto']) && isset($this->request->query['auto'])) {
+                $conditions['Product.auto'] = $this->request->query['auto'];
+            }
+
 			if (isset($this->request->query['size2']) && !empty($this->request->query['size2'])) {
 				$values = array($this->request->query['size2']);
 				if (substr_count($this->request->query['size2'], '.') > 0) {
@@ -1960,9 +2000,17 @@ endforeach;
 					}
 				}
 			}
-			
-			
-			
+
+
+            if (isset($this->request->query['p1']) && $this->request->query['p1'] == 1) {
+                $conditions['Product.p1'] = 1;
+            }
+            if (isset($this->request->query['p2']) && $this->request->query['p2'] == 1) {
+                $conditions['Product.p2'] = 1;
+            }
+            if (isset($this->request->query['p3']) && $this->request->query['p3'] == 1) {
+                $conditions['Product.p3'] = 1;
+            }
 			
 		
 			if (isset($this->request->query['in_stock'])) {
@@ -2079,6 +2127,8 @@ endforeach;
 			$render = 'index';
 			if (!empty($model_id)) {
 				if ($model = $this->BrandModel->find('first', array('conditions' => array('BrandModel.id' => $model_id)))) {
+                    $auto = $model['Product']['auto'];
+
 					$breadcrumbs[] = array(
 						'url' => array('controller' => 'disks', 'action' => 'brand', 'slug' => $slug),
 						'title' => $brand['Brand']['title']
@@ -2169,7 +2219,8 @@ endforeach;
 			$this->setMeta('description', $meta_description);
 			$this->set('brand', $brand);
 			$this->set('sort', $sort);
-			$this->set('active_menu', 'disks');
+            $path = $this->check_truck($auto)['path'];
+            $this->set('active_menu', $path);
 			$this->set('additional_js', array('lightbox', 'slider', 'functions'));
 			$this->set('additional_css', array('lightbox', 'jquery-ui-1.9.2.custom.min'));
 			$this->render($render);
@@ -2286,6 +2337,10 @@ endforeach;
 					false
 				);
 				$model = $this->BrandModel->find('first', array('conditions' => array('BrandModel.id' => $product['BrandModel']['id'])));
+
+                if (!empty($model)) {
+                    $auto = $model['Product'][0]['auto'];
+                }
 				$this->setLastModels($model);
 
 				$this->set('filter', array_filter($this->request->query));
@@ -2301,7 +2356,8 @@ endforeach;
 				$this->setMeta('description', $product['BrandModel']['meta_description']);
 				$this->set('brand', $brand);
 				$this->set('product', $product);
-				$this->set('active_menu', 'disks');
+                $path = $this->check_truck($auto)['path'];
+                $this->set('active_menu', $path);
 				$this->set('show_left_menu', false);
 			}
 			else {
@@ -2335,6 +2391,12 @@ endforeach;
 				}
 			}
 		}
+        if (isset($this->request->query['auto']) && !empty($this->request->query['auto'])) {
+            $conditions['Product.auto'] = $this->request->query['auto'];
+        } else {
+            $conditions['Product.auto'] = 'cars';
+        }
+
 		if (isset($this->request->query['size3']) && !empty($this->request->query['size3'])) {
 			$conditions['Product.size3'] = $this->request->query['size3'];
 		}
