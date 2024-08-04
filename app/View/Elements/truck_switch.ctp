@@ -9,8 +9,8 @@ if ($active_menu == 'truck-disks' || $active_menu == 'disks') {
 
 
 $menu_items = array();
-$menu_items[] = array('href' => '/tyres'.CONST_DEFAULT_TRUCK_TYRES_PATH, 'title' => 'Шины', 'img' => '/img/truck/tyre.png', 'alt' => 'Грузовые шины', 'active' => $active_menu === 'truck-tyres');
-$menu_items[] = array('href' => '/disks'.CONST_DEFAULT_TRUCK_DISKS_PATH, 'img' => '/img/truck/wheel.png', 'title' => 'Диски', 'alt' => 'Грузовые диски', 'active' => $active_menu === 'truck-disks');
+$menu_items[] = array('href' => '/tyres'.CONST_DEFAULT_TRUCK_TYRES_PATH, 'title' => 'Шины', 'img' => '/img/truck/tyre-1.png', 'alt' => 'Грузовые шины', 'active' => $active_menu === 'truck-tyres');
+$menu_items[] = array('href' => '/disks'.CONST_DEFAULT_TRUCK_DISKS_PATH, 'img' => '/img/truck/wheel-1.png', 'title' => 'Диски', 'alt' => 'Грузовые диски', 'active' => $active_menu === 'truck-disks');
 //$menu_items[] = array('href' => '/tubes', 'img' => '/img/truck/tube.png', 'title' => 'Камеры', 'alt' => 'Грузовые камеры');
 
 $menu_types = array();
@@ -39,7 +39,7 @@ usort($filter_truck_auto_keys, function ($a, $b) use ($order) {
         <?php
         foreach ($menu_items as $i => $item) { ?>
             <a href="<?php echo $item['href']; ?>" class="truck-switch__item <?php if ($item['active']) echo 'active'; ?>">
-                <img src="<?php echo $item['img']; ?>" alt="<?php echo $item['alt']; ?>" width="70px" height="70px"/>
+                <img src="<?php echo $item['img']; ?>" alt="<?php echo $item['alt']; ?>" width="50px" height="50px"/>
                 <span class="truck-switch__title"><?php echo $item['title']; ?></span>
             </a>
         <?php } ?>

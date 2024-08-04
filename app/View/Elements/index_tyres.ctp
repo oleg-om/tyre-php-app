@@ -100,6 +100,7 @@ foreach ($models as $item) {
 								<tr>
 								<?php echo $this->element('tyre_icons', array('product' => $item['Product'][0], 'brandModel' => $item['BrandModel'])); ?>
                                 <?php echo $this->element('tyre_season', array('seasons' => $seasons, 'season' => $season, 'item' => $item)); ?>
+                                    <?php echo $this->element('truck_axis', array('axis' => $item['Product'][0]['axis'])); ?>
 									<td>
 										<?php
 											$image = $this->Html->image('no-tyre-little.jpg', array('class' => 'no-img-tyre'));
@@ -336,6 +337,7 @@ foreach ($models as $item) {
 							<table cellpadding="0" cellspacing="0">
 								<tr>
                                     <?php echo $this->element('tyre_season', array('seasons' => $seasons, 'season' => $season, 'item' => $item)); ?>
+                                    <?php echo $this->element('truck_axis', array('axis' => $item['Product'][0]['axis'])); ?>
 									<td>
 										<?php
 											$image = $this->Html->image('no-tyre-little.jpg', array('class' => 'no-img-tyre'));

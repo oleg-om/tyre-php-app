@@ -4448,3 +4448,17 @@ table.withlines {
   background-color: #40b252;
   color: #ffffff;
 }
+.tyre__axis {
+  position: absolute;
+  z-index: 1;
+  bottom: -30px;
+  right: 0;
+}
+.tyre__axis-container {
+}
+.tyre__axis img {
+  max-width: 80px;
+  background-color: #ededed;
+  padding: 5px;
+  border-radius: 10px;
+}

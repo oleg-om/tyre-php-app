@@ -1245,15 +1245,37 @@ class ImportController extends AppController {
 							$brands = array();
 							$models = array();
 							$model_photos = array();
+
+                            // new synonyms enumeration
+                            $brand_synonyms_list = array();
+                            foreach ($brand_synonyms as $synonym) {
+                                $brand_synonyms_list[$synonym['BrandSynonym']['brand_id']][] = $synonym['BrandSynonym']['title'];
+                            }
+                            $model_synonyms_list = array();
+                            foreach ($model_synonyms as $synonym) {
+                                $model_synonyms_list[$synonym['ModelSynonym']['model_id']][] = $synonym['ModelSynonym']['title'];
+                            }
+                            // new synonyms enumeration
+
 							foreach ($all_brands as $brand => $id) {
 								$brand = $this->_clean_text($brand);
 								$brands[$brand] = $id;
-								foreach ($brand_synonyms as $synonym) {
-									if ($synonym['BrandSynonym']['brand_id'] == $id) {
-										$brand = trim($this->_clean_text($synonym['BrandSynonym']['title']));
-										$brands[$brand] = $id;
-									}
-								}
+//								foreach ($brand_synonyms as $synonym) {
+//									if ($synonym['BrandSynonym']['brand_id'] == $id) {
+//										$brand = trim($this->_clean_text($synonym['BrandSynonym']['title']));
+//										$brands[$brand] = $id;
+//									}
+//								}
+
+                                // new synonyms enumeration
+                                if (isset($brand_synonyms_list[$id]) && !empty($brand_synonyms_list[$id])) {
+                                    $brand_array = $brand_synonyms_list[$id];
+                                    foreach ($brand_array as $brand_item) {
+                                        $item = trim($this->_clean_text($brand_item));
+                                        $brands[$item] = $id;
+                                    }
+                                }
+                                // new synonyms enumeration
 							}
 							foreach ($all_models as $item) {
 								if (!isset($models[$item['BrandModel']['brand_id']])) {
@@ -1262,12 +1284,22 @@ class ImportController extends AppController {
 								$model_photos[$item['BrandModel']['id']] = !empty($item['BrandModel']['filename']);
 								$model = $this->_clean_text($item['BrandModel']['title'], false);
 								$models[$item['BrandModel']['brand_id']][$model] = $item['BrandModel']['id'];
-								foreach ($model_synonyms as $synonym) {
-									if ($synonym['ModelSynonym']['model_id'] == $item['BrandModel']['id']) {
-										$model = trim($this->_clean_text($synonym['ModelSynonym']['title'], false));
-										$models[$item['BrandModel']['brand_id']][$model] = $item['BrandModel']['id'];
-									}
-								}
+//								foreach ($model_synonyms as $synonym) {
+//									if ($synonym['ModelSynonym']['model_id'] == $item['BrandModel']['id']) {
+//										$model = trim($this->_clean_text($synonym['ModelSynonym']['title'], false));
+//										$models[$item['BrandModel']['brand_id']][$model] = $item['BrandModel']['id'];
+//									}
+//								}
+                                // new synonyms enumeration
+                                $brand_model_id = $item['BrandModel']['id'];
+                                if (isset($model_synonyms_list[$brand_model_id]) && !empty($model_synonyms_list[$brand_model_id])) {
+                                    $model_array = $model_synonyms_list[$id];
+                                    foreach ($model_array as $model_item) {
+                                        $model = trim($this->_clean_text($model_item));
+                                        $models[$brand_model_id][$model] = $brand_model_id;
+                                    }
+                                }
+                                // new synonyms enumeration
 							}
 
 							for ($i = 1; $i <= $data->sheets[0]['numRows']; $i++) {
@@ -2393,15 +2425,36 @@ class ImportController extends AppController {
 							$brands = array();
 							$models = array();
 							$model_photos = array();
-							foreach ($all_brands as $brand => $id) {
+
+                            // new synonyms enumeration
+                            $brand_synonyms_list = array();
+                            foreach ($brand_synonyms as $synonym) {
+                                $brand_synonyms_list[$synonym['BrandSynonym']['brand_id']][] = $synonym['BrandSynonym']['title'];
+                            }
+                            $model_synonyms_list = array();
+                            foreach ($model_synonyms as $synonym) {
+                                $model_synonyms_list[$synonym['ModelSynonym']['model_id']][] = $synonym['ModelSynonym']['title'];
+                            }
+                            // new synonyms enumeration
+
+                            foreach ($all_brands as $brand => $id) {
 								$brand = $this->_clean_text($brand);
 								$brands[$brand] = $id;
-								foreach ($brand_synonyms as $synonym) {
-									if ($synonym['BrandSynonym']['brand_id'] == $id) {
-										$brand = trim($this->_clean_text($synonym['BrandSynonym']['title']));
-										$brands[$brand] = $id;
-									}
-								}
+//								foreach ($brand_synonyms as $synonym) {
+//									if ($synonym['BrandSynonym']['brand_id'] == $id) {
+//										$brand = trim($this->_clean_text($synonym['BrandSynonym']['title']));
+//										$brands[$brand] = $id;
+//									}
+//								}
+                                // new synonyms enumeration
+                                if (isset($brand_synonyms_list[$id]) && !empty($brand_synonyms_list[$id])) {
+                                    $brand_array = $brand_synonyms_list[$id];
+                                    foreach ($brand_array as $brand_item) {
+                                        $item = trim($this->_clean_text($brand_item));
+                                        $brands[$item] = $id;
+                                    }
+                                }
+                                // new synonyms enumeration
 							}
 							foreach ($all_models as $item) {
 								if (!isset($models[$item['BrandModel']['brand_id']])) {
@@ -2410,12 +2463,22 @@ class ImportController extends AppController {
 								$model = $this->_clean_text($item['BrandModel']['title'], false);
 								$model_photos[$item['BrandModel']['id']] = !empty($item['BrandModel']['filename']);
 								$models[$item['BrandModel']['brand_id']][$model] = $item['BrandModel']['id'];
-								foreach ($model_synonyms as $synonym) {
-									if ($synonym['ModelSynonym']['model_id'] == $item['BrandModel']['id']) {
-										$model = trim($this->_clean_text($synonym['ModelSynonym']['title'], false));
-										$models[$item['BrandModel']['brand_id']][$model] = $item['BrandModel']['id'];
-									}
-								}
+//								foreach ($model_synonyms as $synonym) {
+//									if ($synonym['ModelSynonym']['model_id'] == $item['BrandModel']['id']) {
+//										$model = trim($this->_clean_text($synonym['ModelSynonym']['title'], false));
+//										$models[$item['BrandModel']['brand_id']][$model] = $item['BrandModel']['id'];
+//									}
+//								}
+                                // new synonyms enumeration
+                                $brand_model_id = $item['BrandModel']['id'];
+                                if (isset($model_synonyms_list[$brand_model_id]) && !empty($model_synonyms_list[$brand_model_id])) {
+                                    $model_array = $model_synonyms_list[$id];
+                                    foreach ($model_array as $model_item) {
+                                        $model = trim($this->_clean_text($model_item));
+                                        $models[$brand_model_id][$model] = $brand_model_id;
+                                    }
+                                }
+                                // new synonyms enumeration
 							}
 							for ($i = 1; $i <= count($data->sheets[0]['cells']); $i++) {
 								if (isset($data->sheets[0]['cells'][$i][1]) && !empty($data->sheets[0]['cells'][$i][1])) {
@@ -3312,15 +3375,36 @@ class ImportController extends AppController {
                             $brands = array();
                             $models = array();
                             $model_extra_filenames = array();
+
+                            // new synonyms enumeration
+                            $brand_synonyms_list = array();
+                            foreach ($brand_synonyms as $synonym) {
+                                $brand_synonyms_list[$synonym['BrandSynonym']['brand_id']][] = $synonym['BrandSynonym']['title'];
+                            }
+                            $model_synonyms_list = array();
+                            foreach ($model_synonyms as $synonym) {
+                                $model_synonyms_list[$synonym['ModelSynonym']['model_id']][] = $synonym['ModelSynonym']['title'];
+                            }
+                            // new synonyms enumeration
+
                             foreach ($all_brands as $brand => $id) {
                                 $brand = $this->_clean_text($brand);
                                 $brands[$brand] = $id;
-                                foreach ($brand_synonyms as $synonym) {
-                                    if ($synonym['BrandSynonym']['brand_id'] == $id) {
-                                        $brand = trim($this->_clean_text($synonym['BrandSynonym']['title']));
-                                        $brands[$brand] = $id;
+//                                foreach ($brand_synonyms as $synonym) {
+//                                    if ($synonym['BrandSynonym']['brand_id'] == $id) {
+//                                        $brand = trim($this->_clean_text($synonym['BrandSynonym']['title']));
+//                                        $brands[$brand] = $id;
+//                                    }
+//                                }
+                                // new synonyms enumeration
+                                if (isset($brand_synonyms_list[$id]) && !empty($brand_synonyms_list[$id])) {
+                                    $brand_array = $brand_synonyms_list[$id];
+                                    foreach ($brand_array as $brand_item) {
+                                        $item = trim($this->_clean_text($brand_item));
+                                        $brands[$item] = $id;
                                     }
                                 }
+                                // new synonyms enumeration
                             }
                             foreach ($all_models as $item) {
                                 if (!isset($models[$item['BrandModel']['brand_id']])) {
@@ -3330,13 +3414,24 @@ class ImportController extends AppController {
                                 $models[$item['BrandModel']['brand_id']][$model] = $item['BrandModel']['id'];
                                 $model_extra_filenames[$item['BrandModel']['id']] = $item['BrandModel']['extra_filenames'];
 
-                                foreach ($model_synonyms as $synonym) {
-                                    if ($synonym['ModelSynonym']['model_id'] == $item['BrandModel']['id']) {
-                                        $model = trim($this->_clean_text($synonym['ModelSynonym']['title'], false));
-                                        $models[$item['BrandModel']['brand_id']][$model] = $item['BrandModel']['id'];
-                                        $model_extra_filenames[$item['BrandModel']['id']] = $item['BrandModel']['extra_filenames'];
+//                                foreach ($model_synonyms as $synonym) {
+//                                    if ($synonym['ModelSynonym']['model_id'] == $item['BrandModel']['id']) {
+//                                        $model = trim($this->_clean_text($synonym['ModelSynonym']['title'], false));
+//                                        $models[$item['BrandModel']['brand_id']][$model] = $item['BrandModel']['id'];
+//                                        $model_extra_filenames[$item['BrandModel']['id']] = $item['BrandModel']['extra_filenames'];
+//                                    }
+//                                }
+                                // new synonyms enumeration
+                                $brand_model_id = $item['BrandModel']['id'];
+                                if (isset($model_synonyms_list[$brand_model_id]) && !empty($model_synonyms_list[$brand_model_id])) {
+                                    $model_array = $model_synonyms_list[$id];
+                                    foreach ($model_array as $model_item) {
+                                        $model = trim($this->_clean_text($model_item));
+                                        $models[$brand_model_id][$model] = $brand_model_id;
+                                        $model_extra_filenames[$brand_model_id] = $item['BrandModel']['extra_filenames'];
                                     }
                                 }
+                                // new synonyms enumeration
                             }
                             //debug($data->sheets[0]['cells']);
                             for ($i = 1; $i <= $data->sheets[0]['numRows']; $i++) {
@@ -3690,15 +3785,36 @@ class ImportController extends AppController {
                             $brand_synonyms = $this->BrandSynonym->find('all');
                             $brands = array();
                             $models = array();
+
+                            // new synonyms enumeration
+                            $brand_synonyms_list = array();
+                            foreach ($brand_synonyms as $synonym) {
+                                $brand_synonyms_list[$synonym['BrandSynonym']['brand_id']][] = $synonym['BrandSynonym']['title'];
+                            }
+                            $model_synonyms_list = array();
+                            foreach ($model_synonyms as $synonym) {
+                                $model_synonyms_list[$synonym['ModelSynonym']['model_id']][] = $synonym['ModelSynonym']['title'];
+                            }
+                            // new synonyms enumeration
+
                             foreach ($all_brands as $brand => $id) {
                                 $brand = $this->_clean_text($brand);
                                 $brands[$brand] = $id;
-                                foreach ($brand_synonyms as $synonym) {
-                                    if ($synonym['BrandSynonym']['brand_id'] == $id) {
-                                        $brand = trim($this->_clean_text($synonym['BrandSynonym']['title']));
-                                        $brands[$brand] = $id;
+//                                foreach ($brand_synonyms as $synonym) {
+//                                    if ($synonym['BrandSynonym']['brand_id'] == $id) {
+//                                        $brand = trim($this->_clean_text($synonym['BrandSynonym']['title']));
+//                                        $brands[$brand] = $id;
+//                                    }
+//                                }
+                                // new synonyms enumeration
+                                if (isset($brand_synonyms_list[$id]) && !empty($brand_synonyms_list[$id])) {
+                                    $brand_array = $brand_synonyms_list[$id];
+                                    foreach ($brand_array as $brand_item) {
+                                        $item = trim($this->_clean_text($brand_item));
+                                        $brands[$item] = $id;
                                     }
                                 }
+                                // new synonyms enumeration
                             }
                             foreach ($all_models as $item) {
                                 if (!isset($models[$item['BrandModel']['brand_id']])) {
@@ -3706,12 +3822,22 @@ class ImportController extends AppController {
                                 }
                                 $model = $this->_clean_text($item['BrandModel']['title'], false);
                                 $models[$item['BrandModel']['brand_id']][$model] = $item['BrandModel']['id'];
-                                foreach ($model_synonyms as $synonym) {
-                                    if ($synonym['ModelSynonym']['model_id'] == $item['BrandModel']['id']) {
-                                        $model = trim($this->_clean_text($synonym['ModelSynonym']['title'], false));
-                                        $models[$item['BrandModel']['brand_id']][$model] = $item['BrandModel']['id'];
+//                                foreach ($model_synonyms as $synonym) {
+//                                    if ($synonym['ModelSynonym']['model_id'] == $item['BrandModel']['id']) {
+//                                        $model = trim($this->_clean_text($synonym['ModelSynonym']['title'], false));
+//                                        $models[$item['BrandModel']['brand_id']][$model] = $item['BrandModel']['id'];
+//                                    }
+//                                }
+                                // new synonyms enumeration
+                                $brand_model_id = $item['BrandModel']['id'];
+                                if (isset($model_synonyms_list[$brand_model_id]) && !empty($model_synonyms_list[$brand_model_id])) {
+                                    $model_array = $model_synonyms_list[$id];
+                                    foreach ($model_array as $model_item) {
+                                        $model = trim($this->_clean_text($model_item));
+                                        $models[$brand_model_id][$model] = $brand_model_id;
                                     }
                                 }
+                                // new synonyms enumeration
                             }
                             //debug($data->sheets[0]['cells']);exit();
                             for ($i = 1; $i <= $data->sheets[0]['numRows']; $i++) {
@@ -4228,15 +4354,37 @@ class ImportController extends AppController {
                             $brand_synonyms = $this->BrandSynonym->find('all');
                             $brands = array();
                             $models = array();
+
+                            // new synonyms enumeration
+                            $brand_synonyms_list = array();
+                            foreach ($brand_synonyms as $synonym) {
+                                $brand_synonyms_list[$synonym['BrandSynonym']['brand_id']][] = $synonym['BrandSynonym']['title'];
+                            }
+                            $model_synonyms_list = array();
+                            foreach ($model_synonyms as $synonym) {
+                                $model_synonyms_list[$synonym['ModelSynonym']['model_id']][] = $synonym['ModelSynonym']['title'];
+                            }
+                            // new synonyms enumeration
+
                             foreach ($all_brands as $brand => $id) {
                                 $brand = $this->_clean_text($brand);
                                 $brands[$brand] = $id;
-                                foreach ($brand_synonyms as $synonym) {
-                                    if ($synonym['BrandSynonym']['brand_id'] == $id) {
-                                        $brand = trim($this->_clean_text($synonym['BrandSynonym']['title']));
-                                        $brands[$brand] = $id;
+//                                foreach ($brand_synonyms as $synonym) {
+//                                    if ($synonym['BrandSynonym']['brand_id'] == $id) {
+//                                        $brand = trim($this->_clean_text($synonym['BrandSynonym']['title']));
+//                                        $brands[$brand] = $id;
+//                                    }
+//                                }
+
+                                // new synonyms enumeration
+                                if (isset($brand_synonyms_list[$id]) && !empty($brand_synonyms_list[$id])) {
+                                    $brand_array = $brand_synonyms_list[$id];
+                                    foreach ($brand_array as $brand_item) {
+                                        $item = trim($this->_clean_text($brand_item));
+                                        $brands[$item] = $id;
                                     }
                                 }
+                                // new synonyms enumeration
                             }
                             foreach ($all_models as $item) {
                                 if (!isset($models[$item['BrandModel']['brand_id']])) {
@@ -4244,12 +4392,22 @@ class ImportController extends AppController {
                                 }
                                 $model = $this->_clean_text($item['BrandModel']['title'], false);
                                 $models[$item['BrandModel']['brand_id']][$model] = $item['BrandModel']['id'];
-                                foreach ($model_synonyms as $synonym) {
-                                    if ($synonym['ModelSynonym']['model_id'] == $item['BrandModel']['id']) {
-                                        $model = trim($this->_clean_text($synonym['ModelSynonym']['title'], false));
-                                        $models[$item['BrandModel']['brand_id']][$model] = $item['BrandModel']['id'];
+//                                foreach ($model_synonyms as $synonym) {
+//                                    if ($synonym['ModelSynonym']['model_id'] == $item['BrandModel']['id']) {
+//                                        $model = trim($this->_clean_text($synonym['ModelSynonym']['title'], false));
+//                                        $models[$item['BrandModel']['brand_id']][$model] = $item['BrandModel']['id'];
+//                                    }
+//                                }
+                                // new synonyms enumeration
+                                $brand_model_id = $item['BrandModel']['id'];
+                                if (isset($model_synonyms_list[$brand_model_id]) && !empty($model_synonyms_list[$brand_model_id])) {
+                                    $model_array = $model_synonyms_list[$id];
+                                    foreach ($model_array as $model_item) {
+                                        $model = trim($this->_clean_text($model_item));
+                                        $models[$brand_model_id][$model] = $brand_model_id;
                                     }
                                 }
+                                // new synonyms enumeration
                             }
                             for ($i = 6; $i <= $data->sheets[0]['numRows']; $i++) {
                                 if (isset($data->sheets[0]['cells'][$i][1]) && !empty($data->sheets[0]['cells'][$i][1])) {
@@ -4899,7 +5057,7 @@ class ImportController extends AppController {
 						);
 						$product_axis = array(
 							'ведущая' => 'ведущая',
-                            '(на ведущую ось)' => 'ведущая',
+                            'на ведущую ось' => 'ведущая',
 							'управляемая' => 'руль',
 							'прицеп' => 'прицеп',
                             'приц.' => 'прицеп',
@@ -4907,7 +5065,7 @@ class ImportController extends AppController {
 							'рулевая/универсальная' => 'универсальная',
 							'прицепная' => 'прицеп',
 							'рулевая' => 'руль',
-                            '(на рулевую ось)' => 'руль',
+                            'на рулевую ось' => 'руль',
 							'тяга+руль' => 'универсальная', 
 							'руль+тяга' => 'универсальная',
 							'руль+прицеп' => 'универсальная',
@@ -4917,9 +5075,9 @@ class ImportController extends AppController {
                             'руль/прицеп' => 'руль/прицеп',
                             'карьерная' => 'карьерная',
                             'карьер' => 'карьерная',
-                            '(на любую ось)' => 'универсальная',
-                            '(на прицепную ось)' => 'прицеп',
-                            '(на рулевую/прицепную ось)' => 'руль/прицеп'
+                            'на любую ось' => 'универсальная',
+                            'на прицепную ось' => 'прицеп',
+                            'на рулевую/прицепную ось' => 'руль/прицеп'
 						);
 						$this->loadModel('Brand');
 						$this->loadModel('BrandModel');
@@ -4939,18 +5097,39 @@ class ImportController extends AppController {
 							$models = array();
 							$models_by_id = array();
 							$brands_by_id = array();
+
+                            // new synonyms enumeration
+                            $brand_synonyms_list = array();
+                            foreach ($brand_synonyms as $synonym) {
+                                $brand_synonyms_list[$synonym['BrandSynonym']['brand_id']][] = $synonym['BrandSynonym']['title'];
+                            }
+                            $model_synonyms_list = array();
+                            foreach ($model_synonyms as $synonym) {
+                                $model_synonyms_list[$synonym['ModelSynonym']['model_id']][] = $synonym['ModelSynonym']['title'];
+                            }
+                            // new synonyms enumeration
+
 							foreach ($all_brands as $brand => $id) {
 								$brand = trim($this->_clean_text($brand));
 								if (mb_strlen($brand) > 1) {
 									$brands[$brand] = $id;
 									$brands_by_id[$id] = $brand;
 								}
-								foreach ($brand_synonyms as $synonym) {
-									if ($synonym['BrandSynonym']['brand_id'] == $id) {
-										$brand = trim($this->_clean_text($synonym['BrandSynonym']['title']));
-										$brands[$brand] = $id;
-									}
-								}
+//								foreach ($brand_synonyms as $synonym) {
+//									if ($synonym['BrandSynonym']['brand_id'] == $id) {
+//										$brand = trim($this->_clean_text($synonym['BrandSynonym']['title']));
+//										$brands[$brand] = $id;
+//									}
+//								}
+                                // new synonyms enumeration
+                                if (isset($brand_synonyms_list[$id]) && !empty($brand_synonyms_list[$id])) {
+                                    $brand_array = $brand_synonyms_list[$id];
+                                    foreach ($brand_array as $brand_item) {
+                                        $item = trim($this->_clean_text($brand_item));
+                                        $brands[$item] = $id;
+                                    }
+                                }
+                                // new synonyms enumeration
 							}
 							uksort($brands, 'cmp');
 							foreach ($all_models as $item) {
@@ -4960,12 +5139,22 @@ class ImportController extends AppController {
 								$model = $this->_clean_text($item['BrandModel']['title'], false);
 								$models[$item['BrandModel']['brand_id']][$model] = $item['BrandModel']['id'];
 								$models_by_id[$item['BrandModel']['id']] = $model;
-								foreach ($model_synonyms as $synonym) {
-									if ($synonym['ModelSynonym']['model_id'] == $item['BrandModel']['id']) {
-										$model = trim($this->_clean_text($synonym['ModelSynonym']['title'], false));
-										$models[$item['BrandModel']['brand_id']][$model] = $item['BrandModel']['id'];
-									}
-								}
+//								foreach ($model_synonyms as $synonym) {
+//									if ($synonym['ModelSynonym']['model_id'] == $item['BrandModel']['id']) {
+//										$model = trim($this->_clean_text($synonym['ModelSynonym']['title'], false));
+//										$models[$item['BrandModel']['brand_id']][$model] = $item['BrandModel']['id'];
+//									}
+//								}
+                                // new synonyms enumeration
+                                $brand_model_id = $item['BrandModel']['id'];
+                                if (isset($model_synonyms_list[$brand_model_id]) && !empty($model_synonyms_list[$brand_model_id])) {
+                                    $model_array = $model_synonyms_list[$id];
+                                    foreach ($model_array as $model_item) {
+                                        $model = trim($this->_clean_text($model_item));
+                                        $models[$brand_model_id][$model] = $brand_model_id;
+                                    }
+                                }
+                                // new synonyms enumeration
 								uksort($models[$item['BrandModel']['brand_id']], 'cmp');
 							}
 							Cache::write('import_brands_' . $category_id, $brands, 'long');
@@ -5221,6 +5410,8 @@ class ImportController extends AppController {
 											$symbols = array(', :', '*,', '*', '(2,4)', '(2)', '(4)', ' :', 'а/ш');
 											$title = $save_data['title'];
 											$title = trim(preg_replace('/\bXL\b|\bTT\b|\bTL\b|\bM\+S\b|\bM\.S\b|\bM\&S\b|\bMS\b|\bMud\+Snow\b/i', ' ', $title));
+                                            $title = trim(preg_replace('/Арт[,.]?\s*[0-9A-z]+/iu', ' ', $title));
+                                            $title = trim(preg_replace('/Арт[,.]?\s*[А-яA-z][0-9]+/iu', '', $title));
 											$title = trim(str_ireplace(array(' (шт.)', ' (<>)', 'Автопокрышки ', ' бескамерная', 'Шина ', '"', 'Автошина'), ' ', $title));
 											$title = trim(str_ireplace($replaces, ' ', $title));
 											$title = trim(str_ireplace($symbols, ' ', $title));
@@ -5361,6 +5552,15 @@ class ImportController extends AppController {
 														$title = trim(str_ireplace($mathces[0], '', $title));
 													}
 												}
+//                                                9.00R20
+                                                elseif (preg_match('/\b([0-9.]{2,})\s*R([0-9(,|.)]{2,})/ui', $size_title, $mathces)) {
+                                                    $save_data['size1'] = $mathces[1];
+                                                    $save_data['size2'] = '0';
+                                                    $save_data['size3'] = $mathces[2];
+                                                    if (isset($title)) {
+                                                        $title = trim(str_ireplace($mathces[0], '', $title));
+                                                    }
+                                                }
 												elseif (preg_match('/\b([0-9,]{2,})R([0-9,]{2,})\/[0-9]+\b/ui', $size_title, $mathces)) {
 													$save_data['size1'] = $mathces[1];
 													$save_data['size2'] = '0';
@@ -6082,6 +6282,7 @@ class ImportController extends AppController {
 
 						);
                         $product_autos = array(
+                            'легковой' => 'легковой',
                             'легкова' => 'легковой',
                             'легковая' => 'легковой',
                             'грузовая' => 'грузовой',
@@ -6145,23 +6346,40 @@ class ImportController extends AppController {
 							$all_models = $this->BrandModel->find('all', array('conditions' => array('BrandModel.category_id' => $category_id), 'fields' => array('BrandModel.id', 'BrandModel.brand_id', 'BrandModel.title')));
 							$model_synonyms = $this->ModelSynonym->find('all');
 							$brand_synonyms = $this->BrandSynonym->find('all');
+
 							$brands = array();
 							$models = array();
 							$models_by_id = array();
 							$brands_by_id = array();
+
+                            // new synonyms enumeration
+                            $brand_synonyms_list = array();
+                            foreach ($brand_synonyms as $synonym) {
+                                $brand_synonyms_list[$synonym['BrandSynonym']['brand_id']][] = $synonym['BrandSynonym']['title'];
+                            }
+                            $model_synonyms_list = array();
+                            foreach ($model_synonyms as $synonym) {
+                                $model_synonyms_list[$synonym['ModelSynonym']['model_id']][] = $synonym['ModelSynonym']['title'];
+                            }
+                            // new synonyms enumeration
+
 							foreach ($all_brands as $brand => $id) {
 								$brand = trim($this->_clean_text($brand));
 								if (mb_strlen($brand) > 1) {
 									$brands[$brand] = $id;
 									$brands_by_id[$id] = $brand;
 								}
-								foreach ($brand_synonyms as $synonym) {
-									if ($synonym['BrandSynonym']['brand_id'] == $id) {
-										$brand = trim($this->_clean_text($synonym['BrandSynonym']['title']));
-										$brands[$brand] = $id;
-									}
-								}
+                                // new synonyms enumeration
+                                if (isset($brand_synonyms_list[$id]) && !empty($brand_synonyms_list[$id])) {
+                                    $brand_array = $brand_synonyms_list[$id];
+                                    foreach ($brand_array as $brand_item) {
+                                        $item = trim($this->_clean_text($brand_item));
+                                        $brands[$item] = $id;
+                                    }
+                                }
+                                // new synonyms enumeration
 							}
+
 							uksort($brands, 'cmp');
 							foreach ($all_models as $item) {
 								if (!isset($models[$item['BrandModel']['brand_id']])) {
@@ -6170,12 +6388,24 @@ class ImportController extends AppController {
 								$model = $this->_clean_text($item['BrandModel']['title'], false);
 								$models[$item['BrandModel']['brand_id']][$model] = $item['BrandModel']['id'];
 								$models_by_id[$item['BrandModel']['id']] = $model;
-								foreach ($model_synonyms as $synonym) {
-									if ($synonym['ModelSynonym']['model_id'] == $item['BrandModel']['id']) {
-										$model = $this->_clean_text($synonym['ModelSynonym']['title'], false);
-										$models[$item['BrandModel']['brand_id']][$model] = $item['BrandModel']['id'];
-									}
-								}
+//								foreach ($model_synonyms as $synonym) {
+//									if ($synonym['ModelSynonym']['model_id'] == $item['BrandModel']['id']) {
+//										$model = $this->_clean_text($synonym['ModelSynonym']['title'], false);
+//										$models[$item['BrandModel']['brand_id']][$model] = $item['BrandModel']['id'];
+//									}
+//								}
+
+                                // new synonyms enumeration
+                                $brand_model_id = $item['BrandModel']['id'];
+                                if (isset($model_synonyms_list[$brand_model_id]) && !empty($model_synonyms_list[$brand_model_id])) {
+                                    $model_array = $model_synonyms_list[$id];
+                                    foreach ($model_array as $model_item) {
+                                        $model = trim($this->_clean_text($model_item));
+                                        $models[$brand_model_id][$model] = $brand_model_id;
+                                    }
+                                }
+                                // new synonyms enumeration
+
 								uksort($models[$item['BrandModel']['brand_id']], 'cmp');
 							}
 							Cache::write('import_brands_' . $category_id, $brands, 'long');
@@ -6328,14 +6558,15 @@ class ImportController extends AppController {
 												$save_data['title'] = str_replace('_', ' ', $save_data['title']);
 											}
 											$title = trim($save_data['title']);
-											$title = trim(str_ireplace(array(' (шт.)', 'Автодиски ', 'Диск колесный ', 'пр-во ', 'БЕЗ колпаков', 'задний', 'передний', '¶', '(1л)', '(2л)'), ' ', $title));
+											$title = trim(str_ireplace(array(' (шт.)', 'Автодиски ', 'Диск колесный ', 'пр-во ', 'БЕЗ колпаков', 'задний', 'передний', '¶', '(1л)', '(2л)', 'Диск '), ' ', $title));
 											$title = trim(preg_replace('/Арт[,.]?\s*[0-9A-z]+/iu', ' ', $title));
 											$title = trim(preg_replace('/Арт[,.]?\s*[А-яA-z][0-9]+/iu', '', $title));
+                                            $title = trim(preg_replace('/арт[,.]?\s*[А-яA-z][0-9]+/iu', '', $title));
 										}
 										if (isset($save_data['model'])) {
-											$save_data['model'] = trim(str_ireplace(array(' (шт.)', 'Автодиски ', 'Диск колесный ', 'пр-во ', 'БЕЗ колпаков', 'Задний', 'Передний'), ' ', $save_data['model']));
+											$save_data['model'] = trim(str_ireplace(array(' (шт.)', 'Автодиски ', 'Диск колесный ', 'пр-во ', 'БЕЗ колпаков', 'Задний', 'Передний', 'Диск ', 'мод.'), ' ', $save_data['model']));
 										}
-                                        if (!isset($save_data['auto']) && !empty($product_auto)) {
+                                        if (isset($save_data['auto']) && !empty($product_auto)) {
                                             $save_data['auto'] = $product_auto;
                                         }
 
@@ -6348,6 +6579,18 @@ class ImportController extends AppController {
 
                                         if (empty($save_data['auto'])) {
                                             $save_data['auto'] = 'легковой';
+                                        }
+
+                                        if (empty($save_data['material'])) {
+                                            if (substr_count(mb_strtolower($title), 'стальные') || substr_count(mb_strtolower($title), 'стальной')) {
+                                                $save_data['material'] = 'steel';
+                                            }
+                                            elseif (substr_count(mb_strtolower($title), 'литые') || substr_count(mb_strtolower($title), 'литой')) {
+                                                $save_data['material'] = 'cast';
+                                            }
+                                            elseif (substr_count(mb_strtolower($title), 'кованные') || substr_count(mb_strtolower($title), 'кованный')) {
+                                                $save_data['material'] = 'forged';
+                                            }
                                         }
 
 										//debug($save_data);
@@ -6921,6 +7164,15 @@ class ImportController extends AppController {
 												$save_data['hub'] = $mathces[6];
 												$title = trim(str_ireplace($mathces[0], ' ', $title));
 											}
+                                            // Диск Стальной ASTERRO мод.1705 17.5х6.00 PCD 6х222.25 ET123 DIA164 10 мм (1900 кг)  Арт. Т0000000492 (пин грузовые диски))
+                                            elseif (preg_match('/([0-9.,]+)(x|х)([0-9.,]+)\sPCD\s([0-9]+)\х([0-9.,]+)\sET([0-9\.]+)\sDIA([0-9,.]+)/ui', $title, $mathces)) {
+                                                $save_data['radius'] = $mathces[1];
+                                                $save_data['dia'] = $mathces[3];
+                                                $save_data['pcd'] = $mathces[4] . 'x' . $mathces[5];
+                                                $save_data['et'] = $mathces[6];
+                                                $save_data['hub'] = $mathces[7];
+                                                $title = trim(str_ireplace($mathces[0], ' ', $title));
+                                            }
 										}
 										if (isset($save_data['pcd'])) {
 											$save_data['pcd'] = str_replace(array('-', '*', ',', '/'), array('/', 'x', '.', 'x'), $save_data['pcd']);
