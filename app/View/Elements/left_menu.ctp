@@ -405,17 +405,18 @@
                         echo $this->element('custom_checkbox', array('options' => $extra_options_2));
                         ?>
                         <div class="item-group">
+                            <?php echo $this->element('custom_select', array('label' => 'Бренд', 'name' => 'brand_id', 'options' => $filter_brands, 'multiple' => true, 'search' => true)); ?>
+                        </div>
+                        <div class="item-group">
                             <?php echo $this->element('custom_select', array('label' => 'Пункт выдачи', 'name' => 'stock_place', 'options' => $filter_all_places, 'multiple' => false)); ?>
                         </div>
+
                         <div class="item-inner-space-around">
                             <?php
                             $stock_options = array('2' => array('label' => 'Все', 'query' => 'in_stock'), '1' => array('label' => 'В наличии', 'query' => 'in_stock'), '0' => array('label' => 'Под заказ', 'query' => 'in_stock'));
                             echo $this->element('custom_radio', array('label' => 'Наличие:', 'options' => $stock_options, 'size' => 'small', 'default_value' => '2'));
                             ?>
                         </div>
-                    </div>
-                    <div class="item-group">
-                        <?php echo $this->element('custom_select', array('label' => 'Бренд', 'name' => 'brand_id', 'options' => $filter_brands, 'multiple' => true, 'search' => true)); ?>
                     </div>
                     <?php
                     echo $this->Form->hidden('modification', array('value' => $modification_slug));
