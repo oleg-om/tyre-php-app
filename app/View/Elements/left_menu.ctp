@@ -381,15 +381,17 @@
                             <?php echo $this->element('custom_select', array('label' => 'Вылет', 'auto_add_options' => true, 'name' => 'et', 'placeholder' => 'Все', 'options' => $disk_et, 'multiple' => false, 'search' => false)); ?>
                             <?php echo $this->element('custom_select', array('label' => 'Диаметр', 'placeholder' => 'Все', 'auto_add_options' => true, 'name' => 'size1', 'options' => $disk_size1, 'multiple' => false, 'search' => false, 'hideClearButton' => true)); ?>
                         </div>
+                        <div class="item item-icon__disk">
+                            <?php
+                            $material_options = array('steel' => array('label' => 'Стальные', 'query' => 'material', 'icon' => '/img/icons/disk-steel.png'), 'forged' => array('label' => 'Кованные', 'query' => 'material', 'icon' => '/img/icons/disk-cast.png'));
+                            echo $this->element('custom_radio', array('label' => 'Материал:', 'options' => $material_options, 'size' => 'large'));
+                            ?>
+                        </div>
                         <div class="item-group">
                             <?php echo $this->element('custom_select', array('label' => 'Посадочный диаметр', 'placeholder' => 'Все', 'auto_add_options' => true, 'name' => 'hub', 'options' => $disk_hub, 'multiple' => false, 'search' => false, 'hideClearButton' => true)); ?>
                             <?php echo $this->element('custom_select', array('label' => 'Сверловка</br>(PCD)', 'placeholder' => 'Все', 'auto_add_options' => true, 'name' => 'size2', 'options' => $disk_size2, 'multiple' => false, 'search' => false, 'hideClearButton' => true)); ?>
                         </div>
-                        <div class="item-group">
-                            <?php echo $this->element('custom_select', array('label' => 'Бренд', 'name' => 'brand_id', 'options' => $filter_brands, 'multiple' => true, 'search' => true)); ?>
-                            <?php echo $this->element('custom_select', array('label' => 'Материал', 'placeholder' => 'Все', 'auto_add_options' => true, 'name' => 'cast', 'options' => $materials, 'multiple' => false, 'search' => false, 'hideClearButton' => true)); ?>
 
-                        </div>
                     </div>
 
                     <div class="item">
@@ -403,8 +405,12 @@
                         echo $this->element('custom_checkbox', array('options' => $extra_options_2));
                         ?>
                         <div class="item-group">
+                            <?php echo $this->element('custom_select', array('label' => 'Бренд', 'name' => 'brand_id', 'options' => $filter_brands, 'multiple' => true, 'search' => true)); ?>
+                        </div>
+                        <div class="item-group">
                             <?php echo $this->element('custom_select', array('label' => 'Пункт выдачи', 'name' => 'stock_place', 'options' => $filter_all_places, 'multiple' => false)); ?>
                         </div>
+
                         <div class="item-inner-space-around">
                             <?php
                             $stock_options = array('2' => array('label' => 'Все', 'query' => 'in_stock'), '1' => array('label' => 'В наличии', 'query' => 'in_stock'), '0' => array('label' => 'Под заказ', 'query' => 'in_stock'));
