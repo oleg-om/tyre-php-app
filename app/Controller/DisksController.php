@@ -1589,11 +1589,11 @@ endforeach;
 		
 		$conditions = array('Product.is_active' => 1, 'Product.category_id' => 2, 'Product.price > ' => 0, 'Product.stock_count > ' => 0);
 
-        if ($this->check_truck($this->request->query['auto'])['path'] === 'truck-wheels') {
-
-        } else {
-            $conditions['Product.auto'] = $hub;
-        }
+//        if ($this->check_truck($this->request->query['auto'])['path'] === 'truck-wheels') {
+//
+//        } else {
+//            $conditions['Product.auto'] = 'cars';
+//        }
 
         if (isset($this->request->query['hub_from']) && !empty($this->request->query['hub_from'])) {
             $hub = floatval(str_replace(',', '.', $this->request->query['hub_from']));
@@ -1645,6 +1645,12 @@ endforeach;
             if (isset($this->request->query['p3']) && $this->request->query['p3'] == 1) {
                 $conditions['OR']['Product.p3'] = 1;
             }
+        }
+
+        if (isset($this->request->query['auto']) && !empty($this->request->query['auto'])) {
+            $conditions['Product.auto'] = $this->request->query['auto'];
+        } else {
+            $conditions['Product.auto'] = 'cars';
         }
 		
 		$this->request->data['Product'] = $this->request->query;
@@ -1983,8 +1989,10 @@ endforeach;
 				$conditions['Product.hub'] = $this->request->query['hub'];
 			}
 
-            if (isset($this->request->query['auto']) && isset($this->request->query['auto'])) {
+            if (isset($this->request->query['auto']) && !empty($this->request->query['auto'])) {
                 $conditions['Product.auto'] = $this->request->query['auto'];
+            } else {
+                $conditions['Product.auto'] = 'cars';
             }
 
 			if (isset($this->request->query['size2']) && !empty($this->request->query['size2'])) {
@@ -2152,7 +2160,7 @@ endforeach;
 					'title' => $brand['Brand']['title']
 				);
 				
-				//print_r($conditions);
+//				print_r($conditions);
 				
 				if (count($conditions) == 4) {
 					if ($this->sett_var('SHOW_DISKS_IMG')==1)
