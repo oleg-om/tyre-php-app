@@ -1292,11 +1292,12 @@ class ImportController extends AppController {
 //								}
                                 // new synonyms enumeration
                                 $brand_model_id = $item['BrandModel']['id'];
+                                $brand_id = $item['BrandModel']['brand_id'];
                                 if (isset($model_synonyms_list[$brand_model_id]) && !empty($model_synonyms_list[$brand_model_id])) {
                                     $model_array = $model_synonyms_list[$id];
                                     foreach ($model_array as $model_item) {
                                         $model = trim($this->_clean_text($model_item));
-                                        $models[$brand_model_id][$model] = $brand_model_id;
+                                        $models[$brand_id][$model] = $brand_model_id;
                                     }
                                 }
                                 // new synonyms enumeration
@@ -2471,11 +2472,12 @@ class ImportController extends AppController {
 //								}
                                 // new synonyms enumeration
                                 $brand_model_id = $item['BrandModel']['id'];
+                                $brand_id = $item['BrandModel']['brand_id'];
                                 if (isset($model_synonyms_list[$brand_model_id]) && !empty($model_synonyms_list[$brand_model_id])) {
                                     $model_array = $model_synonyms_list[$id];
                                     foreach ($model_array as $model_item) {
                                         $model = trim($this->_clean_text($model_item));
-                                        $models[$brand_model_id][$model] = $brand_model_id;
+                                        $models[$brand_id][$model] = $brand_model_id;
                                     }
                                 }
                                 // new synonyms enumeration
@@ -3423,11 +3425,12 @@ class ImportController extends AppController {
 //                                }
                                 // new synonyms enumeration
                                 $brand_model_id = $item['BrandModel']['id'];
+                                $brand_id = $item['BrandModel']['brand_id'];
                                 if (isset($model_synonyms_list[$brand_model_id]) && !empty($model_synonyms_list[$brand_model_id])) {
                                     $model_array = $model_synonyms_list[$id];
                                     foreach ($model_array as $model_item) {
                                         $model = trim($this->_clean_text($model_item));
-                                        $models[$brand_model_id][$model] = $brand_model_id;
+                                        $models[$brand_id][$model] = $brand_model_id;
                                         $model_extra_filenames[$brand_model_id] = $item['BrandModel']['extra_filenames'];
                                     }
                                 }
@@ -3710,10 +3713,19 @@ class ImportController extends AppController {
                                                         if ($existing_file_names != '' && !empty($existing_file_names)) {
                                                             foreach ($existing_file_names as $key => $img_item) {
                                                                 list($params, $img) = explode(':', $img_item);
-                                                                list($ah_value, $f2_value) = explode('-', $params);
+                                                                list($ah_value, $f2_value, $width_value, $height_value, $length_value, $current_value) = explode('-', $params);
+
+                                                                $new_fields_exist = !empty($width_value) && isset($width_value) && !empty($height_value) && isset($height_value) && !empty($length_value) && isset($length_value) && !empty($current_value) && isset($current_value);
+                                                                $new_fields = intval($width_value) == intval($width_value) && trim($height_value) == trim($height_value) && trim($length_value) == trim($length_value) && trim($current_value) == trim($current_value);
 
                                                                 if (intval($ah_value) == intval($ah) && trim($f2) == trim($f2_value)) {
-                                                                    $filename = $img;
+                                                                    if (!$new_fields_exist) {
+                                                                        $filename = $img;
+                                                                    } else {
+                                                                        if ($new_fields) {
+                                                                            $filename = $img;
+                                                                        }
+                                                                    }
                                                                 }
                                                             }
                                                         }
@@ -3810,7 +3822,7 @@ class ImportController extends AppController {
                                 if (isset($brand_synonyms_list[$id]) && !empty($brand_synonyms_list[$id])) {
                                     $brand_array = $brand_synonyms_list[$id];
                                     foreach ($brand_array as $brand_item) {
-                                        $item = trim($this->_clean_text($brand_item));
+                                        $item = trim($this->_clean_text($brand_item, false));
                                         $brands[$item] = $id;
                                     }
                                 }
@@ -3830,14 +3842,20 @@ class ImportController extends AppController {
 //                                }
                                 // new synonyms enumeration
                                 $brand_model_id = $item['BrandModel']['id'];
+                                $brand_id = $item['BrandModel']['brand_id'];
+
                                 if (isset($model_synonyms_list[$brand_model_id]) && !empty($model_synonyms_list[$brand_model_id])) {
-                                    $model_array = $model_synonyms_list[$id];
-                                    foreach ($model_array as $model_item) {
-                                        $model = trim($this->_clean_text($model_item));
-                                        $models[$brand_model_id][$model] = $brand_model_id;
+                                    $model_array = $model_synonyms_list[$brand_model_id];
+                                    foreach ($model_array as $model_title) {
+                                        $model = trim($this->_clean_text($model_title, false));
+                                        $models[$brand_id][$model] = $brand_model_id;
                                     }
                                 }
                                 // new synonyms enumeration
+
+
+
+
                             }
                             //debug($data->sheets[0]['cells']);exit();
                             for ($i = 1; $i <= $data->sheets[0]['numRows']; $i++) {
@@ -4400,11 +4418,12 @@ class ImportController extends AppController {
 //                                }
                                 // new synonyms enumeration
                                 $brand_model_id = $item['BrandModel']['id'];
+                                $brand_id = $item['BrandModel']['brand_id'];
                                 if (isset($model_synonyms_list[$brand_model_id]) && !empty($model_synonyms_list[$brand_model_id])) {
                                     $model_array = $model_synonyms_list[$id];
                                     foreach ($model_array as $model_item) {
                                         $model = trim($this->_clean_text($model_item));
-                                        $models[$brand_model_id][$model] = $brand_model_id;
+                                        $models[$brand_id][$model] = $brand_model_id;
                                     }
                                 }
                                 // new synonyms enumeration
@@ -5147,11 +5166,12 @@ class ImportController extends AppController {
 //								}
                                 // new synonyms enumeration
                                 $brand_model_id = $item['BrandModel']['id'];
+                                $brand_id = $item['BrandModel']['brand_id'];
                                 if (isset($model_synonyms_list[$brand_model_id]) && !empty($model_synonyms_list[$brand_model_id])) {
                                     $model_array = $model_synonyms_list[$id];
                                     foreach ($model_array as $model_item) {
                                         $model = trim($this->_clean_text($model_item));
-                                        $models[$brand_model_id][$model] = $brand_model_id;
+                                        $models[$brand_id][$model] = $brand_model_id;
                                     }
                                 }
                                 // new synonyms enumeration
@@ -6397,11 +6417,12 @@ class ImportController extends AppController {
 
                                 // new synonyms enumeration
                                 $brand_model_id = $item['BrandModel']['id'];
+                                $brand_id = $item['BrandModel']['brand_id'];
                                 if (isset($model_synonyms_list[$brand_model_id]) && !empty($model_synonyms_list[$brand_model_id])) {
                                     $model_array = $model_synonyms_list[$id];
                                     foreach ($model_array as $model_item) {
                                         $model = trim($this->_clean_text($model_item));
-                                        $models[$brand_model_id][$model] = $brand_model_id;
+                                        $models[$brand_id][$model] = $brand_model_id;
                                     }
                                 }
                                 // new synonyms enumeration
