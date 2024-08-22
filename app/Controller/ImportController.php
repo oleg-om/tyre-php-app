@@ -2471,13 +2471,13 @@ class ImportController extends AppController {
 //									}
 //								}
                                 // new synonyms enumeration
-                                $brand_model_id = $item['BrandModel']['id'];
-                                $brand_id = $item['BrandModel']['brand_id'];
-                                if (isset($model_synonyms_list[$brand_model_id]) && !empty($model_synonyms_list[$brand_model_id])) {
-                                    $model_array = $model_synonyms_list[$id];
+                                $syn_brand_model_id = $item['BrandModel']['id'];
+                                $syn_brand_id = $item['BrandModel']['brand_id'];
+                                if (isset($model_synonyms_list[$syn_brand_model_id]) && !empty($model_synonyms_list[$syn_brand_model_id])) {
+                                    $model_array = $model_synonyms_list[$syn_brand_model_id];
                                     foreach ($model_array as $model_item) {
                                         $model = trim($this->_clean_text($model_item));
-                                        $models[$brand_id][$model] = $brand_model_id;
+                                        $models[$syn_brand_id][$model] = $syn_brand_model_id;
                                     }
                                 }
                                 // new synonyms enumeration
@@ -5166,12 +5166,12 @@ class ImportController extends AppController {
 //								}
                                 // new synonyms enumeration
                                 $brand_model_id = $item['BrandModel']['id'];
-                                $brand_id = $item['BrandModel']['brand_id'];
+                                $syn_brand_id = $item['BrandModel']['brand_id'];
                                 if (isset($model_synonyms_list[$brand_model_id]) && !empty($model_synonyms_list[$brand_model_id])) {
-                                    $model_array = $model_synonyms_list[$id];
+                                    $model_array = $model_synonyms_list[$brand_model_id];
                                     foreach ($model_array as $model_item) {
                                         $model = trim($this->_clean_text($model_item));
-                                        $models[$brand_id][$model] = $brand_model_id;
+                                        $models[$syn_brand_id][$model] = $brand_model_id;
                                     }
                                 }
                                 // new synonyms enumeration
