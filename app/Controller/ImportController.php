@@ -2475,8 +2475,8 @@ class ImportController extends AppController {
                                 $syn_brand_id = $item['BrandModel']['brand_id'];
                                 if (isset($model_synonyms_list[$syn_brand_model_id]) && !empty($model_synonyms_list[$syn_brand_model_id])) {
                                     $model_array = $model_synonyms_list[$syn_brand_model_id];
-                                    foreach ($model_array as $model_item) {
-                                        $model = trim($this->_clean_text($model_item));
+                                    foreach ($model_array as $model_title) {
+                                        $model = trim($this->_clean_text($model_title, false));
                                         $models[$syn_brand_id][$model] = $syn_brand_model_id;
                                     }
                                 }
