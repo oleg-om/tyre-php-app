@@ -1271,7 +1271,7 @@ class ImportController extends AppController {
                                 if (isset($brand_synonyms_list[$id]) && !empty($brand_synonyms_list[$id])) {
                                     $brand_array = $brand_synonyms_list[$id];
                                     foreach ($brand_array as $brand_item) {
-                                        $item = trim($this->_clean_text($brand_item));
+                                        $item = trim($this->_clean_text($brand_item, false));
                                         $brands[$item] = $id;
                                     }
                                 }
@@ -1294,9 +1294,9 @@ class ImportController extends AppController {
                                 $brand_model_id = $item['BrandModel']['id'];
                                 $brand_id = $item['BrandModel']['brand_id'];
                                 if (isset($model_synonyms_list[$brand_model_id]) && !empty($model_synonyms_list[$brand_model_id])) {
-                                    $model_array = $model_synonyms_list[$id];
+                                    $model_array = $model_synonyms_list[$brand_model_id];
                                     foreach ($model_array as $model_item) {
-                                        $model = trim($this->_clean_text($model_item));
+                                        $model = trim($this->_clean_text($model_item, false));
                                         $models[$brand_id][$model] = $brand_model_id;
                                     }
                                 }
@@ -4398,7 +4398,7 @@ class ImportController extends AppController {
                                 if (isset($brand_synonyms_list[$id]) && !empty($brand_synonyms_list[$id])) {
                                     $brand_array = $brand_synonyms_list[$id];
                                     foreach ($brand_array as $brand_item) {
-                                        $item = trim($this->_clean_text($brand_item));
+                                        $item = trim($this->_clean_text($brand_item, false));
                                         $brands[$item] = $id;
                                     }
                                 }
@@ -4420,9 +4420,9 @@ class ImportController extends AppController {
                                 $brand_model_id = $item['BrandModel']['id'];
                                 $brand_id = $item['BrandModel']['brand_id'];
                                 if (isset($model_synonyms_list[$brand_model_id]) && !empty($model_synonyms_list[$brand_model_id])) {
-                                    $model_array = $model_synonyms_list[$id];
+                                    $model_array = $model_synonyms_list[$brand_model_id];
                                     foreach ($model_array as $model_item) {
-                                        $model = trim($this->_clean_text($model_item));
+                                        $model = trim($this->_clean_text($model_item, false));
                                         $models[$brand_id][$model] = $brand_model_id;
                                     }
                                 }
@@ -6393,7 +6393,7 @@ class ImportController extends AppController {
                                 if (isset($brand_synonyms_list[$id]) && !empty($brand_synonyms_list[$id])) {
                                     $brand_array = $brand_synonyms_list[$id];
                                     foreach ($brand_array as $brand_item) {
-                                        $item = trim($this->_clean_text($brand_item));
+                                        $item = trim($this->_clean_text($brand_item, false));
                                         $brands[$item] = $id;
                                     }
                                 }
@@ -6419,9 +6419,9 @@ class ImportController extends AppController {
                                 $brand_model_id = $item['BrandModel']['id'];
                                 $brand_id = $item['BrandModel']['brand_id'];
                                 if (isset($model_synonyms_list[$brand_model_id]) && !empty($model_synonyms_list[$brand_model_id])) {
-                                    $model_array = $model_synonyms_list[$id];
+                                    $model_array = $model_synonyms_list[$brand_model_id];
                                     foreach ($model_array as $model_item) {
-                                        $model = trim($this->_clean_text($model_item));
+                                        $model = trim($this->_clean_text($model_item, false));
                                         $models[$brand_id][$model] = $brand_model_id;
                                     }
                                 }
