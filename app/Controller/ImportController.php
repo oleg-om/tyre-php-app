@@ -1469,7 +1469,7 @@ class ImportController extends AppController {
 											elseif ($m == 'литые' || $m == 'литой') {
 												$model_material = 'cast';
 											}
-											elseif ($m == 'кованные' || $m == 'кованный') {
+											elseif ($m == 'кованные' || $m == 'кованный' || $m == 'кованый') {
 												$model_material = 'forged';
 											}
 											if (!empty($model_material)) {
@@ -4631,7 +4631,7 @@ class ImportController extends AppController {
                                             elseif ($m == 'литые' || $m == 'литой') {
                                                 $model_material = 'cast';
                                             }
-                                            elseif ($m == 'кованные' || $m == 'кованный') {
+                                            elseif ($m == 'кованные' || $m == 'кованный' || $m == 'кованый') {
                                                 $model_material = 'forged';
                                             }
                                             if (!empty($model_material)) {
@@ -6629,7 +6629,7 @@ class ImportController extends AppController {
                                             elseif (substr_count(mb_strtolower($title), 'литые') || substr_count(mb_strtolower($title), 'литой')) {
                                                 $save_data['material'] = 'cast';
                                             }
-                                            elseif (substr_count(mb_strtolower($title), 'кованные') || substr_count(mb_strtolower($title), 'кованный')) {
+                                            elseif (substr_count(mb_strtolower($title), 'кованные') || substr_count(mb_strtolower($title), 'кованный')  || substr_count(mb_strtolower($title), 'кованый')) {
                                                 $save_data['material'] = 'forged';
                                             }
                                         }
