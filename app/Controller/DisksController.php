@@ -1630,7 +1630,7 @@ endforeach;
             $conditions['Product.count_place_'.$this->request->query['stock_place'].' >='] = 1;
         }
 
-        if (empty($this->request->query['size1']) && empty($this->request->query['size3']) && empty($this->request->query['material'])
+        if (empty($this->request->query['size1']) && empty($this->request->query['size3']) && empty($this->request->query['size2']) && empty($this->request->query['et_from']) && empty($this->request->query['et_to']) && empty($this->request->query['hub_from']) && empty($this->request->query['hub_to']) && empty($this->request->query['hub']) && empty($this->request->query['material'])
             && (!isset($this->request->query['auto']) || empty($this->request->query['auto']) || $this->request->query['auto'] === 'cars')) {
             $conditions['Product.size1'] = 18;
         }
@@ -2449,6 +2449,7 @@ endforeach;
 		if (isset($this->request->query['price_to']) && !empty($this->request->query['price_to'])) {
 			$conditions['Product.price <='] = intval($this->request->query['price_to']);
 		}
+        print_r(json_encode($conditions));
 		return $conditions;
 	}
 	public function set_filter() {
