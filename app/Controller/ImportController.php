@@ -4478,7 +4478,7 @@ class ImportController extends AppController {
                                         $p3 = 1;
                                     }
 
-                                    if (isset($data->sheets[0]['cells'][$i][18])) {
+                                    if (isset($data->sheets[0]['cells'][$i][19])) {
                                         $type = mb_strtolower(trim($data->sheets[0]['cells'][$i][19]));
                                         if ($type == 'г') {
                                             $auto = 'trucks';
@@ -4539,6 +4539,8 @@ class ImportController extends AppController {
                                     if (empty($gruz_count)) {
                                         $gruz_count = 0;
                                     }
+
+                                    $material = isset($data->sheets[0]['cells'][$i][20]) ? trim($data->sheets[0]['cells'][$i][20]) : '';
 
                                     // $stock_places = $autodom_count.'|'.$tiptop_count.'|'.$bam_count.'|'.$atp_count.'|'.$taksopark_count.'|'.$vianorshop_count.'|'.$hundai_count.'|'.$tavrida_count.'|'.$gruz_count;
 
@@ -4619,6 +4621,23 @@ class ImportController extends AppController {
                                         }
                                         if (!in_array($model_id, $recount_models)) {
                                             $recount_models[] = $model_id;
+                                        }
+                                        if (!empty($material)) {
+                                            $model_material = null;
+                                            $m = mb_strtolower(trim($material));
+                                            if ($m == 'стальные' || $m == 'стальной') {
+                                                $model_material = 'steel';
+                                            }
+                                            elseif ($m == 'литые' || $m == 'литой') {
+                                                $model_material = 'cast';
+                                            }
+                                            elseif ($m == 'кованные' || $m == 'кованный') {
+                                                $model_material = 'forged';
+                                            }
+                                            if (!empty($model_material)) {
+                                                $this->BrandModel->id = $model_id;
+                                                $this->BrandModel->saveField('material', $model_material);
+                                            }
                                         }
                                         $conditions = array(
                                             'Product.brand_id' => $brand_id,
