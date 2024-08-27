@@ -225,7 +225,7 @@
                     <?php } ?>
                     <div class="item-group">
                         <?php echo $this->element('custom_select', array('label' => 'Ширина', 'placeholder' => 'Все', 'auto_add_options' => true, 'name' => 'size1', 'options' => $tyre_size1, 'multiple' => false, 'search' => false, 'hideClearButton' => true)); ?>
-                        <?php echo $this->element('custom_select', array('label' => 'Длина', 'placeholder' => 'Все', 'auto_add_options' => true, 'name' => 'size2', 'options' => $tyre_size2, 'multiple' => false, 'search' => false, 'hideClearButton' => true)); ?>
+                        <?php echo $this->element('custom_select', array('label' => 'Профиль', 'placeholder' => 'Все', 'auto_add_options' => true, 'name' => 'size2', 'options' => $tyre_size2, 'multiple' => false, 'search' => false, 'hideClearButton' => true)); ?>
                         <?php echo $this->element('custom_select', array('label' => 'Диаметр', 'placeholder' => 'Все', 'auto_add_options' => true, 'name' => 'size3', 'options' => $tyre_size3, 'multiple' => false, 'search' => false, 'hideClearButton' => true)); ?>
                     </div>
 
