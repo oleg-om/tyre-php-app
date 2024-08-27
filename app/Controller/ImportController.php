@@ -6298,7 +6298,8 @@ class ImportController extends AppController {
 							'свободный остаток' => 'stock_count',
 							'цена, руб.' => 'price',
 							'розничная, руб.' => 'price',
-                            'авто' => 'auto'
+                            'авто' => 'auto',
+                            'материал' => 'material'
 
 						);
                         $product_autos = array(
