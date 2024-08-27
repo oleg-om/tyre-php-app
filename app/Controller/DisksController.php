@@ -2047,9 +2047,13 @@ endforeach;
 				/*** select *****/
 
 			}
-		
-			
-			
+
+            $material_condition = '';
+            if (isset($conditions['BrandModel.material'])) {
+                $material_condition = $conditions['BrandModel.material'];
+                unset($conditions['BrandModel.material']);
+            }
+
 			
 			if (!isset($this->request->query['in_stock4'])) {
 				$this->request->query['in_stock4'] = 0;
@@ -2172,6 +2176,14 @@ endforeach;
 							$model_conditions = array('BrandModel.category_id' => 2,'BrandModel.is_active' => 1, 'BrandModel.brand_id' => $brand['Brand']['id'], 'BrandModel.id' => $model_ids, 'BrandModel.filename !=' => '');
 					else 	$model_conditions = array('BrandModel.category_id' => 2,'BrandModel.is_active' => 1, 'BrandModel.brand_id' => $brand['Brand']['id'], 'BrandModel.id' => $model_ids);
 				}
+
+                if (!empty($material_condition)) {
+                    $model_conditions['BrandModel.material'] = $material_condition;
+                }
+
+                if (isset($this->request->query['material']) && !empty($this->request->query['material'])) {
+                    $model_conditions['BrandModel.material'] = $this->request->query['material'];
+                }
 				
 				$this->paginate['order'] = $sort_orders[$sort];
 				$this->BrandModel->virtualFields['full_title'] = 'CONCAT(Brand.title,\' \',BrandModel.title)';
