@@ -319,6 +319,9 @@
     .car__sizes-right img {
         margin: 0;
     }
+    .mode-selector__contact {
+        display: block;
+    }
 }
 
 @media screen and (min-width: 1200px) {

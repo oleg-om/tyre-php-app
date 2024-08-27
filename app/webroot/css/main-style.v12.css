@@ -4462,3 +4462,8 @@ table.withlines {
   padding: 5px;
   border-radius: 10px;
 }
+
+.mode-selector__contact {
+  margin-top: 10px;
+  display: none;
+}
