@@ -832,44 +832,44 @@ class ImportController extends AppController
 												$need_to_create_brands[$brand_name] = array($i);
 											}
 											/*
-																			 $slug = $this->_transliterate($brand_name);
-																			 $check_slug = $slug;
-																			 $j = 2;
-																			 while (isset($brand_slugs[$check_slug])) {
-																				 $check_slug = $slug . $j;
-																				 $j ++;
-																			 }
-																			 $brand_slugs[$check_slug] = 1;
-																			 $slug = $check_slug;
-																			 $save_data = array(
-																				 'is_active' => 1,
-																				 'category_id' => $category_id,
-																				 'title' => $brand_name,
-																				 'slug' => $slug,
-																				 'meta_title' => $brand_name
-																			 );
-																			 $this->Brand->create();
-																			 if ($this->Brand->save($save_data)) {
-																				 $created_brands ++;
-																				 $brand_id = $this->Brand->id;
-																				 $recount_brands[] = $brand_id;
-																				 $brands[$brand] = $brand_id;
-																				 $save_data = array(
-																					 'is_active' => 1,
-																					 'brand_id' => $brand_id,
-																					 'category_id' => $category_id,
-																					 'title' => $model_name,
-																					 'meta_title' => $model_name
-																				 );
-																				 $this->BrandModel->create();
-																				 if ($this->BrandModel->save($save_data)) {
-																					 $created_models ++;
-																					 $model_id = $this->BrandModel->id;
-																					 $recount_models[] = $model_id;
-																					 $models[$brand_id][$model] = $model_id;
-																				 }
-																			 }
-																			 */
+																											  $slug = $this->_transliterate($brand_name);
+																											  $check_slug = $slug;
+																											  $j = 2;
+																											  while (isset($brand_slugs[$check_slug])) {
+																												  $check_slug = $slug . $j;
+																												  $j ++;
+																											  }
+																											  $brand_slugs[$check_slug] = 1;
+																											  $slug = $check_slug;
+																											  $save_data = array(
+																												  'is_active' => 1,
+																												  'category_id' => $category_id,
+																												  'title' => $brand_name,
+																												  'slug' => $slug,
+																												  'meta_title' => $brand_name
+																											  );
+																											  $this->Brand->create();
+																											  if ($this->Brand->save($save_data)) {
+																												  $created_brands ++;
+																												  $brand_id = $this->Brand->id;
+																												  $recount_brands[] = $brand_id;
+																												  $brands[$brand] = $brand_id;
+																												  $save_data = array(
+																													  'is_active' => 1,
+																													  'brand_id' => $brand_id,
+																													  'category_id' => $category_id,
+																													  'title' => $model_name,
+																													  'meta_title' => $model_name
+																												  );
+																												  $this->BrandModel->create();
+																												  if ($this->BrandModel->save($save_data)) {
+																													  $created_models ++;
+																													  $model_id = $this->BrandModel->id;
+																													  $recount_models[] = $model_id;
+																													  $models[$brand_id][$model] = $model_id;
+																												  }
+																											  }
+																											  */
 										}
 										if (!empty($brand_id) && !empty($model_id)) {
 											if (!in_array($brand_id, $recount_brands)) {
@@ -1064,44 +1064,44 @@ class ImportController extends AppController
 											$need_to_create_brands[$brand_name] = array($i);
 										}
 										/*
-																	  $slug = $this->_transliterate($brand_name);
-																	  $check_slug = $slug;
-																	  $j = 2;
-																	  while (isset($brand_slugs[$check_slug])) {
-																		  $check_slug = $slug . $j;
-																		  $j ++;
-																	  }
-																	  $brand_slugs[$check_slug] = 1;
-																	  $slug = $check_slug;
-																	  $save_data = array(
-																		  'is_active' => 1,
-																		  'category_id' => $category_id,
-																		  'title' => $brand_name,
-																		  'slug' => $slug,
-																		  'meta_title' => $brand_name
-																	  );
-																	  $this->Brand->create();
-																	  if ($this->Brand->save($save_data)) {
-																		  $created_brands ++;
-																		  $brand_id = $this->Brand->id;
-																		  $recount_brands[] = $brand_id;
-																		  $brands[$brand] = $brand_id;
-																		  $save_data = array(
-																			  'is_active' => 1,
-																			  'brand_id' => $brand_id,
-																			  'category_id' => $category_id,
-																			  'title' => $model_name,
-																			  'meta_title' => $model_name
-																		  );
-																		  $this->BrandModel->create();
-																		  if ($this->BrandModel->save($save_data)) {
-																			  $created_models ++;
-																			  $model_id = $this->BrandModel->id;
-																			  $recount_models[] = $model_id;
-																			  $models[$brand_id][$model] = $model_id;
-																		  }
-																	  }
-																	  */
+																									$slug = $this->_transliterate($brand_name);
+																									$check_slug = $slug;
+																									$j = 2;
+																									while (isset($brand_slugs[$check_slug])) {
+																										$check_slug = $slug . $j;
+																										$j ++;
+																									}
+																									$brand_slugs[$check_slug] = 1;
+																									$slug = $check_slug;
+																									$save_data = array(
+																										'is_active' => 1,
+																										'category_id' => $category_id,
+																										'title' => $brand_name,
+																										'slug' => $slug,
+																										'meta_title' => $brand_name
+																									);
+																									$this->Brand->create();
+																									if ($this->Brand->save($save_data)) {
+																										$created_brands ++;
+																										$brand_id = $this->Brand->id;
+																										$recount_brands[] = $brand_id;
+																										$brands[$brand] = $brand_id;
+																										$save_data = array(
+																											'is_active' => 1,
+																											'brand_id' => $brand_id,
+																											'category_id' => $category_id,
+																											'title' => $model_name,
+																											'meta_title' => $model_name
+																										);
+																										$this->BrandModel->create();
+																										if ($this->BrandModel->save($save_data)) {
+																											$created_models ++;
+																											$model_id = $this->BrandModel->id;
+																											$recount_models[] = $model_id;
+																											$models[$brand_id][$model] = $model_id;
+																										}
+																									}
+																									*/
 									}
 									if (!empty($brand_id) && !empty($model_id)) {
 										if (!in_array($brand_id, $recount_brands)) {
@@ -1369,45 +1369,45 @@ class ImportController extends AppController
 											$need_to_create_brands[$brand_name] = array($i);
 										}
 										/*
-																	  $slug = $this->_transliterate($brand_name);
-																	  $check_slug = $slug;
-																	  $j = 2;
-																	  while (isset($brand_slugs[$check_slug])) {
-																		  $check_slug = $slug . $j;
-																		  $j ++;
-																	  }
-																	  $brand_slugs[$check_slug] = 1;
-																	  $slug = $check_slug;
-																	  $save_data = array(
-																		  'is_active' => 1,
-																		  'category_id' => $category_id,
-																		  'title' => $brand_name,
-																		  'slug' => $slug,
-																		  'meta_title' => $brand_name
-																	  );
-																	  $this->Brand->create();
-																	  if ($this->Brand->save($save_data)) {
-																		  $created_brands ++;
-																		  $brand_id = $this->Brand->id;
-																		  $recount_brands[] = $brand_id;
-																		  $brands[$brand] = $brand_id;
-																		  $save_data = array(
-																			  'is_active' => 1,
-																			  'brand_id' => $brand_id,
-																			  'category_id' => $category_id,
-																			  'title' => $model_name,
-																			  'meta_title' => $model_name
-																		  );
-																		  $this->BrandModel->create();
-																		  if ($this->BrandModel->save($save_data)) {
-																			  $created_models ++;
-																			  $model_id = $this->BrandModel->id;
-																			  $recount_models[] = $model_id;
-																			  $model_photos[$model_id] = false;
-																			  $models[$brand_id][$model] = $model_id;
-																		  }
-																	  }
-																	  */
+																									$slug = $this->_transliterate($brand_name);
+																									$check_slug = $slug;
+																									$j = 2;
+																									while (isset($brand_slugs[$check_slug])) {
+																										$check_slug = $slug . $j;
+																										$j ++;
+																									}
+																									$brand_slugs[$check_slug] = 1;
+																									$slug = $check_slug;
+																									$save_data = array(
+																										'is_active' => 1,
+																										'category_id' => $category_id,
+																										'title' => $brand_name,
+																										'slug' => $slug,
+																										'meta_title' => $brand_name
+																									);
+																									$this->Brand->create();
+																									if ($this->Brand->save($save_data)) {
+																										$created_brands ++;
+																										$brand_id = $this->Brand->id;
+																										$recount_brands[] = $brand_id;
+																										$brands[$brand] = $brand_id;
+																										$save_data = array(
+																											'is_active' => 1,
+																											'brand_id' => $brand_id,
+																											'category_id' => $category_id,
+																											'title' => $model_name,
+																											'meta_title' => $model_name
+																										);
+																										$this->BrandModel->create();
+																										if ($this->BrandModel->save($save_data)) {
+																											$created_models ++;
+																											$model_id = $this->BrandModel->id;
+																											$recount_models[] = $model_id;
+																											$model_photos[$model_id] = false;
+																											$models[$brand_id][$model] = $model_id;
+																										}
+																									}
+																									*/
 									}
 									if (!empty($brand_id) && !empty($model_id)) {
 										if (!in_array($brand_id, $recount_brands)) {
@@ -1730,44 +1730,44 @@ class ImportController extends AppController
 												$need_to_create_brands[$brand_name] = array($i);
 											}
 											/*
-																			 $slug = $this->_transliterate($brand_name);
-																			 $check_slug = $slug;
-																			 $j = 2;
-																			 while (isset($brand_slugs[$check_slug])) {
-																				 $check_slug = $slug . $j;
-																				 $j ++;
-																			 }
-																			 $brand_slugs[$check_slug] = 1;
-																			 $slug = $check_slug;
-																			 $save_data = array(
-																				 'is_active' => 1,
-																				 'category_id' => $category_id,
-																				 'title' => $brand_name,
-																				 'slug' => $slug,
-																				 'meta_title' => $brand_name
-																			 );
-																			 $this->Brand->create();
-																			 if ($this->Brand->save($save_data)) {
-																				 $created_brands ++;
-																				 $brand_id = $this->Brand->id;
-																				 $recount_brands[] = $brand_id;
-																				 $brands[$brand] = $brand_id;
-																				 $save_data = array(
-																					 'is_active' => 1,
-																					 'brand_id' => $brand_id,
-																					 'category_id' => $category_id,
-																					 'title' => $model_name,
-																					 'meta_title' => $model_name
-																				 );
-																				 $this->BrandModel->create();
-																				 if ($this->BrandModel->save($save_data)) {
-																					 $created_models ++;
-																					 $model_id = $this->BrandModel->id;
-																					 $recount_models[] = $model_id;
-																					 $models[$brand_id][$model] = $model_id;
-																				 }
-																			 }
-																			 */
+																											  $slug = $this->_transliterate($brand_name);
+																											  $check_slug = $slug;
+																											  $j = 2;
+																											  while (isset($brand_slugs[$check_slug])) {
+																												  $check_slug = $slug . $j;
+																												  $j ++;
+																											  }
+																											  $brand_slugs[$check_slug] = 1;
+																											  $slug = $check_slug;
+																											  $save_data = array(
+																												  'is_active' => 1,
+																												  'category_id' => $category_id,
+																												  'title' => $brand_name,
+																												  'slug' => $slug,
+																												  'meta_title' => $brand_name
+																											  );
+																											  $this->Brand->create();
+																											  if ($this->Brand->save($save_data)) {
+																												  $created_brands ++;
+																												  $brand_id = $this->Brand->id;
+																												  $recount_brands[] = $brand_id;
+																												  $brands[$brand] = $brand_id;
+																												  $save_data = array(
+																													  'is_active' => 1,
+																													  'brand_id' => $brand_id,
+																													  'category_id' => $category_id,
+																													  'title' => $model_name,
+																													  'meta_title' => $model_name
+																												  );
+																												  $this->BrandModel->create();
+																												  if ($this->BrandModel->save($save_data)) {
+																													  $created_models ++;
+																													  $model_id = $this->BrandModel->id;
+																													  $recount_models[] = $model_id;
+																													  $models[$brand_id][$model] = $model_id;
+																												  }
+																											  }
+																											  */
 										}
 										if (!empty($brand_id) && !empty($model_id)) {
 											if (!in_array($brand_id, $recount_brands)) {
@@ -2092,44 +2092,44 @@ class ImportController extends AppController
 												$need_to_create_brands[$brand_name] = array($i);
 											}
 											/*
-																			 $slug = $this->_transliterate($brand_name);
-																			 $check_slug = $slug;
-																			 $j = 2;
-																			 while (isset($brand_slugs[$check_slug])) {
-																				 $check_slug = $slug . $j;
-																				 $j ++;
-																			 }
-																			 $brand_slugs[$check_slug] = 1;
-																			 $slug = $check_slug;
-																			 $save_data = array(
-																				 'is_active' => 1,
-																				 'category_id' => $category_id,
-																				 'title' => $brand_name,
-																				 'slug' => $slug,
-																				 'meta_title' => $brand_name
-																			 );
-																			 $this->Brand->create();
-																			 if ($this->Brand->save($save_data)) {
-																				 $created_brands ++;
-																				 $brand_id = $this->Brand->id;
-																				 $recount_brands[] = $brand_id;
-																				 $brands[$brand] = $brand_id;
-																				 $save_data = array(
-																					 'is_active' => 1,
-																					 'brand_id' => $brand_id,
-																					 'category_id' => $category_id,
-																					 'title' => $model_name,
-																					 'meta_title' => $model_name
-																				 );
-																				 $this->BrandModel->create();
-																				 if ($this->BrandModel->save($save_data)) {
-																					 $created_models ++;
-																					 $model_id = $this->BrandModel->id;
-																					 $recount_models[] = $model_id;
-																					 $models[$brand_id][$model] = $model_id;
-																				 }
-																			 }
-																			 */
+																											  $slug = $this->_transliterate($brand_name);
+																											  $check_slug = $slug;
+																											  $j = 2;
+																											  while (isset($brand_slugs[$check_slug])) {
+																												  $check_slug = $slug . $j;
+																												  $j ++;
+																											  }
+																											  $brand_slugs[$check_slug] = 1;
+																											  $slug = $check_slug;
+																											  $save_data = array(
+																												  'is_active' => 1,
+																												  'category_id' => $category_id,
+																												  'title' => $brand_name,
+																												  'slug' => $slug,
+																												  'meta_title' => $brand_name
+																											  );
+																											  $this->Brand->create();
+																											  if ($this->Brand->save($save_data)) {
+																												  $created_brands ++;
+																												  $brand_id = $this->Brand->id;
+																												  $recount_brands[] = $brand_id;
+																												  $brands[$brand] = $brand_id;
+																												  $save_data = array(
+																													  'is_active' => 1,
+																													  'brand_id' => $brand_id,
+																													  'category_id' => $category_id,
+																													  'title' => $model_name,
+																													  'meta_title' => $model_name
+																												  );
+																												  $this->BrandModel->create();
+																												  if ($this->BrandModel->save($save_data)) {
+																													  $created_models ++;
+																													  $model_id = $this->BrandModel->id;
+																													  $recount_models[] = $model_id;
+																													  $models[$brand_id][$model] = $model_id;
+																												  }
+																											  }
+																											  */
 										}
 										if (!empty($brand_id) && !empty($model_id)) {
 											if (!in_array($brand_id, $recount_brands)) {
@@ -2530,45 +2530,45 @@ class ImportController extends AppController
 											$need_to_create_brands[$brand_name] = array($i);
 										}
 										/*
-																	  $slug = $this->_transliterate($brand_name);
-																	  $check_slug = $slug;
-																	  $j = 2;
-																	  while (isset($brand_slugs[$check_slug])) {
-																		  $check_slug = $slug . $j;
-																		  $j ++;
-																	  }
-																	  $brand_slugs[$check_slug] = 1;
-																	  $slug = $check_slug;
-																	  $save_data = array(
-																		  'is_active' => 1,
-																		  'category_id' => $category_id,
-																		  'title' => $brand_name,
-																		  'slug' => $slug,
-																		  'meta_title' => $brand_name
-																	  );
-																	  $this->Brand->create();
-																	  if ($this->Brand->save($save_data)) {
-																		  $created_brands ++;
-																		  $brand_id = $this->Brand->id;
-																		  $recount_brands[] = $brand_id;
-																		  $brands[$brand] = $brand_id;
-																		  $save_data = array(
-																			  'is_active' => 1,
-																			  'brand_id' => $brand_id,
-																			  'category_id' => $category_id,
-																			  'title' => $model_name,
-																			  'meta_title' => $model_name
-																		  );
-																		  $this->BrandModel->create();
-																		  if ($this->BrandModel->save($save_data)) {
-																			  $created_models ++;
-																			  $model_id = $this->BrandModel->id;
-																			  $recount_models[] = $model_id;
-																			  $model_photos[$model_id] = false;
-																			  $models[$brand_id][$model] = $model_id;
-																		  }
-																	  }
-																	  */
+																									$slug = $this->_transliterate($brand_name);
+																									$check_slug = $slug;
+																									$j = 2;
+																									while (isset($brand_slugs[$check_slug])) {
+																										$check_slug = $slug . $j;
+																										$j ++;
+																									}
+																									$brand_slugs[$check_slug] = 1;
+																									$slug = $check_slug;
+																									$save_data = array(
+																										'is_active' => 1,
+																										'category_id' => $category_id,
+																										'title' => $brand_name,
+																										'slug' => $slug,
+																										'meta_title' => $brand_name
+																									);
+																									$this->Brand->create();
+																									if ($this->Brand->save($save_data)) {
+																										$created_brands ++;
+																										$brand_id = $this->Brand->id;
+																										$recount_brands[] = $brand_id;
+																										$brands[$brand] = $brand_id;
+																										$save_data = array(
+																											'is_active' => 1,
+																											'brand_id' => $brand_id,
+																											'category_id' => $category_id,
+																											'title' => $model_name,
+																											'meta_title' => $model_name
+																										);
+																										$this->BrandModel->create();
+																										if ($this->BrandModel->save($save_data)) {
+																											$created_models ++;
+																											$model_id = $this->BrandModel->id;
+																											$recount_models[] = $model_id;
+																											$model_photos[$model_id] = false;
+																											$models[$brand_id][$model] = $model_id;
+																										}
+																									}
+																									*/
 									}
 									if (!empty($brand_id) && !empty($model_id)) {
 										if (!in_array($brand_id, $recount_brands)) {
@@ -2894,14 +2894,14 @@ class ImportController extends AppController
 
 
 							/*
-												 $this->loadModel('Products');
-												 
-												 $color_ = $this->Products->find('list',array(
-												 'conditions' => array('color !='=>''),
-												 'fields' => array('color'),
-												 'group' => array('color'),
-												 ));
-												 */
+																	  $this->loadModel('Products');
+																	  
+																	  $color_ = $this->Products->find('list',array(
+																	  'conditions' => array('color !='=>''),
+																	  'fields' => array('color'),
+																	  'group' => array('color'),
+																	  ));
+																	  */
 
 							for ($i = 6; $i <= $data->sheets[0]['numRows']; $i++) {
 								//echo "<br>---".$i;
@@ -3133,8 +3133,8 @@ class ImportController extends AppController
 												//		echo"<br>33_33_33_33";
 												$sku = $brand_name . ' ' . $model_name . ' ' . $size3 . 'x' . $size1 . ' ' . $size2 . ' ET ' . $et . ' Dia ' . $hub;
 												/*if (!empty($color)) {
-																						$sku .= ' (' . $color . ')';
-																					}*/
+																															$sku .= ' (' . $color . ')';
+																														}*/
 												$save_data = array(
 													'is_active' => 1,
 													'supplier_id' => $supplier_id,
@@ -3390,44 +3390,44 @@ class ImportController extends AppController
 												$need_to_create_brands[$brand_name] = array($i);
 											}
 											/*
-											$slug = $this->_transliterate($brand_name);
-											$check_slug = $slug;
-											$j = 2;
-											while (isset($brand_slugs[$check_slug])) {
-												$check_slug = $slug . $j;
-												$j ++;
-											}
-											$brand_slugs[$check_slug] = 1;
-											$slug = $check_slug;
-											$save_data = array(
-												'is_active' => 1,
-												'category_id' => $category_id,
-												'title' => $brand_name,
-												'slug' => $slug,
-												'meta_title' => $brand_name
-											);
-											$this->Brand->create();
-											if ($this->Brand->save($save_data)) {
-												$created_brands ++;
-												$brand_id = $this->Brand->id;
-												$recount_brands[] = $brand_id;
-												$brands[$brand] = $brand_id;
-												$save_data = array(
-													'is_active' => 1,
-													'brand_id' => $brand_id,
-													'category_id' => $category_id,
-													'title' => $model_name,
-													'meta_title' => $model_name
-												);
-												$this->BrandModel->create();
-												if ($this->BrandModel->save($save_data)) {
-													$created_models ++;
-													$model_id = $this->BrandModel->id;
-													$recount_models[] = $model_id;
-													$models[$brand_id][$model] = $model_id;
-												}
-											}
-											*/
+																			 $slug = $this->_transliterate($brand_name);
+																			 $check_slug = $slug;
+																			 $j = 2;
+																			 while (isset($brand_slugs[$check_slug])) {
+																				 $check_slug = $slug . $j;
+																				 $j ++;
+																			 }
+																			 $brand_slugs[$check_slug] = 1;
+																			 $slug = $check_slug;
+																			 $save_data = array(
+																				 'is_active' => 1,
+																				 'category_id' => $category_id,
+																				 'title' => $brand_name,
+																				 'slug' => $slug,
+																				 'meta_title' => $brand_name
+																			 );
+																			 $this->Brand->create();
+																			 if ($this->Brand->save($save_data)) {
+																				 $created_brands ++;
+																				 $brand_id = $this->Brand->id;
+																				 $recount_brands[] = $brand_id;
+																				 $brands[$brand] = $brand_id;
+																				 $save_data = array(
+																					 'is_active' => 1,
+																					 'brand_id' => $brand_id,
+																					 'category_id' => $category_id,
+																					 'title' => $model_name,
+																					 'meta_title' => $model_name
+																				 );
+																				 $this->BrandModel->create();
+																				 if ($this->BrandModel->save($save_data)) {
+																					 $created_models ++;
+																					 $model_id = $this->BrandModel->id;
+																					 $recount_models[] = $model_id;
+																					 $models[$brand_id][$model] = $model_id;
+																				 }
+																			 }
+																			 */
 										}
 										if (!empty($brand_id) && !empty($model_id)) {
 											if (!in_array($brand_id, $recount_brands)) {
@@ -3895,44 +3895,44 @@ class ImportController extends AppController
 												$need_to_create_brands[$brand_name] = array($i);
 											}
 											/*
-											$slug = $this->_transliterate($brand_name);
-											$check_slug = $slug;
-											$j = 2;
-											while (isset($brand_slugs[$check_slug])) {
-												$check_slug = $slug . $j;
-												$j ++;
-											}
-											$brand_slugs[$check_slug] = 1;
-											$slug = $check_slug;
-											$save_data = array(
-												'is_active' => 1,
-												'category_id' => $category_id,
-												'title' => $brand_name,
-												'slug' => $slug,
-												'meta_title' => $brand_name
-											);
-											$this->Brand->create();
-											if ($this->Brand->save($save_data)) {
-												$created_brands ++;
-												$brand_id = $this->Brand->id;
-												$recount_brands[] = $brand_id;
-												$brands[$brand] = $brand_id;
-												$save_data = array(
-													'is_active' => 1,
-													'brand_id' => $brand_id,
-													'category_id' => $category_id,
-													'title' => $model_name,
-													'meta_title' => $model_name
-												);
-												$this->BrandModel->create();
-												if ($this->BrandModel->save($save_data)) {
-													$created_models ++;
-													$model_id = $this->BrandModel->id;
-													$recount_models[] = $model_id;
-													$models[$brand_id][$model] = $model_id;
-												}
-											}
-											*/
+																			 $slug = $this->_transliterate($brand_name);
+																			 $check_slug = $slug;
+																			 $j = 2;
+																			 while (isset($brand_slugs[$check_slug])) {
+																				 $check_slug = $slug . $j;
+																				 $j ++;
+																			 }
+																			 $brand_slugs[$check_slug] = 1;
+																			 $slug = $check_slug;
+																			 $save_data = array(
+																				 'is_active' => 1,
+																				 'category_id' => $category_id,
+																				 'title' => $brand_name,
+																				 'slug' => $slug,
+																				 'meta_title' => $brand_name
+																			 );
+																			 $this->Brand->create();
+																			 if ($this->Brand->save($save_data)) {
+																				 $created_brands ++;
+																				 $brand_id = $this->Brand->id;
+																				 $recount_brands[] = $brand_id;
+																				 $brands[$brand] = $brand_id;
+																				 $save_data = array(
+																					 'is_active' => 1,
+																					 'brand_id' => $brand_id,
+																					 'category_id' => $category_id,
+																					 'title' => $model_name,
+																					 'meta_title' => $model_name
+																				 );
+																				 $this->BrandModel->create();
+																				 if ($this->BrandModel->save($save_data)) {
+																					 $created_models ++;
+																					 $model_id = $this->BrandModel->id;
+																					 $recount_models[] = $model_id;
+																					 $models[$brand_id][$model] = $model_id;
+																				 }
+																			 }
+																			 */
 										}
 										if (!empty($brand_id) && !empty($model_id)) {
 											if (!in_array($brand_id, $recount_brands)) {
@@ -4311,44 +4311,44 @@ class ImportController extends AppController
 											$need_to_create_brands[$brand_name] = array($i);
 										}
 										/*
-										$slug = $this->_transliterate($brand_name);
-										$check_slug = $slug;
-										$j = 2;
-										while (isset($brand_slugs[$check_slug])) {
-											$check_slug = $slug . $j;
-											$j ++;
-										}
-										$brand_slugs[$check_slug] = 1;
-										$slug = $check_slug;
-										$save_data = array(
-											'is_active' => 1,
-											'category_id' => $category_id,
-											'title' => $brand_name,
-											'slug' => $slug,
-											'meta_title' => $brand_name
-										);
-										$this->Brand->create();
-										if ($this->Brand->save($save_data)) {
-											$created_brands ++;
-											$brand_id = $this->Brand->id;
-											$recount_brands[] = $brand_id;
-											$brands[$brand] = $brand_id;
-											$save_data = array(
-												'is_active' => 1,
-												'brand_id' => $brand_id,
-												'category_id' => $category_id,
-												'title' => $model_name,
-												'meta_title' => $model_name
-											);
-											$this->BrandModel->create();
-											if ($this->BrandModel->save($save_data)) {
-												$created_models ++;
-												$model_id = $this->BrandModel->id;
-												$recount_models[] = $model_id;
-												$models[$brand_id][$model] = $model_id;
-											}
-										}
-										*/
+																	  $slug = $this->_transliterate($brand_name);
+																	  $check_slug = $slug;
+																	  $j = 2;
+																	  while (isset($brand_slugs[$check_slug])) {
+																		  $check_slug = $slug . $j;
+																		  $j ++;
+																	  }
+																	  $brand_slugs[$check_slug] = 1;
+																	  $slug = $check_slug;
+																	  $save_data = array(
+																		  'is_active' => 1,
+																		  'category_id' => $category_id,
+																		  'title' => $brand_name,
+																		  'slug' => $slug,
+																		  'meta_title' => $brand_name
+																	  );
+																	  $this->Brand->create();
+																	  if ($this->Brand->save($save_data)) {
+																		  $created_brands ++;
+																		  $brand_id = $this->Brand->id;
+																		  $recount_brands[] = $brand_id;
+																		  $brands[$brand] = $brand_id;
+																		  $save_data = array(
+																			  'is_active' => 1,
+																			  'brand_id' => $brand_id,
+																			  'category_id' => $category_id,
+																			  'title' => $model_name,
+																			  'meta_title' => $model_name
+																		  );
+																		  $this->BrandModel->create();
+																		  if ($this->BrandModel->save($save_data)) {
+																			  $created_models ++;
+																			  $model_id = $this->BrandModel->id;
+																			  $recount_models[] = $model_id;
+																			  $models[$brand_id][$model] = $model_id;
+																		  }
+																	  }
+																	  */
 									}
 									if (!empty($brand_id) && !empty($model_id)) {
 										if (!in_array($brand_id, $recount_brands)) {
@@ -4372,12 +4372,13 @@ class ImportController extends AppController
 												$this->BrandModel->saveField('material', $model_material);
 											}
 										}
+										$size2 = str_replace('х', 'x', $size2);
 										$conditions = array(
 											'Product.brand_id' => $brand_id,
 											'Product.model_id' => $model_id,
 											'Product.category_id' => $category_id,
 											'Product.size1' => $size1,
-											'Product.size2' => $str_replace('х', 'x', $size2),
+											'Product.size2' => $size2,
 											'Product.size3' => $size3,
 											'Product.et' => $et,
 											'Product.hub' => $hub
@@ -4574,19 +4575,19 @@ class ImportController extends AppController
 						}
 					}
 					/*
-								   foreach ($data->sheets as $sheet_number => $sheet) {
-									   if (isset($sheet['cells'])) {
-										   foreach ($sheet['cells'] as $i => $row) {
-											   foreach ($row as $j => $value) {
-												   $encoding = mb_detect_encoding($value, array('UTF-8', 'Windows-1251'), true);
-												   if ((preg_match('/' . iconv('utf-8', 'windows-1251', '[АБВГДЕЁЖСЗИЙКЛМНОПРСТУФХСЧШЩЭЮЯЬЪЫабвгдеёжсзийклмнопрстуфхсчшщэюяьъы]') . '/', $value) && strlen($value) == mb_strlen($value)) || $encoding == 'windows-1251') {
-													   $data->sheets[$sheet_number]['cells'][$i][$j] = @iconv('windows-1251', 'utf-8', $value);
-												   }
-											   }
-										   }
-									   }
-								   }
-								   */
+												  foreach ($data->sheets as $sheet_number => $sheet) {
+													  if (isset($sheet['cells'])) {
+														  foreach ($sheet['cells'] as $i => $row) {
+															  foreach ($row as $j => $value) {
+																  $encoding = mb_detect_encoding($value, array('UTF-8', 'Windows-1251'), true);
+																  if ((preg_match('/' . iconv('utf-8', 'windows-1251', '[АБВГДЕЁЖСЗИЙКЛМНОПРСТУФХСЧШЩЭЮЯЬЪЫабвгдеёжсзийклмнопрстуфхсчшщэюяьъы]') . '/', $value) && strlen($value) == mb_strlen($value)) || $encoding == 'windows-1251') {
+																	  $data->sheets[$sheet_number]['cells'][$i][$j] = @iconv('windows-1251', 'utf-8', $value);
+																  }
+															  }
+														  }
+													  }
+												  }
+												  */
 					if (!empty($data)) {
 						$column_fields = array(
 							'полное наименование' => 'title',
@@ -5174,12 +5175,12 @@ class ImportController extends AppController
 
 											$title = trim(preg_replace('/\b[0-9]+\sсл\b/ui', ' ', $title));
 											/*
-																			 if ($i == 522) {
-																				 debug($save_data);
-																				 debug($title);
-																				 exit();
-																			 }
-																			 */
+																											  if ($i == 522) {
+																												  debug($save_data);
+																												  debug($title);
+																												  exit();
+																											  }
+																											  */
 											foreach ($replaces_at_the_end as $value) {
 												if (preg_match('/(\s|^)' . preg_quote($value) . '$/ui', $title, $mathces)) {
 													$title = trim(preg_replace('/' . preg_quote(trim($mathces[0])) . '$/i', ' ', $title));
@@ -5818,12 +5819,12 @@ class ImportController extends AppController
 											$total_error_rows++;
 										}
 										/*
-																	  if ($i  == 11) {
-																		  debug($row);
-																		  debug($save_data);
-																		  exit();
-																	  }
-																	  */
+																									if ($i  == 11) {
+																										debug($row);
+																										debug($save_data);
+																										exit();
+																									}
+																									*/
 
 
 									}
@@ -6984,13 +6985,13 @@ class ImportController extends AppController
 											//exit();
 										}
 										/*
-																	  if ($i  == 15 && $sheet_number == 9) {
-																		  debug($row);
-																		  debug($save_data);
-																		  debug($title);
-																		  exit();
-																	  }
-																	  */
+																									if ($i  == 15 && $sheet_number == 9) {
+																										debug($row);
+																										debug($save_data);
+																										debug($title);
+																										exit();
+																									}
+																									*/
 
 									}
 								}
