@@ -43,7 +43,7 @@ if (empty($current_season)) {
 					<li<?php if ($active_menu == 'truck-tyres' || $active_menu == 'truck-disks') { ?> class="activ"<?php } ?>><a href="<?php echo '/tyres'.CONST_DEFAULT_TRUCK_TYRES_PATH; ?>">Грузовые авто</a></li>
 					<li<?php if ($active_menu == 'selection') { ?> class="activ"<?php } ?>><a href="/selection">Подбор</a></li>
 					<li<?php if ($active_menu == 'stations') { ?> class="activ"<?php } ?>><a href="/page-stations">Сервис</a></li>
-					<li<?php if ($active_menu == 'contacts') { ?> class="activ"<?php } ?>><a href="/page-contacts">8 центров</a></li>
+					<li<?php if ($active_menu == 'contacts') { ?> class="activ"<?php } ?>><a href="/page-contacts">8 центров <span>(контакты)</span></a></li>
 				</ul>
 				<div class="clear"></div>
 			</div>
