@@ -145,6 +145,9 @@ foreach ($models as $item) {
 		</div>
 		<?php } ?>
 	</div>
+    <?php if ($active_menu == 'truck-disks' || $active_menu == 'truck-tyres') { ?>
+    <div class="mode-selector__contact"><strong>Грузовой шиномонтаж:</strong> +7 (978) 035-30-44</div>
+    <?php } ?>
 	<div class="filter"><?php
 		$page = null;
 		if (isset($this->params['named']['page']) && $this->params['named']['page'] > 0) {
