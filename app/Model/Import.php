@@ -33,7 +33,7 @@ class Import extends AppModel {
 //			5 => __d('admin_import', 'type_5'),
 			6 => __d('admin_import', 'type_6'),
             10 => __d('admin_import', 'type_10'),
-//			7 => __d('admin_import', 'type_7')
+			7 => __d('admin_import', 'type_7')
 		);
 	}
 	public function beforeValidate($options = array()) {

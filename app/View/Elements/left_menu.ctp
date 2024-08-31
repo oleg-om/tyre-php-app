@@ -5,7 +5,7 @@
             $show_switch_params_and_auto = true;
 
         }
-
+print_r($show_filter);
         $is_truck_tyres = $active_menu === 'truck-tyres';
         $is_truck_disks = $active_menu === 'truck-disks';
         ?>
@@ -760,7 +760,7 @@
                 <div class="clear"></div>
                 </form>
             </div>
-        <?php } elseif ($show_filter == 6) { ?>
+        <?php } elseif ($show_filter == 6) { $path = 'tubes'; print_r('LOL'); ?>
             <div class="filter-group" id="filter" style="<?php if (!empty($modification_slug)) {
                 echo 'display: none';
             } ?>">
@@ -768,6 +768,11 @@
                 $url = array('controller' => 'tubes', 'action' => 'index');
                 echo $this->Form->create('Product', array('type' => 'get', 'url' => $url));
                 ?>
+                <div class="item">
+                    <div class="item-group">
+                        <?php echo $this->element('custom_select', array('label' => 'Тип', 'name' => 'auto', 'options' => $types, 'multiple' => false, 'search' => false)); ?>
+                    </div>
+                </div>
                 <div class="item item10">
                     <div class="item-inner">
                         <label class="name" for="ProductType">Тип:</label>
@@ -776,7 +781,6 @@
                         ?></div>
                         <div class="clear"></div>
                     </div>
-
                 </div>
                 <div class="item item8">
                     <div class="item-inner">

@@ -76,7 +76,40 @@ class TubesController extends AppController {
 		$url = array('controller' => Inflector::underscore($this->name), 'action' => 'admin_list');
 		$this->redirect($url);
 	}
+
+    public function check_truck($auto) {
+        $is_truck_page = $this->request->query['auto'] == 'trucks' || $this->request->query['auto'] == 'agricultural' || $this->request->query['auto'] == 'special'  || $this->request->query['auto'] == 'loader';
+
+        $path = 'tubes';
+        if ($is_truck_page) {
+            $path = 'truck-tubes';
+        }
+
+        if (!empty($auto)) {
+            if ($auto === 'trucks' || $auto === 'agricultural' || $auto === 'special' || $auto === 'loader') {
+                $path = 'truck-tubes';
+            }
+        }
+
+        return array('path' => $path);
+    }
+
 	public function index() {
+        $mode = 'block';
+        if (isset($this->request->query['mode']) && in_array($this->request->query['mode'], array('block', 'list', 'table'))) {
+            $mode = $this->request->query['mode'];
+        }
+        $this->request->data['Product']['mode'] = $mode;
+        $this->set('mode', $mode);
+
+        $limit = 30;
+        if (isset($this->request->query['limit']) && in_array($this->request->query['limit'], array('10', '20', '30', '50'))) {
+            $limit = $this->request->query['limit'];
+        }
+        $this->paginate['limit'] = $limit;
+        $this->set('limit', $limit);
+
+
 		$conditions = array('Product.is_active' => 1, 'Product.category_id' => 4, 'Product.price > ' => 0, 'Product.stock_count > ' => 0);
 		if (isset($this->request->query['type']) && !empty($this->request->query['type'])) {
 			$conditions['Product.type'] = $this->request->query['type'];
@@ -90,7 +123,7 @@ class TubesController extends AppController {
 		$this->loadModel('Product');
 		$this->request->data['Product'] = $this->request->query;
 		$this->set('filter', $this->request->query);
-		$this->paginate['limit'] = 30;
+        $auto = $this->request->query['auto'];
 		$this->paginate['order'] = array('Product.price' => 'asc');
 		$products = $this->paginate('Product', $conditions);
 		$this->set('products', $products);
@@ -106,6 +139,8 @@ class TubesController extends AppController {
 		$this->set('additional_js', array('lightbox'));
 		$this->set('additional_css', array('lightbox'));
 		$this->set('show_filter', 6);
+        $path = $this->check_truck($auto)['path'];
+        $this->set('active_menu', $path);
 	}
 	public function view($id) {
 		$this->loadModel('Product');
@@ -126,6 +161,8 @@ class TubesController extends AppController {
 			$this->set('additional_css', array('lightbox'));
 			$this->setMeta('title', $this->Product->types[$product['Product']['type']] . ' ' . $product['Product']['sku']);
 			$this->set('product', $product);
+            $path = $this->check_truck($product['Product']['auto'])['path'];
+            $this->set('active_menu', $path);
 		}
 		else {
 			$this->response->statusCode(404);

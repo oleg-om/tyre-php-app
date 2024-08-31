@@ -362,6 +362,9 @@
     .boxList {
         width: 28.14%;
     }
+    .boxList.tubes {
+        width: 19.6%;
+    }
     .selection .item {
         width: 17%;
     }
@@ -463,5 +466,8 @@
     }
     .boxList {
         width: 28.6%;
+    }
+    .boxList.tubes {
+        width: 20.1%;
     }
 }
