@@ -5,12 +5,12 @@
             $show_switch_params_and_auto = true;
 
         }
-print_r($show_filter);
         $is_truck_tyres = $active_menu === 'truck-tyres';
         $is_truck_disks = $active_menu === 'truck-disks';
+        $is_truck_tubes = $active_menu === 'truck-tubes';
         ?>
 
-        <?php if ($show_switch_params_and_auto == true && !$is_truck_tyres && !$is_truck_disks): ?>
+        <?php if ($show_switch_params_and_auto == true && !$is_truck_tyres && !$is_truck_disks  && !$is_truck_tubes): ?>
             <div class="title__switch">
                 <div class="left-nav__switch">
                     <a href="javascript:void(0);" onclick="switchTab('params');" id="left-nav__switch__button-params" class="left-nav__switch__button <?php if (empty($modification_slug)) {
@@ -601,6 +601,77 @@ print_r($show_filter);
                 <div class="clear"></div>
                 </form>
             </div>
+        <?php } elseif ($show_filter == 8) { ?>
+        <div class="filter-group" id="filter" style="<?php if (!empty($modification_slug)) {
+            echo 'display: none';
+        } ?>">
+            <?php
+            echo $this->Form->create('UsedTyre', array('type' => 'get', 'url' => array('controller' => 'used_tyres', 'action' => 'index')));
+            ?>
+            <div class="item item7">
+                <div class="item-inner">
+                    <label class="name" for="UsedTyreSize1">Размер:</label>
+                    <div class="inp"><?php
+                        echo $this->Form->input('size1', array('class' => 'sel-style4', 'type' => 'select', 'label' => false, 'options' => $used_tyre_size1, 'empty' => array('' => 'Все'), 'div' => false));
+                        ?></div>
+                    <div class="clear"></div>
+                </div>
+                <div class="item-inner">
+                    <label class="name" for="UsedTyreSize2">\:</label>
+                    <div class="inp"><?php
+                        echo $this->Form->input('size2', array('class' => 'sel-style4', 'type' => 'select', 'label' => false, 'options' => $used_tyre_size2, 'empty' => array('' => 'Все'), 'div' => false));
+                        ?></div>
+                    <div class="clear"></div>
+                </div>
+                <div class="item-inner">
+                    <label class="name" for="UsedTyreSize3">R:</label>
+                    <div class="inp"><?php
+                        echo $this->Form->input('size3', array('class' => 'sel-style4', 'type' => 'select', 'label' => false, 'options' => $used_tyre_size3, 'empty' => array('' => 'Все'), 'div' => false));
+                        ?></div>
+                    <div class="clear"></div>
+                </div>
+            </div>
+            <div class="item bt bt2">
+                <button class="bt-style1">ПОИСК</button>
+            </div>
+            <div class="clear"></div>
+            </form>
+        </div>
+        <?php } elseif ($show_filter == 6) { ?>
+        <div class="filter-group" id="filter" style="<?php if (!empty($modification_slug)) {
+            echo 'display: none';
+        } ?>">
+            <?php
+            $url = array('controller' => 'tubes', 'action' => 'index');
+            echo $this->Form->create('Product', array('type' => 'get',  'id' => 'filter-form', 'url' => $url));
+            ?>
+            <div class="item">
+                <div class="item-group">
+                    <?php echo $this->element('custom_select', array('label' => 'Тип', 'name' => 'type', 'options' => $tubes_type, 'multiple' => false, 'search' => false)); ?>
+                </div>
+            </div>
+            <div class="item">
+                <div class="item-group">
+                    <?php echo $this->element('custom_select', array('label' => 'Диаметр', 'name' => 'size3', 'options' => $tubes_size3, 'multiple' => false, 'search' => false)); ?>
+                </div>
+                <div class="item-inner-space-around">
+                    <?php
+                    $stock_options = array('2' => array('label' => 'Все', 'query' => 'in_stock'), '1' => array('label' => 'В наличии', 'query' => 'in_stock'), '0' => array('label' => 'Под заказ', 'query' => 'in_stock'));
+                    echo $this->element('custom_radio', array('label' => 'Наличие:', 'options' => $stock_options, 'size' => 'small', 'default_value' => '2'));
+                    ?>
+                </div>
+                <?php
+                echo $this->Form->hidden('auto', array('value' => $this->request->query['auto']));
+                ?>
+            </div>
+
+            <div class="item">
+                <button class="bt-style1">ПОИСК</button>
+            </div>
+            <div class="clear"></div>
+            </form>
+        </div>
+
         <?php }
         if ($show_filter == 4 || $show_switch_params_and_auto == true) { ?>
             <div class="filter-group" id="filter-group__auto" style="<?php if ($show_switch_params_and_auto == true) {
@@ -724,92 +795,9 @@ print_r($show_filter);
                         });
                     });
             </script>
-        <?php } elseif ($show_filter == 5) { ?>
-            <div class="filter-group" id="filter" style="<?php if (!empty($modification_slug)) {
-                echo 'display: none';
-            } ?>">
-                <?php
-                echo $this->Form->create('UsedTyre', array('type' => 'get', 'url' => array('controller' => 'used_tyres', 'action' => 'index')));
-                ?>
-                <div class="item item7">
-                    <div class="item-inner">
-                        <label class="name" for="UsedTyreSize1">Размер:</label>
-                        <div class="inp"><?php
-                        echo $this->Form->input('size1', array('class' => 'sel-style4', 'type' => 'select', 'label' => false, 'options' => $used_tyre_size1, 'empty' => array('' => 'Все'), 'div' => false));
-                        ?></div>
-                        <div class="clear"></div>
-                    </div>
-                    <div class="item-inner">
-                        <label class="name" for="UsedTyreSize2">\:</label>
-                        <div class="inp"><?php
-                        echo $this->Form->input('size2', array('class' => 'sel-style4', 'type' => 'select', 'label' => false, 'options' => $used_tyre_size2, 'empty' => array('' => 'Все'), 'div' => false));
-                        ?></div>
-                        <div class="clear"></div>
-                    </div>
-                    <div class="item-inner">
-                        <label class="name" for="UsedTyreSize3">R:</label>
-                        <div class="inp"><?php
-                        echo $this->Form->input('size3', array('class' => 'sel-style4', 'type' => 'select', 'label' => false, 'options' => $used_tyre_size3, 'empty' => array('' => 'Все'), 'div' => false));
-                        ?></div>
-                        <div class="clear"></div>
-                    </div>
-                </div>
-                <div class="item bt bt2">
-                    <button class="bt-style1">ПОИСК</button>
-                </div>
-                <div class="clear"></div>
-                </form>
-            </div>
-        <?php } elseif ($show_filter == 6) { $path = 'tubes'; print_r('LOL'); ?>
-            <div class="filter-group" id="filter" style="<?php if (!empty($modification_slug)) {
-                echo 'display: none';
-            } ?>">
-                <?php
-                $url = array('controller' => 'tubes', 'action' => 'index');
-                echo $this->Form->create('Product', array('type' => 'get', 'url' => $url));
-                ?>
-                <div class="item">
-                    <div class="item-group">
-                        <?php echo $this->element('custom_select', array('label' => 'Тип', 'name' => 'auto', 'options' => $types, 'multiple' => false, 'search' => false)); ?>
-                    </div>
-                </div>
-                <div class="item item10">
-                    <div class="item-inner">
-                        <label class="name" for="ProductType">Тип:</label>
-                        <div class="inp"><?php
-                        echo $this->Form->input('type', array('type' => 'select', 'label' => false, 'options' => $types, 'empty' => array('' => 'Все'), 'div' => false, 'class' => 'sel-style1'));
-                        ?></div>
-                        <div class="clear"></div>
-                    </div>
-                </div>
-                <div class="item item8">
-                    <div class="item-inner">
-                        <label class="name" for="ProductInfo">Найти размер:</label>
-                        <div class="inp"><?php
-                        echo $this->Form->input('info', array('type' => 'text', 'label' => false, 'div' => false, 'class' => 'sel-style1'));
-                        ?></div>
-                        <div class="clear"></div>
-                    </div>
-                </div>
-                <div class="item item9">
-                    <div class="item-inner">
-                        <?php
-                        echo $this->Form->input('in_stock', array('type' => 'checkbox', 'label' => false, 'div' => false, 'class' => 'checkbox'));
-                        ?>
-                        <label class="checkbox-name" for="ProductInStock">есть в наличии</label>
-                        <div class="clear"></div>
-                    </div>
-                </div>
-                <div class="item bt bt2">
-                    <button class="bt-style1">ПОИСК</button>
-                </div>
-                <div class="clear"></div>
-                </form>
-            </div>
         <?php } ?>
 
         <script type="text/javascript">
-                <!--
                 <?php if (CONST_DISABLE_FILTERS == '0') { ?>
 
                     function loadSelectData(data, status) {

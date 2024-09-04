@@ -96,7 +96,7 @@ class TubesController extends AppController {
 
 	public function index() {
         $mode = 'block';
-        if (isset($this->request->query['mode']) && in_array($this->request->query['mode'], array('block', 'list', 'table'))) {
+        if (isset($this->request->query['mode']) && in_array($this->request->query['mode'], array('block', 'table'))) {
             $mode = $this->request->query['mode'];
         }
         $this->request->data['Product']['mode'] = $mode;
@@ -117,9 +117,25 @@ class TubesController extends AppController {
 		if (isset($this->request->query['info']) && !empty($this->request->query['info'])) {
 			$conditions['Product.sku LIKE'] = '%' . $this->request->query['info'] . '%';
 		}
-		if (isset($this->request->query['in_stock']) && $this->request->query['in_stock']) {
-			$conditions['Product.in_stock'] = 1;
-		}
+        if (isset($this->request->query['in_stock'])) {
+            if ($this->request->query['in_stock'] == 1) {
+                $conditions['Product.in_stock'] = 1;
+            }
+            elseif ($this->request->query['in_stock'] == 0) {
+                $conditions['Product.in_stock'] = 0;
+            }
+        }
+        else {
+            $this->request->query['in_stock'] = 1;
+            $conditions['Product.in_stock'] = 1;
+        }
+        if (isset($this->request->query['size3']) && !empty($this->request->query['size3'])) {
+            $conditions['Product.size3'] = $this->_get_sizes($this->request->query['size3']);
+        }
+        if (isset($this->request->query['auto']) && !empty($this->request->query['auto'])) {
+            $conditions['Product.auto'] = $this->request->query['auto'];
+        }
+        $this->_filter_tubes_params($conditions);
 		$this->loadModel('Product');
 		$this->request->data['Product'] = $this->request->query;
 		$this->set('filter', $this->request->query);
@@ -141,6 +157,7 @@ class TubesController extends AppController {
 		$this->set('show_filter', 6);
         $path = $this->check_truck($auto)['path'];
         $this->set('active_menu', $path);
+        $this->set('show_left_filter', true);
 	}
 	public function view($id) {
 		$this->loadModel('Product');
@@ -163,6 +180,7 @@ class TubesController extends AppController {
 			$this->set('product', $product);
             $path = $this->check_truck($product['Product']['auto'])['path'];
             $this->set('active_menu', $path);
+            $this->set('show_left_menu', false);
 		}
 		else {
 			$this->response->statusCode(404);
@@ -171,4 +189,97 @@ class TubesController extends AppController {
 			return;
 		}
 	}
+
+    private function _filter_tubes_params($conditions = array()) {
+        $this->loadModel('Product');
+        $temp_cond = $conditions;
+        unset($temp_cond['Product.type']);
+        $products = $this->Product->find('all', array('conditions' => $temp_cond, 'fields' => 'DISTINCT Product.type', 'order' => 'Product.type'));
+        $tubes_type = array();
+        foreach ($products as $item) {
+            $type = $item['Product']['type'];
+            $tubes_type[$type] = $this->Product->types[$type];
+        }
+        natsort($tubes_type);
+        $temp_cond = $conditions;
+        unset($temp_cond['Product.size3']);
+        $products = $this->Product->find('all', array('conditions' => $temp_cond, 'fields' => 'DISTINCT Product.size3', 'order' => 'Product.size3'));
+        $tubes_size3 = array();
+        foreach ($products as $item) {
+            $numeric_size = str_replace(',', '.', $item['Product']['size3']);
+            if (is_numeric($numeric_size)) {
+                $size = number_format(str_replace(',', '.', $item['Product']['size3']), 1, '.', '');
+                if (!empty($size) && $size != '') {
+                    $size = str_replace('.0', '', $size);
+                    $tubes_size3[$size] = $size;
+                }
+            }
+            else {
+                $size = trim($item['Product']['size3']);
+                if (!empty($size) && $size != '') {
+                    $tubes_size3[$size] = $size;
+                }
+            }
+        }
+        natsort($tubes_size3);
+        $temp_cond = $conditions;
+        unset($temp_cond['Product.auto']);
+        $products = $this->Product->find('all', array('conditions' => $temp_cond, 'fields' => 'DISTINCT Product.auto', 'order' => 'Product.auto'));
+        $truck_auto = array();
+        $light_auto = array();
+
+        $truck_cars = array('trucks','agricultural','special','loader');
+        $usual_cars = array('cars','light_trucks');
+
+        foreach ($products as $item) {
+            if (isset($this->Product->auto[$item['Product']['auto']])) {
+                $auto[$item['Product']['auto']] = $this->Product->auto[$item['Product']['auto']];
+
+                if (in_array($item['Product']['auto'], $truck_cars)) {
+                    $truck_auto[$item['Product']['auto']] = $this->Product->auto[$item['Product']['auto']];
+                }
+                if (in_array($item['Product']['auto'], $usual_cars)) {
+                    $light_auto[$item['Product']['auto']] = $this->Product->auto[$item['Product']['auto']];
+                }
+            }
+        }
+
+        if ($this->request->is('ajax')) {
+            $result = array(
+                'tubes_type' => $tubes_type,
+                'tubes_size3' => $tubes_size3
+            );
+            return $result;
+        }
+        else {
+            $this->set('tubes_type', $tubes_type);
+            $this->set('tubes_size3', $tubes_size3);
+            $this->set('filter_truck_auto', $truck_auto);
+            $this->set('filter_light_auto', $light_auto);
+        }
+    }
+
+    private function _get_sizes($size) {
+        if (substr_count($size, '.') > 0) {
+            $sizes = array(
+                $size,
+                str_replace('.', ',', $size)
+            );
+            $parts = explode('.', $size);
+            if (strlen($parts[1]) == 2 && substr($parts[1], 1) == '0') {
+                $new_size = substr($size, 0, -1);
+                $sizes[] = $new_size;
+                $sizes[] = str_replace('.', ',', $new_size);
+            }
+            elseif (strlen($parts[1]) == 1) {
+                $new_size = $size . '0';
+                $sizes[] = $new_size;
+                $sizes[] = str_replace('.', ',', $new_size);
+            }
+            return $sizes;
+        }
+        else {
+            return $size;
+        }
+    }
 }
