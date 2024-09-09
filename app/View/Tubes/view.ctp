@@ -4,7 +4,7 @@
 
         $default_image = 'default-tube-preview.jpg';
         if ($product['Product']['type'] == 'flap') {
-            $default_image = 'default-line-preview.jpg';
+            $default_image = 'default-flap-preview.jpg';
         }
 
         if (!empty($filename)) {

@@ -49,7 +49,7 @@ foreach ($cart['items'] as $product_id => $count) {
         $url = array('controller' => 'tubes', 'action' => 'view', 'id' => $product['Product']['id']);
         $default_image = 'default-tube-preview.jpg';
         if ($product['Product']['type'] == 'flap') {
-            $default_image = 'default-line-preview.jpg';
+            $default_image = 'default-flap-preview.jpg';
         }
         $image = $this->Html->image($default_image);
         if (!empty($product['BrandModel']['filename'])) {

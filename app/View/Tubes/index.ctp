@@ -58,7 +58,7 @@ echo $this->element('mode_selector', array('url' => $url, 'hide_list' => true));
                                 <?php
                                 $default_image = 'default-tube-preview.jpg';
                                 if ($item['Product']['type'] == 'flap') {
-                                    $default_image = 'default-line-preview.jpg';
+                                    $default_image = 'default-flap-preview.jpg';
                                 }
                                 $image = $this->Html->image($default_image, array('class' => 'no-img-disk'));
                                 $image_big = false;
