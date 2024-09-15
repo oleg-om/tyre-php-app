@@ -8,11 +8,20 @@ if (!isset($tyres_switch)) {
 if (!isset($akb_switch)) {
     $akb_switch = false;
 }
+if (!isset($hide_list)) {
+    $hide_list = false;
+}
 $modes = array(
 	'block' => '<img src="/img/block.gif" alt="блоками" />',
 	'list' => '<img src="/img/list.gif" alt="списком" />',
 	'table' => '<img src="/img/table.gif" alt="таблицей" />'
 );
+if ($hide_list == true) {
+    $modes = array(
+        'block' => '<img src="/img/block.gif" alt="блоками" />',
+        'table' => '<img src="/img/table.gif" alt="таблицей" />'
+    );
+}
 if ($akb_switch == true) {
     $modes = array(
         'list' => '<img src="/img/list.gif" alt="списком" />',
@@ -145,7 +154,7 @@ foreach ($models as $item) {
 		</div>
 		<?php } ?>
 	</div>
-    <?php if ($active_menu == 'truck-disks' || $active_menu == 'truck-tyres') { ?>
+    <?php if ($active_menu == 'truck-disks' || $active_menu == 'truck-tyres' || $active_menu == 'truck-tubes') { ?>
     <div class="mode-selector__contact"><strong>Грузовой шиномонтаж:</strong> +7 (978) 035-30-44</div>
     <?php } ?>
 	<div class="filter"><?php

@@ -60,15 +60,15 @@ if (empty($current_season)) {
                                             echo CONST_DEFAULT_AKB_PATH;
                                         } ?>">АКБ</a>
                                     </li>
-                                    <li<?php if ($active_menu == 'truck-tyres' || $active_menu == 'truck-disks') { ?>
+                                    <li<?php if ($active_menu == 'truck-tyres' || $active_menu == 'truck-disks'  || $active_menu == 'truck-tubes') { ?>
                                         class="activ" <?php } ?>><a
                                             href="<?php echo '/tyres' . CONST_DEFAULT_TRUCK_TYRES_PATH; ?>">Грузовые
                                             авто</a></li>
-                                        <li<?php if ($active_menu == 'selection') { ?> class="activ" <?php } ?>><a
+                                    <li<?php if ($active_menu == 'selection') { ?> class="activ" <?php } ?>><a
                                                 href="/selection">Подбор</a></li>
-                                            <li<?php if ($active_menu == 'stations') { ?> class="activ" <?php } ?>><a
+                                    <li<?php if ($active_menu == 'stations') { ?> class="activ" <?php } ?>><a
                                                     href="/page-stations">Сервис</a></li>
-                                                <li<?php if ($active_menu == 'contacts') { ?> class="activ" <?php } ?>>
+                                    <li<?php if ($active_menu == 'contacts') { ?> class="activ" <?php } ?>>
                                                     <a href="/page-contacts">8 центров
                                                         <!-- <span>(контакты)</span> -->
                                                     </a></li>

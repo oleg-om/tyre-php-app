@@ -43,6 +43,19 @@ foreach ($cart['items'] as $product_id => $count) {
 			$image = $this->Html->image($this->Backend->thumbnail(array('id' => $id, 'filename' => $filename, 'path' => $path, 'width' => 158, 'height' => 158, 'crop' => false, 'folder' => false, 'empty' => '/img/no-akb-little.jpg')), array('alt' => $product['BrandModel']['title']));
 		}
 	}
+    elseif ($product['Product']['category_id'] == 4) {
+        $type = 'tubes';
+        $title .= $product['Product']['sku'];
+        $url = array('controller' => 'tubes', 'action' => 'view', 'id' => $product['Product']['id']);
+        $default_image = 'default-tube-preview.jpg';
+        if ($product['Product']['type'] == 'flap') {
+            $default_image = 'default-flap-preview.jpg';
+        }
+        $image = $this->Html->image($default_image);
+        if (!empty($product['BrandModel']['filename'])) {
+            $image = $this->Html->image($this->Backend->thumbnail(array('id' => $product['BrandModel']['id'], 'filename' => $product['BrandModel']['filename'], 'path' => 'models', 'width' => 158, 'height' => 158, 'crop' => false, 'folder' => false, 'empty' => '/img/no-disk-little.jpg')), array('alt' => $product['BrandModel']['title']));
+        }
+    }
 	else {
 		$type = 'bolts';
 		$title = $bolt_types[$product['Product']['bolt_type']] . ' ' . $product['Product']['bolt'];

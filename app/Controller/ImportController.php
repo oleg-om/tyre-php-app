@@ -2730,14 +2730,17 @@ class ImportController extends AppController
 						case 7:
 							$category_id = 4;
 							for ($i = 1; $i <= $data->sheets[0]['numRows']; $i++) {
-								if (isset($data->sheets[0]['cells'][$i][1]) && !empty($data->sheets[0]['cells'][$i][1])) {
+								if (isset($data->sheets[0]['cells'][$i][2]) && !empty($data->sheets[0]['cells'][$i][2])) {
 									$total_rows++;
-									$type = trim(mb_strtolower($data->sheets[0]['cells'][$i][1]));
-									if ($type == 'автокамера' || $type == 'мотокамера' || $type == 'ободная лента') {
+									$type = trim(mb_strtolower($data->sheets[0]['cells'][$i][2]));
+									if ($type == 'автокамера' || $type == 'камера' || $type == 'мотокамера' || $type == 'ободная лента') {
 										switch ($type) {
 											case 'автокамера':
 												$type = 'car_tube';
 												break;
+                                            case 'камера':
+                                                $type = 'car_tube';
+                                                break;
 											case 'мотокамера':
 												$type = 'moto_tube';
 												break;
@@ -2745,21 +2748,102 @@ class ImportController extends AppController
 												$type = 'flap';
 												break;
 										}
-										if (isset($data->sheets[0]['cells'][$i][2]) && !empty($data->sheets[0]['cells'][$i][2])) {
-											$sku = trim($data->sheets[0]['cells'][$i][2]);
+										if (isset($data->sheets[0]['cells'][$i][1]) && !empty($data->sheets[0]['cells'][$i][1])) {
+											$sku = trim($data->sheets[0]['cells'][$i][1]);
 											$price = 0;
 											$stock_count = 0;
-											if (isset($data->sheets[0]['cells'][$i][3])) {
-												$stock_count = intval(trim($data->sheets[0]['cells'][$i][3]));
+											if (isset($data->sheets[0]['cells'][$i][13])) {
+												$stock_count = intval(trim($data->sheets[0]['cells'][$i][13]));
 											}
-											if (isset($data->sheets[0]['cells'][$i][4])) {
-												$price = floatval(trim($data->sheets[0]['cells'][$i][4])) / $rate;
+											if (isset($data->sheets[0]['cells'][$i][3])) {
+												$price = floatval(trim($data->sheets[0]['cells'][$i][3])) / $rate;
 											}
 											$conditions = array(
 												'Product.type' => $type,
 												'Product.sku' => $sku,
 												'Product.category_id' => $category_id
 											);
+
+                                            $auto = 'cars';
+
+                                            if (isset($data->sheets[0]['cells'][$i][14])) {
+                                                $auto_type = mb_strtolower(trim($data->sheets[0]['cells'][$i][14]));
+                                                if ($auto_type == 'г') {
+                                                    $auto = 'trucks';
+                                                } elseif ($auto_type == 'лг') {
+                                                    $auto = 'light_trucks';
+                                                } elseif ($auto_type == 'сх') {
+                                                    $auto = 'agricultural';
+                                                } elseif ($auto_type == 'мото') {
+                                                    $auto = 'moto';
+                                                } elseif ($auto_type == 'джип') {
+                                                    $auto = 'cars';
+                                                } elseif ($auto_type == 'спецтехника') {
+                                                    $auto = 'special';
+                                                } elseif ($auto_type == 'спецтранспорт') {
+                                                    $auto = 'special';
+                                                } elseif ($auto_type == 'индустриальная') {
+                                                    $auto = 'special';
+                                                } elseif ($auto_type == 'погрузчики') {
+                                                    $auto = 'loader';
+                                                } elseif ($auto_type == 'погрузчик') {
+                                                    $auto = 'loader';
+                                                }
+                                            }
+
+                                            $autodom_count = trim($data->sheets[0]['cells'][$i][4]);
+                                            $tiptop_count = trim($data->sheets[0]['cells'][$i][5]);
+                                            $bam_count = trim($data->sheets[0]['cells'][$i][6]);
+                                            $atp_count = trim($data->sheets[0]['cells'][$i][7]);
+                                            $taksopark_count = trim($data->sheets[0]['cells'][$i][8]);
+                                            $vianorshop_count = trim($data->sheets[0]['cells'][$i][9]);
+                                            $hundai_count = trim($data->sheets[0]['cells'][$i][10]);
+                                            $tavrida_count = trim($data->sheets[0]['cells'][$i][11]);
+                                            $gruz_count = trim($data->sheets[0]['cells'][$i][12]);
+
+                                            if (empty($autodom_count)) {
+                                                $autodom_count = 0;
+                                            }
+                                            if (empty($tiptop_count)) {
+                                                $tiptop_count = 0;
+                                            }
+                                            if (empty($bam_count)) {
+                                                $bam_count = 0;
+                                            }
+                                            if (empty($atp_count)) {
+                                                $atp_count = 0;
+                                            }
+                                            if (empty($taksopark_count)) {
+                                                $taksopark_count = 0;
+                                            }
+                                            if (empty($vianorshop_count)) {
+                                                $vianorshop_count = 0;
+                                            }
+                                            if (empty($hundai_count)) {
+                                                $hundai_count = 0;
+                                            }
+                                            if (empty($tavrida_count)) {
+                                                $tavrida_count = 0;
+                                            }
+                                            if (empty($gruz_count)) {
+                                                $gruz_count = 0;
+                                            }
+
+                                            $size3 = '';
+                                            $temp_sku = $sku;
+                                            if (substr_count($temp_sku, ' R') == 1) {
+                                                if (substr_count($temp_sku, '-') == 2) {
+                                                    list($text, $size3) = explode('-', $temp_sku);
+                                                    $size3 = floatval($size3);
+                                                } elseif (substr_count($temp_sku, '-') == 1) {
+                                                    list($text, $size3) = explode('-', $temp_sku);
+                                                    $size3 = floatval($size3);
+                                                }
+                                            } elseif (substr_count($temp_sku, '-') > 0) {
+                                                list($size1, $size3) = explode('-', $temp_sku);
+                                                $size3 = floatval($size3);
+                                            }
+
 											if ($product = $this->Product->find('first', array('conditions' => $conditions, 'fields' => array('Product.id', 'Product.price', 'Product.supplier_id')))) {
 												if ($price != $product['Product']['price'] || $ignore_prices) {
 													if (!$only_suppliers || ($only_suppliers && $supplier_id == $product['Product']['supplier_id'])) {
@@ -2816,7 +2900,18 @@ class ImportController extends AppController
 														'sku' => $sku,
 														'price' => $price,
 														'stock_count' => $stock_count,
-														'in_stock' => $in_stock
+														'in_stock' => $in_stock,
+                                                        'count_place_0' => $autodom_count,
+                                                        'count_place_1' => $tiptop_count,
+                                                        'count_place_2' => $bam_count,
+                                                        'count_place_3' => $atp_count,
+                                                        'count_place_4' => $taksopark_count,
+                                                        'count_place_5' => $vianorshop_count,
+                                                        'count_place_6' => $hundai_count,
+                                                        'count_place_7' => $tavrida_count,
+                                                        'count_place_8' => $gruz_count,
+                                                        'auto' => $auto,
+                                                        'size3' => $size3,
 													);
 													$this->Product->create();
 													if ($this->Product->save($save_data)) {

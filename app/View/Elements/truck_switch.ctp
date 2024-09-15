@@ -6,12 +6,15 @@ if ($active_menu == 'truck-tyres' || $active_menu == 'tyres') {
 if ($active_menu == 'truck-disks' || $active_menu == 'disks') {
     $type = 'disks';
 }
+if ($active_menu == 'truck-tubes' || $active_menu == 'tubes') {
+    $type = 'tubes';
+}
 
 
 $menu_items = array();
 $menu_items[] = array('href' => '/tyres'.CONST_DEFAULT_TRUCK_TYRES_PATH, 'title' => 'Шины', 'img' => '/img/truck/tyre-1.png', 'alt' => 'Грузовые шины', 'active' => $active_menu === 'truck-tyres');
 $menu_items[] = array('href' => '/disks'.CONST_DEFAULT_TRUCK_DISKS_PATH, 'img' => '/img/truck/wheel-1.png', 'title' => 'Диски', 'alt' => 'Грузовые диски', 'active' => $active_menu === 'truck-disks');
-//$menu_items[] = array('href' => '/tubes', 'img' => '/img/truck/tube.png', 'title' => 'Камеры', 'alt' => 'Грузовые камеры');
+$menu_items[] = array('href' => '/tubes?auto=trucks', 'img' => '/img/truck/tube.png', 'title' => 'Камеры', 'alt' => 'Грузовые камеры', 'active' => $active_menu === 'truck-tubes');
 
 $menu_types = array();
 
@@ -19,9 +22,30 @@ $menu_types['trucks'] = array('href' => '/tyres'.CONST_DEFAULT_TRUCK_TYRES_PATH,
 if ($type === 'disks') {
     $menu_types['trucks']['href'] = '/disks'.CONST_DEFAULT_TRUCK_DISKS_PATH;
 }
+if ($type === 'tubes') {
+    $menu_types['trucks']['href'] = '/tubes?auto=trucks';
+}
 $menu_types['agricultural'] = array('href' => '/tyres?auto=agricultural&in_stock4=0&in_stock=2&upr_all=1', 'img' => '/img/truck/traktor.png', 'title' => 'Сельскохозяйственные', 'alt' => 'Сельскохозяйственные', 'value' => 'agricultural', 'height' => '80px');
+if ($type === 'disks') {
+    $menu_types['agricultural']['href'] = '?auto=agricultural&size3=&size1=&material=&et_from=&et_to=&size2=&hub=&brand_id=&in_stock4=0&in_stock=2';
+}
+if ($type === 'tubes') {
+    $menu_types['agricultural']['href'] = '/tubes?auto=agricultural';
+}
 $menu_types['loader'] = array('href' => '/tyres?auto=loader&in_stock4=0&in_stock=2&upr_all=1', 'img' => '/img/truck/loader.png', 'title' => 'Погрузчики', 'alt' => 'Погрузчики', 'value' => 'loader', 'height' => '75px');
+if ($type === 'disks') {
+    $menu_types['loader']['href'] = '?auto=loader&size3=&size1=&material=&et_from=&et_to=&size2=&hub=&brand_id=&in_stock4=0&in_stock=2';
+}
+if ($type === 'tubes') {
+    $menu_types['loader']['href'] = '/tubes?auto=loader';
+}
 $menu_types['special'] = array('href' => '/tyres?auto=special&in_stock4=0&in_stock=2&upr_all=1', 'img' => '/img/truck/carier.png', 'title' => 'Индустриальная', 'alt' => 'Индустриальная', 'value' => 'special', 'height' => '80px');
+if ($type === 'disks') {
+    $menu_types['special']['href'] = '?auto=special&size3=&size1=&material=&et_from=&et_to=&size2=&hub=&brand_id=&in_stock4=0&in_stock=2';
+}
+if ($type === 'tubes') {
+    $menu_types['special']['href'] = '/tubes?auto=special';
+}
 
 
 $order = array('trucks', 'agricultural', 'loader', 'special');
