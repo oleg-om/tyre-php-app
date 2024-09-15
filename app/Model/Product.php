@@ -137,6 +137,7 @@ class Product extends AppModel {
 		}
 	}
 	public function beforeSave($options = array()) {
+        print_r('1111');
 		if (parent::beforeSave()) {
 			if (isset($this->data[$this->name]['category_id']) && $this->data[$this->name]['category_id'] == 1) {
 				if (isset($this->data[$this->name]['size3'])) {
@@ -245,9 +246,9 @@ class Product extends AppModel {
 
             if ($existing_file_names != '' && !empty($existing_file_names)) {
                 foreach ($existing_file_names as $key => $img) {
-                    list($ah_value, $f2_value) = explode(':', $img);
-                    if (!empty($f2_value)) {
-                        $file_names_array[$ah_value] = $f2_value;
+                    list($akb_params, $img_file) = explode(':', $img);
+                    if (!empty($akb_params)) {
+                        $file_names_array[$akb_params] = $img_file;
                     }
                 }
             }
@@ -259,7 +260,8 @@ class Product extends AppModel {
                 }
             }
             $file_names_array = array_filter($file_names_array);
-
+//        $update_data = array('BrandModel' => array('id' => $model_id, 'extra_filenames' => '65-L+:1716450742.jpg|40-R+:1716550335.jpg|40-L+:1716548943.jpg|61-R+:1720590076.jpg|65-R+:1720590164.jpg|60-R+:1720437772.jpg|66-L+:1715951094.jpg|66-R+:1716790278.jpg|62-R+:1716798664.jpg|60-L+:1716799906.jpg|105-R+:1717501373.jpg|100-R+:1717497247.jpg|6'));
+//        $this->BrandModel->save($update_data, false);
             if (!empty($file_names_array)) {
                 $update_data = array('BrandModel' => array('id' => $model_id, 'extra_filenames' => implode('|', $file_names_array)));
                 $this->BrandModel->save($update_data, false);
