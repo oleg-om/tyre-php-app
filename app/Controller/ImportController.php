@@ -3936,12 +3936,12 @@ class ImportController extends AppController
 										$size = str_replace(' ', '', $size);
 										if (substr_count($size, 'R') == 1) {
 											list($size1, $size3) = explode('R', $size);
-											$size1 = intval($size1);
+											$size1 = floatval($size1);
 											$size = implode('/', array($size1, '', $size3));
 											$delimiter = '/';
 										} elseif (substr_count($size, '/') == 1) {
 											list($size1, $size3) = explode('/', $size);
-											$size1 = intval($size1);
+											$size1 = floatval($size1);
 											$size = implode('/', array($size1, '', $size3));
 											$delimiter = '/';
 										}
