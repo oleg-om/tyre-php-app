@@ -1288,7 +1288,7 @@ class ImportController extends AppController
 									$data->sheets[0]['cells'][$i][8] = str_replace(array('.0', ',0'), '', $data->sheets[0]['cells'][$i][8]);
 									$brand_name = trim($data->sheets[0]['cells'][$i][1]);
 									$model_name = trim($data->sheets[0]['cells'][$i][2]);
-									$brand = $this->_clean_text($brand_name);
+									$brand = $this->_clean_text($brand_name, false);
 									$model = $this->_clean_text($model_name, false);
 									$auto_text = trim($data->sheets[0]['cells'][$i][22]);
 									$size3 = trim($data->sheets[0]['cells'][$i][4]);
@@ -3936,12 +3936,12 @@ class ImportController extends AppController
 										$size = str_replace(' ', '', $size);
 										if (substr_count($size, 'R') == 1) {
 											list($size1, $size3) = explode('R', $size);
-											$size1 = intval($size1);
+											$size1 = floatval($size1);
 											$size = implode('/', array($size1, '', $size3));
 											$delimiter = '/';
 										} elseif (substr_count($size, '/') == 1) {
 											list($size1, $size3) = explode('/', $size);
-											$size1 = intval($size1);
+											$size1 = floatval($size1);
 											$size = implode('/', array($size1, '', $size3));
 											$delimiter = '/';
 										}
@@ -4290,7 +4290,7 @@ class ImportController extends AppController
 									$hub = str_replace(',', '.', $hub);
 									$brand_name = trim($data->sheets[0]['cells'][$i][5]);
 									$model_name = trim($data->sheets[0]['cells'][$i][6]);
-									$brand = $this->_clean_text($brand_name);
+									$brand = $this->_clean_text($brand_name, false);
 									$model = $this->_clean_text($model_name, false);
 									$color = trim($data->sheets[0]['cells'][$i][7]);
 
