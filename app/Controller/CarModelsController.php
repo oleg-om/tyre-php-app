@@ -13,12 +13,12 @@ class CarModelsController extends AppController {
 	public function _list() {
 		parent::_list();
 		$this->loadModel('CarBrand');
-		$this->set('brands', $this->CarBrand->find('list', array('fields' => array('CarBrand.id', 'CarBrand.slug'), 'order' => array('CarBrand.slug' => 'asc'))));
+		$this->set('brands', $this->CarBrand->find('list', array('fields' => array('CarBrand.slug', 'CarBrand.title'), 'order' => array('CarBrand.title' => 'asc'))));
 	}
 	public function _edit($id) {
 		$title = parent::_edit($id);
 		$this->loadModel('CarBrand');
-		$this->set('brands', $this->CarBrand->find('list', array('fields' => array('CarBrand.id', 'CarBrand.title'), 'order' => array('CarBrand.title' => 'asc'))));
+		$this->set('brands', $this->CarBrand->find('list', array('fields' => array('CarBrand.slug', 'CarBrand.title'), 'order' => array('CarBrand.title' => 'asc'))));
 		return $title;
 	}
 	function admin_modifications() {

@@ -68,7 +68,7 @@ class RendererHelper extends AppHelper {
 		else {
 			$src = 'no-160x20.gif';
 		}
-		return '<td class="a-center">' . $this->Html->link($this->Html->image($src), array('controller' => 'car_brands', 'action' => 'admin_edit', $item['id']), array('escape' => false)) . '</td>';
+		return '<td class="a-center admin_car_brand_photo">' . $this->Html->link($this->Html->image($src), array('controller' => 'car_brands', 'action' => 'admin_edit', $item['id']), array('escape' => false)) . '</td>';
 	}
 	public function used_tyre_photo($item, $model) {
 		if (!empty($item['photo_filename'])) {

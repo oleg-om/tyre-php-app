@@ -8,7 +8,7 @@ $this->Backend->addCheckbox('is_active', array(
 	'label' => __d('admin_car_models', 'label_is_active'),
 	'acronym' => __d('admin_car_models', 'acronym_is_active')
 ));
-$this->Backend->addSelect('brand_id', array(
+$this->Backend->addSelect('brand_slug', array(
 	'label' => __d('admin_car_models', 'label_brand_id'),
 	'options' => $brands
 ));

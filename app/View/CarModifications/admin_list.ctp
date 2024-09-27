@@ -8,23 +8,24 @@ $this->Backend->addColumn('id', array(
 	'type' => 'number',
 	'label' => __d('admin_car_modifications', 'column_id')
 ));
-$this->Backend->addColumn('brand_id', array(
-	'label' => __d('admin_car_modifications', 'column_brand_id'),
+$this->Backend->addColumn('title', array(
+    'label' => __d('admin_car_modifications', 'column_title'),
+    'editable' => true
+));
+$this->Backend->addColumn('generation_slug', array(
+	'label' => __d('admin_car_modifications', 'column_generation_id'),
 	'type' => 'list',
 	'sortable' => false,
-	'options' => $brands
+	'options' => $generations
 ));
-$this->Backend->addColumn('model_id', array(
+$this->Backend->addColumn('model_slug', array(
 	'label' => __d('admin_car_modifications', 'column_model_id'),
 	'type' => 'list',
 	'sortable' => false,
 	'options' => $models,
 	'all_options' => $all_models
 ));
-$this->Backend->addColumn('title', array(
-	'label' => __d('admin_car_modifications', 'column_title'),
-	'editable' => true
-));
+
 $this->Backend->addColumn('cars_count', array(
 	'label' => __d('admin_car_modifications', 'column_cars_count'),
 	'counter' => true

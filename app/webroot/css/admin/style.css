@@ -2002,3 +2002,10 @@ button::-moz-focus-inner {
 	background: transparent url(../../img/admin/icon_minus_1.gif) no-repeat left center; padding-left: 14px; }
 .folded2   { background-image: url(../../img/admin/icon_plus_2.gif); }
 .unfolded2 { background-image: url(../../img/admin/icon_minus_2.gif); }
+
+.admin_car_brand_photo a img {
+	max-width: 170px;
+	width: 80px;
+	padding: 10px;
+	max-height: 100px;
+}

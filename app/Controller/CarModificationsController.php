@@ -12,16 +12,8 @@ class CarModificationsController extends AppController {
 	public $submenu = 'cars';
 	public function _list() {
 		parent::_list();
-		$this->loadModel('CarBrand');
-		$this->loadModel('CarModel');
-		$this->set('brands', $this->CarBrand->find('list', array('fields' => array('CarBrand.id', 'CarBrand.title'), 'order' => array('CarBrand.title' => 'asc'))));
-		if (isset($this->request->data['CarModification']['brand_id'])) {
-			$this->set('models', $this->CarModel->find('list', array('fields' => array('CarModel.id', 'CarModel.title'), 'conditions' => array('CarModel.brand_slug' => $this->request->data['CarModification']['brand_slug']), 'order' => array('CarModel.title' => 'asc'))));
-		}
-		else {
-			$this->set('models', array('' => __d('admin_common', 'list_all_items')));
-		}
-		$this->set('all_models', $this->CarModel->find('list', array('fields' => array('CarModel.id', 'CarModel.title'), 'order' => array('CarModel.title' => 'asc'))));
+		$this->loadModel('CarGeneration');
+		$this->set('generations', $this->CarGeneration->find('list', array('fields' => array('CarGeneration.slug', 'CarGeneration.title'), 'order' => array('CarGeneration.title' => 'asc'))));
 	}
 	public function _edit($id) {
 		$title = parent::_edit($id);
