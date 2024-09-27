@@ -3604,8 +3604,8 @@ class ImportController extends AppController
 																list($params, $img) = explode(':', $img_item);
 																list($ah_value, $f2_value, $width_value, $height_value, $length_value, $current_value) = explode('-', $params);
 
-																$new_fields_exist = !empty($width_value) && isset($width_value) && !empty($height_value) && isset($height_value) && !empty($length_value) && isset($length_value) && !empty($current_value) && isset($current_value);
-																$new_fields = intval($width_value) == intval($width_value) && trim($height_value) == trim($height_value) && trim($length_value) == trim($length_value) && trim($current_value) == trim($current_value);
+																$new_fields_exist = !empty($width_value) && !empty($height_value) && !empty($length_value) && !empty($current_value);
+																$new_fields = intval($width_value) == intval($width) && trim($height_value) == trim($height) && trim($length_value) == trim($length) && intval($current_value) == intval($current);
 
 																if (intval($ah_value) == intval($ah) && trim($f2) == trim($f2_value)) {
 																	if (!$new_fields_exist) {
