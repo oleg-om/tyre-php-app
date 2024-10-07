@@ -4310,13 +4310,16 @@ class ImportController extends AppController
 									$p1 = 0;
 									$p2 = 0;
 									$p3 = 0;
-									if (substr_count($model, 'усилен')) {
+									if (substr_count(mb_strtolower($model), 'усилен')) {
 										$p1 = 1;
 									}
-									if (substr_count($model, 'под клинья')) {
+                                    if (substr_count(mb_strtolower($model), 'усил.')) {
+                                        $p1 = 1;
+                                    }
+									if (substr_count(mb_strtolower($model), 'под клинья')) {
 										$p2 = 1;
 									}
-									if (substr_count($model, 'с кольцом')) {
+									if (substr_count(mb_strtolower($model), 'с кольцом')) {
 										$p3 = 1;
 									}
 
