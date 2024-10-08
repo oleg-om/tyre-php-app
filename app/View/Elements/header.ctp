@@ -31,7 +31,7 @@ if (empty($current_season)) {
                 <div class="logos">
                     <div class="logo logo__autodom"><img src="/img/kerchshina.png" alt="Шинный центр" /><span
                             class="logo__years">25 лет</span></div>
-                    <div class="logo logo__vianor"><img src="/img/vianor-logo.webp" alt="Vianor" /></div>
+                    <div class="logo logo__vianor"><img src="/img/ivanor-logo.png" alt="Vianor" /></div>
                 </div>
                 <div class="cart"><button
                         onclick="window.location='/checkout';"><?php if (isset($cart) && !empty($cart['items'])) { ?><em
