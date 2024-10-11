@@ -377,7 +377,7 @@
                     ?>
                     <div class="item">
                         <div class="item-group">
-                            <?php echo $this->element('custom_select', array('label' => 'Ширина', 'placeholder' => 'Все', 'auto_add_options' => true, 'name' => 'size1', 'options' => $disk_size3, 'multiple' => false, 'search' => false, 'hideClearButton' => true)); ?>
+                            <?php echo $this->element('custom_select', array('label' => 'Ширина', 'placeholder' => 'Все', 'auto_add_options' => true, 'name' => 'size3', 'options' => $disk_size3, 'multiple' => false, 'search' => false, 'hideClearButton' => true)); ?>
                             <?php echo $this->element('custom_select', array('label' => 'Вылет', 'auto_add_options' => true, 'name' => 'et', 'placeholder' => 'Все', 'options' => $disk_et, 'multiple' => false, 'search' => false)); ?>
                             <?php echo $this->element('custom_select', array('label' => 'Диаметр', 'placeholder' => 'Все', 'auto_add_options' => true, 'name' => 'size1', 'options' => $disk_size1, 'multiple' => false, 'search' => false, 'hideClearButton' => true)); ?>
                         </div>

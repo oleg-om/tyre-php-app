@@ -2492,6 +2492,11 @@ class ImportController extends AppController
 									}
 									if (isset($data->sheets[0]['cells'][$i][19])) {
 										$warranty = 1;
+
+                                        $trim_warranty = mb_strtolower(trim($data->sheets[0]['cells'][$i][19]));
+                                        if (substr_count($trim_warranty, 'бессрочн')) {
+                                            $warranty = 2;
+                                        }
 									}
 									if (isset($data->sheets[0]['cells'][$i][20])) {
 										$xl = 1;
@@ -3881,6 +3886,11 @@ class ImportController extends AppController
 									}
 									if (!empty($warranty)) {
 										$warranty = 1;
+
+                                        $trim_warranty = mb_strtolower(trim($data->sheets[0]['cells'][$i][20]));
+                                        if (substr_count($trim_warranty, 'бессрочн')) {
+                                            $warranty = 2;
+                                        }
 									}
 
 									$xl = 0;

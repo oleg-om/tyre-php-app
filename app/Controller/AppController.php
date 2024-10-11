@@ -1193,13 +1193,34 @@ class AppController extends Controller {
 			
 			$products = $this->Product->find('all', array('conditions' => $temp_cond, 'fields' => 'DISTINCT Product.size1', 'order' => 'Product.size1'));
 
-			$disk_size1 = array();
-			foreach ($products as $item) {
-				$size = intval($item['Product']['size1']);
-				if ($size > 0) {
-					$disk_size1[$size] = $size;
-				}
-			}
+//			$disk_size1 = array();
+//			foreach ($products as $item) {
+//				$size = $item['Product']['size1'];
+//				if ($size > 0) {
+//					$disk_size1[$size] = $size;
+//				}
+//			}
+
+            $disk_size1 = array();
+            foreach ($products as $item) {
+                $numeric_size = str_replace(',', '.', $item['Product']['size1']);
+                if (is_numeric($numeric_size)) {
+                    $size = number_format(str_replace(',', '.', $item['Product']['size1']), 1, '.', '');
+                    if (!empty($size) && $size != '') {
+                        $size = str_replace('.0', '', $size);
+                        $disk_size1[$size] = $size;
+                    }
+                }
+                else {
+                    $size = trim($item['Product']['size1']);
+                    if (!empty($size) && $size != '') {
+                        $disk_size1[$size] = $size;
+                    }
+                }
+            }
+
+
+
 			natsort($disk_size1);
 			//Cache::write('disk_size1', $disk_size1, 'long');
 		}
@@ -1233,6 +1254,16 @@ class AppController extends Controller {
 			}
 			natsort($disk_size2);
 			//Cache::write('disk_size2', $disk_size2, 'long');
+
+            $products = $this->Product->find('all', array('conditions' => $temp_cond, 'fields' => 'DISTINCT Product.size3', 'order' => 'Product.size3'));
+            $disk_size3 = array();
+            foreach ($products as $item) {
+                $size = str_replace(',', '.', $item['Product']['size3']);
+                if (!empty($size) && $size != '') {
+                    $disk_size3[$size] = $size;
+                }
+            }
+            natsort($disk_size3);
 		}
 
 		if (empty($disk_hub)) {
@@ -1360,6 +1391,7 @@ class AppController extends Controller {
 			$result = array(
 				'size1' => $disk_size1,
 				'size2' => $disk_size2,
+                'size3' => $disk_size3,
 				'hub' => $disk_hub,
 				'brand_id' => $brands,
 				'in_stock' => $in_stock,
@@ -1371,6 +1403,7 @@ class AppController extends Controller {
 			
 			$this->set('disk_size1', $disk_size1);
 			$this->set('disk_size2', $disk_size2);
+            $this->set('disk_size3', $disk_size3);
 			$this->set('disk_hub', $disk_hub);
 			$this->set('in_stock', $in_stock);
 			$this->set('in_stock4', $in_stock4);

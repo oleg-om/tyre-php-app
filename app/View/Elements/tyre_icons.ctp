@@ -1,3 +1,4 @@
+<?php $icon_brand_id = 1002; ?>
 <div class="tyre__icons">
 <?php if ($product['sale']) { ?>
         <span class="tyre__icon">
@@ -25,9 +26,23 @@
             <span class="tyre__icon-tooltip">Бесплатное хранение</span>
         </span>
 <?php } if ($product['p3']) { ?>
-    <span class="tyre__icon">
-            <img src="/img/icons/warranty.svg" alt="Расширенная гарантия" />
-            <span class="tyre__icon-tooltip">Расширенная гарантия</span>
-        </span>
+        <?php if ($product['brand_id'] != $icon_brand_id) { ?>
+            <span class="tyre__icon">
+                <img src="/img/icons/warranty.svg" alt="Расширенная гарантия" />
+                <span class="tyre__icon-tooltip">Расширенная гарантия</span>
+            </span>
+        <?php } ?>
+        <?php if ($product['brand_id'] == $icon_brand_id && intval($product['p3']) === 1) { ?>
+            <span class="tyre__icon">
+                    <img src="/img/icons/icon_warranty.png" alt="Расширенная гарантия Ikon tyres" />
+                    <span class="tyre__icon-tooltip">Расширенная гарантия Ikon tyres</span>
+                </span>
+        <?php } ?>
+        <?php if ($product['brand_id'] == $icon_brand_id && intval($product['p3']) === 2) { ?>
+            <span class="tyre__icon">
+                        <img src="/img/icons/icon_life_warranty.png" alt="Бессрочная гарантия Ikon tyres" />
+                        <span class="tyre__icon-tooltip">Бессрочная гарантия Ikon tyres</span>
+                    </span>
+        <?php } ?>
 <?php } ?>
 </div>
