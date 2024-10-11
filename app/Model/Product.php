@@ -241,7 +241,7 @@ class Product extends AppModel {
 
             $file_names_array = array();
 
-            $new_file_params = intval($this->data[$this->name]['ah']).'-'.$this->data[$this->name]['f2'].'-'.$this->data[$this->name]['width'].'-'.$this->data[$this->name]['height'].'-'.$this->data[$this->name]['length'].'-'.$this->data[$this->name]['current'];
+            $new_file_params = intval($this->data[$this->name]['ah']).'-'.$this->data[$this->name]['f2'].'-'.$this->data[$this->name]['width'].'-'.$this->data[$this->name]['height'].'-'.$this->data[$this->name]['length'].'-'.intval($this->data[$this->name]['current']);
             $new_file_path = $this->data[$this->name]['filename'];
 
             if ($existing_file_names != '' && !empty($existing_file_names)) {
