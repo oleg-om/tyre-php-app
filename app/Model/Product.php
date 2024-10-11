@@ -248,6 +248,8 @@ class Product extends AppModel {
                 foreach ($existing_file_names as $key => $img) {
                     list($akb_params, $img_file) = explode(':', $img);
                     if (!empty($akb_params)) {
+                        list($ah_value, $f2_value, $width_value, $height_value, $length_value, $current_value) = explode('-', $akb_params);
+                        $akb_params = $ah_value.'-'.$f2_value.'-'.$width_value.'-'.$height_value.'-'.$length_value.'-'.intval($current_value);
                         $file_names_array[$akb_params] = $img_file;
                     }
                 }
