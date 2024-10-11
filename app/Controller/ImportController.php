@@ -3600,10 +3600,10 @@ class ImportController extends AppController
 												} else {
 													// product extra images
 													$filename = '';
-
+                                                    $test = 'if 1';
 													if (!empty($model_extra_filenames[$model_id])) {
 														$existing_file_names = explode('|', $model_extra_filenames[$model_id]);
-
+                                                        $test = 'if 2';
 														if ($existing_file_names != '' && !empty($existing_file_names)) {
 															foreach ($existing_file_names as $key => $img_item) {
 																list($params, $img) = explode(':', $img_item);
@@ -3611,13 +3611,16 @@ class ImportController extends AppController
 
 																$new_fields_exist = !empty($width_value) && !empty($height_value) && !empty($length_value) && !empty($current_value);
 																$new_fields = intval($width_value) == intval($width) && intval($height_value) == intval($height) && intval($length_value) == intval($length) && intval($current_value) == intval($current);
-
+                                                                $test = 'if 3';
 																if (intval($ah_value) == intval($ah) && trim($f2) == trim($f2_value)) {
 																	if (!$new_fields_exist) {
+                                                                        $test = '$new_fields_exist';
 																		$filename = $img;
 																	} else {
+                                                                        $test = 'else';
 																		if ($new_fields) {
 																			$filename = $img;
+                                                                            $test = 'if ($new_fields)';
 																		}
 																	}
 																}
@@ -3641,7 +3644,7 @@ class ImportController extends AppController
 														'price' => $price,
 														'stock_count' => $stock_count,
 														'in_stock' => $in_stock,
-														'material' => $country,
+//														'material' => $country,
 														'color' => $manufacturing_technology,
 														'price_with_exchange' => $price_with_exchange,
 														'f3' => $f3,
@@ -3659,6 +3662,7 @@ class ImportController extends AppController
 														'count_place_6' => $hundai_count,
 														'count_place_7' => $tavrida_count,
 														'count_place_8' => $gruz_count,
+                                                        'material' => $test,
 
 													);
 													$this->Product->create();
