@@ -298,6 +298,9 @@ class AkbController extends AppController {
         if (isset($this->request->query['color']) && !empty($this->request->query['color'])) {
             $conditions['Product.color'] = $this->request->query['color'];
         }
+        if (isset($this->request->query['auto']) && !empty($this->request->query['auto'])) {
+            $conditions['Product.auto'] = $this->request->query['auto'];
+        }
 		$this->request->data['Product'] = $this->request->query;
 
 
@@ -599,6 +602,9 @@ class AkbController extends AppController {
             }
             if (isset($this->request->query['color']) && !empty($this->request->query['color'])) {
                 $conditions['Product.color'] = $this->request->query['color'];
+            }
+            if (isset($this->request->query['auto']) && !empty($this->request->query['auto'])) {
+                $conditions['Product.auto'] = $this->request->query['auto'];
             }
 			$this->request->data['Product'] = $this->request->query;
             $this->request->data['Product']['mode'] = $mode;
