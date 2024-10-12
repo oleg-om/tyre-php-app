@@ -3643,7 +3643,7 @@ class ImportController extends AppController
 														'price' => $price,
 														'stock_count' => $stock_count,
 														'in_stock' => $in_stock,
-//														'material' => $country,
+                                                        'material' => $country,
 														'color' => $manufacturing_technology,
 														'price_with_exchange' => $price_with_exchange,
 														'f3' => $f3,
