@@ -929,8 +929,12 @@ class TyresController extends AppController {
             $meta_title = !empty($brand['Brand']['meta_title']) ? 'Шины ' . $brand['Brand']['meta_title'] . ' - купить в Керчи' : 'Шины ' . $brand['Brand']['title'] . ' - купить в Керчи';
             $meta_keywords = $brand['Brand']['meta_keywords'];
             $meta_description = $brand['Brand']['meta_description'];
+
             $sort = 'price_asc';
-            if (isset($this->request->query['sort']) && in_array($this->request->query['sort'], array('name', 'price_asc', 'price_desc'))) {
+            if (CONST_ENABLE_POPULAR_SORT == '1') {
+                $sort = 'popular';
+            }
+            if (isset($this->request->query['sort']) && in_array($this->request->query['sort'], array('name', 'price_asc', 'price_desc', 'popular'))) {
                 $sort = $this->request->query['sort'];
             }
             if ($mode == 'table') {
@@ -938,6 +942,7 @@ class TyresController extends AppController {
                     'price_asc' => array('Product.price' => 'ASC'),
                     'price_desc' => array('Product.price' => 'DESC'),
                     'name' => array('BrandModel.full_title' => 'ASC'),
+                    'popular' => array('BrandModel.virtual_season' => 'ASC', 'BrandModel.popular' => 'DESC', 'BrandModel.new' => 'DESC', 'BrandModel.model_in_stock' => 'DESC', 'BrandModel.low_price' => 'ASC')
                 );
             }
             else {
@@ -945,8 +950,10 @@ class TyresController extends AppController {
                     'price_asc' => array('BrandModel.low_price' => 'ASC'),
                     'price_desc' => array('BrandModel.low_price' => 'DESC'),
                     'name' => array('BrandModel.full_title' => 'ASC'),
+                    'popular' => array('BrandModel.virtual_season' => 'ASC', 'BrandModel.popular' => 'DESC', 'BrandModel.new' => 'DESC', 'BrandModel.model_in_stock' => 'DESC', 'BrandModel.low_price' => 'ASC')
                 );
             }
+
             $render = 'index';
             if (!empty($model_id)) {
                 $this->BrandModel->bindModel(
