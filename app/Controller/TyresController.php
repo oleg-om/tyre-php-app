@@ -1041,6 +1041,33 @@ class TyresController extends AppController {
                 else {
                     //debug($this->paginate['conditions']);
                     $this->BrandModel->virtualFields['low_price'] = '(select min(products.price) from `products` where `products`.`model_id`=`BrandModel`.`id` AND `products`.`id` IN ('.$product_ids.'))';
+
+                    if (CONST_ENABLE_POPULAR_SORT == '1') {
+                        $current_season = $this->getCurrentSeason();
+                        $this->loadModel('Settings');
+                        $select = $this->Settings->find('all', array('conditions' => array('type' => 'radio', 'variable' => 'POPULAR_SORT_SEASON')));
+                        foreach($select as $val):
+                            $select2[$val['Settings']['variable']][$val['Settings']['description']]=$val['Settings']['value'];
+                        endforeach;
+
+                        if ($select2['POPULAR_SORT_SEASON']['авто'] == 0) {
+                            if ($select2['POPULAR_SORT_SEASON']['зима'] == 1) {
+                                $current_season = 'winter';
+                            }
+                            if ($select2['POPULAR_SORT_SEASON']['лето'] == 1) {
+                                $current_season = 'summer';
+                            }
+                        }
+
+                        $this->BrandModel->virtualFields['model_in_stock'] = '(select max(products.in_stock) from `products` where `products`.`model_id`=`BrandModel`.`id` AND `products`.`id` IN ('.$product_ids.'))';
+                        $this->BrandModel->virtualFields['products_season'] = '(select max(products.season) from `products` where `products`.`model_id`=`BrandModel`.`id` AND `products`.`id` IN ('.$product_ids.'))';
+                        if ($current_season == 'winter') {
+                            $this->BrandModel->virtualFields['virtual_season'] = 'REPLACE(REPLACE(REPLACE(COALESCE((select max(products.season) from `products` where `products`.`model_id`=`BrandModel`.`id` AND `products`.`id` IN ('.$product_ids.')), "2"), "all", "2"), "winter", "1"), "summer", "3")';
+                        } else {
+                            $this->BrandModel->virtualFields['virtual_season'] = 'REPLACE(REPLACE(REPLACE(COALESCE((select max(products.season) from `products` where `products`.`model_id`=`BrandModel`.`id` AND `products`.`id` IN ('.$product_ids.')), "2"), "all", "2"), "summer", "1"), "winter", "3")';
+                        }
+                    }
+
                     $models = $this->paginate('BrandModel');
                     foreach ($models as $i => $model) {
                         $models[$i]['Product'] = array();
