@@ -3611,8 +3611,9 @@ class ImportController extends AppController
 
 																$new_fields_exist = !empty($width_value) && !empty($height_value) && !empty($length_value) && !empty($current_value);
 																$new_fields = intval($width_value) == intval($width) && intval($height_value) == intval($height) && intval($length_value) == intval($length) && intval($current_value) == intval($current);
-                                                                $test = 'if 3';
-																if (intval($ah_value) == intval($ah) && trim($f2) == trim($f2_value)) {
+                                                                $test = 'if 3-'.$ah_value.'-'.$ah.'-'.$f2_value.'-'.$f2;
+																if (intval($ah_value) == intval($ah) && trim($f2_value) == trim($f2)) {
+                                                                    $test = 'if 4-'.$ah_value.'-'.$ah.'-'.$f2_value.'-'.$f2;
 																	if (!$new_fields_exist) {
                                                                         $test = '$new_fields_exist';
 																		$filename = $img;
