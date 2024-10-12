@@ -258,6 +258,11 @@ class Product extends AppModel {
                 if (!empty($img)) {
                     list($ah_value, $f2_value, $width_value, $height_value, $length_value, $current_value) = explode('-', $params);
                     $akb_params = $ah_value.'-'.$f2_value.'-'.$width_value.'-'.$height_value.'-'.$length_value.'-'.intval($current_value);
+
+                    if (empty($width_value) && empty($height_value) && empty($length_value) && empty($current_value)) {
+                        $akb_params = $ah_value.'-'.$f2_value;
+                    }
+
                     $file_names_array[$akb_params] = $akb_params.':'.$img;
                 }
             }
