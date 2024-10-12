@@ -3661,7 +3661,6 @@ class ImportController extends AppController
 														'count_place_6' => $hundai_count,
 														'count_place_7' => $tavrida_count,
 														'count_place_8' => $gruz_count,
-
 													);
 													$this->Product->create();
 													if ($this->Product->save($save_data)) {
