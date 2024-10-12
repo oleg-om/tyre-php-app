@@ -3,7 +3,6 @@
          <script type="text/javascript"><?php echo 'console.log('.json_encode($item).')' ?></script>
         <div class="list-view__item akb">
             <div class="list-view__info-col">
-                <?php echo intval('102 A (EN)');?>
                 <table class="list-view__brand">
                     <tr>
                         <th>Бренд</th>
@@ -28,7 +27,6 @@
                         <th>Полярность</th>
                         <td class="position-relative">
                             <?php
-                            $polarity;
                             if ($item['Product']['f2'] == 'R+') {
                                 $polarity = 'Обратная';
                             } else {
