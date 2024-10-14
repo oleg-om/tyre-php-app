@@ -3607,18 +3607,23 @@ class ImportController extends AppController
 														if ($existing_file_names != '' && !empty($existing_file_names)) {
 															foreach ($existing_file_names as $key => $img_item) {
 																list($params, $img) = explode(':', $img_item);
-																list($ah_value, $f2_value, $width_value, $height_value, $length_value, $current_value) = explode('-', $params);
+																list($ah_value, $f2_value, $width_value, $height_value, $length_value, $current_value, $f1_value) = explode('-', $params);
 
 																$new_fields_exist = !empty($width_value) && !empty($height_value) && !empty($length_value) && !empty($current_value);
 																$new_fields = intval($width_value) == intval($width) && intval($height_value) == intval($height) && intval($length_value) == intval($length) && intval($current_value) == intval($current);
+                                                                $new_fields_v2 = $new_fields && trim($f1_value) == trim($f1);
 
 																if (intval($ah_value) == intval($ah) && trim($f2_value) == trim($f2)) {
                                                                     if ($img) {
-                                                                        if ($new_fields_exist && $new_fields) {
+                                                                        if ($new_fields_exist && $new_fields_v2) {
                                                                             $filename = $img;
                                                                         }
 
-                                                                        if (!$new_fields_exist && !$new_fields && $filename != '') {
+                                                                        if ($new_fields_exist && $new_fields && $filename == '') {
+                                                                            $filename = $img;
+                                                                        }
+
+                                                                        if (!$new_fields_exist && !$new_fields && $filename == '') {
                                                                             $filename = $img;
                                                                         }
                                                                     }

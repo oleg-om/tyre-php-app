@@ -241,7 +241,7 @@ class Product extends AppModel {
 
             $file_names_array = array();
 
-            $new_file_params = intval($this->data[$this->name]['ah']).'-'.$this->data[$this->name]['f2'].'-'.$this->data[$this->name]['width'].'-'.$this->data[$this->name]['height'].'-'.$this->data[$this->name]['length'].'-'.intval($this->data[$this->name]['current']);
+            $new_file_params = intval($this->data[$this->name]['ah']).'-'.$this->data[$this->name]['f2'].'-'.$this->data[$this->name]['width'].'-'.$this->data[$this->name]['height'].'-'.$this->data[$this->name]['length'].'-'.intval($this->data[$this->name]['current']).'-'.$this->data[$this->name]['f1'];
             $new_file_path = $this->data[$this->name]['filename'];
 
             if ($existing_file_names != '' && !empty($existing_file_names)) {
@@ -256,8 +256,8 @@ class Product extends AppModel {
 
             foreach ($file_names_array as $params => $img) {
                 if (!empty($img)) {
-                    list($ah_value, $f2_value, $width_value, $height_value, $length_value, $current_value) = explode('-', $params);
-                    $akb_params = $ah_value.'-'.$f2_value.'-'.$width_value.'-'.$height_value.'-'.$length_value.'-'.intval($current_value);
+                    list($ah_value, $f2_value, $width_value, $height_value, $length_value, $current_value, $f1_value) = explode('-', $params);
+                    $akb_params = $ah_value.'-'.$f2_value.'-'.$width_value.'-'.$height_value.'-'.$length_value.'-'.intval($current_value).'-'.$f1_value;
 
                     if (empty($width_value) && empty($height_value) && empty($length_value) && empty($current_value)) {
                         $akb_params = $ah_value.'-'.$f2_value;

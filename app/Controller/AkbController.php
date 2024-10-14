@@ -575,6 +575,9 @@ class AkbController extends AppController {
                     $conditions['Product.f1'] = array('Asia', 'Аsia');
                 }
             }
+            if (isset($this->request->query['f2']) && !empty($this->request->query['f2'])) {
+                $conditions['Product.f2'] = $this->request->query['f2'] === 'left' ? 'L+' : 'R+';
+            }
             if (isset($this->request->query['agm']) || isset($this->request->query['efb'])) {
                 $agm = 'undefined';
                 $efb = 'undefined';
