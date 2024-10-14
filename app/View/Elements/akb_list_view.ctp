@@ -1,6 +1,5 @@
 <div class="list-view__grid" id="product-section">
     <?php $i = 0; foreach ($products as $item) { ?>
-        <script type="text/javascript"><?php echo 'console.log('.json_encode($item).')' ?></script>
         <div class="list-view__item akb">
             <div class="list-view__info-col">
                 <table class="list-view__brand">
