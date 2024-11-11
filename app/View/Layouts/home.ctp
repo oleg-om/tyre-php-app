@@ -9,8 +9,8 @@
 <link rel="stylesheet" type="text/css" media="screen" href="/css/main.css?fd138" />
 <meta charset="utf-8">
 <link rel="stylesheet" type="text/css" media="screen" href="/css/app.css" />
-<link href="http://fonts.googleapis.com/css?family=Neucha&subset=latin,cyrillic" rel="stylesheet" type="text/css" />
-<link href="http://fonts.googleapis.com/css?family=PT+Sans+Narrow&subset=latin,cyrillic" rel="stylesheet" type="text/css" />
+<link href="https://fonts.googleapis.com/css?family=Neucha&subset=latin,cyrillic" rel="stylesheet" type="text/css" />
+<link href="https://fonts.googleapis.com/css?family=PT+Sans+Narrow&subset=latin,cyrillic" rel="stylesheet" type="text/css" />
 <script type="text/javascript" src="http://code.jquery.com/jquery.min.js"></script>
 <script type="text/javascript" src="/js/main.js?lol=4"></script>
 </head>

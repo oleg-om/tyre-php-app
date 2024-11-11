@@ -9,8 +9,8 @@
 echo $this->Html->meta('keywords', $meta_keywords);
 echo $this->Html->meta('description', $meta_description);
 ?>
-<link href="http://fonts.googleapis.com/css?family=Open+Sans:400,700&subset=latin,cyrillic" rel="stylesheet" type="text/css">
-<link href="http://fonts.googleapis.com/css?family=Open+Sans+Condensed:300,700&subset=latin,cyrillic" rel="stylesheet" type="text/css">
+<link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700&subset=latin,cyrillic" rel="stylesheet" type="text/css">
+<link href="https://fonts.googleapis.com/css?family=Open+Sans+Condensed:300,700&subset=latin,cyrillic" rel="stylesheet" type="text/css">
 <?php
 	$css = array('main-style.v13', 'main-style-media.v13', 'virtual-select.min');
 	if (isset($additional_css)) {
