@@ -29,24 +29,26 @@ if (empty($value)) {
                 <span class="checkmark"></span>
             </label>
         </div>
-        <script type="text/javascript">
-            $(function(){
-                $('<?php echo '#'.$index; ?>').change(function() {
-                    window.onbeforeunload = function() {
-                        // save scroll position
-                        localStorage.setItem('ks-scroll-position', window.scrollY);
-                    };
-                    // set loading class
-                    setLoading();
-                    // submit form
-                    return setTimeout(() => {
-                        $('#filter-form').submit();
-                    }, 100)
+        <?php if (CONST_ENABLE_FILTER_AUTO_LOAD == '1') { ?>
+            <script type="text/javascript">
+                $(function(){
+                    $('<?php echo '#'.$index; ?>').change(function() {
+                        window.onbeforeunload = function() {
+                            // save scroll position
+                            localStorage.setItem('ks-scroll-position', window.scrollY);
+                        };
+                        // set loading class
+                        setLoading();
+                        // submit form
+                        return setTimeout(() => {
+                            $('#filter-form').submit();
+                        }, 100)
+                    });
                 });
-            });
-            function setLoading() {
-                $('#product-section').addClass('is-loading');
-            }
-        </script>
+                function setLoading() {
+                    $('#product-section').addClass('is-loading');
+                }
+            </script>
+        <?php } ?>
     <?php } ?>
 </div>

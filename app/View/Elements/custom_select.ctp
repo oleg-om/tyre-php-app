@@ -120,6 +120,7 @@ if ($query !== '') {
 <?php } ?>
 
 
+<?php if (CONST_ENABLE_FILTER_AUTO_LOAD == '1') { ?>
 <script type="text/javascript">
     $(function(){
         $(window).load(function() {
@@ -127,7 +128,6 @@ if ($query !== '') {
             $('<?php echo '#'.$id; ?>').change(function(e) {
                 var multiple = e?.currentTarget?.virtualSelect?.multiple;
 
-                console.log('on change 1');
                 // set loading class
                 setLoading();
                 // submit form
@@ -190,3 +190,4 @@ if ($query !== '') {
         }
     }
 </script>
+<?php } ?>
