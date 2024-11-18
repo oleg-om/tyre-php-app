@@ -1527,7 +1527,7 @@ class ImportController extends AppController
 													'et' => $et,
 													'hub' => $hub,
 													'color' => $color,
-													'material' => $material,
+													'material' => $model_material,
 													'sku' => $sku,
 													'price' => $price,
 													'stock_count' => $stock_count,
