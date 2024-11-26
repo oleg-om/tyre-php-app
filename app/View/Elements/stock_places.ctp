@@ -54,10 +54,15 @@ $place_list_filtered = array_filter($place_list);
         <?php
         foreach ($place_list as $i => $place_quantity) { ?>
             <?php
+            $num = $place_quantity;
+            if (floatval($place_quantity) > 12) {
+                $num = '12';
+            }
+
             if ($place_quantity != 0) {
                 echo '<tr>';
                 echo '<td>· '.$filter_all_places_short[$i].'</td>';
-                echo '<td class="tooltip-places-row-quantity">'. floatval($place_quantity) > 12 ? 12 : $place_quantity .' шт.</td>';
+                echo '<td class="tooltip-places-row-quantity">'. $num .' шт.</td>';
                 echo '</tr>';
             }
             ?>
