@@ -715,12 +715,12 @@
                     <div class="item">
                         <?php
                         $season_main_options = array('summer' => array('label' => 'Летние', 'query' => 'season', 'icon' => '/img/icons/season-summer.png'), 'winter' => array('label' => 'Зимние', 'query' => 'season', 'icon' => '/img/icons/season-winter.png'));
-                        echo $this->element('custom_radio', array('label' => 'Сезон:', 'options' => $season_main_options));
+                        echo $this->element('custom_radio', array('label' => 'Сезон:', 'options' => $season_main_options, 'id_prefix' => 'auto', 'name' => 'season_auto'));
                         ?>
                         <div class="item-inner-m-0">
                             <?php
                             $season_all_option = array('all' => array('label' => 'Всесезонные', 'query' => 'season', 'icon' => '/img/icons/season-all.png'));
-                            echo $this->element('custom_radio', array('options' => $season_all_option));
+                            echo $this->element('custom_radio', array('options' => $season_all_option, 'id_prefix' => 'auto', 'name' => 'season_auto'));
                             ?>
                         </div>
                     </div>
@@ -729,7 +729,7 @@
                     <div class="item item-icon__disk">
                         <?php
                         $material_options = array('cast' => array('label' => 'Литые', 'query' => 'material', 'icon' => '/img/icons/disk-cast.png'), 'steel' => array('label' => 'Стальные', 'query' => 'material', 'icon' => '/img/icons/disk-steel.png'));
-                        echo $this->element('custom_radio', array('label' => 'Материал:', 'options' => $material_options, 'size' => 'large'));
+                        echo $this->element('custom_radio', array('label' => 'Материал:', 'options' => $material_options, 'size' => 'large', 'id_prefix' => 'auto', 'name' => 'material_auto'));
                         ?>
                     </div>
                 <?php } ?>
@@ -973,8 +973,8 @@
             }
 
             function onSearchModifications() {
-                const season = $('#AutoSelectionSeason').val();
-                const disk_material = $('#AutoSelectionMaterial').val();
+                const season = $('input[name="season_auto"]:checked').val();
+                const disk_material = $('input[name="material_auto"]:checked').val();
                 const mod = $('#CarModificationSlug').attr('value');
 
                 if (<?php echo $show_filter; ?> === 1) {

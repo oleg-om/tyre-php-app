@@ -16,7 +16,13 @@ if (empty($size)) {
 <?php foreach ($options as $index => $option) { ?>
     <?php
     $original_index = $index;
+
     $id = str_replace('/', '', $index);
+
+    if (!empty($id_prefix)) {
+        $id = $id.'_'.$id_prefix;
+    }
+
     $index = str_replace('/', '%2F', $index);
     if (!empty($option['query'])) {
         if (isset($this->request->query[$option['query']])) {
@@ -45,7 +51,7 @@ if (empty($size)) {
                 }
             ?>
 
-            <input type="radio" name="<?php echo $option['query']; ?>" id="<?php echo $id; ?>" value="<?php echo $original_index; ?>" <?php echo $option['checked']; ?> />
+            <input type="radio" name="<?php if (empty($name)) { echo $option['query']; } else { echo $name; } ?>" id="<?php echo $id; ?>" value="<?php echo $original_index; ?>" <?php echo $option['checked']; ?> />
             <span class="checkmark"></span>
         </label>
     </div>
