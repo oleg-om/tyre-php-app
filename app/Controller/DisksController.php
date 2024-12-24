@@ -2102,7 +2102,7 @@ endforeach;
 						'Product' => array(
 							'foreignKey' => 'model_id',
 							'conditions' => $conditions,
-							'order'      => 'Product.price ASC'
+							'order'      => array('Product.price' => 'asc', 'Product.hub' => 'asc', 'Product.et' => 'asc')
 						)
 					)
 				),
@@ -2350,7 +2350,7 @@ endforeach;
 							'Product' => array(
 								'foreignKey' => 'model_id',
 								'conditions' => array('Product.is_active' => 1, 'Product.price > ' => 0, 'Product.stock_count > ' => 0),
-								'order'      => array('Product.price' => 'asc', 'Product.hub' => 'asc', 'Product.et' => 'asc')
+                                'order'      => 'Product.price ASC'
 							)
 						)
 					),
