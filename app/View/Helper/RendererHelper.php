@@ -20,11 +20,15 @@ class RendererHelper extends AppHelper {
 	public function model_photo($item, $model) {
 		if (!empty($item['filename'])) {
 			$src = $this->Backend->thumbnail(array('id' => $item['id'], 'filename' => $item['filename'], 'path' => 'models', 'width' => 121, 'height' => 121, 'crop' => false, 'folder' => false));
-		}
+		    $img_full = $this->Backend->thumbnail(array('id' => $item['id'], 'filename' => $item['filename'], 'path' => 'models', 'width' => 800, 'height' => 600, 'crop' => false, 'folder' => false));
+
+            return '<td>' . $this->Html->link($this->Html->image($src) , $img_full, array('escape' => false, 'class' => 'lightbox rel-box', 'id' => $item['id'])) . '</td>';
+        }
 		else {
 			$src = 'no-160x20.gif';
+
+            return '<td>' . $this->Html->link($this->Html->image($src), array('controller' => 'models', 'action' => 'admin_edit', $item['id']), array('escape' => false)) . '</td>';
 		}
-		return '<td>' . $this->Html->link($this->Html->image($src), array('controller' => 'models', 'action' => 'admin_edit', $item['id']), array('escape' => false)) . '</td>';
 	}
 	public function tube_photo($item, $model) {
 		if (!empty($item['filename'])) {
