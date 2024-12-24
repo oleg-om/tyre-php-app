@@ -2102,7 +2102,7 @@ endforeach;
 						'Product' => array(
 							'foreignKey' => 'model_id',
 							'conditions' => $conditions,
-							'order'      => array('Product.price' => 'asc', 'Product.size1' => 'asc', 'Product.size3' => 'asc', 'Product.hub' => 'asc')
+							'order'      => array('Product.price' => 'asc', 'Product.size2' => 'asc', 'Product.hub' => 'asc')
 						)
 					)
 				),
