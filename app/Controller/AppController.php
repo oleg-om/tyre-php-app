@@ -6,7 +6,7 @@ class AppController extends Controller {
 	public $meta_keywords = null;
 	public $meta_description = null;
 	public $sections = array();
-	public $limits = array(10 => 10, 20 => 20, 30 => 30, 40 => 40, 50 => 50, 100 => 100, 500 => 500);
+	public $limits = array(10 => 10, 20 => 20, 30 => 30, 40 => 40, 50 => 50, 100 => 100, 10000 => 10000);
 	public $submenu = null;
 	public $section = null;
 	public $conditions = array();

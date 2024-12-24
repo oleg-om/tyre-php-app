@@ -671,7 +671,7 @@ $cfg['MaxDbList'] = 100;
  *
  * @global integer $cfg['MaxTableList']
  */
-$cfg['MaxTableList'] = 250;
+$cfg['MaxTableList'] = 10000;
 
 /**
  * whether to show hint or not
