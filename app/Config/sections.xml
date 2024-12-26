@@ -12,11 +12,13 @@
 				<action>list</action>
 				<action>add</action>
 				<action>clear</action>
+				<action id="Product.supplier_id">clear_supplier</action>
 			</submenu>
 			<submenu key="disks">
 				<action>list</action>
 				<action>add</action>
 				<action>clear</action>
+				<action id="Product.supplier_id">clear_supplier</action>
 			</submenu>
 			<submenu key="akb">
 				<action>list</action>

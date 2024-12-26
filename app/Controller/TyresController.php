@@ -100,7 +100,21 @@ class TyresController extends AppController {
         $this->redirect($url);
     }
 
+    public function admin_clear_supplier() {
+        $this->loadModel($this->model);
+        $supplier_id = $this->request->query['Product_supplier_id'];
 
+        if (!empty($supplier_id)) {
+            $this->conditions['Product.supplier_id'] = $supplier_id;
+            $this->{$this->model}->deleteAll($this->conditions, true, true);
+            $this->info($this->t('message_supplier_data_cleared'));
+        } else {
+            $this->error($this->t('message_fill_supplier'));
+        }
+
+        $url = array('controller' => Inflector::underscore($this->name), 'action' => 'admin_list');
+        $this->redirect($url);
+    }
 
     function auto() {
 

@@ -137,7 +137,6 @@ class Product extends AppModel {
 		}
 	}
 	public function beforeSave($options = array()) {
-        print_r('1111');
 		if (parent::beforeSave()) {
 			if (isset($this->data[$this->name]['category_id']) && $this->data[$this->name]['category_id'] == 1) {
 				if (isset($this->data[$this->name]['size3'])) {

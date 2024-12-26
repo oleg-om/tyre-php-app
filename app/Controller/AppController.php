@@ -437,9 +437,14 @@ class AppController extends Controller {
 								$submenu_node['action'] = array($submenu_node['action']);
 							}
 							foreach ($submenu_node['action'] as $action_key) {
+                                if (isset($action_key['@id'])) {
+                                    $action_id = $action_key['@id'];
+                                    $action_key = $action_key['@'];
+                                }
 								$submenu['items'][] = array(
 									'title' => __d('admin_menu_sections', $submenu_key . '_' . $action_key),
 									'icon' => $submenu_key . '-' . $action_key,
+                                    'id' => $action_id,
 									'link' => array(
 										'controller' => $submenu_key,
 										'action' => $action_key,
