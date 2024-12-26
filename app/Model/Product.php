@@ -231,7 +231,7 @@ class Product extends AppModel {
 			chmod($to, 0777);
 		}
 
-
+        if (!empty($this->data[$this->name]['model_id'])) {
             $this->BrandModel = ClassRegistry::init('BrandModel');
             $model_id = $this->data[$this->name]['model_id'];
 
@@ -240,7 +240,7 @@ class Product extends AppModel {
 
             $file_names_array = array();
 
-            $new_file_params = intval($this->data[$this->name]['ah']).'-'.$this->data[$this->name]['f2'].'-'.$this->data[$this->name]['width'].'-'.$this->data[$this->name]['height'].'-'.$this->data[$this->name]['length'].'-'.intval($this->data[$this->name]['current']).'-'.$this->data[$this->name]['f1'];
+            $new_file_params = intval($this->data[$this->name]['ah']) . '-' . $this->data[$this->name]['f2'] . '-' . $this->data[$this->name]['width'] . '-' . $this->data[$this->name]['height'] . '-' . $this->data[$this->name]['length'] . '-' . intval($this->data[$this->name]['current']) . '-' . $this->data[$this->name]['f1'];
             $new_file_path = $this->data[$this->name]['filename'];
 
             if ($existing_file_names != '' && !empty($existing_file_names)) {
@@ -256,13 +256,13 @@ class Product extends AppModel {
             foreach ($file_names_array as $params => $img) {
                 if (!empty($img)) {
                     list($ah_value, $f2_value, $width_value, $height_value, $length_value, $current_value, $f1_value) = explode('-', $params);
-                    $akb_params = $ah_value.'-'.$f2_value.'-'.$width_value.'-'.$height_value.'-'.$length_value.'-'.intval($current_value).'-'.$f1_value;
+                    $akb_params = $ah_value . '-' . $f2_value . '-' . $width_value . '-' . $height_value . '-' . $length_value . '-' . intval($current_value) . '-' . $f1_value;
 
                     if (empty($width_value) && empty($height_value) && empty($length_value) && empty($current_value)) {
-                        $akb_params = $ah_value.'-'.$f2_value;
+                        $akb_params = $ah_value . '-' . $f2_value;
                     }
 
-                    $file_names_array[$akb_params] = $akb_params.':'.$img;
+                    $file_names_array[$akb_params] = $akb_params . ':' . $img;
                 }
             }
             $file_names_array = array_filter($file_names_array);
@@ -271,6 +271,8 @@ class Product extends AppModel {
                 $update_data = array('BrandModel' => array('id' => $model_id, 'extra_filenames' => implode('|', $file_names_array)));
                 $this->BrandModel->save($update_data, false);
             }
+
+        }
 
 		Cache::delete('brands_1', 'long');
 		Cache::delete('brands_2', 'long');
