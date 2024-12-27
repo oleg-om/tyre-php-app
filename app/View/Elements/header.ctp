@@ -5,7 +5,22 @@ if (empty($active_menu)) {
 if (empty($current_season)) {
     $current_season = 'summer';
 }
-//$modification_slug = $this->request->query['modification'];
+
+// new year logo
+$griffon_logo = '/img/griffon-sm.webp';
+
+$currentDate = new DateTime(); // Today
+$currentYear =  date("Y");
+
+$newYearDateBegin = new DateTime('2015-12-20');
+$newYearDateEnd  = new DateTime('2016-01-08');
+$december_is_ok = $currentDate->format('m') == $newYearDateBegin->format('m') && $currentDate->format('d') >= $newYearDateBegin->format('d');
+$january_is_ok = $currentDate->format('m') == $newYearDateEnd->format('m') & $currentDate->format('d') <= $newYearDateEnd->format('d');
+
+if ($december_is_ok || $january_is_ok) {
+    $griffon_logo = '/img/griffon-sm-new-year.png';
+}
+// new year logo
 ?>
 <div id="header">
     <div class="tyres <?php echo $current_season; ?>-season">
@@ -20,7 +35,7 @@ if (empty($current_season)) {
                 </a>
 
                 <div class="info-group">
-                    <a class="header-griffon" href="/"><img src="/img/griffon-sm.webp" alt="Керчьшина" /></a>
+                    <a class="header-griffon" href="/"><img src="<?php echo $griffon_logo; ?>" alt="Керчьшина" /></a>
                     <div class="desc"><span class="desc-title">КерчьШИНА</span><span class="desc-description">Сеть
                             шинных центров</span></div>
                     <div class="info">
