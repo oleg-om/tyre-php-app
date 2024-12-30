@@ -5,22 +5,8 @@ if (empty($active_menu)) {
 if (empty($current_season)) {
     $current_season = 'summer';
 }
-
-// new year logo
 $griffon_logo = '/img/griffon-sm.webp';
-
-$currentDate = new DateTime(); // Today
-$currentYear =  date("Y");
-
-$newYearDateBegin = new DateTime('2015-12-20');
-$newYearDateEnd  = new DateTime('2016-01-08');
-$december_is_ok = $currentDate->format('m') == $newYearDateBegin->format('m') && $currentDate->format('d') >= $newYearDateBegin->format('d');
-$january_is_ok = $currentDate->format('m') == $newYearDateEnd->format('m') & $currentDate->format('d') <= $newYearDateEnd->format('d');
-
-if ($december_is_ok || $january_is_ok) {
-    $griffon_logo = '/img/griffon-sm-new-year.png';
-}
-// new year logo
+$isNewYear = $this->Frontend->isNewYear();
 ?>
 <div id="header">
     <div class="tyres <?php echo $current_season; ?>-season">
@@ -37,7 +23,9 @@ if ($december_is_ok || $january_is_ok) {
                 <div class="info-group">
                     <a class="header-griffon" href="/"><img src="<?php echo $griffon_logo; ?>" alt="Керчьшина" /></a>
                     <div class="desc"><span class="desc-title">КерчьШИНА</span><span class="desc-description">Сеть
-                            шинных центров</span></div>
+                            шинных центров</span>
+                    <?php if ($isNewYear) { echo '<img src="/img/holidays/new-year/hat.png" width="60" height="70" class="new-year-hat" />'; } ?>
+                    </div>
                     <div class="info">
                         <?php echo CONST_ADDRESS; ?><br />
                         <?php echo CONST_PHONE; ?>
@@ -48,7 +36,7 @@ if ($december_is_ok || $january_is_ok) {
                             class="logo__years">25 лет</span></div>
                     <div class="logo logo__vianor"><img src="/img/ivanor-logo.png" alt="Vianor" /></div>
                 </div>
-                <div class="cart"><button
+                <div class="cart <?php if ($isNewYear) { echo 'new-year-cart';} ?>"><button
                         onclick="window.location='/checkout';"><?php if (isset($cart) && !empty($cart['items'])) { ?><em
                             id="checkout-count"><?php echo count($cart['items']); ?></em><?php } ?><span>Корзина</span></button>
                 </div>
@@ -90,6 +78,10 @@ if ($december_is_ok || $january_is_ok) {
                 </ul>
                 <div class="clear"></div>
             </div>
+            <?php if ($isNewYear) { echo '
+                <img class="header-new-year-background" src="/img/holidays/new-year/tree.png" height="100" width="82" alt="Новый год елка" />
+                <img class="header-new-year-toys" src="/img/holidays/new-year/toys.png" height="50" width="380" alt="Новый год гирлянда" />
+            ';} ?>
             <img class="header-background" src="/img/tyres.v2.png" alt="Шины" />
         </div>
     </div>

@@ -833,4 +833,20 @@ class FrontendHelper extends AppHelper {
 		}
 		return true;
 	}
+
+    public function isNewYear() {
+        $currentDate = new DateTime(); // Today
+
+        $newYearDateBegin = new DateTime('2015-12-20');
+        $newYearDateEnd  = new DateTime('2016-01-15');
+
+        $december_is_ok = $currentDate->format('m') == $newYearDateBegin->format('m') && $currentDate->format('d') >= $newYearDateBegin->format('d');
+        $january_is_ok = $currentDate->format('m') == $newYearDateEnd->format('m') & $currentDate->format('d') <= $newYearDateEnd->format('d');
+
+        if ($december_is_ok || $january_is_ok) {
+            return true;
+        }
+
+        return false;
+    }
 }

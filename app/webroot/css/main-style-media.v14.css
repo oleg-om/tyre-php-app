@@ -349,6 +349,20 @@
         height: 109px;
         width: 337px;
     }
+    .header-new-year-background {
+        position: absolute;
+        display: block;
+        height: 100px;
+        right: 200px;
+        top: 5px;
+    }
+    .header-new-year-toys {
+        position: absolute;
+        display: block;
+        top: -2px;
+        left: 43%;
+        width: 380px;
+    }
     .header-wrapper {
         position: relative;
         z-index: 1;
@@ -380,6 +394,12 @@
     #header .info-group .desc .desc-description {
         font-size: 32px;
         padding-top: 17px;
+    }
+    #header .info-group .desc .new-year-hat {
+        width: 60px;
+        height: 70px;
+        top: -28px;
+        right: -23px;
     }
     #header .info-group .header-griffon {
         height: 95px;
@@ -460,6 +480,12 @@
     #header .logo .logo__years {
         bottom: -12px;
         font-size: 10px;
+    }
+    .header-new-year-background {
+        right: 150px;
+    }
+    .header-new-year-toys {
+        left: 35%;
     }
     .list-view__info-col .akb-polarity {
         left: 120px;
