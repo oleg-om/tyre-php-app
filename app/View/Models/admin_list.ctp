@@ -8,12 +8,16 @@ $this->Backend->addColumn('id', array(
 	'type' => 'number',
 	'label' => __d('admin_models', 'column_id')
 ));
-$this->Backend->addColumn('photo', array(
+$this->Backend->addColumn('filename', array(
 	'label' => __d('admin_models', 'column_photo'),
-	'filterable' => false,
 	'sortable' => false,
 	'width' => 170,
-	'renderer' => 'model_photo'
+	'renderer' => 'model_photo',
+    'type' => 'list',
+    'options' => array(
+        1 => __d('admin_common', 'yes'),
+        0 => __d('admin_common', 'no')
+    )
 ));
 $this->Backend->addColumn('category_id', array(
 	'label' => __d('admin_models', 'column_category_id'),

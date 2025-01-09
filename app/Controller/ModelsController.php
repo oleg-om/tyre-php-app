@@ -7,7 +7,7 @@ class ModelsController extends AppController {
 			'BrandModel.title' => 'asc'
 		)
 	);
-	public $filter_fields = array('BrandModel.products_in_stock' => 'int', 'BrandModel.id' => 'int', 'BrandModel.category_id' => 'int', 'BrandModel.brand_id' => 'int', 'BrandModel.title' => 'text');
+	public $filter_fields = array('BrandModel.products_in_stock' => 'int', 'BrandModel.id' => 'int', 'BrandModel.category_id' => 'int', 'BrandModel.brand_id' => 'int', 'BrandModel.title' => 'text', 'BrandModel.filename' => 'availability');
 	public $model = 'BrandModel';
 	public $submenu = 'products';
 	public function api(){

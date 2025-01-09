@@ -704,6 +704,13 @@ class AppController extends Controller {
 					case 'text':
 						$conditions[$key . ' LIKE'] = '%' . $value . '%';
 						break;
+                    case 'availability':
+                        if ($value == 1) {
+                            $conditions[$key . ' NOT'] = '';
+                        } else {
+                            $conditions[$key] = '';
+                        }
+                        break;
 					case 'from':
 						if (!empty($date_fields[$field_name])) {
 							$field = str_replace('_from', '', $key);
