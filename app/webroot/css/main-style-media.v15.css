@@ -349,19 +349,13 @@
         height: 109px;
         width: 337px;
     }
-    .header-new-year-background {
-        position: absolute;
-        display: block;
-        height: 100px;
-        right: 200px;
-        top: 5px;
-    }
     .header-new-year-toys {
         position: absolute;
         display: block;
-        top: -2px;
-        left: 43%;
-        width: 380px;
+        height: 53px;
+        top: 0;
+        width: 489px;
+        left: 33%;
     }
     .header-wrapper {
         position: relative;
@@ -481,11 +475,9 @@
         bottom: -12px;
         font-size: 10px;
     }
-    .header-new-year-background {
-        right: 150px;
-    }
     .header-new-year-toys {
-        left: 35%;
+        left: 27%;
+        height: 56px;
     }
     .list-view__info-col .akb-polarity {
         left: 120px;
