@@ -79,7 +79,7 @@ $isNewYear = $this->Frontend->isNewYear();
                 <div class="clear"></div>
             </div>
             <?php if ($isNewYear) { echo '
-                <img class="header-new-year-toys" src="/img/holidays/new-year/tree-bg-pattern.webp" height="50" width="380" alt="Новый год гирлянда" />
+                <img class="header-new-year-toys" src="/img/holidays/new-year/tree-bg-pattern.webp" height="56" width="489" alt="Новый год гирлянда" />
             ';} ?>
             <img class="header-background" src="/img/tyres.v2.png" alt="Шины" />
         </div>
