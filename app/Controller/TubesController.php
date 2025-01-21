@@ -126,8 +126,8 @@ class TubesController extends AppController {
             }
         }
         else {
-            $this->request->query['in_stock'] = 1;
-            $conditions['Product.in_stock'] = 1;
+            $this->request->query['in_stock'] = 2;
+            $conditions['Product.in_stock'] = 2;
         }
         if (isset($this->request->query['size3']) && !empty($this->request->query['size3'])) {
             $conditions['Product.size3'] = $this->_get_sizes($this->request->query['size3']);
