@@ -7,13 +7,15 @@ class TubesController extends AppController {
 			'Product.sku' => 'asc'
 		)
 	);
-	public $filter_fields = array('Product.id' => 'int', 'Product.type' => 'text', 'Product.sku' => 'text');
+	public $filter_fields = array('Product.id' => 'int', 'Product.type' => 'text', 'Product.sku' => 'text', 'Product.supplier_id' => 'int');
 	public $model = 'Product';
 	public $submenu = 'products';
 	public $conditions = array('Product.category_id' => 4);
 	public function _list() {
 		parent::_list();
 		$this->set('types', $this->Product->types);
+		$this->loadModel('Supplier');
+        $this->set('suppliers', $this->Supplier->find('list', array('fields' => array('Supplier.id', 'Supplier.title'), 'order' => array('Supplier.title' => 'asc'))));
 	}
 	public function _edit($id) {
 		$title = parent::_edit($id);

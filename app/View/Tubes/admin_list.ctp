@@ -18,6 +18,12 @@ $this->Backend->addColumn('sku', array(
 	'label' => __d('admin_tubes', 'column_sku'),
 	'editable' => true
 ));
+$this->Backend->addColumn('supplier_id', array(
+	'label' => __d('admin_tyres', 'column_supplier_id'),
+	'type' => 'list',
+	'sortable' => false,
+	'options' => $suppliers
+));
 $this->Backend->addColumn('price', array(
 	'label' => __d('admin_tubes', 'column_price'),
 	'renderer' => 'product_price',
