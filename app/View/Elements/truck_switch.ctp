@@ -44,7 +44,7 @@ if ($type === 'disks') {
     $menu_types['special']['href'] = '?auto=special&size3=&size1=&material=&et_from=&et_to=&size2=&hub=&brand_id=&in_stock4=0&in_stock=2';
 }
 if ($type === 'tubes') {
-    $menu_types['special']['href'] = '/tubes?auto=specia&in_stock=2l';
+    $menu_types['special']['href'] = '/tubes?auto=special&in_stock=2l';
 }
 
 
