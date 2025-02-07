@@ -2401,7 +2401,7 @@ class ImportController extends AppController
 												$auto_text = 'универсальная';
 												break;
 											case 'руль':
-												$auto_text = 'рулeвая';
+												$auto_text = 'рулевая';
 												break;
 											case 'руль/прицеп':
 												$auto_text = 'руль/прицеп';

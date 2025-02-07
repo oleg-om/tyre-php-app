@@ -338,7 +338,6 @@ foreach ($models as $item) {
 								<tr>
                                     <?php echo $this->element('tyre_model_icons', array('item' => $item)); ?>
                                     <?php echo $this->element('tyre_season', array('seasons' => $seasons, 'season' => $season, 'item' => $item)); ?>
-                                    <?php echo '11'.$item['Product'][0]['axis'];?>
                                     <?php echo $this->element('truck_axis', array('axis' => $item['Product'][0]['axis'])); ?>
 									<td>
 										<?php

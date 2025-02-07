@@ -17,6 +17,9 @@ if (isset($axis) && !empty($axis)) {
     elseif ($axis === 'рулевая') {
         $axis_name = 'rul';
     }
+    elseif ($axis === 'рулeвая') {
+        $axis_name = 'rul';
+    }
     elseif ($axis === 'руль') {
         $axis_name = 'rul';
     }
