@@ -10,7 +10,8 @@
 
 		}
 		echo $this->Html->link($image_small, $image_big, array('escape' => false, 'class' => 'lightbox', 'title' => $model['Brand']['title']. ' '. $model['BrandModel']['title']));
-	?>
+        $is_truck = $active_menu == 'truck-tyres';
+        ?>
 </div>
 <div class="infoProdBig">
 	<div class="boxLeftInfo">
@@ -63,7 +64,8 @@
 				<tr>
 					<th>Типоразмер</th>
 					<th class="desc-table">Индекс скорости / нагрузки</th>
-					<th class="desc-table"></th>
+                    <th class="desc-table"></th>
+                    <?php if ($is_truck) { echo '<th class="desc-table">Ось</th>'; } ?>
 					<th class="desc-table">Количество</th>
 					<th>Цена</th>
 					<th></th>
@@ -88,6 +90,11 @@
                         <?php echo $this->element('tyre_icons', array('product' => $product)); ?>
                     </div>
                 </td>
+                <?php if ($is_truck) {
+                    echo '<td class="desc-table">'?>
+                        <?php echo $product['axis']; ?>
+                    <?php echo '</td>';
+                } ?>
 				<td class="desc-table"><?php
                     $in_stock_mark =  '<img title="в наличии" alt="в наличии" src="/img/yes.png">';
                     $in_stock_text = 'В наличии: ';

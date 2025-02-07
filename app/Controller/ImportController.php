@@ -2392,6 +2392,7 @@ class ImportController extends AppController
 											case 'карьерная':
 												$auto_text = 'карьерная';
 												break;
+                                            case 'тяга':
 											case 'ведущая':
 												$auto_text = 'ведущая';
 												break;

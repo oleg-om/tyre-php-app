@@ -2,7 +2,7 @@
 $axis_name = '';
 
 if (isset($axis) && !empty($axis)) {
-    if ($axis === 'ведущая') {
+    if ($axis === 'ведущая' || $axis === 'тяга') {
         $axis_name = 'ved';
     }
     elseif ($axis === 'карьерная') {
