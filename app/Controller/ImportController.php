@@ -3789,7 +3789,7 @@ class ImportController extends AppController
 										$axis = 'прицеп';
 									} elseif (substr_count($axis_text, 'тяга')) {
 										$auto = 'trucks';
-										$axis = 'тяга';
+										$axis = 'ведущая';
 									} elseif (substr_count($axis_text, 'руль')) {
 										$auto = 'trucks';
 										$axis = 'рулевая';
