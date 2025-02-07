@@ -2,7 +2,10 @@
 $axis_name = '';
 
 if (isset($axis) && !empty($axis)) {
-    if ($axis === 'ведущая' || $axis === 'тяга') {
+    if ($axis === 'ведущая') {
+        $axis_name = 'ved';
+    }
+    elseif ($axis === 'тяга') {
         $axis_name = 'ved';
     }
     elseif ($axis === 'карьерная') {
@@ -11,7 +14,10 @@ if (isset($axis) && !empty($axis)) {
     elseif ($axis === 'прицеп') {
         $axis_name = 'pricep';
     }
-    elseif ($axis === 'рулевая' || $axis === 'руль') {
+    elseif ($axis === 'рулевая') {
+        $axis_name = 'rul';
+    }
+    elseif ($axis === 'руль') {
         $axis_name = 'rul';
     }
     elseif ($axis === 'руль/прицеп') {
