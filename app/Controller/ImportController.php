@@ -2840,14 +2840,14 @@ class ImportController extends AppController
                                             if (substr_count($temp_sku, ' R') == 1) {
                                                 if (substr_count($temp_sku, '-') == 2) {
                                                     list($text, $size3) = explode('-', $temp_sku);
-                                                    $size3 = floatval($size3);
+                                                    $size3 = floatval(str_replace(',', '.', $size3));
                                                 } elseif (substr_count($temp_sku, '-') == 1) {
                                                     list($text, $size3) = explode('-', $temp_sku);
-                                                    $size3 = floatval($size3);
+                                                    $size3 = floatval(str_replace(',', '.', $size3));
                                                 }
                                             } elseif (substr_count($temp_sku, '-') > 0) {
                                                 list($size1, $size3) = explode('-', $temp_sku);
-                                                $size3 = floatval($size3);
+                                                $size3 = floatval(str_replace(',', '.', $size3));
                                             }
 
 											if ($product = $this->Product->find('first', array('conditions' => $conditions, 'fields' => array('Product.id', 'Product.price', 'Product.supplier_id')))) {
