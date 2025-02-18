@@ -1389,6 +1389,7 @@ class BackendHelper extends AppHelper {
 		$thumbnail->config_document_root = '';
 		$thumbnail->config_temp_directory = TMP;
 		if (!empty($watermark) && is_file($thumbnail->src)) {
+            print_r('test');
 			if ($size = getimagesize($thumbnail->src)) {
 				if ($size[0] < 400) {
 					$watermark = 'wm-small.png';
