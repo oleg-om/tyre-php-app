@@ -54,6 +54,7 @@ echo $this->element('mode_selector', array('url' => $url, 'hide_list' => true));
                     <table cellpadding="0" cellspacing="0">
                         <tr>
                             <?php echo $this->element('tyre_icons', array('product' => $item['Product'], 'brandModel' => $item['BrandModel'])); ?>
+                            <?php echo $this->element('tube_valve', array('valve' => $item['Product']['size2'])); ?>
                             <td>
                                 <?php
                                 $default_image = 'default-tube-preview.jpg';

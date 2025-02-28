@@ -2835,19 +2835,169 @@ class ImportController extends AppController
                                                 $gruz_count = 0;
                                             }
 
+                                            $size1 = '';
+                                            $size2 = '';
                                             $size3 = '';
                                             $temp_sku = $sku;
+                                            // Камера R-16-Газель
                                             if (substr_count($temp_sku, ' R') == 1) {
+                                                // Камера R-14-01
                                                 if (substr_count($temp_sku, '-') == 2) {
-                                                    list($text, $size3) = explode('-', $temp_sku);
-                                                    $size3 = floatval(str_replace(',', '.', $size3));
-                                                } elseif (substr_count($temp_sku, '-') == 1) {
-                                                    list($text, $size3) = explode('-', $temp_sku);
+                                                    list($size1, $size3) = explode('-', $temp_sku);
+                                                    $size1_number = preg_replace("/[^0-9.,]/","",$size1);
+                                                    $size1 = floatval(str_replace(',', '.', $size1_number));
                                                     $size3 = floatval(str_replace(',', '.', $size3));
                                                 }
-                                            } elseif (substr_count($temp_sku, '-') > 0) {
+                                                // Камера R-15 Волга
+                                                elseif (substr_count($temp_sku, '-') == 1) {
+                                                    list($size1, $size3) = explode('-', $temp_sku);
+                                                    $size1_number = preg_replace("/[^0-9.,]/","",$size1);
+                                                    $size1 = floatval(str_replace(',', '.', $size1_number));
+                                                    $size3 = floatval(str_replace(',', '.', $size3));
+                                                }
+                                                // размер вентиля
+                                                // легкогрузовая
+                                                if ($size3 >= 16) {
+                                                    $size2 = 'ЛК-35-16,5';
+                                                } else {
+                                                    $size2 = 'ЛК-35-11,7';
+                                                }
+                                            }
+                                            // Камера 9.00-20
+                                            elseif (substr_count($temp_sku, '-') > 0) {
                                                 list($size1, $size3) = explode('-', $temp_sku);
+                                                $size1_number = preg_replace("/[^0-9.,]/","",$size1);
+                                                $size1 = floatval(str_replace(',', '.', $size1_number));
                                                 $size3 = floatval(str_replace(',', '.', $size3));
+                                            }
+
+                                            // вентиль
+
+                                            $tube_size = $size1.'-'.$size3;
+
+                                            $gk_145_sizes = array('10-20', '11-20', '12-20', '300-508');
+                                            $lk_35_16_5_sizes = array('10-15,3', '6-16', '6,95-16', '6,5-16', '7,5-16');
+                                            $gk_115_sizes = array('12-16', '13-16', '15,5-18', '16,5-18');
+                                            $tk_sizes = array('360-20', '18,4-24', '360-24', '14,9-24', '380-24', '600-26,5', '23,1-26', '28,1-26', '620-26', '12,4-28', '14,9-28', '16,9-30', '480-30', '18,4-30', '9,5-32', '30,5-32', '650-32', '800-32', '16,9-34', '16,9-38', '18,4-38', '480-38', '9,5-42');
+                                            $v8_90_sizes = array('5-18', '6-9');
+                                            $gk_95_sizes = array('6,5-10', '7-12', '6-13');
+
+
+                                            if (!empty($size1) && $type == 'car_tube') {
+                                                // сх
+                                                if ($tube_size == '4-8') {
+                                                    $size2 = 'ЛК-35-11,7';
+                                                }
+                                                if ($tube_size == '4-10') {
+                                                    $size2 = 'ЛК-35-11,7';
+                                                }
+                                                if ($tube_size == '5-10') {
+                                                    $size2 = 'ЛК-35-11,7';
+                                                }
+                                                if ($tube_size == '6-12') {
+                                                    $size2 = 'ЛК-35-16,5';
+                                                }
+                                                if ($tube_size == '230-15') {
+                                                    $size2 = 'ГК-105;ГК-115';
+                                                }
+                                                if ($tube_size == '8,25-15') {
+                                                    $size2 = 'ГК-105;ГК-115';
+                                                }
+                                                if ($tube_size == '230-15') {
+                                                    $size2 = 'ГК-105;ГК-115';
+                                                }
+                                                if ($tube_size == '8,25-15') {
+                                                    $size2 = 'ГК-105;ГК-115';
+                                                }
+                                                if (in_array($tube_size, $lk_35_16_5_sizes)) {
+                                                    $size2 = 'ЛК-35-16,5';
+                                                }
+                                                if ($tube_size == '260-16') {
+                                                    $size2 = 'ГК-95;ГК-105;ГК-115';
+                                                }
+                                                if ($tube_size == '9-16') {
+                                                    $size2 = 'ГК-95;ГК-105;ГК-115';
+                                                }
+                                                if (in_array($tube_size, $gk_115_sizes)) {
+                                                    $size2 = 'ГК-115';
+                                                }
+                                                if ($tube_size == '8,3-20') {
+                                                    $size2 = 'ТК;ГК-50';
+                                                }
+                                                if ($tube_size == '260-16') {
+                                                    $size2 = 'ТК;ГК-50';
+                                                }
+                                                if ($tube_size == '7,5-20') {
+                                                    $size2 = 'ЛК-35-16,5';
+                                                }
+                                                if ($tube_size == '11,2-20') {
+                                                    $size2 = 'ТК;ГК-50';
+                                                }
+                                                if ($tube_size == '9-20') {
+                                                    $size2 = 'ТК;ГК-50';
+                                                }
+                                                if (in_array($tube_size, $tk_sizes)) {
+                                                    $size2 = 'ТК';
+                                                }
+                                                if ($tube_size == '21,3-24') {
+                                                    $size2 = 'ТК;ГК-105';
+                                                }
+                                                if ($tube_size == '420-24') {
+                                                    $size2 = 'ТУ';
+                                                }
+                                                if ($tube_size == '35,5-32') {
+                                                    $size2 = 'TR-218A';
+                                                }
+                                                if ($tube_size == '24,5-32') {
+                                                    $size2 = 'TR-218A';
+                                                }
+                                                if ($tube_size == '13,6-38') {
+                                                    $size2 = 'ТК;ТКМ';
+                                                }
+
+                                                // индустриальные
+                                                if (in_array($tube_size, $v8_90_sizes)) {
+                                                        $size2 = 'V8-90';
+                                                    }
+                                                if (in_array($tube_size, $gk_95_sizes)) {
+                                                        $size2 = 'ГК-95';
+                                                    }
+                                                    if ($tube_size == '8,25-15') {
+                                                        $size2 = 'ГК-115;ГК-105;ЛК 35-11,7';
+                                                    }
+                                                    if ($tube_size == '6,95-16') {
+                                                        $size2 = 'ГК-95';
+                                                    }
+                                                if (in_array($tube_size, $gk_145_sizes)) {
+                                                        $size2 = 'ГК-145';
+                                                    }
+                                                    if ($tube_size == '1400-200') {
+                                                        $size2 = 'ЛК-35-16,5';
+                                                    }
+                                                if ($tube_size == '12-20') {
+                                                    $size2 = 'ЛК-35-16,5';
+                                                }
+                                                    if ($tube_size == '14-20') {
+                                                        $size2 = 'ЕР-161';
+                                                    }
+                                                    if ($tube_size == '15-20') {
+                                                        $size2 = 'ГК-135';
+                                                    }
+                                                    if ($tube_size == '21,3-24') {
+                                                        $size2 = 'ТК;ГК-105';
+                                                    }
+                                                    if ($tube_size == '16-24') {
+                                                        $size2 = 'ЕР-161';
+                                                    }
+                                                if ($tube_size == '17,5-25') {
+                                                    $size2 = 'ЕР-161';
+                                                }
+                                                    if ($tube_size == '18-25') {
+                                                        $size2 = 'ЕР-161';
+                                                    }
+                                                    if ($tube_size == '20,5-25') {
+                                                        $size2 = 'ЕР-161';
+                                                    }
                                             }
 
 											if ($product = $this->Product->find('first', array('conditions' => $conditions, 'fields' => array('Product.id', 'Product.price', 'Product.supplier_id')))) {
@@ -2917,6 +3067,7 @@ class ImportController extends AppController
                                                         'count_place_7' => $tavrida_count,
                                                         'count_place_8' => $gruz_count,
                                                         'auto' => $auto,
+                                                        'size2' => $size2,
                                                         'size3' => $size3,
 													);
 													$this->Product->create();

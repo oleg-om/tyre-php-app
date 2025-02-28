@@ -1,6 +1,7 @@
 <?php echo $this->element('currency', array('class' => 'bpad')); ?>
 <div class="product__wrapper">
 <div class="prodBigImg">
+    <?php echo $this->element('tyre_icons', array('product' => $product['Product'], 'brandModel' => $product['BrandModel'])); ?>
 	<?php
 		$image_small = $this->Html->image('no-tyre-big.jpg');
 		$image_big = '/img/tyre.jpg';
@@ -68,8 +69,8 @@
 					<th>Наличие</th>
 					<td><?php echo $this->Frontend->getStockCount($product['Product']['stock_count']); ?> шт.</td>
 				</tr>
+                <?php echo $this->element('tyre_icons_table', array('product' => $product['Product'], 'brandModel' => $product['BrandModel'])); ?>
 			</table>
-
 		</div>
 	</div>
     <div class="product__info-instock my-1">

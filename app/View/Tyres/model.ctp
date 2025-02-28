@@ -66,7 +66,7 @@
 					<th class="desc-table">Индекс скорости / нагрузки</th>
                     <th class="desc-table"></th>
                     <?php if ($is_truck) { echo '<th class="desc-table">Ось</th>'; } ?>
-					<th class="desc-table">Количество</th>
+					<th>Кол-во</th>
 					<th>Цена</th>
 					<th></th>
 				</tr>
@@ -95,7 +95,7 @@
                         <?php echo $product['axis']; ?>
                     <?php echo '</td>';
                 } ?>
-				<td class="desc-table"><?php
+				<td><?php
                     $in_stock_mark =  '<img title="в наличии" alt="в наличии" src="/img/yes.png">';
                     $in_stock_text = 'В наличии: ';
                     if ($product['in_stock'] == 1)
@@ -106,6 +106,7 @@
                     if ($product['in_stock'] != 1) {
                         $stock_out_of_stock_params['original_stock'] = true;
                         $stock_out_of_stock_params['prefix'] = ' под заказ: ';
+                        $stock_out_of_stock_params['hide_prefix_on_mobile'] = true;
                     }
                     if ($product['stock_count'] < 4 || $product['in_stock'] == 0) {
                     echo $this->element('stock_out_of_stock', $stock_out_of_stock_params); } ?>
@@ -116,7 +117,7 @@
 					}
 				?></strong></td>
 				<td>
-					<?php echo $this->Html->link('купить', array('controller' => 'tyres', 'action' => 'view', 'slug' => $model['Brand']['slug'], 'id' => $product['id']), array('escape' => false, 'class' => 'btVer2')); ?>
+					<?php echo $this->Html->link('Подробнее', array('controller' => 'tyres', 'action' => 'view', 'slug' => $model['Brand']['slug'], 'id' => $product['id']), array('escape' => false, 'class' => 'btVer2')); ?>
 				</td>
 			</tr>
 			<?php } ?>

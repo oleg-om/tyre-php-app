@@ -1666,10 +1666,14 @@ h3.title-tyres a:hover {
   background-color: #fff;
   text-align: center;
   margin-top: 10px;
+  position: relative;
 }
 .prodBigImg img {
   width: 100%;
   display: block;
+}
+.prodBigImg .tyre__icons {
+  padding: 5px;
 }
 .infoProdBig {
   position: relative;
@@ -4067,6 +4071,10 @@ table.withlines {
   cursor: help;
 }
 
+.tooltip-places__prefix {
+  display: none;
+}
+
 .tooltip-places-empty {
   cursor: auto;
   border: none;
@@ -4515,4 +4523,11 @@ table.withlines {
 .mode-selector__contact {
   margin-top: 10px;
   display: none;
+}
+
+.tube__valve {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  width: 40%;
 }

@@ -54,7 +54,7 @@
 					}
 				?></strong></td>
 				<td><?php
-					echo $this->Html->link('купить', array('controller' => 'disks', 'action' => 'view', 'slug' => $model['Brand']['slug'], 'id' => $product['id']), array('escape' => false, 'class' => 'btVer2'));
+					echo $this->Html->link('Подробнее', array('controller' => 'disks', 'action' => 'view', 'slug' => $model['Brand']['slug'], 'id' => $product['id']), array('escape' => false, 'class' => 'btVer2'));
 				?>
 				</td>
 			</tr>

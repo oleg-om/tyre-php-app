@@ -33,7 +33,7 @@
     ?>
 
 <div class="tooltip-places tooltip-places-center tooltip-out-of-stock">
-    <?php echo $prefix.$text; ?>
+    <span class="<?php if (!empty($hide_prefix_on_mobile)) { echo 'tooltip-places__prefix'; } ?>"><?php echo $prefix.$text; ?></span>
     <?php if ($hide_icon != true) { ?><img class="tooltip-out-of-stock-icon" title="Шины под заказ" alt="Шины под заказ" src="/img/delivery.png" width="22" height="16"><?php } ?>
         <div class="tooltiptext">
             <span class="tooltip-places-title">Время доставки: <?php echo $time; ?></span>

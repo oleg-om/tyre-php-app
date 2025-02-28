@@ -1,5 +1,7 @@
 <div class="product__wrapper">
-    <div class="prodBigImg"><?php
+    <div class="prodBigImg">
+        <?php echo $this->element('tube_valve', array('valve' => $product['Product']['size2'])); ?>
+        <?php
         $filename = null;
 
         $default_image = 'default-tube-preview.jpg';
@@ -31,12 +33,10 @@
 					<th>Размеры и описание:</th>
 					<td><?php echo h($product['Product']['sku']); ?></td>
 				</tr>
-				<?php if ($this->Frontend->canShowTubePrice($product['Product']['not_show_price'])) { ?>
-				<tr>
-					<th>Цена:</th>
-					<td><div style="font-weight: bold; font-size: 1.2em; color:#E21;"><?php echo $this->Frontend->getPrice($product['Product']['price'], 'tubes'); ?></div></td>
-				</tr>
-				<?php } ?>
+                <tr>
+                    <th>Вентиль:</th>
+                    <td><?php echo str_replace(';',', ', h($product['Product']['size2'])); ?></td>
+                </tr>
 			</table>
 		</td>
 	</tr>
@@ -60,7 +60,7 @@
             echo $this->element('stock_out_of_stock', $stock_out_of_stock_params); } ?>
     </div>
     <div class="boxRightInfo">
-        <?php if ($this->Frontend->canShowTyrePrice($product['Product']['auto'], $product['Product']['not_show_price'])) { ?>
+        <?php if ($this->Frontend->canShowTubePrice($product['Product']['not_show_price'])) { ?>
             <div class="boxPriceProd">
                 <div class="boxPriceProd-price">
                     <em>цена:</em>

@@ -166,11 +166,20 @@ class TubesController extends AppController {
 		if ($product = $this->Product->find('first', array('conditions' => array('Product.id' => $id, 'Product.category_id' => 4, 'Product.is_active' => 1, 'Product.price > ' => 0, 'Product.stock_count > ' => 0)))) {
 			$this->set('types', $this->Product->types);
 			$title = 'Автокамеры';
+            $path = $this->check_truck($product['Product']['auto'])['path'];
 			$breadcrumbs = array();
-			$breadcrumbs[] = array(
-				'url' => array('controller' => 'tubes', 'action' => 'index'),
-				'title' => $title
-			);
+            if ($path == 'truck-tubes') {
+                $breadcrumbs[] = array(
+                    'url' => array('controller' => 'tubes', 'action' => 'index', '?' => array('auto' => 'trucks', 'in_stock' => 2)),
+                    'title' => $title
+                );
+            } else {
+                $breadcrumbs[] = array(
+                    'url' => array('controller' => 'tubes', 'action' => 'index'),
+                    'title' => $title
+                );
+            }
+
 			$breadcrumbs[] = array(
 				'url' => null,
 				'title' => $this->Product->types[$product['Product']['type']] . ' ' . $product['Product']['sku']
@@ -180,7 +189,6 @@ class TubesController extends AppController {
 			$this->set('additional_css', array('lightbox'));
 			$this->setMeta('title', $this->Product->types[$product['Product']['type']] . ' ' . $product['Product']['sku']);
 			$this->set('product', $product);
-            $path = $this->check_truck($product['Product']['auto'])['path'];
             $this->set('active_menu', $path);
             $this->set('show_left_menu', false);
 		}
