@@ -7,6 +7,11 @@ if (empty($current_season)) {
 }
 $griffon_logo = '/img/griffon-sm.webp';
 $isNewYear = $this->Frontend->isNewYear();
+
+$is8March = $this->Frontend->is8march();
+if ($is8March) {
+    $griffon_logo = '/img/holidays/8-march/8-march.png';
+}
 ?>
 <div id="header">
     <div class="tyres <?php echo $current_season; ?>-season">
@@ -25,6 +30,7 @@ $isNewYear = $this->Frontend->isNewYear();
                     <div class="desc"><span class="desc-title">КерчьШИНА</span><span class="desc-description">Сеть
                             шинных центров</span>
                     <?php if ($isNewYear) { echo '<img src="/img/holidays/new-year/hat.png" width="60" height="70" class="new-year-hat" />'; } ?>
+                    <?php if ($is8March) { echo '<img src="/img/holidays/8-march/flowers-1.png" width="300" height="98" class="women-flowers" />'; } ?>
                     </div>
                     <div class="info">
                         <?php echo CONST_ADDRESS; ?><br />
@@ -82,6 +88,9 @@ $isNewYear = $this->Frontend->isNewYear();
                 <img class="header-new-year-toys" src="/img/holidays/new-year/tree-bg-pattern.webp" height="56" width="489" alt="Новый год гирлянда" />
             ';} ?>
             <img class="header-background" src="/img/tyres.v2.png" alt="Шины" />
+            <?php if ($is8March) { echo '
+                <img class="header-women-flowers" src="/img/holidays/8-march/flowers-2.png" height="145" width="120" />
+            ';} ?>
         </div>
     </div>
     <script>

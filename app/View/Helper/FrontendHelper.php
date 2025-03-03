@@ -849,4 +849,20 @@ class FrontendHelper extends AppHelper {
 
         return false;
     }
+
+    public function is8march() {
+        $currentDate = new DateTime(); // Today
+
+        $dateBegin = new DateTime('2015-03-06');
+        $dateEnd  = new DateTime('2016-03-09');
+
+        $first_is_ok = $currentDate->format('m') == $dateBegin->format('m') && $currentDate->format('d') >= $dateBegin->format('d');
+        $second_is_ok = $currentDate->format('m') == $dateEnd->format('m') & $currentDate->format('d') <= $dateEnd->format('d');
+
+        if ($first_is_ok || $second_is_ok) {
+            return true;
+        }
+
+        return false;
+    }
 }
