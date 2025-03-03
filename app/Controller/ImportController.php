@@ -2487,6 +2487,10 @@ class ImportController extends AppController
 
 									if (isset($data->sheets[0]['cells'][$i][17])) {
 										$free_tyremount = 1;
+
+                                        if (substr_count($data->sheets[0]['cells'][$i][17], '50')) {
+                                            $free_tyremount = 2;
+                                        }
 									}
 									if (isset($data->sheets[0]['cells'][$i][18])) {
 										$free_storage = 1;
@@ -4037,7 +4041,11 @@ class ImportController extends AppController
 									$warranty = trim($data->sheets[0]['cells'][$i][20]);
 
 									if (!empty($free_tyremount)) {
-										$free_tyremount = 1;
+                                        if (substr_count($free_tyremount, '50')) {
+                                            $free_tyremount = 2;
+                                        } else {
+                                            $free_tyremount = 1;
+                                        }
 									}
 									if (!empty($free_storage)) {
 										$free_storage = 1;

@@ -16,10 +16,18 @@
             <span class="tyre__icon-tooltip">Хит продаж</span>
         </span>
 <?php } if ($product['p1']) { ?>
+        <?php if ($product['p1'] == 1) { ?>
+            <span class="tyre__icon tyre__icon-tyremount">
+                <img src="/img/icons/free-tyremount.png" alt="Шиномонтаж бесплатно" />
+                <span class="tyre__icon-tooltip">Шиномонтаж бесплатно</span>
+            </span>
+        <?php
+        } else { ?>
         <span class="tyre__icon tyre__icon-tyremount">
-            <img src="/img/icons/free-tyremount.png" alt="Шиномонтаж бесплатно" />
-            <span class="tyre__icon-tooltip">Шиномонтаж бесплатно</span>
-        </span>
+                <img src="/img/icons/tyremount_50.png" alt="Скидка на шиномонтаж 50%" />
+                <span class="tyre__icon-tooltip">Скидка на шиномонтаж 50%</span>
+            </span>
+        <?php } ?>
 <?php } if ($product['p2']) { ?>
         <span class="tyre__icon">
             <img src="/img/icons/storage.svg" alt="Бесплатное хранение" />
