@@ -841,7 +841,7 @@ class FrontendHelper extends AppHelper {
         $newYearDateEnd  = new DateTime('2016-01-30');
 
         $december_is_ok = $currentDate->format('m') == $newYearDateBegin->format('m') && $currentDate->format('d') >= $newYearDateBegin->format('d');
-        $january_is_ok = $currentDate->format('m') == $newYearDateEnd->format('m') & $currentDate->format('d') <= $newYearDateEnd->format('d');
+        $january_is_ok = $currentDate->format('m') == $newYearDateEnd->format('m') && $currentDate->format('d') <= $newYearDateEnd->format('d');
 
         if ($december_is_ok || $january_is_ok) {
             return true;
@@ -853,13 +853,13 @@ class FrontendHelper extends AppHelper {
     public function is8march() {
         $currentDate = new DateTime(); // Today
 
-        $dateBegin = new DateTime('2015-04-06');
+        $dateBegin = new DateTime('2015-03-06');
         $dateEnd  = new DateTime('2016-03-09');
 
         $first_is_ok = $currentDate->format('m') == $dateBegin->format('m') && $currentDate->format('d') >= $dateBegin->format('d');
-        $second_is_ok = $currentDate->format('m') == $dateEnd->format('m') & $currentDate->format('d') <= $dateEnd->format('d');
+        $second_is_ok = $currentDate->format('m') == $dateEnd->format('m') && $currentDate->format('d') <= $dateEnd->format('d');
 
-        if ($first_is_ok || $second_is_ok) {
+        if ($first_is_ok && $second_is_ok) {
             return true;
         }
 
