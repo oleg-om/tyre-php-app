@@ -853,7 +853,7 @@ class FrontendHelper extends AppHelper {
     public function is8march() {
         $currentDate = new DateTime(); // Today
 
-        $dateBegin = new DateTime('2015-03-06');
+        $dateBegin = new DateTime('2015-04-06');
         $dateEnd  = new DateTime('2016-03-09');
 
         $first_is_ok = $currentDate->format('m') == $dateBegin->format('m') && $currentDate->format('d') >= $dateBegin->format('d');
