@@ -9,7 +9,7 @@ $griffon_logo = '/img/griffon-sm.webp';
 $isNewYear = $this->Frontend->isNewYear();
 
 $is8March = $this->Frontend->is8march();
-if ($is8March) {
+if ($is8March == 8) {
     $griffon_logo = '/img/holidays/8-march/8-march.png';
 }
 ?>
@@ -31,6 +31,9 @@ if ($is8March) {
                             шинных центров</span>
                     <?php if ($isNewYear) { echo '<img src="/img/holidays/new-year/hat.png" width="60" height="70" class="new-year-hat" />'; } ?>
                     <?php if ($is8March) { echo '<img src="/img/holidays/8-march/flowers-1.png" width="300" height="98" class="women-flowers" />'; } ?>
+                    <?php if ($is8March == 6) { echo '<img src="/img/holidays/8-march/poslezavtra.png" class="women-text" />'; } ?>
+                    <?php if ($is8March == 7) { echo '<img src="/img/holidays/8-march/zavtra.png" class="women-text" />'; } ?>
+                    <?php if ($is8March == 9) { echo '<img src="/img/holidays/8-march/bylo.png" class="women-text" />'; } ?>
                     </div>
                     <div class="info">
                         <?php echo CONST_ADDRESS; ?><br />
