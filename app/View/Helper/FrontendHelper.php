@@ -853,14 +853,23 @@ class FrontendHelper extends AppHelper {
     public function is8march() {
         $currentDate = new DateTime(); // Today
 
-        $dateBegin = new DateTime('2015-03-07');
-        $dateEnd  = new DateTime('2016-03-09');
+        $month_is_ok = $currentDate->format('m') == '03';
+        $is_6 = $month_is_ok && $currentDate->format('d') == '06';
+        $is_7 = $month_is_ok && $currentDate->format('d') == '07';
+        $is_8 = $month_is_ok && $currentDate->format('d') == '08';
+        $is_9 = $month_is_ok && $currentDate->format('d') == '09';
 
-        $first_is_ok = $currentDate->format('m') == $dateBegin->format('m') && $currentDate->format('d') >= $dateBegin->format('d');
-        $second_is_ok = $currentDate->format('m') == $dateEnd->format('m') && $currentDate->format('d') <= $dateEnd->format('d');
-
-        if ($first_is_ok && $second_is_ok) {
-            return true;
+        if ($is_6) {
+            return 6;
+        }
+        if ($is_7) {
+            return 7;
+        }
+        if ($is_8) {
+            return 8;
+        }
+        if ($is_9) {
+            return 9;
         }
 
         return false;

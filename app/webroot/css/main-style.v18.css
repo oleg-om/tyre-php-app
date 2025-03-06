@@ -131,6 +131,9 @@ input {
 #header .info-group .desc .women-flowers {
   display: none;
 }
+#header .info-group .desc .women-text {
+  display: none;
+}
 #header .info-group .info {
   display: none;
   float: left;
