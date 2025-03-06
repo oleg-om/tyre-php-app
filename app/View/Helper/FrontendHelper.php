@@ -853,7 +853,7 @@ class FrontendHelper extends AppHelper {
     public function is8march() {
         $currentDate = new DateTime(); // Today
 
-        $month_is_ok = $currentDate->format('m') == '03';
+        $month_is_ok = $currentDate->format('m') == '04';
         $is_6 = $month_is_ok && $currentDate->format('d') == '06';
         $is_7 = $month_is_ok && $currentDate->format('d') == '07';
         $is_8 = $month_is_ok && $currentDate->format('d') == '08';
