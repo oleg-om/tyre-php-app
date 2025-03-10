@@ -3565,12 +3565,17 @@ table.withlines {
 }
 .tyres-free-header {
   font-size: 22px;
+  font-weight: bold;
   font-family: "Open Sans Condensed", sans-serif;
   color: #ff6600;
   text-align: center;
   margin: 0 0 6px 0;
   display: flex;
   justify-content: center;
+  text-decoration: none;
+}
+.tyres-free-header:hover {
+  text-decoration: none;
 }
 .tyres-free-header img {
   width: 35px;
