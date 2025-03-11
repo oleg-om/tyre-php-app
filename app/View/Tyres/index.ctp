@@ -23,7 +23,7 @@ $this->Paginator->options(array('url' => $url));
 <?php } ?>
 <?php if (empty($modification_slug) && $active_menu == 'tyres') { ?>
 <a class="tyres-free-header" href="/tyres?auto=&axis=&size1=&season=&brand_id=&stud=0&in_stock4=0&in_stock=2&upr_all=1&p1=1">
-<img src="/img/icons/free-tyremount.png" alt="Шины с бесплатным шиномонтажом" />Шины с бесплатным шиномонтажом
+<img src="/img/icons/free-tyremount.png" alt="При покупке 4 шин шиномонтаж бесплатно!" />При покупке 4 шин шиномонтаж бесплатно!
 </a>
 <?php } ?>
 
