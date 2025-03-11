@@ -54,6 +54,9 @@ $this->Backend->addFile('file', array(
 	'label' => __d('admin_models', 'label_file')
 ));
 $this->Backend->getExtraImages($extra_filenames, $brand_model_id, $brand_id);
+$this->Backend->addTextarea('valve', array(
+    'label' => __d('admin_models', 'label_valve')
+));
 $this->Backend->addTextarea('video', array(
 	'label' => __d('admin_models', 'label_video')
 ));

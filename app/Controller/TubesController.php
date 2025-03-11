@@ -139,6 +139,24 @@ class TubesController extends AppController {
         }
         $this->_filter_tubes_params($conditions);
 		$this->loadModel('Product');
+        $this->loadModel('BrandModel');
+
+        $models = $this->BrandModel->find('list', array('conditions' => array('BrandModel.category_id' => 4, 'BrandModel.is_active' => 1, 'BrandModel.active_products_count > 0'), 'order' => array('BrandModel.title' => 'asc'), 'fields' => array('BrandModel.id', 'BrandModel.title', 'BrandModel.valve')));
+        $this->set('models', $models);
+
+
+        $this->Product->bindModel(
+            array(
+                'belongsTo' => array(
+                    'BrandModel' => array(
+                        'foreignKey' => 'model_id'
+                    ),
+                    'Brand'
+                )
+            ),
+            false
+        );
+
 		$this->request->data['Product'] = $this->request->query;
 		$this->set('filter', $this->request->query);
         $auto = $this->request->query['auto'];
@@ -163,8 +181,19 @@ class TubesController extends AppController {
 	}
 	public function view($id) {
 		$this->loadModel('Product');
+        $this->Product->bindModel(
+            array(
+                'belongsTo' => array(
+                    'BrandModel' => array(
+                        'foreignKey' => 'model_id'
+                    )
+                )
+            ),
+            false
+        );
 		if ($product = $this->Product->find('first', array('conditions' => array('Product.id' => $id, 'Product.category_id' => 4, 'Product.is_active' => 1, 'Product.price > ' => 0, 'Product.stock_count > ' => 0)))) {
-			$this->set('types', $this->Product->types);
+            $this->loadModel('BrandModel');
+            $this->set('types', $this->Product->types);
 			$title = 'Автокамеры';
             $path = $this->check_truck($product['Product']['auto'])['path'];
 			$breadcrumbs = array();

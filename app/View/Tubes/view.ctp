@@ -20,7 +20,6 @@
         <div class="boxLeftInfo">
             <h2><?php echo h($product['Product']['sku']); ?></span></h2>
         </div>
-
 <table width="100%" cellspacing="0" cellpadding="0" border="0">
 	<tr>
 		<td class="model_description model_image">
@@ -35,7 +34,7 @@
 				</tr>
                 <tr>
                     <th>Вентиль:</th>
-                    <td><?php echo str_replace(';',', ', h($product['Product']['size2'])); ?></td>
+                    <td><?php echo str_replace(' / ',', ', h($product['BrandModel']['valve'])); ?></td>
                 </tr>
 			</table>
 		</td>

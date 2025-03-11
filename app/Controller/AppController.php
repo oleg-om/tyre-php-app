@@ -233,6 +233,38 @@ class AppController extends Controller {
             7 => 'Таврида', 8 => 'Грузовой склад');
 
         $this->set('filter_all_places_short', $stock_places_short);
+
+        $valve_images_list = array(
+            'Д-13' => array('name' => 'Д-13', 'img' => 'd-13.png'),
+            'ЕР-161' => array('name' => 'ЕР-161', 'img' => 'ep-161.png'),
+            'ГК-50' => array('name' => 'ГК-50', 'img' => 'gk-50.png'),
+            'ГК-95' => array('name' => 'ГК-95', 'img' => 'gk-95.png'),
+            'ГК-105' => array('name' => 'ГК-105', 'img' => 'gk-105.png'),
+            'ГК-115' => array('name' => 'ГК-115', 'img' => 'gk-115.png'),
+            'ГК-120' => array('name' => 'ГК-120', 'img' => 'gk-120.png'),
+            'ГК-135' => array('name' => 'ГК-135', 'img' => 'gk-135.png'),
+            'ГК-145' => array('name' => 'ГК-145', 'img' => 'gk-145.png'),
+            'ГК-170' => array('name' => 'ГК-170', 'img' => 'gk-170.png'),
+            'ИЖ-5586-101' => array('name' => 'ИЖ-5586-101', 'img' => 'izh-5586-101.png'),
+            'JS-2' => array('name' => 'JS-2', 'img' => 'js-2.png'),
+            'ЛК-35-11,7' => array('name' => 'ЛК-35-11,7', 'img' => 'lk-35-11,7.png'),
+            'ЛК-35-11,7 (TR-13) (V2.01.1)' => array('name' => 'ЛК-35-11,7 (TR-13) (V2.01.1)', 'img' => 'lk-35-11,7-v2.png'),
+            'ЛК-35-11,7 мото' => array('name' => 'ЛК-35-11,7 мото', 'img' => 'lk-35-11,7 moto.png'),
+            'ЛК-35-16,5' => array('name' => 'ЛК-35-16,5', 'img' => 'lk-35-16,5.png'),
+            'РК-5-165 (ГК-170)' => array('name' => 'РК-5-165 (ГК-170)', 'img' => 'gk-170.png'),
+            'PK-5A-145' => array('name' => 'PK-5A-145', 'img' => 'pk-5a-145.png'),
+            'РК-10' => array('name' => 'РК-10', 'img' => 'pk-10.png'),
+            'ТК' => array('name' => 'ТК', 'img' => 'tk.png'),
+            'TK-23,1' => array('name' => 'TK-23,1', 'img' => 'tk-23,1.png'),
+            'TR-179A' => array('name' => 'TR-179A', 'img' => 'tr-179a.png'),
+            'TR-218' => array('name' => 'TR-218', 'img' => 'tr-218.png'),
+            'TR-218A' => array('name' => 'TR-218A', 'img' => 'tr-218a.png'),
+            'TR-1179A' => array('name' => 'TR-1179A', 'img' => 'tr-1179a.png'),
+            'V3.02.17' => array('name' => 'V3.02.17', 'img' => 'v3-02-17.png'),
+            'V8-90' => array('name' => 'V8-90', 'img' => 'v8-90.png'),
+        );
+        $this->set('valve_images_list', $valve_images_list);
+        $this->valve_images_list = $valve_images_list;
 	}
 	private function setCurrencies() {
 		$currencies = Cache::read('currencies', 'long');

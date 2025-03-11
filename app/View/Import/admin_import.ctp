@@ -62,3 +62,10 @@ foreach ($types as $i => $type) {
 }
 echo '<div class="examples"><h3>' . __d('admin_import', 'title_examples') . '</h3>' . implode('', $types_links) . '</div>';
 echo '<div class="examples"><h3>' . __d('admin_import', 'title_columns') . '</h3>' . __d('admin_import', 'title_columns_info') . '</div>';
+
+$valve_examples = array();
+
+foreach ($valve_images_list as $i => $valve) {
+    $valve_examples[] = $i;
+}
+echo '<div class="examples"><h3>' . __d('admin_import', 'title_arrays') . '</h3>Вентили - ' . implode(' / ', $valve_examples) . '</div>';
