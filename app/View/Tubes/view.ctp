@@ -1,6 +1,6 @@
 <div class="product__wrapper">
     <div class="prodBigImg">
-        <?php echo $this->element('tube_valve', array('valve' => $product['Product']['size2'])); ?>
+        <?php echo $this->element('tube_valve', array('valve' => $product['BrandModel']['valve'])); ?>
         <?php
         $filename = null;
 
