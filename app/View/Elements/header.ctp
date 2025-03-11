@@ -12,6 +12,10 @@ $is8March = $this->Frontend->is8march();
 if ($is8March == 8) {
     $griffon_logo = '/img/holidays/8-march/8-march.png';
 }
+$is1April = $this->Frontend->is1April();
+if ($is1April) {
+    $griffon_logo = '/img/holidays/1-april/smile.png';
+}
 ?>
 <div id="header">
     <div class="tyres <?php echo $current_season; ?>-season">
@@ -26,7 +30,7 @@ if ($is8March == 8) {
                 </a>
 
                 <div class="info-group">
-                    <a class="header-griffon" href="/"><img src="<?php echo $griffon_logo; ?>" alt="Керчьшина" /></a>
+                    <a class="header-griffon <?php if ($is1April) { echo "header-griffon-1-april"; } ?>" href="/"><img src="<?php echo $griffon_logo; ?>" alt="Керчьшина" /></a>
                     <div class="desc"><span class="desc-title">КерчьШИНА</span><span class="desc-description">Сеть
                             шинных центров</span>
                     <?php if ($isNewYear) { echo '<img src="/img/holidays/new-year/hat.png" width="60" height="70" class="new-year-hat" />'; } ?>
@@ -34,6 +38,7 @@ if ($is8March == 8) {
                     <?php if ($is8March == 6) { echo '<img src="/img/holidays/8-march/poslezavtra-1.png" class="women-text" />'; } ?>
                     <?php if ($is8March == 7) { echo '<img src="/img/holidays/8-march/zavtra-1.png" class="women-text" />'; } ?>
                     <?php if ($is8March == 9) { echo '<img src="/img/holidays/8-march/bylo-1.png" class="women-text" />'; } ?>
+                    <?php if ($is1April) { echo '<img src="/img/holidays/1-april/1-april-text.png" class="women-text" />'; } ?>
                     </div>
                     <div class="info">
                         <?php echo CONST_ADDRESS; ?><br />

@@ -874,4 +874,20 @@ class FrontendHelper extends AppHelper {
 
         return false;
     }
+
+    public function is1April() {
+        $currentDate = new DateTime(); // Today
+
+        $dateBegin = new DateTime('2015-04-01');
+        $dateEnd  = new DateTime('2016-04-01');
+
+        $first_is_ok = $currentDate->format('m') == $dateBegin->format('m') && $currentDate->format('d') >= $dateBegin->format('d');
+        $second_is_ok = $currentDate->format('m') == $dateEnd->format('m') && $currentDate->format('d') <= $dateEnd->format('d');
+
+        if ($first_is_ok || $second_is_ok) {
+            return true;
+        }
+
+        return false;
+    }
 }

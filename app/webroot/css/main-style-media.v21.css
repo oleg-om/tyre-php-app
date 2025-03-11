@@ -17,6 +17,10 @@
         height: 65px;
         padding-right: 10px;
     }
+
+    #header .info-group .header-griffon-1-april img {
+        margin-left: -25px;
+    }
 }
 @media screen and (min-width: 550px) {
     .boxList {
@@ -469,6 +473,9 @@
     #header .info-group .header-griffon {
         width: 115px;
         height: 115px;
+    }
+    #header .info-group .header-griffon-1-april img {
+        margin-left: -35px;
     }
     .header-wrap {
         padding-bottom: 5px;
