@@ -262,6 +262,7 @@ class AppController extends Controller {
             'TR-1179A' => array('name' => 'TR-1179A', 'img' => 'tr-1179a.png'),
             'V3.02.17' => array('name' => 'V3.02.17', 'img' => 'v3-02-17.png'),
             'V8-90' => array('name' => 'V8-90', 'img' => 'v8-90.png'),
+            'ТК 100*60' => array('name' => 'ТК 100*60', 'img' => 'tk-100-60.png'),
         );
         $this->set('valve_images_list', $valve_images_list);
         $this->valve_images_list = $valve_images_list;
