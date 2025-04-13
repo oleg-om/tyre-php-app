@@ -884,7 +884,7 @@ class FrontendHelper extends AppHelper {
         $first_is_ok = $currentDate->format('m') == $dateBegin->format('m') && $currentDate->format('d') >= $dateBegin->format('d');
         $second_is_ok = $currentDate->format('m') == $dateEnd->format('m') && $currentDate->format('d') <= $dateEnd->format('d');
 
-        if ($first_is_ok || $second_is_ok) {
+        if ($first_is_ok && $second_is_ok) {
             return true;
         }
 
