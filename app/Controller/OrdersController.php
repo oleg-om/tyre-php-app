@@ -392,7 +392,7 @@ class OrdersController extends AppController {
                     $escapedJson = escapeshellarg($json);
 
                     // Составляем curl-запрос
-                    $cmd = "curl -k -X POST -H 'Content-Type: application/json' -d $escapedJson $$url";
+                    $cmd = "curl -v -k -X POST -H 'Content-Type: application/json' -d --noproxy '*' $escapedJson $$url";
 
                     // Выполняем
                    exec($cmd, $output, $ret);
