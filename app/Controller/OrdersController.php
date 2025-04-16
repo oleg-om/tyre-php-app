@@ -1,4 +1,7 @@
 <?php
+
+App::uses('HttpSocket', 'Network/Http');
+
 class OrdersController extends AppController {
 	public $uses = array();
 	public $layout = 'inner';
@@ -167,6 +170,7 @@ class OrdersController extends AppController {
 					$this->error($this->t('error_change_status'));
 				}
 			}
+
 			$this->set('products', $cart_products);
 			$this->set('order', $order);
 			$this->set('statuses', $statuses);
@@ -234,6 +238,9 @@ class OrdersController extends AppController {
 				$this->Order->create();
 				if ($this->Order->save($this->request->data)) {
 					$ordered_products = array();
+
+		            $products_crm = array();
+
 					$order_id = $this->Order->id;
 					$this->loadModel('OrderProduct');
 					foreach ($cart['items'] as $product_id => $count) {
@@ -266,10 +273,116 @@ class OrdersController extends AppController {
 							'order_id' => $order_id
 						);
 						$ordered_products[] = '<li><a href="' . Router::url($url, true) . '">' . $title . '</a>, ' . $count . ' шт. — ' . $this->getCartPrice($product['Product']['price'] * $count, $type) . '</li>' . "\n";
+                        $crm_product = $product;
+                        $crm_product['type'] = $type;
+                        $crm_product['quantity'] = $count;
+                        $crm_product['price'] = $this->calculateCartPrice($product['Product']['price'], $type);
+						$products_crm[] = $crm_product;
 						$this->OrderProduct->create();
 						$this->OrderProduct->save($save_data);
 					}
 					$this->loadModel('OrderEvent');
+
+                    // save to crm
+                    $HttpSocket = new HttpSocket();
+
+                    $url = 'http://autodomcrm.ru/api/v1/tyre';
+                    $data_to_crm = array(
+                        'siteNumber' => $order_id,
+                        'name' => $this->request->data['Order']['name'],
+                        'phone' => $this->request->data['Order']['phone'],
+                        'employee' => 'kerchshina.com',
+                        'place' => 'kerchshina.com',
+                        'date' => date('d/m/y, H:i'),
+                    );
+                    // comment
+                    $comments_array = array();
+                    if (!empty($this->request->data['Order']['email'])) {
+                        $comments_array[] = 'Эмейл: '.$this->request->data['Order']['email'];
+                    }
+                    if (!empty($this->request->data['Order']['city'])) {
+                        $comments_array[] = 'город: '.$this->request->data['Order']['city'];
+                    }
+                    if (!empty($this->request->data['Order']['address'])) {
+                        $comments_array[] = 'адрес: '.$this->request->data['Order']['address'];
+                    }
+                    if (!empty($this->request->data['Order']['comment'])) {
+                        $comments_array[] = 'комментарий: '.$this->request->data['Order']['comment'];
+                    }
+                    $data_to_crm['comment'] = implode(', ', $comments_array);
+                    // comment
+                    // preorder
+                    $preorder = array();
+                    foreach ($products_crm as $product) {
+                        $current_item = array(
+                            'price' => $product['price'],
+                            'mode' => 'full',
+                            'tyreItem' => '',
+                            'quantity' => $product['quantity'],
+                            'brand' => $product['Brand']['title'],
+                            'model' => $product['BrandModel']['title'],
+                            'type' => $product['Product']['category_id'],
+                            'sizeone' => '',
+                            'sizetwo' => '',
+                            'sizethree' => '',
+                            'indexone' => '',
+                            'indextwo' => '',
+                            'season' => '',
+                            'stud' => 'stud',
+                            'diametr' => '',
+                            'pcd' => '',
+                            'et' => '',
+                            'dia' => '',
+                            'wheelwidth' => '',
+                            'tok' => '',
+                            'emkost' => '',
+                            'typeakb' => '',
+                            'polar' => '',
+
+                        );
+                        if ($product['Product']['category_id'] == 1) {
+                            $current_item['sizeone'] = $product['Product']['size1'];
+                            $current_item['sizetwo'] = $product['Product']['size2'];
+                            $current_item['sizethree'] = $product['Product']['size3'];
+                            $current_item['indexone'] = $product['Product']['f1'];
+                            $current_item['indextwo'] = $product['Product']['f2'];
+                            $current_item['season'] = $product['Product']['season'];
+                            $current_item['stud'] = $product['Product']['stud'];
+                        }
+                        if ($product['Product']['category_id'] == 2) {
+                            $current_item['diametr'] = $product['Product']['size1'];
+                            $current_item['pcd'] = $product['Product']['size2'];
+                            $current_item['et'] = $product['Product']['et'];
+                            $current_item['dia'] = $product['Product']['hub'];
+                            $current_item['wheelwidth'] = $product['Product']['size3'];
+                        }
+                        if ($product['Product']['category_id'] == 3) {
+                            $current_item['tok'] = $product['Product']['current'];
+                            $current_item['emkost'] = $product['Product']['ah'];
+                            $current_item['typeakb'] = $product['Product']['f1'];
+                            $current_item['polar'] = $product['Product']['f2'];
+                        }
+                        $preorder[] = $current_item;
+                        $data_to_crm['preorder'] = $preorder;
+
+                    }
+                    // preorder
+                    $headers = array(
+                        'Content-Type' => 'application/json'
+                    );
+
+                    $response = $HttpSocket->post($url, json_encode($data_to_crm), array(
+                        'header' => $headers
+                    ));
+
+                    // Лог или вывод ответа
+                    if ($response->isOk()) {
+                        $this->log('Успешный POST-запрос: ' . $response->body, 'debug');
+                    } else {
+                        $this->log('Ошибка POST-запроса: ' . $response, 'error');
+                    }
+                    // save to crm
+
 					$save_data = array(
 						'status_id' => $this->request->data['Order']['status_id'],
 						'order_id' => $order_id,
