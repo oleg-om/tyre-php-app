@@ -284,12 +284,12 @@ class OrdersController extends AppController {
 					$this->loadModel('OrderEvent');
 
                     // save to crm
-//                    $HttpSocket = new HttpSocket(array(
-//                        'ssl_verify_host' => false,
-//                        'ssl_verify_peer' => false
-//                    ));
+                    $HttpSocket = new HttpSocket(array(
+                        'ssl_verify_host' => false,
+                        'ssl_verify_peer' => false
+                    ));
 
-                    $url = 'http://autodomcrm.ru/api/v1/tyre';
+                    $url = 'http://195.2.76.23/api/v1/tyre';
                     $data_to_crm = array(
                         'siteNumber' => $order_id,
                         'name' => $this->request->data['Order']['name'],
@@ -370,29 +370,29 @@ class OrdersController extends AppController {
 
                     }
                     // preorder
-//                    $headers = array(
-//                        'Content-Type' => 'application/json'
-//                    );
+                    $headers = array(
+                        'Content-Type' => 'application/json'
+                    );
+
+                    $response = $HttpSocket->post($url, json_encode($data_to_crm), array(
+                        'header' => $headers
+                    ));
+
+                    // Лог или вывод ответа
+                    if ($response->isOk()) {
+                        $this->log('Успешный POST-запрос: ' . $response->body, 'debug');
+                    } else {
+                        $this->log('Ошибка POST-запроса: ' . $response, 'error');
+                    }
+
+//                    // JSON-кодируем и экранируем кавычки
+//                    $json = escapeshellarg(json_encode($data_to_crm));
 //
-//                    $response = $HttpSocket->post($url, json_encode($data_to_crm), array(
-//                        'header' => $headers
-//                    ));
+//                    // Составляем curl-запрос
+//                    $cmd = "curl -X POST -H \"Content-Type: application/json\" -d $json \"$url\"";
 //
-//                    // Лог или вывод ответа
-//                    if ($response->isOk()) {
-//                        $this->log('Успешный POST-запрос: ' . $response->body, 'debug');
-//                    } else {
-//                        $this->log('Ошибка POST-запроса: ' . $response, 'error');
-//                    }
-
-                    // JSON-кодируем и экранируем кавычки
-                    $json = escapeshellarg(json_encode($data_to_crm));
-
-                    // Составляем curl-запрос
-                    $cmd = "curl -X POST -H \"Content-Type: application/json\" -d $json \"$url\"";
-
-                    // Выполняем
-                    exec($cmd, $ch_output, $return_var);
+//                    // Выполняем
+//                    exec($cmd, $ch_output, $return_var);
 
                     // save to crm
 
@@ -476,8 +476,8 @@ class OrdersController extends AppController {
 					if ($this->request->data['Order']['payment_type_id'] == 2 || $this->request->data['Order']['payment_type_id'] == 3) {
 						$query = array('order_id' => $order_id);
 					}
-                    print_r(json_encode($ch_output));
-                    print_r("Error: $return_var");
+//                    print_r(json_encode($ch_output));
+//                    print_r("Error: $return_var");
 //					$this->redirect(array('controller' => 'orders', 'action' => 'thank', '?' => $query));
 				}
 				else {
