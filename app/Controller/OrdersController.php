@@ -365,7 +365,7 @@ class OrdersController extends AppController {
                             $current_item['polar'] = $product['Product']['f2'];
                         }
                         $preorder[] = $current_item;
-                        $data_to_crm['preorder'] = $preorder;
+                        $data_to_crm['preorder'] = json_encode($preorder);
 
                     }
                     // preorder
