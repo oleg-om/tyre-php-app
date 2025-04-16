@@ -289,7 +289,6 @@ class OrdersController extends AppController {
                         'ssl_verify_peer' => false
                     ));
 
-                    $crm_url = 'http://autodomcrm.ru/api/v1/tyre';
                     $data_to_crm = array(
                         'siteNumber' => $order_id,
                         'name' => $this->request->data['Order']['name'],
@@ -385,6 +384,7 @@ class OrdersController extends AppController {
 //                        $this->log('Ошибка POST-запроса: ' . $response, 'error');
 //                    }
 
+                    $crm_url = 'http://autodomcrm.ru/api/v1/tyre';
                     // Преобразуем в JSON
                     $json = json_encode($data_to_crm);
 
@@ -521,6 +521,23 @@ class OrdersController extends AppController {
 			'title' => 'Оформление заказа'
 		);
 		$this->set('breadcrumbs', $breadcrumbs);
+
+        $data_to_crm = array('siteNumber' => 3427);
+        $crm_url = 'http://autodomcrm.ru/api/v1/tyre';
+        // Преобразуем в JSON
+        $json = json_encode($data_to_crm);
+
+        // Экранируем кавычки (важно!)
+        $escapedJson = escapeshellarg($json);
+
+        // Составляем curl-запрос
+        $cmd = "/usr/bin/curl -X POST -H 'Content-Type: application/json' -d '$json' \"$crm_url\"";
+
+        // Выполняем
+        exec($cmd, $output, $ret);
+        print_r("Код возврата: $ret\n");
+        print_r("Ответ:\n" . implode("\n", $output));
+
 	}
 	public function cart() {
 		if ($this->Session->check('cart')) {
