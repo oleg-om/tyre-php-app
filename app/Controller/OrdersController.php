@@ -284,7 +284,10 @@ class OrdersController extends AppController {
 					$this->loadModel('OrderEvent');
 
                     // save to crm
-                    $HttpSocket = new HttpSocket();
+                    $HttpSocket = new HttpSocket(array(
+                        'ssl_verify_host' => false,
+                        'ssl_verify_peer' => false
+                    ));
 
                     $url = 'http://autodomcrm.ru/api/v1/tyre';
                     $data_to_crm = array(
