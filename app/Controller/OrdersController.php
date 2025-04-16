@@ -392,7 +392,7 @@ class OrdersController extends AppController {
                     $escapedJson = escapeshellarg($json);
 
                     // Составляем curl-запрос
-                    $cmd = "/usr/bin/curl -X POST -H 'Content-Type: application/json' -d $escapedJson http://autodomcrm.ru/api/v1/tyre";
+                    $cmd = "curl -X POST -H 'Content-Type: application/json' -d $escapedJson $$url";
 
                     // Выполняем
                     exec($cmd, $output, $ret);
