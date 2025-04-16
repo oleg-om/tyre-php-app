@@ -289,7 +289,7 @@ class OrdersController extends AppController {
                         'phone' => $this->request->data['Order']['phone'],
                         'employee' => 'kerchshina.com',
                         'place' => 'kerchshina.com',
-                        'date' => date('d/m/y, H:i'),
+                        'date' => date('d.m.y, H:i'),
                     );
                     // comment
                     $comments_array = array();
@@ -313,7 +313,7 @@ class OrdersController extends AppController {
                             'price' => $product_item['price'],
                             'mode' => 'full',
                             'tyreItem' => '',
-                            'quantity' => $product_item['quantity'],
+                            'quantity' => strval($product_item['quantity']),
                             'brand' => $product_item['Brand']['title'],
                             'model' => $product_item['BrandModel']['title'],
                             'type' => $product_item['Product']['category_id'],
@@ -453,9 +453,7 @@ class OrdersController extends AppController {
 					if ($this->request->data['Order']['payment_type_id'] == 2 || $this->request->data['Order']['payment_type_id'] == 3) {
 						$query = array('order_id' => $order_id);
 					}
-                   print_r("Код возврата: $ret\n");
-                   print_r("Ответ:\n" . implode("\n", $output));
-//					$this->redirect(array('controller' => 'orders', 'action' => 'thank', '?' => $query));
+					$this->redirect(array('controller' => 'orders', 'action' => 'thank', '?' => $query));
 				}
 				else {
 					debug($this->Order->validationErrors);
@@ -495,33 +493,6 @@ class OrdersController extends AppController {
 			'title' => 'Оформление заказа'
 		);
 		$this->set('breadcrumbs', $breadcrumbs);
-
-
-        $data_to_crm = array('siteNumber' => 3427,
-            'name' => 'ТЕСТ',
-            'phone' => '89160090337',
-            'employee' => 'kerchshina.com',
-            'date' => '16\/04\/25, 17:48',
-            'comment' => 'Эмейл: olegoriginal@yandex.ru, город: Москва, адрес: Одесская, 11, кв. 56',
-            'preorder' => array()
-            );
-
-        $test = array();
-        $test[] = array('price' => '6490', 'mode' => 'full');
-        $test[] = array('test2' => 'val');
-        $data_to_crm['preorder'] = $test;
-        $crm_url = 'http://autodomcrm.ru/api/v1/tyre';
-        // Преобразуем в JSON
-        $json = json_encode($data_to_crm);
-
-        // Составляем curl-запрос
-        $cmd = "/usr/bin/curl -X POST -H 'Content-Type: application/json' -d '$json' \"$crm_url\"";
-
-        // Выполняем
-        exec($cmd, $output, $ret);
-        print_r($json);
-        print_r("Код возврата: $ret\n");
-        print_r("Ответ:\n" . implode("\n", $output));
 
 	}
 	public function cart() {
