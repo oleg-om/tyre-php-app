@@ -283,12 +283,6 @@ class OrdersController extends AppController {
 					}
 					$this->loadModel('OrderEvent');
 
-                    // save to crm
-                    $HttpSocket = new HttpSocket(array(
-                        'ssl_verify_host' => false,
-                        'ssl_verify_peer' => false
-                    ));
-
                     $data_to_crm = array(
                         'siteNumber' => $order_id,
                         'name' => $this->request->data['Order']['name'],
@@ -315,15 +309,15 @@ class OrdersController extends AppController {
                     // comment
                     // preorder
                     $preorder = array();
-                    foreach ($products_crm as $product) {
+                    foreach ($products_crm as $product_item) {
                         $current_item = array(
-                            'price' => $product['price'],
+                            'price' => $product_item['price'],
                             'mode' => 'full',
                             'tyreItem' => '',
-                            'quantity' => $product['quantity'],
-                            'brand' => $product['Brand']['title'],
-                            'model' => $product['BrandModel']['title'],
-                            'type' => $product['Product']['category_id'],
+                            'quantity' => $product_item['quantity'],
+                            'brand' => $product_item['Brand']['title'],
+                            'model' => $product_item['BrandModel']['title'],
+                            'type' => $product_item['Product']['category_id'],
                             'sizeone' => '',
                             'sizetwo' => '',
                             'sizethree' => '',
@@ -342,61 +336,42 @@ class OrdersController extends AppController {
                             'polar' => '',
 
                         );
-                        if ($product['Product']['category_id'] == 1) {
-                            $current_item['sizeone'] = $product['Product']['size1'];
-                            $current_item['sizetwo'] = $product['Product']['size2'];
-                            $current_item['sizethree'] = $product['Product']['size3'];
-                            $current_item['indexone'] = $product['Product']['f1'];
-                            $current_item['indextwo'] = $product['Product']['f2'];
-                            $current_item['season'] = $product['Product']['season'];
-                            $current_item['stud'] = $product['Product']['stud'];
+                        if ($product_item['Product']['category_id'] == 1) {
+                            $current_item['sizeone'] = $product_item['Product']['size1'];
+                            $current_item['sizetwo'] = $product_item['Product']['size2'];
+                            $current_item['sizethree'] = $product_item['Product']['size3'];
+                            $current_item['indexone'] = $product_item['Product']['f1'];
+                            $current_item['indextwo'] = $product_item['Product']['f2'];
+                            $current_item['season'] = $product_item['Product']['season'];
+                            $current_item['stud'] = $product_item['Product']['stud'];
                         }
-                        if ($product['Product']['category_id'] == 2) {
-                            $current_item['diametr'] = $product['Product']['size1'];
-                            $current_item['pcd'] = $product['Product']['size2'];
-                            $current_item['et'] = $product['Product']['et'];
-                            $current_item['dia'] = $product['Product']['hub'];
-                            $current_item['wheelwidth'] = $product['Product']['size3'];
+                        if ($product_item['Product']['category_id'] == 2) {
+                            $current_item['diametr'] = $product_item['Product']['size1'];
+                            $current_item['pcd'] = $product_item['Product']['size2'];
+                            $current_item['et'] = $product_item['Product']['et'];
+                            $current_item['dia'] = $product_item['Product']['hub'];
+                            $current_item['wheelwidth'] = $product_item['Product']['size3'];
                         }
-                        if ($product['Product']['category_id'] == 3) {
-                            $current_item['tok'] = $product['Product']['current'];
-                            $current_item['emkost'] = $product['Product']['ah'];
-                            $current_item['typeakb'] = $product['Product']['f1'];
-                            $current_item['polar'] = $product['Product']['f2'];
+                        if ($product_item['Product']['category_id'] == 3) {
+                            $current_item['tok'] = $product_item['Product']['current'];
+                            $current_item['emkost'] = $product_item['Product']['ah'];
+                            $current_item['typeakb'] = $product_item['Product']['f1'];
+                            $current_item['polar'] = $product_item['Product']['f2'];
                         }
                         $preorder[] = $current_item;
-                        $data_to_crm['preorder'] = json_encode($preorder);
+                        $data_to_crm['preorder'] = $preorder;
 
                     }
-                    // preorder
-//                    $headers = array(
-//                        'Content-Type' => 'application/json'
-//                    );
-//
-//                    $response = $HttpSocket->post($url, json_encode($data_to_crm), array(
-//                        'header' => $headers
-//                    ));
-//
-//                    // Лог или вывод ответа
-//                    if ($response->isOk()) {
-//                        $this->log('Успешный POST-запрос: ' . $response->body, 'debug');
-//                    } else {
-//                        $this->log('Ошибка POST-запроса: ' . $response, 'error');
-//                    }
 
                     $crm_url = 'http://autodomcrm.ru/api/v1/tyre';
                     // Преобразуем в JSON
-                    $json = json_encode($data_to_crm);
-
-                    // Экранируем кавычки (важно!)
-                    $escapedJson = escapeshellarg($json);
-
+                    $json = json_encode($data_to_crm, JSON_UNESCAPED_UNICODE);
+print_r($json);
                     // Составляем curl-запрос
                     $cmd = "/usr/bin/curl -X POST -H 'Content-Type: application/json' -d '$json' \"$crm_url\"";
 
                     // Выполняем
-                   exec($cmd, $output, $ret);
-
+                    exec($cmd, $output, $ret);
                     // save to crm
 
 					$save_data = array(
@@ -523,18 +498,20 @@ class OrdersController extends AppController {
 		$this->set('breadcrumbs', $breadcrumbs);
 
         $data_to_crm = array('siteNumber' => 3427);
+        $test = array();
+        $test[] = array('test1' => 'val');
+        $test[] = array('test2' => 'val');
+        $data_to_crm['js_array'] = $test;
         $crm_url = 'http://autodomcrm.ru/api/v1/tyre';
         // Преобразуем в JSON
         $json = json_encode($data_to_crm);
-
-        // Экранируем кавычки (важно!)
-        $escapedJson = escapeshellarg($json);
 
         // Составляем curl-запрос
         $cmd = "/usr/bin/curl -X POST -H 'Content-Type: application/json' -d '$json' \"$crm_url\"";
 
         // Выполняем
         exec($cmd, $output, $ret);
+        print_r($json);
         print_r("Код возврата: $ret\n");
         print_r("Ответ:\n" . implode("\n", $output));
 
