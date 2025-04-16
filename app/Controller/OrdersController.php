@@ -289,7 +289,7 @@ class OrdersController extends AppController {
                         'phone' => $this->request->data['Order']['phone'],
                         'employee' => 'kerchshina.com',
                         'place' => 'kerchshina.com',
-                        'date' => date('d.m.y, H:i'),
+                        'date' => strval(date('d.m.y, H:i')),
                     );
                     // comment
                     $comments_array = array();
