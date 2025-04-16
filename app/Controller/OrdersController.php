@@ -489,7 +489,8 @@ class OrdersController extends AppController {
 					if ($this->request->data['Order']['payment_type_id'] == 2 || $this->request->data['Order']['payment_type_id'] == 3) {
 						$query = array('order_id' => $order_id);
 					}
-					$this->redirect(array('controller' => 'orders', 'action' => 'thank', '?' => $query));
+                    print_r("Ответ от API [$code]: $response");
+//					$this->redirect(array('controller' => 'orders', 'action' => 'thank', '?' => $query));
 				}
 				else {
 					debug($this->Order->validationErrors);
