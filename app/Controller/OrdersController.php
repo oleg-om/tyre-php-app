@@ -289,7 +289,6 @@ class OrdersController extends AppController {
                         'phone' => $this->request->data['Order']['phone'],
                         'employee' => 'kerchshina.com',
                         'place' => 'kerchshina.com',
-                        'date' => strval(date('d.m.y, H:i')),
                     );
                     // comment
                     $comments_array = array();
@@ -365,7 +364,6 @@ class OrdersController extends AppController {
                     $crm_url = 'http://autodomcrm.ru/api/v1/tyre';
                     // Преобразуем в JSON
                     $json = json_encode($data_to_crm, JSON_UNESCAPED_UNICODE);
-                    print_r($json);
                     // Составляем curl-запрос
                     $cmd = "/usr/bin/curl -X POST -H 'Content-Type: application/json' -d '$json' \"$crm_url\"";
 
