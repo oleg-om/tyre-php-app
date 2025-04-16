@@ -395,6 +395,11 @@ class OrdersController extends AppController {
                     curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
                     curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
 
+                    // ❗ Отключаем Expect: 100-continue
+                    curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+                        'Expect:'
+                    ));
+
                     $response = curl_exec($ch);
                     $error = curl_error($ch);
                     $code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
