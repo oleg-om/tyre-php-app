@@ -284,10 +284,10 @@ class OrdersController extends AppController {
 					$this->loadModel('OrderEvent');
 
                     // save to crm
-                    $HttpSocket = new HttpSocket(array(
-                        'ssl_verify_host' => false,
-                        'ssl_verify_peer' => false
-                    ));
+//                    $HttpSocket = new HttpSocket(array(
+//                        'ssl_verify_host' => false,
+//                        'ssl_verify_peer' => false
+//                    ));
 
                     $url = 'http://autodomcrm.ru/api/v1/tyre';
                     $data_to_crm = array(
@@ -370,19 +370,42 @@ class OrdersController extends AppController {
 
                     }
                     // preorder
-                    $headers = array(
-                        'Content-Type' => 'application/json'
-                    );
+//                    $headers = array(
+//                        'Content-Type' => 'application/json'
+//                    );
+//
+//                    $response = $HttpSocket->post($url, json_encode($data_to_crm), array(
+//                        'header' => $headers
+//                    ));
+//
+//                    // Лог или вывод ответа
+//                    if ($response->isOk()) {
+//                        $this->log('Успешный POST-запрос: ' . $response->body, 'debug');
+//                    } else {
+//                        $this->log('Ошибка POST-запроса: ' . $response, 'error');
+//                    }
+                    $ch = curl_init($url);
+                    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                    curl_setopt($ch, CURLOPT_POST, true);
+                    curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($data_to_crm));
+                    curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true); // если вдруг редиректы
+                    curl_setopt($ch, CURLOPT_TIMEOUT, 10); // таймаут
 
-                    $response = $HttpSocket->post($url, json_encode($data_to_crm), array(
-                        'header' => $headers
-                    ));
+                    // если HTTPS → HTTP, это может помочь
+                    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+                    curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
 
-                    // Лог или вывод ответа
-                    if ($response->isOk()) {
-                        $this->log('Успешный POST-запрос: ' . $response->body, 'debug');
+                    $response = curl_exec($ch);
+                    $error = curl_error($ch);
+                    $code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+                    curl_close($ch);
+
+                    if ($response === false) {
+                        $this->log('Ошибка cURL: ' . $error, 'error');
+                        $this->set('response', array('error' => $error));
                     } else {
-                        $this->log('Ошибка POST-запроса: ' . $response, 'error');
+                        $this->log("Ответ от API [$code]: $response", 'debug');
+                        $this->set('response', array('body' => $response, 'code' => $code));
                     }
                     // save to crm
 
@@ -466,9 +489,7 @@ class OrdersController extends AppController {
 					if ($this->request->data['Order']['payment_type_id'] == 2 || $this->request->data['Order']['payment_type_id'] == 3) {
 						$query = array('order_id' => $order_id);
 					}
-                    print_r($order_id);
-                    print_r($response);
-//					$this->redirect(array('controller' => 'orders', 'action' => 'thank', '?' => $query));
+					$this->redirect(array('controller' => 'orders', 'action' => 'thank', '?' => $query));
 				}
 				else {
 					debug($this->Order->validationErrors);
