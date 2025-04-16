@@ -479,8 +479,8 @@ class OrdersController extends AppController {
 					if ($this->request->data['Order']['payment_type_id'] == 2 || $this->request->data['Order']['payment_type_id'] == 3) {
 						$query = array('order_id' => $order_id);
 					}
-//                    print_r("Код возврата: $ret\n");
-//                    print_r("Ответ:\n" . implode("\n", $output));
+                   print_r("Код возврата: $ret\n");
+                   print_r("Ответ:\n" . implode("\n", $output));
 //					$this->redirect(array('controller' => 'orders', 'action' => 'thank', '?' => $query));
 				}
 				else {
