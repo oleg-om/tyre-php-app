@@ -310,7 +310,7 @@ class OrdersController extends AppController {
                     // preorder
                     foreach ($products_crm as $product_item) {
                         $current_item = array(
-                            'price' => $product_item['price'],
+                            'price' => strval($product_item['price']),
                             'mode' => 'full',
                             'tyreItem' => '',
                             'quantity' => strval($product_item['quantity']),
@@ -336,26 +336,26 @@ class OrdersController extends AppController {
 
                         );
                         if ($product_item['Product']['category_id'] == 1) {
-                            $current_item['sizeone'] = $product_item['Product']['size1'];
-                            $current_item['sizetwo'] = $product_item['Product']['size2'];
-                            $current_item['sizethree'] = $product_item['Product']['size3'];
-                            $current_item['indexone'] = $product_item['Product']['f1'];
-                            $current_item['indextwo'] = $product_item['Product']['f2'];
-                            $current_item['season'] = $product_item['Product']['season'];
-                            $current_item['stud'] = $product_item['Product']['stud'];
+                            $current_item['sizeone'] = strval($product_item['Product']['size1']);
+                            $current_item['sizetwo'] = strval($product_item['Product']['size2']);
+                            $current_item['sizethree'] = strval($product_item['Product']['size3']);
+                            $current_item['indexone'] = strval($product_item['Product']['f1']);
+                            $current_item['indextwo'] = strval($product_item['Product']['f2']);
+                            $current_item['season'] = strval($product_item['Product']['season']);
+                            $current_item['stud'] = strval($product_item['Product']['stud']);
                         }
                         if ($product_item['Product']['category_id'] == 2) {
-                            $current_item['diametr'] = $product_item['Product']['size1'];
-                            $current_item['pcd'] = $product_item['Product']['size2'];
-                            $current_item['et'] = $product_item['Product']['et'];
-                            $current_item['dia'] = $product_item['Product']['hub'];
-                            $current_item['wheelwidth'] = $product_item['Product']['size3'];
+                            $current_item['diametr'] = strval($product_item['Product']['size1']);
+                            $current_item['pcd'] = strval($product_item['Product']['size2']);
+                            $current_item['et'] = strval($product_item['Product']['et']);
+                            $current_item['dia'] = strval($product_item['Product']['hub']);
+                            $current_item['wheelwidth'] = strval($product_item['Product']['size3']);
                         }
                         if ($product_item['Product']['category_id'] == 3) {
-                            $current_item['tok'] = $product_item['Product']['current'];
-                            $current_item['emkost'] = $product_item['Product']['ah'];
-                            $current_item['typeakb'] = $product_item['Product']['f1'];
-                            $current_item['polar'] = $product_item['Product']['f2'];
+                            $current_item['tok'] = strval($product_item['Product']['current']);
+                            $current_item['emkost'] = strval($product_item['Product']['ah']);
+                            $current_item['typeakb'] = strval($product_item['Product']['f1']);
+                            $current_item['polar'] = strval($product_item['Product']['f2']);
                         }
 
                         $data_to_crm['preorder'][] = $current_item;
