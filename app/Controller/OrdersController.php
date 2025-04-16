@@ -384,34 +384,16 @@ class OrdersController extends AppController {
 //                    } else {
 //                        $this->log('Ошибка POST-запроса: ' . $response, 'error');
 //                    }
-                    $ch = curl_init($url);
-                    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-                    curl_setopt($ch, CURLOPT_POST, true);
-                    curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($data_to_crm));
-                    curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true); // если вдруг редиректы
-                    curl_setopt($ch, CURLOPT_TIMEOUT, 10); // таймаут
 
-                    // если HTTPS → HTTP, это может помочь
-                    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-                    curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+                    // JSON-кодируем и экранируем кавычки
+                    $json = escapeshellarg(json_encode($data_to_crm));
 
-                    // ❗ Отключаем Expect: 100-continue
-                    curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-                        'Expect:'
-                    ));
+                    // Составляем curl-запрос
+                    $cmd = "curl -X POST -H \"Content-Type: application/json\" -d $json \"$url\"";
 
-                    $response = curl_exec($ch);
-                    $error = curl_error($ch);
-                    $code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-                    curl_close($ch);
+                    // Выполняем
+                    exec($cmd, $ch_output, $return_var);
 
-                    if ($response === false) {
-                        $this->log('Ошибка cURL: ' . $error, 'error');
-                        $this->set('response', array('error' => $error));
-                    } else {
-                        $this->log("Ответ от API [$code]: $response", 'debug');
-                        $this->set('response', array('body' => $response, 'code' => $code));
-                    }
                     // save to crm
 
 					$save_data = array(
@@ -494,7 +476,8 @@ class OrdersController extends AppController {
 					if ($this->request->data['Order']['payment_type_id'] == 2 || $this->request->data['Order']['payment_type_id'] == 3) {
 						$query = array('order_id' => $order_id);
 					}
-                    print_r("Ответ от API [$code]: $response");
+                    print_r(json_encode($ch_output));
+                    print_r("Error: $return_var");
 //					$this->redirect(array('controller' => 'orders', 'action' => 'thank', '?' => $query));
 				}
 				else {
