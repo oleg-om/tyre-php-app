@@ -392,10 +392,10 @@ class OrdersController extends AppController {
                     $escapedJson = escapeshellarg($json);
 
                     // Составляем curl-запрос
-                    $cmd = "curl -X POST -H 'Content-Type: application/json' -d $escapedJson $$url";
+                    $cmd = "curl -k -X POST -H 'Content-Type: application/json' -d $escapedJson $$url";
 
                     // Выполняем
-//                    exec($cmd, $output, $ret);
+                   exec($cmd, $output, $ret);
 
                     // save to crm
 
