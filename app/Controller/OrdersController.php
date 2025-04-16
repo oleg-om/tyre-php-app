@@ -308,7 +308,6 @@ class OrdersController extends AppController {
                     $data_to_crm['comment'] = implode(', ', $comments_array);
                     // comment
                     // preorder
-                    $preorder = array();
                     foreach ($products_crm as $product_item) {
                         $current_item = array(
                             'price' => $product_item['price'],
@@ -358,15 +357,15 @@ class OrdersController extends AppController {
                             $current_item['typeakb'] = $product_item['Product']['f1'];
                             $current_item['polar'] = $product_item['Product']['f2'];
                         }
-                        $preorder[] = $current_item;
-                        $data_to_crm['preorder'] = $preorder;
+
+                        $data_to_crm['preorder'][] = $current_item;
 
                     }
 
                     $crm_url = 'http://autodomcrm.ru/api/v1/tyre';
                     // Преобразуем в JSON
                     $json = json_encode($data_to_crm, JSON_UNESCAPED_UNICODE);
-print_r($json);
+                    print_r($json);
                     // Составляем curl-запрос
                     $cmd = "/usr/bin/curl -X POST -H 'Content-Type: application/json' -d '$json' \"$crm_url\"";
 
@@ -497,11 +496,20 @@ print_r($json);
 		);
 		$this->set('breadcrumbs', $breadcrumbs);
 
-        $data_to_crm = array('siteNumber' => 3427);
+
+        $data_to_crm = array('siteNumber' => 3427,
+            'name' => 'ТЕСТ',
+            'phone' => '89160090337',
+            'employee' => 'kerchshina.com',
+            'date' => '16\/04\/25, 17:48',
+            'comment' => 'Эмейл: olegoriginal@yandex.ru, город: Москва, адрес: Одесская, 11, кв. 56',
+            'preorder' => array()
+            );
+
         $test = array();
-        $test[] = array('test1' => 'val');
+        $test[] = array('price' => '6490', 'mode' => 'full');
         $test[] = array('test2' => 'val');
-        $data_to_crm['js_array'] = $test;
+        $data_to_crm['preorder'] = $test;
         $crm_url = 'http://autodomcrm.ru/api/v1/tyre';
         // Преобразуем в JSON
         $json = json_encode($data_to_crm);
