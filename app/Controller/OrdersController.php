@@ -305,7 +305,7 @@ class OrdersController extends AppController {
                     if (!empty($this->request->data['Order']['comment'])) {
                         $comments_array[] = 'комментарий: '.$this->request->data['Order']['comment'];
                     }
-                    if (!empty($comments_array) {
+                    if (!empty($comments_array)) {
                         $data_to_crm['comment'] = implode(', ', $comments_array);
                     }
                     // comment
@@ -454,9 +454,13 @@ class OrdersController extends AppController {
 					if ($this->request->data['Order']['payment_type_id'] == 2 || $this->request->data['Order']['payment_type_id'] == 3) {
 						$query = array('order_id' => $order_id);
 					}
+                    print_r('<br/> output:');
                 print_r($output);
+                    print_r('<br/> ret:');
                 print_r($ret);
-                print_r($json_encode);
+                print_r('<br/> json:');
+                print_r($json);
+                    print_r('<br/> data:');
                 print_r($data_to_crm);
 // 					$this->redirect(array('controller' => 'orders', 'action' => 'thank', '?' => $query));
 				}
