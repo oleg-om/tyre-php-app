@@ -456,7 +456,7 @@ class OrdersController extends AppController {
 
                 print_r($ret);
 
-                print_r($data_to_crm);
+                print_r($json_encode);
 // 					$this->redirect(array('controller' => 'orders', 'action' => 'thank', '?' => $query));
 				}
 				else {
