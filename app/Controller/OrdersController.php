@@ -284,7 +284,7 @@ class OrdersController extends AppController {
 					$this->loadModel('OrderEvent');
 
                     $data_to_crm = array(
-                        'siteNumber' => $order_id,
+                        'siteNumber' => strval($order_id),
                         'name' => strval($this->request->data['Order']['name']),
                         'phone' => strval($this->request->data['Order']['phone']),
                         'employee' => 'kerchshina.com',
@@ -305,7 +305,9 @@ class OrdersController extends AppController {
                     if (!empty($this->request->data['Order']['comment'])) {
                         $comments_array[] = 'комментарий: '.$this->request->data['Order']['comment'];
                     }
-                    $data_to_crm['comment'] = implode(', ', $comments_array);
+                    if (!empty($comments_array) {
+                        $data_to_crm['comment'] = implode(', ', $comments_array);
+                    }
                     // comment
                     // preorder
                     foreach ($products_crm as $product_item) {
@@ -316,7 +318,7 @@ class OrdersController extends AppController {
                             'quantity' => strval($product_item['quantity']),
                             'brand' => $product_item['Brand']['title'],
                             'model' => $product_item['BrandModel']['title'],
-                            'type' => $product_item['Product']['category_id'],
+                            'type' => strval($product_item['Product']['category_id']),
                             'sizeone' => '',
                             'sizetwo' => '',
                             'sizethree' => '',
@@ -453,10 +455,12 @@ class OrdersController extends AppController {
 						$query = array('order_id' => $order_id);
 					}
                 print_r($output);
-
+print_r(' /// ');
                 print_r($ret);
-
+print_r(' /// ');
                 print_r($json_encode);
+                print_r(' /// ');
+                print_r($data_to_crm);
 // 					$this->redirect(array('controller' => 'orders', 'action' => 'thank', '?' => $query));
 				}
 				else {
