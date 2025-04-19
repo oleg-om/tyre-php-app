@@ -455,11 +455,11 @@ class OrdersController extends AppController {
 						$query = array('order_id' => $order_id);
 					}
                 print_r($output);
-print_r(' /// ');
+print_r('<br/>');
                 print_r($ret);
-print_r(' /// ');
+print_r('<br/>');
                 print_r($json_encode);
-                print_r(' /// ');
+                print_r('<br/>');
                 print_r($data_to_crm);
 // 					$this->redirect(array('controller' => 'orders', 'action' => 'thank', '?' => $query));
 				}
