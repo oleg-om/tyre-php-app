@@ -306,7 +306,7 @@ class OrdersController extends AppController {
                         $comments_array[] = 'комментарий: '.$this->request->data['Order']['comment'];
                     }
                     if (!empty($comments_array)) {
-                        $data_to_crm['comment'] = implode(', ', $comments_array);
+                        $data_to_crm['comment'] = str_replace("'", " ", implode(', ', $comments_array));
                     }
                     // comment
                     // preorder
@@ -316,8 +316,8 @@ class OrdersController extends AppController {
                             'mode' => 'full',
                             'tyreItem' => '',
                             'quantity' => strval($product_item['quantity']),
-                            'brand' => $product_item['Brand']['title'],
-                            'model' => $product_item['BrandModel']['title'],
+                            'brand' => str_replace("'", " ", $product_item['Brand']['title']),
+                            'model' => str_replace("'", " ", $product_item['BrandModel']['title']),
                             'type' => strval($product_item['Product']['category_id']),
                             'sizeone' => '',
                             'sizetwo' => '',
