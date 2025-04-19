@@ -285,10 +285,11 @@ class OrdersController extends AppController {
 
                     $data_to_crm = array(
                         'siteNumber' => $order_id,
-                        'name' => $this->request->data['Order']['name'],
-                        'phone' => $this->request->data['Order']['phone'],
+                        'name' => strval($this->request->data['Order']['name']),
+                        'phone' => strval($this->request->data['Order']['phone']),
                         'employee' => 'kerchshina.com',
                         'place' => 'kerchshina.com',
+                        'comment' => '',
                     );
                     // comment
                     $comments_array = array();
