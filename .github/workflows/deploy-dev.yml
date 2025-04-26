@@ -17,10 +17,14 @@ jobs:
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY_DEV }}
 
+      - name: Add GitHub to known_hosts
+        run: ssh-keyscan github.com >> ~/.ssh/known_hosts
+
       - name: Pull changes
         run: |
           ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST_DEV }} << 'EOF'
             cd /var/www/vhosts/kerchshina.com
+            git reset --hard
             git pull origin develop
             curl http://95.142.45.63/admin/cache/clear
           EOF
