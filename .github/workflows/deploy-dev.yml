@@ -21,6 +21,6 @@ jobs:
         run: |
           ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST_DEV }} << 'EOF'
             cd /var/www/vhosts/kerchshina.com
-            git pull origin master
+            git pull origin develop
             curl http://95.142.45.63/admin/cache/clear
           EOF
