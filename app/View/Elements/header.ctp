@@ -32,7 +32,7 @@ if ($is1April) {
                 <div class="info-group">
                     <a class="header-griffon <?php if ($is1April) { echo "header-griffon-1-april"; } ?>" href="/"><img src="<?php echo $griffon_logo; ?>" alt="Керчьшина" /></a>
                     <div class="desc"><span class="desc-title">КерчьШИНА</span><span class="desc-description">Сеть
-                            шинных центров</span>
+                            шинных центров 1</span>
                     <?php if ($isNewYear) { echo '<img src="/img/holidays/new-year/hat.png" width="60" height="70" class="new-year-hat" />'; } ?>
                     <?php if ($is8March) { echo '<img src="/img/holidays/8-march/flowers-1.png" width="300" height="98" class="women-flowers" />'; } ?>
                     <?php if ($is8March == 6) { echo '<img src="/img/holidays/8-march/poslezavtra-1.png" class="women-text" />'; } ?>
