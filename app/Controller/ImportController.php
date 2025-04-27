@@ -7103,6 +7103,24 @@ class ImportController extends AppController
 												$save_data['hub'] = $mathces[7];
 												$title = trim(str_ireplace($mathces[0], ' ', $title));
 											}
+                                            // Абиш: 15" 4*98/100 7.0 ET25 67. ZB-561 SML
+											elseif (preg_match('/([0-9,\.]+)"\s+([0-9,\.]+)\*([0-9,\.]+)\/([0-9,\.]+)\s+([0-9,\.]+)\s+ET([0-9,\.]+)\s+([0-9,\.]+)/ui', $title, $mathces)) {
+												$save_data['radius'] = $mathces[1];
+												$save_data['pcd'] = $mathces[2] . 'x' . $mathces[3];
+												$save_data['dia'] = $mathces[4];
+												$save_data['et'] = $mathces[5];
+												$save_data['hub'] = $mathces[6];
+												$title = trim(str_ireplace($mathces[0], ' ', $title));
+											}
+                                            // Абиш: 15" 4*98 6.5 ET28 58.4 ANZ-6093 Black Milling
+											elseif (preg_match('/([0-9,\.]+)"\s+([0-9,\.]+)\*([0-9,\.]+)\s+([0-9,\.]+)\s+ET([0-9,\.]+)\s+([0-9,\.]+)/ui', $title, $mathces)) {
+												$save_data['radius'] = $mathces[1];
+												$save_data['pcd'] = $mathces[2] . 'x' . $mathces[3];
+												$save_data['dia'] = $mathces[4];
+												$save_data['et'] = $mathces[5];
+												$save_data['hub'] = $mathces[6];
+												$title = trim(str_ireplace($mathces[0], ' ', $title));
+											}
 										}
 										if (isset($save_data['pcd'])) {
 											$save_data['pcd'] = str_replace(array('-', '*', ',', '/'), array('/', 'x', '.', 'x'), $save_data['pcd']);
