@@ -1,0 +1,27 @@
+name: Deploy to Dev
+
+on:
+  push:
+    branches: [ "develop" ] # Триггер на пуш в ветку main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install SSH key
+        uses: webfactory/ssh-agent@v0.8.0
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY_DEV }}
+
+      - name: Pull changes
+        run: |
+          ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST_DEV }} << 'EOF'
+            cd /var/www/vhosts/kerchshina.com
+            git reset --hard
+            git pull origin develop
+            curl http://95.142.45.63/admin/cache/clear
+          EOF
