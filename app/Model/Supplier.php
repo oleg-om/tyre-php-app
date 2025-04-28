@@ -8,8 +8,13 @@ class Supplier extends AppModel {
 			'message' => 'error_title_empty'
 		),
         'delivery_time_from' => array(
+            array('required' => false)
         ),
         'delivery_time_to' => array(
+            array('required' => false)
+        ),
+        'prefix' => array(
+            array('required' => false)
         )
 	);
 	public function __construct() {
