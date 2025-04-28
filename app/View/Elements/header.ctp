@@ -19,6 +19,7 @@ if ($is1April) {
 ?>
 
 <?php
+echo Configure::read('debug');
 if (Configure::read('debug') >= 1) {
     $commitDate = trim(shell_exec('git log -1 --format=%ci'));
     echo '<div>Время последнего коммита: ' . $commitDate . '</div>';

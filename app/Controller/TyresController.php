@@ -217,7 +217,7 @@ class TyresController extends AppController
         $suppliers = $this->Supplier->find('all', array('fields' => array('Supplier.id', 'Supplier.title', 'Supplier.delivery_time_from', 'Supplier.delivery_time_to', 'Supplier.prefix'), 'order' => array('Supplier.title' => 'asc')));
         $suppliers_output = array();
         foreach ($suppliers as $supplier) {
-            $suppliers_output[$supplier['Supplier']['id']] = array('delivery_time_from' => $supplier['Supplier']['delivery_time_from'], 'delivery_time_to' => $supplier['Supplier']['delivery_time_to']);
+            $suppliers_output[$supplier['Supplier']['id']] = array('delivery_time_from' => $supplier['Supplier']['delivery_time_from'], 'delivery_time_to' => $supplier['Supplier']['delivery_time_to'], 'prefix' => $supplier['Supplier']['prefix']);
         }
         $this->set('suppliers', $suppliers_output);
 
@@ -621,7 +621,7 @@ class TyresController extends AppController
         $suppliers = $this->Supplier->find('all', array('fields' => array('Supplier.id', 'Supplier.title', 'Supplier.delivery_time_from', 'Supplier.delivery_time_to', 'Supplier.prefix'), 'order' => array('Supplier.title' => 'asc')));
         $suppliers_output = array();
         foreach ($suppliers as $supplier) {
-            $suppliers_output[$supplier['Supplier']['id']] = array('delivery_time_from' => $supplier['Supplier']['delivery_time_from'], 'delivery_time_to' => $supplier['Supplier']['delivery_time_to']);
+            $suppliers_output[$supplier['Supplier']['id']] = array('delivery_time_from' => $supplier['Supplier']['delivery_time_from'], 'delivery_time_to' => $supplier['Supplier']['delivery_time_to'], 'prefix' => $supplier['Supplier']['prefix']);
         }
         $this->set('suppliers', $suppliers_output);
 
@@ -1125,7 +1125,7 @@ class TyresController extends AppController
         $suppliers = $this->Supplier->find('all', array('fields' => array('Supplier.id', 'Supplier.title', 'Supplier.delivery_time_from', 'Supplier.delivery_time_to', 'Supplier.prefix'), 'order' => array('Supplier.title' => 'asc')));
         $suppliers_output = array();
         foreach ($suppliers as $supplier) {
-            $suppliers_output[$supplier['Supplier']['id']] = array('delivery_time_from' => $supplier['Supplier']['delivery_time_from'], 'delivery_time_to' => $supplier['Supplier']['delivery_time_to']);
+            $suppliers_output[$supplier['Supplier']['id']] = array('delivery_time_from' => $supplier['Supplier']['delivery_time_from'], 'delivery_time_to' => $supplier['Supplier']['delivery_time_to'], 'prefix' => $supplier['Supplier']['prefix']);
         }
         $this->set('suppliers', $suppliers_output);
 
