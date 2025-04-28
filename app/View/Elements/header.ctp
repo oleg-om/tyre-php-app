@@ -24,7 +24,6 @@ if (Configure::read('debug') >= 1) {
     echo '<div>Время последнего коммита: ' . $commitDate . '</div>';
 }
 ?>
-<div></div>
 <div id="header">
     <div class="tyres <?php echo $current_season; ?>-season">
         <div class="wrap header-wrapper">
