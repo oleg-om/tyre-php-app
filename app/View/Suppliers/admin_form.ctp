@@ -19,6 +19,11 @@ $this->Backend->addText('delivery_time_to', array(
     'acronym' => __d('admin_suppliers', 'acronym_delivery_time_to'),
     'required' => false
 ));
+$this->Backend->addText('prefix', array(
+    'label' => __d('admin_suppliers', 'label_delivery_prefix'),
+    'acronym' => __d('admin_suppliers', 'label_delivery_prefix'),
+    'required' => false
+));
 $this->Backend->addHidden('id');
 $this->Backend->addHidden('action', array(
 	'type' => 'hidden',

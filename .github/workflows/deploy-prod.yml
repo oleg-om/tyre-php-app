@@ -20,6 +20,7 @@ jobs:
       - name: Pull changes
         run: |
           ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST_PROD }} << 'EOF'
+            set -e
             cd /var/www/vhosts/kerchshina.com
             git pull origin master
             curl https://kerchshina.com/admin/cache/clear
