@@ -32,7 +32,7 @@
         }
 
         $prefix = '';
-        if (!empty($supplier['prefix']) {
+        if (!empty($supplier['prefix'])) {
             $prefix = ' ('.$supplier['prefix'].') ';
         }
     ?>
