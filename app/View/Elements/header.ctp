@@ -18,12 +18,6 @@ if ($is1April) {
 }
 ?>
 
-<?php
-if (Configure::read('debug') >= 1) {
-    $commitDate = trim(shell_exec('git log -1 --format=%ci'));
-    echo '<div>Время последнего коммита: ' . $commitDate . '</div>';
-}
-?>
 <div id="header">
     <div class="tyres <?php echo $current_season; ?>-season">
         <div class="wrap header-wrapper">
