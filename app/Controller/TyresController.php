@@ -1,18 +1,22 @@
 <?php
-class TyresController extends AppController {
+
+class TyresController extends AppController
+{
     public $uses = array();
     public $layout = 'inner';
     public $paginate = array();
 
-    public $prod=array('в наличии'=>1,'под заказ'=>0);
+    public $prod = array('в наличии' => 1, 'под заказ' => 0);
 
-    public $season=array('SHOW_TYRES_VSE_SAMER'=>'summer','SHOW_TYRES_VSE_WINTER'=>'winter','SHOW_TYRES_VSE_VSE'=>'all');
+    public $season = array('SHOW_TYRES_VSE_SAMER' => 'summer', 'SHOW_TYRES_VSE_WINTER' => 'winter', 'SHOW_TYRES_VSE_VSE' => 'all');
 
     public $filter_fields = array('Product.id' => 'int', 'Product.brand_id' => 'int', 'Product.model_id' => 'int', 'Product.sku' => 'text', 'Product.supplier_id' => 'int');
     public $model = 'Product';
     public $submenu = 'products';
     public $conditions = array('Product.category_id' => 1);
-    public function _list() {
+
+    public function _list()
+    {
         parent::_list();
         $this->loadModel('Supplier');
         $this->set('suppliers', $this->Supplier->find('list', array('fields' => array('Supplier.id', 'Supplier.title'), 'order' => array('Supplier.title' => 'asc'))));
@@ -21,21 +25,21 @@ class TyresController extends AppController {
         $this->set('brands', $this->Brand->find('list', array('fields' => array('Brand.id', 'Brand.title'), 'order' => array('Brand.title' => 'asc'), 'conditions' => array('Brand.category_id' => 1))));
         if (isset($this->request->data['Product']['brand_id'])) {
             $this->set('models', $this->BrandModel->find('list', array('fields' => array('BrandModel.id', 'BrandModel.title'), 'conditions' => array('BrandModel.brand_id' => $this->request->data['Product']['brand_id']), 'order' => array('BrandModel.title' => 'asc'))));
-        }
-        else {
+        } else {
             $this->set('models', array('' => __d('admin_common', 'list_all_items')));
         }
         $this->set('all_models', $this->BrandModel->find('list', array('fields' => array('BrandModel.id', 'BrandModel.title'), 'order' => array('BrandModel.title' => 'asc'), 'conditions' => array('BrandModel.category_id' => 1))));
     }
-    public function _edit($id) {
+
+    public function _edit($id)
+    {
         $title = parent::_edit($id);
         $this->loadModel('Brand');
         $this->loadModel('BrandModel');
         $this->set('brands', $this->Brand->find('list', array('fields' => array('Brand.id', 'Brand.title'), 'order' => array('Brand.title' => 'asc'), 'conditions' => array('Brand.category_id' => 1))));
         if (isset($this->request->data['Product']['brand_id'])) {
             $this->set('models', $this->BrandModel->find('list', array('fields' => array('BrandModel.id', 'BrandModel.title'), 'conditions' => array('BrandModel.brand_id' => $this->request->data['Product']['brand_id']), 'order' => array('BrandModel.title' => 'asc'))));
-        }
-        else {
+        } else {
             $this->set('models', array('' => __d('admin_common', 'list_any_items')));
         }
         $this->set('seasons', $this->{$this->model}->seasons);
@@ -43,7 +47,9 @@ class TyresController extends AppController {
         $this->set('stud', $this->{$this->model}->stud);
         return $title;
     }
-    public function admin_apply() {
+
+    public function admin_apply()
+    {
         $filter = $this->redirectFields($this->model, null);
         $this->loadModel($this->model);
         if (!empty($this->request->data) && isset($this->request->data[$this->model])) {
@@ -63,13 +69,19 @@ class TyresController extends AppController {
         $url = array_merge($url, $filter);
         $this->redirect($url);
     }
-    public function admin_stockon($id = 0) {
+
+    public function admin_stockon($id = 0)
+    {
         $this->_stock($id, 1);
     }
-    public function admin_stockoff($id = 0) {
+
+    public function admin_stockoff($id = 0)
+    {
         $this->_stock($id, 0);
     }
-    private function _stock($id, $state) {
+
+    private function _stock($id, $state)
+    {
         Configure::write('debug', 2);
         $this->layout = 'switcher';
         $this->set('id', $id);
@@ -84,13 +96,14 @@ class TyresController extends AppController {
         $this->{$this->model}->id = $id;
         if ($this->{$this->model}->saveField('in_stock', $state, false)) {
             $this->set('status', $state);
-        }
-        else {
+        } else {
             $this->set('status', abs($state - 1));
         }
         $this->render(false);
     }
-    public function admin_clear() {
+
+    public function admin_clear()
+    {
         $this->loadModel($this->model);
         $this->{$this->model}->deleteAll($this->conditions, true, true);
         $this->{$this->model}->query('UPDATE brands SET products_count=0,active_products_count=0 WHERE category_id=1');
@@ -100,7 +113,8 @@ class TyresController extends AppController {
         $this->redirect($url);
     }
 
-    public function admin_clear_supplier() {
+    public function admin_clear_supplier()
+    {
         $this->loadModel($this->model);
         $supplier_id = $this->request->query['Product_supplier_id'];
 
@@ -116,10 +130,11 @@ class TyresController extends AppController {
         $this->redirect($url);
     }
 
-    function auto() {
+    function auto()
+    {
 
         $this->loadModel('Product');
-        $temp_cond=array('Product.category_id'=>1,'Product.is_active'=>1,'Product.price > '=>0,'Product.stock_count > '=>0);
+        $temp_cond = array('Product.category_id' => 1, 'Product.is_active' => 1, 'Product.price > ' => 0, 'Product.stock_count > ' => 0);
         /*
         Array (
         [Product.category_id] => 1
@@ -129,9 +144,9 @@ class TyresController extends AppController {
         */
         //[AND] => Array ( [Product.auto !=] => Array ( [0] => trucks [1] => agricultural [2] => special ) ) )
 
-        if(empty($this->request->query['auto'])):
+        if (empty($this->request->query['auto'])):
             //$temp_cond['AND'] = array('Product.auto !=' => array('trucks','agricultural','special'));
-            $temp_cond['AND'] = array('Product.auto !=' => array('trucks','special'));
+            $temp_cond['AND'] = array('Product.auto !=' => array('trucks', 'special'));
         else:
             $temp_cond['Product.auto'] = $this->request->query['auto'];
         endif;
@@ -153,15 +168,13 @@ class TyresController extends AppController {
     }
 
 
-
-
-
-    function sett_var($var){
+    function sett_var($var)
+    {
         $this->loadModel('Settings');
         $sett = $this->Settings->find('all', array(
-            'fields' => array('Settings.variable','Settings.value'),
+            'fields' => array('Settings.variable', 'Settings.value'),
             'conditions' => array(
-                'or' =>  array(
+                'or' => array(
                     array('Settings.variable' => $var),
                 )
             )
@@ -172,9 +185,9 @@ class TyresController extends AppController {
     }
 
 
-
-    public function check_truck($auto) {
-        $is_truck_page = $this->request->query['auto'] == 'trucks' || $this->request->query['auto'] == 'agricultural' || $this->request->query['auto'] == 'special'  || $this->request->query['auto'] == 'loader';
+    public function check_truck($auto)
+    {
+        $is_truck_page = $this->request->query['auto'] == 'trucks' || $this->request->query['auto'] == 'agricultural' || $this->request->query['auto'] == 'special' || $this->request->query['auto'] == 'loader';
 
         $path = 'tyres';
         if ($is_truck_page) {
@@ -191,7 +204,8 @@ class TyresController extends AppController {
     }
 
 
-    public function index(){
+    public function index()
+    {
         $mode = 'block';
         if (isset($this->request->query['mode']) && in_array($this->request->query['mode'], array('block', 'list', 'table'))) {
             $mode = $this->request->query['mode'];
@@ -200,7 +214,7 @@ class TyresController extends AppController {
         $this->setModification();
 
         $this->loadModel('Supplier');
-        $suppliers = $this->Supplier->find('all', array('fields' => array('Supplier.id', 'Supplier.title', 'Supplier.delivery_time_from', 'Supplier.delivery_time_to'), 'order' => array('Supplier.title' => 'asc')));
+        $suppliers = $this->Supplier->find('all', array('fields' => array('Supplier.id', 'Supplier.title', 'Supplier.delivery_time_from', 'Supplier.delivery_time_to', 'Supplier.prefix'), 'order' => array('Supplier.title' => 'asc')));
         $suppliers_output = array();
         foreach ($suppliers as $supplier) {
             $suppliers_output[$supplier['Supplier']['id']] = array('delivery_time_from' => $supplier['Supplier']['delivery_time_from'], 'delivery_time_to' => $supplier['Supplier']['delivery_time_to']);
@@ -224,7 +238,7 @@ class TyresController extends AppController {
 
         $this->request->data['Product'] = $this->request->query;
 
-        if (isset($this->request->query['brand_id']) && !empty($this->request->query['brand_id'])  && strpos($this->request->query['brand_id'], ',') === false) {
+        if (isset($this->request->query['brand_id']) && !empty($this->request->query['brand_id']) && strpos($this->request->query['brand_id'], ',') === false) {
             if (!is_array($this->request->query['brand_id'])) {
                 $brand_id = intval($this->request->query['brand_id']);
                 if ($brand_id != 0) {
@@ -274,18 +288,12 @@ class TyresController extends AppController {
         );
 
 
-
-
-
         $models = $this->Product->find('all', array(
             'fields' => array('Product.model_id', 'Product.id', 'Product.price', 'Product.in_stock'),
             'conditions' => $conditions,
             'order' => 'Product.price ASC'
         ));
         //print_r($models);
-
-
-
 
 
         $model_ids = array();
@@ -295,8 +303,10 @@ class TyresController extends AppController {
             }
         }
 
-        $product_ids =  implode(", ", array_keys($model_ids));
-        if (empty($product_ids)) {$product_ids = 0;}
+        $product_ids = implode(", ", array_keys($model_ids));
+        if (empty($product_ids)) {
+            $product_ids = 0;
+        }
         $this->BrandModel->bindModel(
             array(
                 'belongsTo' => array(
@@ -319,20 +329,19 @@ class TyresController extends AppController {
 
         if ($mode == 'table') {
             $this->paginate['conditions'] = $product_conditions;
-        }
-        else {
+        } else {
 
-            $model_conditions = array('BrandModel.category_id' => 1,'BrandModel.is_active' => 1, 'BrandModel.id' => $model_ids);
+            $model_conditions = array('BrandModel.category_id' => 1, 'BrandModel.is_active' => 1, 'BrandModel.id' => $model_ids);
 
-            if($this->sett_var('SHOW_TYRES_IMG_TOVAR')==1):
+            if ($this->sett_var('SHOW_TYRES_IMG_TOVAR') == 1):
                 $model_conditions['BrandModel.filename !='] = '';
             endif;
             $this->paginate['conditions'] = $model_conditions;
         }
         $sort = 'price_asc';
-            if (CONST_ENABLE_POPULAR_SORT == '1') {
-                $sort = 'popular';
-            }
+        if (CONST_ENABLE_POPULAR_SORT == '1') {
+            $sort = 'popular';
+        }
 
         if (isset($this->request->query['sort']) && in_array($this->request->query['sort'], array('name', 'price_asc', 'price_desc', 'popular'))) {
             $sort = $this->request->query['sort'];
@@ -344,22 +353,21 @@ class TyresController extends AppController {
                 'name' => array('BrandModel.full_title' => 'ASC'),
                 'popular' => array('BrandModel.virtual_season' => 'ASC', 'BrandModel.popular' => 'DESC', 'BrandModel.new' => 'DESC', 'BrandModel.model_in_stock' => 'DESC', 'BrandModel.low_price' => 'ASC')
             );
-        }
-        else {
+        } else {
             $sort_orders = array(
                 'price_asc' => array('BrandModel.low_price' => 'ASC'),
                 'price_desc' => array('BrandModel.low_price' => 'DESC'),
                 'name' => array('BrandModel.full_title' => 'ASC'),
                 'popular' => array('BrandModel.virtual_season' => 'ASC', 'BrandModel.popular' => 'DESC', 'BrandModel.new' => 'DESC', 'BrandModel.model_in_stock' => 'DESC', 'BrandModel.low_price' => 'ASC')
             );
-            $this->BrandModel->virtualFields['low_price'] = '(select min(products.price) from `products` where `products`.`model_id`=`BrandModel`.`id` AND `products`.`id` IN ('.$product_ids.'))';
+            $this->BrandModel->virtualFields['low_price'] = '(select min(products.price) from `products` where `products`.`model_id`=`BrandModel`.`id` AND `products`.`id` IN (' . $product_ids . '))';
 
             if (CONST_ENABLE_POPULAR_SORT == '1') {
                 $current_season = $this->getCurrentSeason();
                 $this->loadModel('Settings');
                 $select = $this->Settings->find('all', array('conditions' => array('type' => 'radio', 'variable' => 'POPULAR_SORT_SEASON')));
-                foreach($select as $val):
-                    $select2[$val['Settings']['variable']][$val['Settings']['description']]=$val['Settings']['value'];
+                foreach ($select as $val):
+                    $select2[$val['Settings']['variable']][$val['Settings']['description']] = $val['Settings']['value'];
                 endforeach;
 
                 if ($select2['POPULAR_SORT_SEASON']['авто'] == 0) {
@@ -371,20 +379,18 @@ class TyresController extends AppController {
                     }
                 }
 
-                $this->BrandModel->virtualFields['model_in_stock'] = '(select max(products.in_stock) from `products` where `products`.`model_id`=`BrandModel`.`id` AND `products`.`id` IN ('.$product_ids.'))';
-                $this->BrandModel->virtualFields['products_season'] = '(select max(products.season) from `products` where `products`.`model_id`=`BrandModel`.`id` AND `products`.`id` IN ('.$product_ids.'))';
+                $this->BrandModel->virtualFields['model_in_stock'] = '(select max(products.in_stock) from `products` where `products`.`model_id`=`BrandModel`.`id` AND `products`.`id` IN (' . $product_ids . '))';
+                $this->BrandModel->virtualFields['products_season'] = '(select max(products.season) from `products` where `products`.`model_id`=`BrandModel`.`id` AND `products`.`id` IN (' . $product_ids . '))';
                 if ($current_season == 'winter') {
-                    $this->BrandModel->virtualFields['virtual_season'] = 'REPLACE(REPLACE(REPLACE(COALESCE((select max(products.season) from `products` where `products`.`model_id`=`BrandModel`.`id` AND `products`.`id` IN ('.$product_ids.')), "2"), "all", "2"), "winter", "1"), "summer", "3")';
+                    $this->BrandModel->virtualFields['virtual_season'] = 'REPLACE(REPLACE(REPLACE(COALESCE((select max(products.season) from `products` where `products`.`model_id`=`BrandModel`.`id` AND `products`.`id` IN (' . $product_ids . ')), "2"), "all", "2"), "winter", "1"), "summer", "3")';
                 } else {
-                    $this->BrandModel->virtualFields['virtual_season'] = 'REPLACE(REPLACE(REPLACE(COALESCE((select max(products.season) from `products` where `products`.`model_id`=`BrandModel`.`id` AND `products`.`id` IN ('.$product_ids.')), "2"), "all", "2"), "summer", "1"), "winter", "3")';
+                    $this->BrandModel->virtualFields['virtual_season'] = 'REPLACE(REPLACE(REPLACE(COALESCE((select max(products.season) from `products` where `products`.`model_id`=`BrandModel`.`id` AND `products`.`id` IN (' . $product_ids . ')), "2"), "all", "2"), "summer", "1"), "winter", "3")';
                 }
             }
 
         }
         $this->paginate['order'] = $sort_orders[$sort];
         $this->BrandModel->virtualFields['full_title'] = 'CONCAT(Brand.title,\' \',BrandModel.title)';
-
-
 
 
         if ($mode == 'table') {
@@ -401,8 +407,7 @@ class TyresController extends AppController {
             );
             $models = $this->paginate('Product');
 
-        }
-        else {
+        } else {
             $models = $this->paginate('BrandModel');
             $this->Product->bindModel(
                 array(
@@ -415,7 +420,6 @@ class TyresController extends AppController {
                 ),
                 false
             );
-
 
 
             foreach ($models as $i => $model) {
@@ -463,8 +467,7 @@ class TyresController extends AppController {
             $meta_title = 'Купить грузовые шины Керчь, Феодосия, шинный центр Авто Дом';
             $meta_keywords = 'Купить, грузовые шины, Керчь, Феодосия, шинный центр Авто Дом';
             $meta_description = 'Шинный центр Авто Дом предлагает купить недорого грузовые шины для любых марок автомобиле в Керчи и Феодосии по самым лучшим ценам';
-        }
-        elseif ($auto == 'agricultural') {
+        } elseif ($auto == 'agricultural') {
             $title = 'Сельхоз шины';
         } elseif ($auto == 'cars') {
             $title = 'Легковые шины';
@@ -489,7 +492,8 @@ class TyresController extends AppController {
     }
 
 
-    function setModification() {
+    function setModification()
+    {
         // modification
         $modification_slug = '';
         if ($this->Session->check('car_modification_slug')) {
@@ -516,7 +520,7 @@ class TyresController extends AppController {
             $this->set('car_generation', $car_generation);
             $this->set('car_model', $car_model);
             $this->set('car_brand', $car_brand);
-            $this->set('modification_slug',$modification_slug);
+            $this->set('modification_slug', $modification_slug);
 
             $car_sizes = $this->CarTyres->find('first', array('conditions' => array('CarTyres.modification_slug' => $modification_slug)));
 
@@ -548,7 +552,7 @@ class TyresController extends AppController {
                 $filter = array('size1' => $size_1, 'size2' => $size_2, 'size3' => $size_3, 'season' => $this->request->query['season']);
 
                 // redirect with sizes
-                $car_search_query = array('modification' => $modification_slug, 'size1' => $filter['size1'], 'size2' => $filter['size2'], 'size3' => $filter['size3'], 'season' => $filter['season'], 'diameter' => 'R'.$size_3, 'in_stock4' => 0, 'in_stock' => 2);
+                $car_search_query = array('modification' => $modification_slug, 'size1' => $filter['size1'], 'size2' => $filter['size2'], 'size3' => $filter['size3'], 'season' => $filter['season'], 'diameter' => 'R' . $size_3, 'in_stock4' => 0, 'in_stock' => 2);
                 $this->redirect(array('controller' => 'tyres', 'action' => 'index', '?' => $car_search_query));
             }
 
@@ -556,7 +560,7 @@ class TyresController extends AppController {
             if (!empty($diameter)) {
                 function filterDiameters($val)
                 {
-                    return function($item) use ($val) {
+                    return function ($item) use ($val) {
                         if (strpos($item, $val) !== FALSE) {
                             return 1;
                         } else {
@@ -585,7 +589,7 @@ class TyresController extends AppController {
                     list($size_1, $size_2) = explode('/', $size_12);
                     $filter = array('size1' => $size_1, 'size2' => $size_2, 'size3' => $size_3, 'season' => $this->request->query['season']);
                     // redirect with sizes
-                    $car_search_query = array('modification' => $modification_slug, 'size1' => $filter['size1'], 'size2' => $filter['size2'], 'size3' => $filter['size3'], 'season' => $filter['season'], 'diameter' => 'R'.$size_3, 'in_stock' => 2);
+                    $car_search_query = array('modification' => $modification_slug, 'size1' => $filter['size1'], 'size2' => $filter['size2'], 'size3' => $filter['size3'], 'season' => $filter['season'], 'diameter' => 'R' . $size_3, 'in_stock' => 2);
                     $this->redirect(array('controller' => 'tyres', 'action' => 'index', '?' => $car_search_query));
                 }
             }
@@ -598,7 +602,8 @@ class TyresController extends AppController {
     }
 
 
-    public function brand($slug) {
+    public function brand($slug)
+    {
 
 
         $mode = 'block';
@@ -613,7 +618,7 @@ class TyresController extends AppController {
         $this->setModification();
 
         $this->loadModel('Supplier');
-        $suppliers = $this->Supplier->find('all', array('fields' => array('Supplier.id', 'Supplier.title', 'Supplier.delivery_time_from', 'Supplier.delivery_time_to'), 'order' => array('Supplier.title' => 'asc')));
+        $suppliers = $this->Supplier->find('all', array('fields' => array('Supplier.id', 'Supplier.title', 'Supplier.delivery_time_from', 'Supplier.delivery_time_to', 'Supplier.prefix'), 'order' => array('Supplier.title' => 'asc')));
         $suppliers_output = array();
         foreach ($suppliers as $supplier) {
             $suppliers_output[$supplier['Supplier']['id']] = array('delivery_time_from' => $supplier['Supplier']['delivery_time_from'], 'delivery_time_to' => $supplier['Supplier']['delivery_time_to']);
@@ -630,8 +635,7 @@ class TyresController extends AppController {
                         unset($filter['model_id']);
                         $this->redirect(array('controller' => 'tyres', 'action' => 'index', '?' => $filter));
                         return;
-                    }
-                    elseif ($new_brand = $this->Brand->find('first', array('conditions' => array('Brand.id' => $brand_id, 'Brand.is_active' => 1), 'fields' => array('Brand.slug')))) {
+                    } elseif ($new_brand = $this->Brand->find('first', array('conditions' => array('Brand.id' => $brand_id, 'Brand.is_active' => 1), 'fields' => array('Brand.slug')))) {
                         $this->redirect(array('controller' => 'tyres', 'action' => 'brand', 'slug' => $new_brand['Brand']['slug'], '?' => $this->request->query));
                         return;
                     }
@@ -669,7 +673,7 @@ class TyresController extends AppController {
             }
 
 
-            if (isset($this->request->query['season']) && !empty($this->request->query['season'])){
+            if (isset($this->request->query['season']) && !empty($this->request->query['season'])) {
                 //print_r($this->request->query['season']);
                 //$this->get_conditions_season($conditions);
                 //$conditions;
@@ -678,9 +682,9 @@ class TyresController extends AppController {
 
                 $this->loadModel('Settings');
                 $sett = $this->Settings->find('all', array(
-                    'fields' => array('Settings.variable','Settings.value'),
+                    'fields' => array('Settings.variable', 'Settings.value'),
                     'conditions' => array(
-                        'or' =>  array(
+                        'or' => array(
                             array('Settings.variable' => 'SHOW_TYRES_VSE_SAMER'),
                             array('Settings.variable' => 'SHOW_TYRES_VSE_WINTER')
                         )
@@ -688,10 +692,9 @@ class TyresController extends AppController {
                 ));
 
 
-
-                foreach($sett as $s):
-                    if($this->season[$s['Settings']['variable']]==$this->request->query['season']&&$s['Settings']['value']==1):
-                        if($this->request->query['season']=='all'):
+                foreach ($sett as $s):
+                    if ($this->season[$s['Settings']['variable']] == $this->request->query['season'] && $s['Settings']['value'] == 1):
+                        if ($this->request->query['season'] == 'all'):
                             $conditions[] = array(
                                 'or' => array(
                                     array(
@@ -710,20 +713,20 @@ class TyresController extends AppController {
                                 'or' => array(
                                     array(
                                         'BrandModel.season IS NOT NULL',
-                                        'or'=>array(
+                                        'or' => array(
                                             array('BrandModel.season' => $this->request->query['season']),
                                             array('BrandModel.season' => 'all')
                                         )),
                                     array(
                                         'BrandModel.season IS NULL',
-                                        'or'=>array(
+                                        'or' => array(
                                             array('Product.season' => $this->request->query['season']),
                                             array('Product.season' => 'all'),
                                         ))
                                 )
                             );
                         endif;
-                    elseif($this->season[$s['Settings']['variable']]==$this->request->query['season']):
+                    elseif ($this->season[$s['Settings']['variable']] == $this->request->query['season']):
                         $conditions[] = array(
                             'or' => array(
                                 array(
@@ -739,8 +742,6 @@ class TyresController extends AppController {
 
                     endif;
                 endforeach;
-
-
 
 
                 /*
@@ -770,10 +771,6 @@ class TyresController extends AppController {
                 */
 
 
-
-
-
-
                 $has_params = true;
             }
 
@@ -795,31 +792,27 @@ class TyresController extends AppController {
             }
 
 
-
-
             if (isset($this->request->query['in_stock'])) {
                 if ($this->request->query['in_stock'] == 1) {
                     $conditions['Product.in_stock'] = 1;
                     $has_params = true;
-                }
-                elseif ($this->request->query['in_stock'] == 0) {
+                } elseif ($this->request->query['in_stock'] == 0) {
                     $conditions['Product.in_stock'] = 0;
                     $has_params = true;
                 }
-            }
-            else {
+            } else {
                 //$this->request->query['in_stock'] = 1;
                 //$conditions['Product.in_stock'] = 1;
                 //$has_params = true;
 
                 /*** select *****/
                 $this->loadModel('Settings');
-                $s = $this->Settings->find('all', array('conditions' => array('type' => 'radio','variable'=>'PRODUCTINSTOCK','value'=>1)));
+                $s = $this->Settings->find('all', array('conditions' => array('type' => 'radio', 'variable' => 'PRODUCTINSTOCK', 'value' => 1)));
 
                 //echo"8888888";
                 //print_r($s);
 
-                if(isset($this->prod[$s[0]['Settings']['description']])):
+                if (isset($this->prod[$s[0]['Settings']['description']])):
                     $this->request->query['in_stock'] = $this->prod[$s[0]['Settings']['description']];
                     $conditions['Product.in_stock'] = $this->request->query['in_stock'];
                 else:
@@ -828,7 +821,6 @@ class TyresController extends AppController {
                 /*** select *****/
 
             }
-
 
 
             if (isset($this->request->query['in_stock4']) && $this->request->query['in_stock4']) {
@@ -869,7 +861,7 @@ class TyresController extends AppController {
                 $conditions['Product.p5'] = $this->request->query['run_flat'];
             }
             if (isset($this->request->query['stock_place']) && $this->request->query['stock_place'] != '') {
-                $conditions['Product.count_place_'.$this->request->query['stock_place'].' >='] = 1;
+                $conditions['Product.count_place_' . $this->request->query['stock_place'] . ' >='] = 1;
             }
             if (isset($this->request->query['p1']) && $this->request->query['p1'] != '') {
                 $conditions['Product.p1'] = $this->request->query['p1'];
@@ -898,8 +890,10 @@ class TyresController extends AppController {
                     $model_ids[$model['Product']['id']] = $model['Product']['model_id'];
                 }
             }
-            $product_ids =  implode(", ", array_keys($model_ids));
-            if (empty($product_ids)) {$product_ids = 0;}
+            $product_ids = implode(", ", array_keys($model_ids));
+            if (empty($product_ids)) {
+                $product_ids = 0;
+            }
             unset($conditions['Product.price >=']);
             unset($conditions['Product.price <=']);
 
@@ -933,8 +927,7 @@ class TyresController extends AppController {
                 $meta_title = 'Купить грузовые шины Керчь, Феодосия, шинный центр Авто Дом';
                 $meta_keywords = 'Купить, грузовые шины, Керчь, Феодосия, шинный центр Авто Дом';
                 $meta_description = 'Шинный центр Авто Дом предлагает купить недорого грузовые шины для любых марок автомобиле в Керчи и Феодосии по самым лучшим ценам';
-            }
-            elseif ($auto == 'agricultural') {
+            } elseif ($auto == 'agricultural') {
                 $title = 'Сельхоз шины';
                 $filter = array('auto' => $auto);
             }
@@ -961,8 +954,7 @@ class TyresController extends AppController {
                     'name' => array('BrandModel.full_title' => 'ASC'),
                     'popular' => array('BrandModel.virtual_season' => 'ASC', 'BrandModel.popular' => 'DESC', 'BrandModel.new' => 'DESC', 'BrandModel.model_in_stock' => 'DESC', 'BrandModel.low_price' => 'ASC')
                 );
-            }
-            else {
+            } else {
                 $sort_orders = array(
                     'price_asc' => array('BrandModel.low_price' => 'ASC'),
                     'price_desc' => array('BrandModel.low_price' => 'DESC'),
@@ -982,7 +974,7 @@ class TyresController extends AppController {
                             'Product' => array(
                                 'foreignKey' => 'model_id',
                                 'conditions' => $conditions,
-                                'order'      => 'Product.price ASC'
+                                'order' => 'Product.price ASC'
                             )
                         )
                     ),
@@ -1009,8 +1001,7 @@ class TyresController extends AppController {
                         if ($auto == 'trucks') {
                             $title = 'Грузовые шины';
                             $filter = array('auto' => $auto);
-                        }
-                        elseif ($auto == 'agricultural') {
+                        } elseif ($auto == 'agricultural') {
                             $title = 'Сельхоз шины';
                             $filter = array('auto' => $auto);
                         }
@@ -1024,16 +1015,15 @@ class TyresController extends AppController {
                     $this->set('show_left_menu', false);
                     $render = 'model';
                 }
-            }
-            else {
+            } else {
                 $breadcrumbs[] = array(
                     'url' => null,
                     'title' => $brand['Brand']['title']
                 );
-                $model_conditions = array('BrandModel.category_id' => 1,'BrandModel.is_active' => 1, 'BrandModel.brand_id' => $brand['Brand']['id'], 'BrandModel.id' => $model_ids);
+                $model_conditions = array('BrandModel.category_id' => 1, 'BrandModel.is_active' => 1, 'BrandModel.brand_id' => $brand['Brand']['id'], 'BrandModel.id' => $model_ids);
                 if (!$has_params) {
                     unset($model_conditions['BrandModel.id']);
-                    if ($this->sett_var('SHOW_TYRES_IMG')==1)
+                    if ($this->sett_var('SHOW_TYRES_IMG') == 1)
                         $model_conditions['BrandModel.filename != '] = '';
                 }
 
@@ -1054,17 +1044,16 @@ class TyresController extends AppController {
                     );
                     $this->paginate['conditions'] = $product_conditions;
                     $models = $this->paginate('Product');
-                }
-                else {
+                } else {
                     //debug($this->paginate['conditions']);
-                    $this->BrandModel->virtualFields['low_price'] = '(select min(products.price) from `products` where `products`.`model_id`=`BrandModel`.`id` AND `products`.`id` IN ('.$product_ids.'))';
+                    $this->BrandModel->virtualFields['low_price'] = '(select min(products.price) from `products` where `products`.`model_id`=`BrandModel`.`id` AND `products`.`id` IN (' . $product_ids . '))';
 
                     if (CONST_ENABLE_POPULAR_SORT == '1') {
                         $current_season = $this->getCurrentSeason();
                         $this->loadModel('Settings');
                         $select = $this->Settings->find('all', array('conditions' => array('type' => 'radio', 'variable' => 'POPULAR_SORT_SEASON')));
-                        foreach($select as $val):
-                            $select2[$val['Settings']['variable']][$val['Settings']['description']]=$val['Settings']['value'];
+                        foreach ($select as $val):
+                            $select2[$val['Settings']['variable']][$val['Settings']['description']] = $val['Settings']['value'];
                         endforeach;
 
                         if ($select2['POPULAR_SORT_SEASON']['авто'] == 0) {
@@ -1076,12 +1065,12 @@ class TyresController extends AppController {
                             }
                         }
 
-                        $this->BrandModel->virtualFields['model_in_stock'] = '(select max(products.in_stock) from `products` where `products`.`model_id`=`BrandModel`.`id` AND `products`.`id` IN ('.$product_ids.'))';
-                        $this->BrandModel->virtualFields['products_season'] = '(select max(products.season) from `products` where `products`.`model_id`=`BrandModel`.`id` AND `products`.`id` IN ('.$product_ids.'))';
+                        $this->BrandModel->virtualFields['model_in_stock'] = '(select max(products.in_stock) from `products` where `products`.`model_id`=`BrandModel`.`id` AND `products`.`id` IN (' . $product_ids . '))';
+                        $this->BrandModel->virtualFields['products_season'] = '(select max(products.season) from `products` where `products`.`model_id`=`BrandModel`.`id` AND `products`.`id` IN (' . $product_ids . '))';
                         if ($current_season == 'winter') {
-                            $this->BrandModel->virtualFields['virtual_season'] = 'REPLACE(REPLACE(REPLACE(COALESCE((select max(products.season) from `products` where `products`.`model_id`=`BrandModel`.`id` AND `products`.`id` IN ('.$product_ids.')), "2"), "all", "2"), "winter", "1"), "summer", "3")';
+                            $this->BrandModel->virtualFields['virtual_season'] = 'REPLACE(REPLACE(REPLACE(COALESCE((select max(products.season) from `products` where `products`.`model_id`=`BrandModel`.`id` AND `products`.`id` IN (' . $product_ids . ')), "2"), "all", "2"), "winter", "1"), "summer", "3")';
                         } else {
-                            $this->BrandModel->virtualFields['virtual_season'] = 'REPLACE(REPLACE(REPLACE(COALESCE((select max(products.season) from `products` where `products`.`model_id`=`BrandModel`.`id` AND `products`.`id` IN ('.$product_ids.')), "2"), "all", "2"), "summer", "1"), "winter", "3")';
+                            $this->BrandModel->virtualFields['virtual_season'] = 'REPLACE(REPLACE(REPLACE(COALESCE((select max(products.season) from `products` where `products`.`model_id`=`BrandModel`.`id` AND `products`.`id` IN (' . $product_ids . ')), "2"), "all", "2"), "summer", "1"), "winter", "3")';
                         }
                     }
 
@@ -1119,20 +1108,21 @@ class TyresController extends AppController {
             $this->set('additional_js', array('lightbox', 'functions', 'slider'));
             $this->set('additional_css', array('lightbox', 'jquery-ui-1.9.2.custom.min'));
             $this->render($render);
-        }
-        else {
+        } else {
             $this->response->statusCode(404);
             $this->response->send();
             $this->render(false);
             return;
         }
     }
-    public function view($slug, $id) {
+
+    public function view($slug, $id)
+    {
 
         $this->loadModel('Brand');
 
         $this->loadModel('Supplier');
-        $suppliers = $this->Supplier->find('all', array('fields' => array('Supplier.id', 'Supplier.title', 'Supplier.delivery_time_from', 'Supplier.delivery_time_to'), 'order' => array('Supplier.title' => 'asc')));
+        $suppliers = $this->Supplier->find('all', array('fields' => array('Supplier.id', 'Supplier.title', 'Supplier.delivery_time_from', 'Supplier.delivery_time_to', 'Supplier.prefix'), 'order' => array('Supplier.title' => 'asc')));
         $suppliers_output = array();
         foreach ($suppliers as $supplier) {
             $suppliers_output[$supplier['Supplier']['id']] = array('delivery_time_from' => $supplier['Supplier']['delivery_time_from'], 'delivery_time_to' => $supplier['Supplier']['delivery_time_to']);
@@ -1155,40 +1145,40 @@ class TyresController extends AppController {
 
                 $conditions = array('Product.is_active' => 1, 'Product.brand_id' => $product['Product']['brand_id'], 'Product.price > ' => 0, 'Product.stock_count > ' => 0);
 
-                if (isset($this->request->query['season']) && !empty($this->request->query['season'])){
-                    if (isset($this->request->query['upr_all']) && !empty($this->request->query['upr_all'])){
-                        if (isset($this->request->query['upr_all']) && !empty($this->request->query['upr_all'])){
-                            if ((( $this->request->query['upr_all'] == 1) AND ( $this->request->query['upr_all'] == 'summer'))
-                                OR (( $this->request->query['upr_all'] == 2) AND ( $this->request->query['upr_all'] == 'winter'))){
+                if (isset($this->request->query['season']) && !empty($this->request->query['season'])) {
+                    if (isset($this->request->query['upr_all']) && !empty($this->request->query['upr_all'])) {
+                        if (isset($this->request->query['upr_all']) && !empty($this->request->query['upr_all'])) {
+                            if ((($this->request->query['upr_all'] == 1) and ($this->request->query['upr_all'] == 'summer'))
+                                or (($this->request->query['upr_all'] == 2) and ($this->request->query['upr_all'] == 'winter'))) {
                                 $conditions[] = array(
                                     'or' => array(
-                                        array('BrandModel.season IS NOT NULL','BrandModel.season' => $this->request->query['season']),
-                                        array('BrandModel.season IS NULL','Product.season' => $this->request->query['season']),
-                                        array('BrandModel.season IS NOT NULL','BrandModel.season' => 'all'),
-                                        array('BrandModel.season IS NULL','Product.season' => 'all')
+                                        array('BrandModel.season IS NOT NULL', 'BrandModel.season' => $this->request->query['season']),
+                                        array('BrandModel.season IS NULL', 'Product.season' => $this->request->query['season']),
+                                        array('BrandModel.season IS NOT NULL', 'BrandModel.season' => 'all'),
+                                        array('BrandModel.season IS NULL', 'Product.season' => 'all')
                                     )
                                 );
-                            }else{
+                            } else {
                                 $conditions[] = array(
                                     'or' => array(
-                                        array('BrandModel.season IS NOT NULL','BrandModel.season' => $this->request->query['season']),
-                                        array('BrandModel.season IS NULL','Product.season' => $this->request->query['season'])
+                                        array('BrandModel.season IS NOT NULL', 'BrandModel.season' => $this->request->query['season']),
+                                        array('BrandModel.season IS NULL', 'Product.season' => $this->request->query['season'])
                                     )
                                 );
                             }
-                        }else{
+                        } else {
                             $conditions[] = array(
                                 'or' => array(
-                                    array('BrandModel.season IS NOT NULL','BrandModel.season' => $this->request->query['season']),
-                                    array('BrandModel.season IS NULL','Product.season' => $this->request->query['season'])
+                                    array('BrandModel.season IS NOT NULL', 'BrandModel.season' => $this->request->query['season']),
+                                    array('BrandModel.season IS NULL', 'Product.season' => $this->request->query['season'])
                                 )
                             );
                         }
-                    }else{
+                    } else {
                         $conditions[] = array(
                             'or' => array(
-                                array('BrandModel.season IS NOT NULL','BrandModel.season' => $this->request->query['season']),
-                                array('BrandModel.season IS NULL','Product.season' => $this->request->query['season'])
+                                array('BrandModel.season IS NOT NULL', 'BrandModel.season' => $this->request->query['season']),
+                                array('BrandModel.season IS NULL', 'Product.season' => $this->request->query['season'])
                             )
                         );
                     }
@@ -1247,8 +1237,7 @@ class TyresController extends AppController {
                 if ($auto == 'trucks') {
                     $title = 'Грузовые шины';
                     $filter = array('auto' => $auto);
-                }
-                elseif ($auto == 'agricultural') {
+                } elseif ($auto == 'agricultural') {
                     $title = 'Сельхоз шины';
                     $filter = array('auto' => $auto);
                 }
@@ -1282,7 +1271,7 @@ class TyresController extends AppController {
                             'Product' => array(
                                 'foreignKey' => 'model_id',
                                 'conditions' => array('Product.is_active' => 1, 'Product.price > ' => 0, 'Product.stock_count > ' => 0),
-                                'order'      => 'Product.price ASC'
+                                'order' => 'Product.price ASC'
                             )
                         )
                     ),
@@ -1306,8 +1295,7 @@ class TyresController extends AppController {
                 $this->set('active_menu', $path);
                 $this->set('current_auto', $auto);
                 $this->set('show_left_menu', false);
-            }
-            else {
+            } else {
 //                $this->response->statusCode(404);
 //                $this->response->send();
 //   echo $this->request;
@@ -1315,8 +1303,7 @@ class TyresController extends AppController {
 //                $this->render(false);
                 return;
             }
-        }
-        else {
+        } else {
             $this->response->statusCode(404);
             $this->response->send();
             $this->render(false);
@@ -1325,19 +1312,16 @@ class TyresController extends AppController {
     }
 
 
-
-
-
-    private function get_conditions_season($conditions){
-
+    private function get_conditions_season($conditions)
+    {
 
 
         /******* настройки летние, зимние и всесезонные шины ********/
         $this->loadModel('Settings');
         $sett = $this->Settings->find('all', array(
-            'fields' => array('Settings.variable','Settings.value'),
+            'fields' => array('Settings.variable', 'Settings.value'),
             'conditions' => array(
-                'or' =>  array(
+                'or' => array(
                     array('Settings.variable' => 'SHOW_TYRES_VSE_SAMER'),
                     array('Settings.variable' => 'SHOW_TYRES_VSE_WINTER')
                 )
@@ -1345,9 +1329,9 @@ class TyresController extends AppController {
         ));
         //$sett[]['Settings']=array('variable'=>'SHOW_TYRES_VSE_VSE','value'=>0);
 
-        foreach($sett as $s):
-            if($this->season[$s['Settings']['variable']]==$this->request->query['season']&&$s['Settings']['value']==1):
-                if($this->request->query['season']=='all'):
+        foreach ($sett as $s):
+            if ($this->season[$s['Settings']['variable']] == $this->request->query['season'] && $s['Settings']['value'] == 1):
+                if ($this->request->query['season'] == 'all'):
                     $conditions[] = array(
                         'or' => array(
                             array(
@@ -1366,20 +1350,20 @@ class TyresController extends AppController {
                         'or' => array(
                             array(
                                 'BrandModel.season IS NOT NULL',
-                                'or'=>array(
+                                'or' => array(
                                     array('BrandModel.season' => $this->request->query['season']),
                                     array('BrandModel.season' => 'all')
                                 )),
                             array(
                                 'BrandModel.season IS NULL',
-                                'or'=>array(
+                                'or' => array(
                                     array('Product.season' => $this->request->query['season']),
                                     array('Product.season' => 'all'),
                                 ))
                         )
                     );
                 endif;
-            elseif($this->season[$s['Settings']['variable']]==$this->request->query['season']):
+            elseif ($this->season[$s['Settings']['variable']] == $this->request->query['season']):
 
                 $conditions[] = array(
                     'or' => array(
@@ -1396,7 +1380,7 @@ class TyresController extends AppController {
             endif;
         endforeach;
 
-        if($this->request->query['season']=='all'):
+        if ($this->request->query['season'] == 'all'):
             $conditions[] = array(
                 'or' => array(
                     array(
@@ -1414,8 +1398,6 @@ class TyresController extends AppController {
 
 
         /******* настройки летние, зимние и всесезонные шины ********/
-
-
 
 
         /*if(isset($this->request->query['upr_all']) && !empty($this->request->query['upr_all']))
@@ -1474,20 +1456,15 @@ class TyresController extends AppController {
     }
 
 
-
-
-
-    private function get_conditions($conditions){
-        if(isset($this->request->query['season'])&&!empty($this->request->query['season'])){
+    private function get_conditions($conditions)
+    {
+        if (isset($this->request->query['season']) && !empty($this->request->query['season'])) {
             $conditions[] = $this->get_conditions_season($conditions);
         }
 //        else {
 //            $season = $this->getCurrentSeason();
 //            $conditions['Product.season'] = $season;
 //        }
-
-
-
 
 
         $auto = '';
@@ -1519,12 +1496,10 @@ class TyresController extends AppController {
         if (isset($this->request->query['in_stock'])) {
             if ($this->request->query['in_stock'] == 1) {
                 $conditions['Product.in_stock'] = 1;
-            }
-            elseif ($this->request->query['in_stock'] == 0) {
+            } elseif ($this->request->query['in_stock'] == 0) {
                 $conditions['Product.in_stock'] = 0;
             }
-        }
-        else {
+        } else {
             $this->request->query['in_stock'] = 1;
             $conditions['Product.in_stock'] = 1;
         }
@@ -1559,7 +1534,7 @@ class TyresController extends AppController {
             $conditions['Product.brand_id'] = explode(',', $this->request->query['brand_id']);
         }
         if (isset($this->request->query['stock_place']) && $this->request->query['stock_place'] != '') {
-            $conditions['Product.count_place_'.$this->request->query['stock_place'].' >='] = 1;
+            $conditions['Product.count_place_' . $this->request->query['stock_place'] . ' >='] = 1;
         }
 
         if (isset($this->request->query['p1']) && $this->request->query['p1'] != '') {
@@ -1571,7 +1546,9 @@ class TyresController extends AppController {
 
         return $conditions;
     }
-    private function _get_sizes($size) {
+
+    private function _get_sizes($size)
+    {
         if (substr_count($size, '.') > 0) {
             $sizes = array(
                 $size,
@@ -1582,19 +1559,19 @@ class TyresController extends AppController {
                 $new_size = substr($size, 0, -1);
                 $sizes[] = $new_size;
                 $sizes[] = str_replace('.', ',', $new_size);
-            }
-            elseif (strlen($parts[1]) == 1) {
+            } elseif (strlen($parts[1]) == 1) {
                 $new_size = $size . '0';
                 $sizes[] = $new_size;
                 $sizes[] = str_replace('.', ',', $new_size);
             }
             return $sizes;
-        }
-        else {
+        } else {
             return $size;
         }
     }
-    public function set_filter() {
+
+    public function set_filter()
+    {
         Configure::write('debug', 0);
         $conditions = array('Product.is_active' => 1, 'Product.category_id' => 1, 'Product.price > ' => 0, 'Product.stock_count > ' => 0);
         $conditions = $this->get_conditions($conditions);
@@ -1611,8 +1588,8 @@ class TyresController extends AppController {
     }
 
 
-
-    public function popular() {
+    public function popular()
+    {
         $this->loadModel('Page');
         if ($page = $this->Page->find('first', array('conditions' => array('Page.is_active' => 1, 'Page.slug' => 'tyres')))) {
             $this->setMeta('title', !empty($page['Page']['meta_title']) ? $page['Page']['meta_title'] : $page['Page']['title']);
@@ -1649,10 +1626,10 @@ class TyresController extends AppController {
         //print_r($select);
 
 
-        foreach($select as $val):
-            $select2[$val['Settings']['variable']][$val['Settings']['description']]=$val['Settings']['value'];
-            if($val['Settings']['variable']=='PRODUCTINSTOCK'&&$val['Settings']['value']==1&&!empty($this->prod[$val['Settings']['description']])):
-                $conditions['hasMany']['Product']['conditions']=array('Product.in_stock'=>$this->prod[$val['Settings']['description']]);
+        foreach ($select as $val):
+            $select2[$val['Settings']['variable']][$val['Settings']['description']] = $val['Settings']['value'];
+            if ($val['Settings']['variable'] == 'PRODUCTINSTOCK' && $val['Settings']['value'] == 1 && !empty($this->prod[$val['Settings']['description']])):
+                $conditions['hasMany']['Product']['conditions'] = array('Product.in_stock' => $this->prod[$val['Settings']['description']]);
             endif;
         endforeach;
 
@@ -1660,7 +1637,7 @@ class TyresController extends AppController {
         $this->set('select', $select2);
         /*** select *****/
         /*** Выборка *****/
-        $this->BrandModel->bindModel($conditions,false);
+        $this->BrandModel->bindModel($conditions, false);
         $new = $this->BrandModel->find('all',
             array(
                 'limit' => 3,
@@ -1683,7 +1660,8 @@ class TyresController extends AppController {
         $this->set('show_left_menu', true);
     }
 
-    public function trucks() {
+    public function trucks()
+    {
         $this->set('active_menu', 'truck-tyres');
         $this->set('show_left_menu', true);
     }
