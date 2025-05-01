@@ -789,6 +789,21 @@ class TyresController extends AppController
                 );
                 $auto = $this->request->query['auto'];
                 $has_params = true;
+            } else {
+                if ($this->check_truck() != 'truck-tyres') {
+                    $conditions[] = array(
+                        'or' => array(
+                            array(
+                                'BrandModel.auto IS NOT NULL',
+                                'BrandModel.auto' => array('cars', 'light_trucks')
+                            ),
+                            array(
+                                'BrandModel.auto IS NULL',
+                                'Product.auto' => array('cars', 'light_trucks')
+                            )
+                        )
+                    );
+                }
             }
 
 
