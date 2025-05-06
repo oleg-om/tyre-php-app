@@ -790,7 +790,7 @@ class TyresController extends AppController
                 $auto = $this->request->query['auto'];
                 $has_params = true;
             } else {
-                if ($this->check_truck() != 'truck-tyres') {
+                if ($this->check_truck($auto) != 'truck-tyres' && empty($this->request->query['model_id'])) {
                     $conditions[] = array(
                         'or' => array(
                             array(
