@@ -5450,11 +5450,12 @@ class ImportController extends AppController
                                             } elseif (isset($title)) {
                                                 $size_title = $title;
                                             }
+
                                             if (isset($size_title)) {
                                                 // 33*12.50/R15LT MAXTREK MUD TRAC 108Q
                                                 // 235/75/R15LT MAXTREK MUD TRAC 104/101Q
                                                 // склад колес
-                                                if (preg_match('/(\d{2,3})[\/\*]([0-9\.,]{2,5})\/(ZR|ZRF|R)([0-9C]{2,3})(?:LT)?\s+([A-Z]+)\s+(.+?)\s+(?:(\d{2,3})\/)?(\d{2,3})([A-Z])/iu', $size_title, $mathces)) {
+                                                if (preg_match('/([0-9\.,]{2,3})\/([0-9\.,]{2,5})\/(ZR|ZRF|R|RF)([0-9C]{2,3})(?:LT)?\s+(.+?)\s+(?:(\d{2,3})\/)?(\d{2,3})([A-Z])/ui', $size_title, $mathces)) {
                                                     $save_data['size1'] = str_ireplace(',', '.', $mathces[1]);
                                                     $save_data['size2'] = str_ireplace(',', '.', $mathces[2]);
                                                     $save_data['size3'] = str_ireplace(array(',', 'С', 'с', ' '), array('.', 'C', 'C', ''), $mathces[4]);
@@ -5463,8 +5464,8 @@ class ImportController extends AppController
                                                     if (isset($title)) {
                                                         $title = trim(str_ireplace($mathces[0], ' ', $title));
                                                     }
-                                                } // 185/R14C MAXTREK SU-810 102/100T
-                                                elseif (preg_match('/(\d{2,3})[\/\*]([0-9\.,]{2,5})\/(ZR|ZRF|R)([0-9C]{2,3})(?:LT)?\s+([A-Z]+)\s+(.+?)\s+(?:(\d{2,3})\/)?(\d{2,3})([A-Z])/iu', $size_title, $mathces)) {
+                                                } // 185/R14C MAXTREK SU-810 102/100T // склад колес
+                                                elseif (preg_match('/^([0-9.,]{2,3})\/(ZR|ZRF|R|RF)([0-9C]{2,3})(LT)?\s+([A-Z0-9\/\-\s]+)\s+(?:(\d{2,3})\/)?(\d{2,3})([A-Z])/ui', $size_title, $mathces)) {
                                                     $save_data['size1'] = str_ireplace(',', '.', $mathces[1]);
                                                     $save_data['size2'] = '';
                                                     $save_data['size3'] = str_ireplace(array(',', 'С', 'с', ' '), array('.', 'C', 'C', ''), $mathces[3]);
@@ -5473,7 +5474,7 @@ class ImportController extends AppController
                                                     if (isset($title)) {
                                                         $title = trim(str_ireplace($mathces[0], ' ', $title));
                                                     }
-                                                } elseif (preg_match('/(\s|^)([0-9\.,]{1,4})(-|\/)([0-9\.,]{1,4})\s*(-|\/|R-|ZR|PR|LTR)([0-9\.,CС ]{2,4})(\s|\/[0-9]+|$)/iu', $size_title, $mathces)) {
+                                                } elseif (preg_match('/(\s|^)([0-9\.,]{1,4})(-|\/)([0-9\.,]{1,4})\s*(-|\/|R-|ZR|PR|LTR)([0-9\.,CС ]{2,4})(\s|\/[0-9]+|$)/ui', $size_title, $mathces)) {
                                                     $save_data['size1'] = str_ireplace(',', '.', $mathces[2]);
                                                     $save_data['size2'] = str_ireplace(',', '.', $mathces[4]);
                                                     $save_data['size3'] = str_ireplace(array(',', 'С', 'с', ' '), array('.', 'C', 'C', ''), $mathces[6]);
