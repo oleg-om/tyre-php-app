@@ -5454,20 +5454,20 @@ class ImportController extends AppController
                                                 // 33*12.50/R15LT MAXTREK MUD TRAC 108Q
                                                 // 235/75/R15LT MAXTREK MUD TRAC 104/101Q
                                                 // склад колес
-                                                if (preg_match('/(\d{2,3})[\/\*]([0-9\.,]{2,5})\/(ZR|ZRF|R)(\d{2})(?:LT|C)?\s+([A-Z]+)\s+(.+?)\s+(?:(\d{2,3})\/)?(\d{2,3})([A-Z])/iu', $size_title, $mathces)) {
+                                                if (preg_match('/(\d{2,3})[\/\*]([0-9\.,]{2,5})\/(ZR|ZRF|R)([0-9C]{2,3})(?:LT)?\s+([A-Z]+)\s+(.+?)\s+(?:(\d{2,3})\/)?(\d{2,3})([A-Z])/iu', $size_title, $mathces)) {
                                                     $save_data['size1'] = str_ireplace(',', '.', $mathces[1]);
                                                     $save_data['size2'] = str_ireplace(',', '.', $mathces[2]);
-                                                    $save_data['size3'] = str_ireplace(',', '.', $mathces[4]);
+                                                    $save_data['size3'] = str_ireplace(array(',', 'С', 'с', ' '), array('.', 'C', 'C', ''), $mathces[4]);
                                                     $save_data['f1'] = $mathces[8];
                                                     $save_data['f2'] = $mathces[9];
                                                     if (isset($title)) {
                                                         $title = trim(str_ireplace($mathces[0], ' ', $title));
                                                     }
                                                 } // 185/R14C MAXTREK SU-810 102/100T
-                                                elseif (preg_match('/(\d{2,3})[\/\*]([0-9\.,]{2,5})\/(ZR|ZRF|R)(\d{2})(?:LT|C)?\s+([A-Z]+)\s+(.+?)\s+(?:(\d{2,3})\/)?(\d{2,3})([A-Z])/iu', $size_title, $mathces)) {
+                                                elseif (preg_match('/(\d{2,3})[\/\*]([0-9\.,]{2,5})\/(ZR|ZRF|R)([0-9C]{2,3})(?:LT)?\s+([A-Z]+)\s+(.+?)\s+(?:(\d{2,3})\/)?(\d{2,3})([A-Z])/iu', $size_title, $mathces)) {
                                                     $save_data['size1'] = str_ireplace(',', '.', $mathces[1]);
                                                     $save_data['size2'] = '';
-                                                    $save_data['size3'] = str_ireplace(',', '.', $mathces[3]);
+                                                    $save_data['size3'] = str_ireplace(array(',', 'С', 'с', ' '), array('.', 'C', 'C', ''), $mathces[3]);
                                                     $save_data['f1'] = $mathces[7];
                                                     $save_data['f2'] = $mathces[8];
                                                     if (isset($title)) {
