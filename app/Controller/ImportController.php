@@ -5454,7 +5454,7 @@ class ImportController extends AppController
                                                 // 33*12.50/R15LT MAXTREK MUD TRAC 108Q
                                                 // 235/75/R15LT MAXTREK MUD TRAC 104/101Q
                                                 // склад колес
-                                                if (preg_match('/(\d{2,3})[\/\*]([0-9\.,]{2,5})\/(ZR|ZRF|R)(\d{2})(?:LT)?\s+([A-Z]+)\s+(.+?)\s+(?:(\d{2,3})\/)?(\d{2,3})([A-Z])/iu', $size_title, $mathces)) {
+                                                if (preg_match('/(\d{2,3})[\/\*]([0-9\.,]{2,5})\/(ZR|ZRF|R)(\d{2})(?:LT|C)?\s+([A-Z]+)\s+(.+?)\s+(?:(\d{2,3})\/)?(\d{2,3})([A-Z])/iu', $size_title, $mathces)) {
                                                     $save_data['size1'] = str_ireplace(',', '.', $mathces[1]);
                                                     $save_data['size2'] = str_ireplace(',', '.', $mathces[2]);
                                                     $save_data['size3'] = str_ireplace(',', '.', $mathces[4]);
