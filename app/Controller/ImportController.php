@@ -5450,12 +5450,13 @@ class ImportController extends AppController
                                             } elseif (isset($title)) {
                                                 $size_title = $title;
                                             }
+                                            print_r($size_title);
 
                                             if (isset($size_title)) {
-                                                // 33*12.50/R15LT MAXTREK MUD TRAC 108Q
-                                                // 235/75/R15LT MAXTREK MUD TRAC 104/101Q
+                                                // 33/12.50/R15LT
+                                                // 235/75/R15LT
                                                 // склад колес
-                                                if (preg_match('/([0-9\.,]{2,3})\/([0-9\.,]{2,5})\/(ZR|ZRF|R|RF)([0-9C]{2,3})(?:LT)?\s+(.+?)\s+(?:(\d{2,3})\/)?(\d{2,3})([A-Z])/ui', $size_title, $mathces)) {
+                                                if (preg_match('/([0-9\.,]{2,3})\/([0-9\.,]{2,5})\/(ZR|ZRF|R|RF)([0-9C]{2,3})(?:LT)?/ui', $size_title, $mathces)) {
                                                     $save_data['size1'] = str_ireplace(',', '.', $mathces[1]);
                                                     $save_data['size2'] = str_ireplace(',', '.', $mathces[2]);
                                                     $save_data['size3'] = str_ireplace(array(',', 'С', 'с', ' '), array('.', 'C', 'C', ''), $mathces[4]);
@@ -5464,8 +5465,8 @@ class ImportController extends AppController
                                                     if (isset($title)) {
                                                         $title = trim(str_ireplace($mathces[0], ' ', $title));
                                                     }
-                                                } // 185/R14C MAXTREK SU-810 102/100T // склад колес
-                                                elseif (preg_match('/^([0-9.,]{2,3})\/(ZR|ZRF|R|RF)([0-9C]{2,3})(LT)?\s+([A-Z0-9\/\-\s]+)\s+(?:(\d{2,3})\/)?(\d{2,3})([A-Z])/ui', $size_title, $mathces)) {
+                                                } // 185/R14C // склад колес
+                                                elseif (preg_match('/^([0-9.,]{2,3})\/(ZR|ZRF|R|RF)([0-9C]{2,3})(LT)?/ui', $size_title, $mathces)) {
                                                     $save_data['size1'] = str_ireplace(',', '.', $mathces[1]);
                                                     $save_data['size2'] = '';
                                                     $save_data['size3'] = str_ireplace(array(',', 'С', 'с', ' '), array('.', 'C', 'C', ''), $mathces[3]);
@@ -5603,6 +5604,14 @@ class ImportController extends AppController
                                                 $f_title = $title;
                                             }
                                             if (isset($f_title)) {
+                                                // 104/102S // склад колес
+                                                if (preg_match('/(?:([0-9]{2,3})\/)?([0-9]{2,3})(F|G|J|K|L|M|N|P|Q|R|S|T|U|H|V|VR|W|Y|ZR|К|М|Р|Т|Н{1})/ui', $f_title, $mathces)) {
+                                                    $save_data['f1'] = $mathces[2];
+                                                    $save_data['f2'] = str_ireplace(array('К', 'М', 'Р', 'Т', 'Н'), array('K', 'M', 'P', 'T', 'H'), $mathces[3]);
+                                                    if (isset($title)) {
+                                                        $title = trim(str_ireplace($mathces[0], ' ', $title));
+                                                    }
+                                                }
                                                 if (preg_match('/\b([0-9]{2,}\/[0-9]{2,})\s*(F|G|J|K|L|M|N|P|Q|R|S|T|U|H|V|VR|W|Y|ZR|К|М|Р|Т|Н)\b/ui', $f_title, $mathces)) {
                                                     $save_data['f1'] = $mathces[1];
                                                     $save_data['f2'] = str_ireplace(array('К', 'М', 'Р', 'Т', 'Н'), array('K', 'M', 'P', 'T', 'H'), $mathces[2]);
@@ -5651,6 +5660,8 @@ class ImportController extends AppController
                                         if (isset($save_data['size3'])) {
                                             if (substr_count($save_data['size3'], 'C') > 0) {
                                                 $product_auto = 'легкогрузовая';
+                                            } else {
+                                                $product_auto = 'легковая';
                                             }
                                             //$save_data['size3'] = floatval(str_ireplace(',', '.', trim(preg_replace('/[^0-9\.,]/', '', $save_data['size3']))));
                                         }
@@ -5739,9 +5750,12 @@ class ImportController extends AppController
                                             if (isset($brands[$save_data['brand']])) {
                                                 $save_data['brand_id'] = $brands[$save_data['brand']];
                                                 // find model
+                                                print_r('2-' . $title);
                                                 if (!isset($save_data['model']) && isset($title)) {
                                                     $save_data['model'] = $title;
+                                                    print_r('3-' . $title);
                                                 }
+
                                                 if (isset($save_data['model'])) {
                                                     $save_data['model'] = trim(str_ireplace(array('відновл.', 'лента', 'кольцо', 'DOT-09', 'DOT-08', 'DOT-07', 'Graphite', 'silver', 'black', '(runflat)', '(п\слик)', '(п\ш)', 'п/ш', 'слик', 'rwl', 'owl', 'пш', 'wsw'), ' ', $save_data['model']));
                                                     $save_data['model'] = trim(preg_replace('/\b(xl|mfs|mo|rf|ms|rof|ao|шип)\b/ui', ' ', $save_data['model']));
