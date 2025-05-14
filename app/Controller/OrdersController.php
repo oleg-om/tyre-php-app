@@ -336,7 +336,7 @@ class OrdersController extends AppController
                             'emkost' => '',
                             'typeakb' => '',
                             'polar' => '',
-                            'vendor' => ''.
+                            'vendor' => '',
                             'vendorFromSite' => strval($supplier['Supplier']['title']),
 
                         );
