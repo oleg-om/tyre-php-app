@@ -5459,8 +5459,6 @@ class ImportController extends AppController
                                                     $save_data['size1'] = str_ireplace(',', '.', $mathces[1]);
                                                     $save_data['size2'] = str_ireplace(',', '.', $mathces[2]);
                                                     $save_data['size3'] = str_ireplace(array(',', 'С', 'с', ' '), array('.', 'C', 'C', ''), $mathces[4]);
-                                                    $save_data['f1'] = $mathces[8];
-                                                    $save_data['f2'] = $mathces[9];
                                                     if (isset($title)) {
                                                         $title = trim(str_ireplace($mathces[0], ' ', $title));
                                                     }
@@ -5469,8 +5467,6 @@ class ImportController extends AppController
                                                     $save_data['size1'] = str_ireplace(',', '.', $mathces[1]);
                                                     $save_data['size2'] = '';
                                                     $save_data['size3'] = str_ireplace(array(',', 'С', 'с', ' '), array('.', 'C', 'C', ''), $mathces[3]);
-                                                    $save_data['f1'] = $mathces[7];
-                                                    $save_data['f2'] = $mathces[8];
                                                     if (isset($title)) {
                                                         $title = trim(str_ireplace($mathces[0], ' ', $title));
                                                     }
@@ -5610,8 +5606,7 @@ class ImportController extends AppController
                                                     if (isset($title)) {
                                                         $title = trim(str_ireplace($mathces[0], ' ', $title));
                                                     }
-                                                }
-                                                if (preg_match('/\b([0-9]{2,}\/[0-9]{2,})\s*(F|G|J|K|L|M|N|P|Q|R|S|T|U|H|V|VR|W|Y|ZR|К|М|Р|Т|Н)\b/ui', $f_title, $mathces)) {
+                                                } elseif (preg_match('/\b([0-9]{2,}\/[0-9]{2,})\s*(F|G|J|K|L|M|N|P|Q|R|S|T|U|H|V|VR|W|Y|ZR|К|М|Р|Т|Н)\b/ui', $f_title, $mathces)) {
                                                     $save_data['f1'] = $mathces[1];
                                                     $save_data['f2'] = str_ireplace(array('К', 'М', 'Р', 'Т', 'Н'), array('K', 'M', 'P', 'T', 'H'), $mathces[2]);
                                                     if (isset($title)) {
