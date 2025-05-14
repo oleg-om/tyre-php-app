@@ -336,7 +336,8 @@ class OrdersController extends AppController
                             'emkost' => '',
                             'typeakb' => '',
                             'polar' => '',
-                            'vendor' => strval($supplier['Supplier']['title']),
+                            'vendor' => '',
+                            'vendorFromSite' => strval($supplier['Supplier']['title']),
 
                         );
                         if ($product_item['Product']['category_id'] == 1) {
