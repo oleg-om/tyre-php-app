@@ -5450,7 +5450,6 @@ class ImportController extends AppController
                                             } elseif (isset($title)) {
                                                 $size_title = $title;
                                             }
-                                            print_r($size_title);
 
                                             if (isset($size_title)) {
                                                 // 33/12.50/R15LT
@@ -5750,10 +5749,8 @@ class ImportController extends AppController
                                             if (isset($brands[$save_data['brand']])) {
                                                 $save_data['brand_id'] = $brands[$save_data['brand']];
                                                 // find model
-                                                print_r('2-' . $title);
                                                 if (!isset($save_data['model']) && isset($title)) {
                                                     $save_data['model'] = $title;
-                                                    print_r('3-' . $title);
                                                 }
 
                                                 if (isset($save_data['model'])) {
