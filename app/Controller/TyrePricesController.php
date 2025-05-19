@@ -13,6 +13,13 @@ class TyrePricesController extends AppController
     public $model = 'TyrePrice';
     public $submenu = 'tyre_prices';
 
+    public function _list()
+    {
+        parent::_list();
+        $this->loadModel('TyrePrice');
+        $this->set('priceAuto', $this->TyrePrice->priceAuto);
+    }
+
     public function _edit($id)
     {
         $title = parent::_edit($id);
