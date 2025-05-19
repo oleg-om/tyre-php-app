@@ -9,8 +9,20 @@ class Supplier extends AppModel
             'rule' => 'notEmpty',
             'message' => 'error_title_empty'
         ),
-        'delivery_time_from' => array(),
-        'delivery_time_to' => array(),
+        'delivery_time_from' => array(
+            array(
+                'rule' => 'notEmpty',
+                'required' => true,
+                'message' => 'error_station_id_empty'
+            ),
+        ),
+        'delivery_time_to' => array(
+            array(
+                'rule' => 'notEmpty',
+                'required' => true,
+                'message' => 'error_station_id_empty'
+            ),
+        ),
         'prefix' => array()
     );
 
