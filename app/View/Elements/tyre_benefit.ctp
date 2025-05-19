@@ -5,7 +5,7 @@ if (isset($product) && $product['p1'] >= 1) {
     if (strpos(strtolower($product['sku']), ' suv') !== false) {
         $auto = 'suv';
     }
-    print_r($tyre_price[$auto]);
+
     if (isset($tyre_price[$auto][$product['size3']])) {
         $value = $tyre_price[$auto][$product['size3']];
 
