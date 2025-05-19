@@ -1,12 +1,19 @@
 <?php
 if (isset($product) && $product['p1'] >= 1) {
-    if (isset($tyre_price[$product['size3']])) {
-        $value = $tyre_price[$product['size3']];
+
+    $auto = 'cars';
+    if (strpos(strtolower($product['sku']), ' suv') !== false) {
+        $auto = 'suv';
+    }
+
+    if (isset($tyre_price[$auto][$product['size3']])) {
+        $value = $tyre_price[$auto][$product['size3']];
+
         $text = 'Шиномонтаж бесплатно';
 
         if ($product['p1'] == 2) {
             // 50%
-            $value = round((floatval($tyre_price[$product['size3']]) * 0.5) / 5) * 5;
+            $value = round((floatval($tyre_price[$auto][$product['size3']]) * 0.5) / 5) * 5;
             $text = 'Шиномонтаж 50%';
         }
 

@@ -14,6 +14,11 @@ $this->Backend->addText('price', array(
     'default' => '0.00',
     'required' => true
 ));
+$this->Backend->addSelect('auto', array(
+    'label' => __d('admin_tyre_prices', 'label_auto'),
+    'options' => $priceAuto,
+    'empty' => false
+));
 $this->Backend->addHidden('id');
 $this->Backend->addHidden('action', array(
     'type' => 'hidden',

@@ -490,7 +490,15 @@ class TyresController extends AppController
         $tyre_price_model = $this->TyrePrice->find('all');
         $tyre_prices = array();
         foreach ($tyre_price_model as $tyre_price) {
-            $tyre_prices[$tyre_price['TyrePrice']['size']] = $tyre_price['TyrePrice']['price'];
+            $auto = $tyre_price['TyrePrice']['auto'];
+            $size = $tyre_price['TyrePrice']['size'];
+            $price = $tyre_price['TyrePrice']['price'];
+
+            if (!isset($tyre_prices[$auto])) {
+                $tyre_prices[$auto] = array();
+            }
+
+            $tyre_prices[$auto][$size] = $price;
         }
         $this->set('tyre_price', $tyre_prices);
         $this->set('additional_js', array('lightbox', 'slider', 'functions'));
@@ -1319,7 +1327,15 @@ class TyresController extends AppController
                 $tyre_price_model = $this->TyrePrice->find('all');
                 $tyre_prices = array();
                 foreach ($tyre_price_model as $tyre_price) {
-                    $tyre_prices[$tyre_price['TyrePrice']['size']] = $tyre_price['TyrePrice']['price'];
+                    $auto = $tyre_price['TyrePrice']['auto'];
+                    $size = $tyre_price['TyrePrice']['size'];
+                    $price = $tyre_price['TyrePrice']['price'];
+
+                    if (!isset($tyre_prices[$auto])) {
+                        $tyre_prices[$auto] = array();
+                    }
+
+                    $tyre_prices[$auto][$size] = $price;
                 }
                 $this->set('tyre_price', $tyre_prices);
                 $this->set('active_menu', $path);
