@@ -1596,7 +1596,7 @@ a.btVer3:hover {
 .border-b-tyres .boxList.season-winter,
 .border-b-tyres .boxList.season-summer,
 .border-b-tyres .boxList.season-all {
-    height: 335px;
+    height: 387px;
     padding-top: 15px;
 }
 
@@ -5329,4 +5329,48 @@ table.withlines {
     bottom: 10px;
     right: 10px;
     width: 40%;
+}
+
+.tyre__benefit {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 4px;
+    background-color: #f0f0f0;
+    border-radius: 8px;
+    padding: 4px 6px 4px 4px;
+    user-select: none;
+    position: relative;
+    gap: 10px;
+}
+
+.tyre__benefit .tyre__icon-tooltip {
+    top: -20px;
+    left: 10px;
+}
+
+.tyre__benefit .tyre__icon-tooltip:after {
+    top: 100%;
+    left: 10px;
+}
+
+.tyre__benefit:hover .tyre__icon-tooltip {
+    display: block;
+}
+
+.tyre__benefit-gift {
+    width: 40px;
+    height: 40px;
+}
+
+.tyre__benefit-caption {
+    font-size: 12px;
+}
+
+.tyre__benefit-text {
+    font-size: 14px;
+}
+
+.tyre__benefit-price {
+    font-weight: 900;
 }
