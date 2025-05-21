@@ -5338,10 +5338,10 @@ table.withlines {
     margin-top: 4px;
     background-color: #f0f0f0;
     border-radius: 8px;
-    padding: 4px 6px 4px 4px;
+    padding: 4px 4px 4px 4px;
     user-select: none;
     position: relative;
-    gap: 10px;
+    gap: 2px;
 }
 
 .tyre__benefit .tyre__icon-tooltip {
