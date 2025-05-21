@@ -1,0 +1,667 @@
+/*--breakpoint-xs: 0;*/
+/*--breakpoint-sm: 576px;*/
+/*--breakpoint-md: 768px;*/
+/*--breakpoint-lg: 992px;*/
+/*--breakpoint-xl: 1200px;*/
+/*--breakpoint-xxl: 1400px;*/
+
+/*--container-sm: 100%;*/
+/*--container-md: 720px;*/
+/*--container-lg: 960px;*/
+/*--container-xl: 1140px;*/
+/*--container-xxl: 1320px;*/
+@media screen and (min-width: 350px) {
+    #header .info-group .header-griffon {
+        display: flex;
+        width: 65px;
+        height: 65px;
+        padding-right: 10px;
+    }
+
+    #header .info-group .header-griffon-1-april img {
+        margin-left: -25px;
+    }
+}
+
+@media screen and (min-width: 550px) {
+    .boxList {
+        width: 41%
+    }
+
+    .selection .item {
+        width: 45%;
+    }
+
+    .jcarousel-wrapper {
+        width: 450px;
+    }
+
+    .jcarousel li {
+        width: 450px !important;
+    }
+
+    .cart-prod {
+        flex-direction: row;
+
+    }
+
+    .cart-prod.total-cart {
+        justify-content: space-between;
+    }
+}
+
+@media screen and (min-width: 768px) {
+    .wrap {
+        max-width: var(--container-md)
+    }
+
+    #header #nav {
+        max-width: var(--container-md)
+    }
+
+    .boxList {
+        width: 44%;
+    }
+
+    .width-disk {
+        justify-content: flex-start;
+    }
+
+    .selection .item {
+        width: 30%;
+    }
+
+    .jcarousel-wrapper {
+        width: 580px;
+    }
+
+    .jcarousel li {
+        width: 580px !important;
+    }
+
+    .selection__modal {
+        columns: 3;
+    }
+
+    .list-view__item {
+        grid-template-columns: auto 139px 131px;
+        grid-template-rows: auto;
+    }
+
+    .list-view__price-col {
+        margin-left: 0;
+    }
+
+    .list-view__info-col .akb-polarity {
+        display: flex;
+        left: 83px;
+    }
+
+    .product__info-prices {
+        margin-left: -2px;
+        margin-top: 0;
+    }
+}
+
+@media screen and (min-width: 992px) {
+    .wrap {
+        max-width: var(--container-lg)
+    }
+
+    #header #nav {
+        max-width: var(--container-lg)
+    }
+
+    .content {
+        flex-direction: row;
+    }
+
+    #header .cart {
+        padding-top: 25px;
+    }
+
+    #header .cart button {
+        padding: 10px 20px 8px 55px;
+        width: auto;
+        height: auto;
+        background-position: inherit;
+    }
+
+    #header .cart button span {
+        display: block;
+    }
+
+    #header .logo {
+        margin-left: -42px;
+    }
+
+    #header .logo .logo__years {
+        bottom: -6px;
+        top: auto;
+    }
+
+    #header .tyres {
+        min-height: 105px;
+    }
+
+    #header .info-group .info {
+        display: block;
+    }
+
+    #header .info-group .info table tbody tr th {
+        min-width: 270px;
+        font-weight: 400;
+    }
+
+    #header .info-group .header-griffon {
+        height: 75px;
+        width: 75px;
+    }
+
+    .toggle__menu {
+        display: flex;
+    }
+
+    #header .info-group {
+        display: flex;
+        padding: 0;
+        width: auto;
+    }
+
+    .header-toggle {
+        display: none;
+    }
+
+    .header-wrap {
+        padding-top: 10px;
+        align-items: flex-start;
+    }
+
+    #header .logo {
+        padding-top: 18px;
+    }
+
+    .jcarousel-wrapper {
+        width: 600px;
+    }
+
+    .jcarousel li {
+        width: 600px !important;
+    }
+
+    .left-nav {
+        position: sticky;
+        top: 0;
+        bottom: 0;
+        width: 200px;
+    }
+
+    .filter-group .item {
+        display: block;
+    }
+
+    .left-nav .left-nav__button {
+        display: none;
+    }
+
+    .left-nav .filter-group {
+        display: block;
+    }
+
+    .left-nav .title {
+        margin-bottom: 5px;
+    }
+
+    .left-nav {
+        padding-bottom: 10px;
+        width: 280px;
+        min-width: 280px;
+    }
+
+    .item-group {
+        flex-direction: row;
+        gap: 10px;
+    }
+
+    .bt-style1 {
+        display: block;
+        width: 100%;
+        margin-left: auto;
+        margin-right: auto;
+        margin-top: 10px;
+    }
+
+    .filter-group .item.item3.col-l .item-inner, .filter-group .item.item3.col-r .item-inner {
+        white-space: nowrap;
+    }
+
+    .filter-group .item .sel-style1 {
+        height: 33px;
+    }
+
+    .filter-group .item.item3.col-l .item-inner, .filter-group .item.item3.col-r .item-inner {
+        border: none;
+        background: none;
+        height: auto;
+        padding: 0;
+        margin-bottom: 5px;
+    }
+
+    .filter-group .item.item3.col-r .item-inner__label {
+        display: block;
+    }
+
+    .bt-style1 {
+        margin-top: 0;
+    }
+
+    .desc-table, .desc-col {
+        display: table-cell;
+    }
+
+    .product__wrapper {
+        flex-direction: row;
+
+        .infoProdBig {
+            margin-left: 50px;
+        }
+
+        .prodBigImg {
+            display: flex;
+            align-self: flex-start;
+            min-width: 345px;
+            height: 345px;
+        }
+    }
+
+    .prodBigImg img {
+        height: 100%;
+    }
+
+    .boxRightInfo {
+        flex-direction: row;
+        gap: 10px;
+        justify-content: space-between;
+    }
+
+    .boxList2.boxList2-new {
+        flex-direction: row;
+    }
+
+    .infoList2 {
+        margin-top: 0;
+        padding-left: 10px;
+    }
+
+    .filter .table {
+        display: block;
+    }
+
+    .pager-filter .filter {
+        display: block;
+    }
+
+    .filter-prod #switch {
+        flex-direction: row;
+    }
+
+    .modelsinfo .sortblock {
+        flex-direction: row;
+    }
+
+    .option-cart {
+        flex-direction: row;
+        justify-content: space-between;
+    }
+
+    .option-cart .checkout {
+        padding-top: 0;
+    }
+
+    .cart-prod.total-cart {
+        justify-content: flex-end;
+    }
+
+    .cart-prod .desc table tbody tr {
+        flex-direction: row;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .bt-style1-disks {
+        margin-top: 15px;
+    }
+
+    .form-wrapper {
+        flex-flow: row;
+        flex-direction: row;
+    }
+
+    .popup.order-page {
+        margin: 0;
+        margin-bottom: auto;
+    }
+
+    .select-namber {
+        display: flex;
+        align-items: center;
+    }
+
+    .checkout-box {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .left-nav__sticky {
+        position: sticky;
+        top: 0;
+        bottom: 0;
+    }
+
+    .sel-style3 {
+        min-height: 20px;
+    }
+
+    .boxList {
+        width: 43.6%;
+    }
+
+    .boxList2 {
+        flex-wrap: nowrap;
+    }
+
+    .priceMore2 {
+        width: 210px;
+        margin-bottom: auto;
+    }
+
+    .pager-filter.bottom {
+        margin-top: 20px;
+    }
+
+    .selection__modal {
+        columns: 4;
+    }
+
+    .selection__modal__gen-item {
+        width: 21%;
+    }
+
+    .selection__secondary-td {
+        width: 18%;
+    }
+
+    .car__sizes__wrap {
+        flex-direction: row;
+    }
+
+    .car__sizes-right {
+        max-width: 30%;
+    }
+
+    .car__sizes-right img {
+        margin: 0;
+    }
+
+    .mode-selector__contact {
+        display: block;
+    }
+
+    #header .info-group .desc .women-flowers {
+        display: block;
+        position: absolute;
+        width: 300px;
+        height: 98px;
+        top: -68px;
+        left: 320px;
+    }
+}
+
+@media screen and (min-width: 1200px) {
+    .wrap {
+        max-width: var(--container-xl)
+    }
+
+    #header #nav {
+        max-width: var(--container-xl)
+    }
+
+    #header .logo {
+        padding-top: 5px;
+    }
+
+    #header .logo a img {
+        width: auto;
+    }
+
+    #header .tyres {
+
+    }
+
+    .header-background {
+        display: block;
+        position: absolute;
+        right: -32px;
+        bottom: 0;
+        height: 109px;
+        width: 337px;
+    }
+
+    .header-new-year-toys {
+        position: absolute;
+        display: block;
+        height: 53px;
+        top: 0;
+        width: 489px;
+        left: 33%;
+    }
+
+    .header-wrapper {
+        position: relative;
+        z-index: 1;
+    }
+
+    .header-wrap {
+        padding-top: 25px;
+    }
+
+    /*#header .tyres.winter-season {*/
+    /*    background-image: url(../img/tyres_winter.png);*/
+    /*}*/
+    .boxList {
+        width: 28.14%;
+    }
+
+    .boxList.tubes {
+        width: 19.6%;
+    }
+
+    .selection .item {
+        width: 17%;
+    }
+
+    .jcarousel-wrapper {
+        width: 780px;
+    }
+
+    .jcarousel li {
+        width: 780px !important;
+    }
+
+    #header .info-group .desc {
+        font-size: 46px;
+    }
+
+    #header .info-group .desc .desc-description {
+        font-size: 32px;
+        padding-top: 17px;
+    }
+
+    #header .info-group .desc .new-year-hat {
+        width: 60px;
+        height: 70px;
+        top: -28px;
+        right: -23px;
+    }
+
+    #header .info-group .header-griffon {
+        height: 95px;
+        width: 95px;
+        padding-right: 20px;
+    }
+
+    #header .cart {
+        padding-top: 0;
+    }
+
+    .list-view__item {
+        grid-template-columns: auto 270px 180px;
+    }
+
+    .list-view__price-col {
+        margin-left: 30px;
+    }
+
+    .tooltip-places__prefix {
+        display: contents;
+    }
+
+    #header .info-group .desc .women-flowers {
+        top: -65px;
+        left: 390px;
+    }
+
+    #header .info-group .desc .women-text {
+        display: block;
+        position: absolute;
+        top: -44px;
+        right: 0;
+        height: 45px;
+        width: 100%;
+        object-fit: contain;
+        object-position: center;
+    }
+
+    .box-info {
+        width: 100%;
+    }
+}
+
+@media screen and (min-width: 1320px) {
+    .wrap {
+        max-width: var(--container-xxl)
+    }
+
+    #header #nav {
+        max-width: var(--container-xxl)
+    }
+
+    #header .info-group {
+        margin-left: -20px;
+        margin-top: auto;
+    }
+
+    .left-nav {
+        width: 305px;
+        min-width: 305px;
+    }
+
+    .jcarousel-wrapper {
+        width: 840px;
+    }
+
+    .jcarousel li {
+        width: 840px !important;
+    }
+
+    #header .info-group .info table tbody tr th {
+        min-width: 215px;
+        padding: 0;
+    }
+
+    #header .info-group .info table tbody tr td {
+        padding: 0;
+    }
+
+    #header .info-group .header-griffon {
+        width: 115px;
+        height: 115px;
+    }
+
+    #header .info-group .header-griffon-1-april img {
+        margin-left: -35px;
+    }
+
+    .header-wrap {
+        padding-bottom: 5px;
+    }
+
+    #header .logos {
+        display: flex;
+        flex-direction: column;
+        margin-top: -15px;
+        padding-left: 10px;
+    }
+
+    #header .logo {
+        display: flex;
+        padding-top: 0;
+    }
+
+    #header .logo img {
+        object-fit: contain;
+    }
+
+    #header .logo__vianor img {
+        height: 40px;
+        width: 173px;
+        padding-top: 10px;
+        margin-left: -45px;
+    }
+
+    #header .logo__autodom img {
+        height: 80px;
+    }
+
+    .header-background {
+        right: -68px;
+    }
+
+    #header .logo .logo__years {
+        bottom: -12px;
+        font-size: 10px;
+    }
+
+    .header-new-year-toys {
+        left: 27%;
+        height: 56px;
+    }
+
+    .list-view__info-col .akb-polarity {
+        left: 120px;
+    }
+
+    .boxList {
+        width: 28.6%;
+    }
+
+    .boxList.tubes {
+        width: 20.1%;
+    }
+
+    .box-info {
+        width: 90%;
+    }
+}
+
+@media screen and (min-width: 1550px) {
+    .header-women-flowers {
+        position: absolute;
+        display: block;
+        top: 55px;
+        right: -130px;
+        width: 120px;
+        height: 145px;
+    }
+}
