@@ -203,6 +203,42 @@ class TyresController extends AppController
         return array('path' => $path);
     }
 
+    public function set_prices()
+    {
+        // tyre price
+        $this->loadModel('TyrePrice');
+        $tyre_price_model = $this->TyrePrice->find('all');
+        $tyre_prices = array();
+        foreach ($tyre_price_model as $tyre_price) {
+            $auto = $tyre_price['TyrePrice']['auto'];
+            $size = $tyre_price['TyrePrice']['size'];
+            $price = $tyre_price['TyrePrice']['price'];
+
+            if (!isset($tyre_prices[$auto])) {
+                $tyre_prices[$auto] = array();
+            }
+
+            $tyre_prices[$auto][$size] = $price;
+        }
+        $this->set('tyre_price', $tyre_prices);
+        // storage price
+        $this->loadModel('Price');
+        $storage_price_model = $this->Price->find('all');
+        $storage_prices = array();
+        foreach ($storage_price_model as $storage_price) {
+            $auto = $storage_price['Price']['type'];
+            $size = $storage_price['Price']['title'];
+            $price = $storage_price['Price']['price'];
+
+            if (!isset($storage_prices[$auto])) {
+                $storage_prices[$auto] = array();
+            }
+
+            $storage_prices[$auto][$size] = $price;
+        }
+        $this->set('storage_price', $storage_prices);
+    }
+
 
     public function index()
     {
@@ -214,7 +250,6 @@ class TyresController extends AppController
         $this->setModification();
 
         $this->loadModel('Supplier');
-        $this->loadModel('TyrePrice');
         $suppliers = $this->Supplier->find('all', array('fields' => array('Supplier.id', 'Supplier.title', 'Supplier.delivery_time_from', 'Supplier.delivery_time_to', 'Supplier.prefix'), 'order' => array('Supplier.title' => 'asc')));
         $suppliers_output = array();
         foreach ($suppliers as $supplier) {
@@ -487,20 +522,7 @@ class TyresController extends AppController
         $this->set('show_left_filter', true);
         $this->set('current_auto', $auto);
         $this->set('sort', $sort);
-        $tyre_price_model = $this->TyrePrice->find('all');
-        $tyre_prices = array();
-        foreach ($tyre_price_model as $tyre_price) {
-            $auto = $tyre_price['TyrePrice']['auto'];
-            $size = $tyre_price['TyrePrice']['size'];
-            $price = $tyre_price['TyrePrice']['price'];
-
-            if (!isset($tyre_prices[$auto])) {
-                $tyre_prices[$auto] = array();
-            }
-
-            $tyre_prices[$auto][$size] = $price;
-        }
-        $this->set('tyre_price', $tyre_prices);
+        $this->set_prices();
         $this->set('additional_js', array('lightbox', 'slider', 'functions'));
         $this->set('additional_css', array('lightbox', 'jquery-ui-1.9.2.custom.min'));
 //        $this->setCarBrandsForLeftMenu();
@@ -619,8 +641,6 @@ class TyresController extends AppController
 
     public function brand($slug)
     {
-
-
         $mode = 'block';
         if (isset($this->request->query['mode']) && in_array($this->request->query['mode'], array('block', 'list', 'table'))) {
             $mode = $this->request->query['mode'];
@@ -633,7 +653,6 @@ class TyresController extends AppController
         $this->setModification();
 
         $this->loadModel('Supplier');
-        $this->loadModel('TyrePrice');
         $suppliers = $this->Supplier->find('all', array('fields' => array('Supplier.id', 'Supplier.title', 'Supplier.delivery_time_from', 'Supplier.delivery_time_to', 'Supplier.prefix'), 'order' => array('Supplier.title' => 'asc')));
         $suppliers_output = array();
         foreach ($suppliers as $supplier) {
@@ -1134,7 +1153,7 @@ class TyresController extends AppController
             $this->set('brand', $brand);
             $path = $this->check_truck($auto)['path'];
             $this->set('active_menu', $path);
-            $this->set('tyre_price', $this->TyrePrice->find('all'));
+            $this->set_prices();
             $this->set('current_auto', $auto);
             $this->set('additional_js', array('lightbox', 'functions', 'slider'));
             $this->set('additional_css', array('lightbox', 'jquery-ui-1.9.2.custom.min'));
@@ -1149,11 +1168,9 @@ class TyresController extends AppController
 
     public function view($slug, $id)
     {
-
         $this->loadModel('Brand');
 
         $this->loadModel('Supplier');
-        $this->loadModel('TyrePrice');
         $suppliers = $this->Supplier->find('all', array('fields' => array('Supplier.id', 'Supplier.title', 'Supplier.delivery_time_from', 'Supplier.delivery_time_to', 'Supplier.prefix'), 'order' => array('Supplier.title' => 'asc')));
         $suppliers_output = array();
         foreach ($suppliers as $supplier) {
@@ -1324,20 +1341,7 @@ class TyresController extends AppController
                 $this->set('brand', $brand);
                 $this->set('product', $product);
                 $path = $this->check_truck($product['Product']['auto'])['path'];
-                $tyre_price_model = $this->TyrePrice->find('all');
-                $tyre_prices = array();
-                foreach ($tyre_price_model as $tyre_price) {
-                    $auto = $tyre_price['TyrePrice']['auto'];
-                    $size = $tyre_price['TyrePrice']['size'];
-                    $price = $tyre_price['TyrePrice']['price'];
-
-                    if (!isset($tyre_prices[$auto])) {
-                        $tyre_prices[$auto] = array();
-                    }
-
-                    $tyre_prices[$auto][$size] = $price;
-                }
-                $this->set('tyre_price', $tyre_prices);
+                $this->set_prices();
                 $this->set('active_menu', $path);
                 $this->set('current_auto', $auto);
                 $this->set('show_left_menu', false);

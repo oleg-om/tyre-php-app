@@ -438,6 +438,7 @@ foreach ($models as $item) {
                                         <?php } ?>
 
                                     </div>
+                                    <?php echo $this->element('tyre_benefit', array('product' => $item['Product'][0])); ?>
                                 </div>
                                 <div class="clear"></div>
                             <?php } elseif ($mode == 'list') { ?>
