@@ -383,7 +383,7 @@
                         </div>
                         <div class="item item-icon__disk">
                             <?php
-                            $material_options = array('steel' => array('label' => 'Стальные', 'query' => 'material', 'icon' => '/img/icons/disk-steel.png'), 'forged' => array('label' => 'Кованные', 'query' => 'material', 'icon' => '/img/icons/disk-cast.png'));
+                            $material_options = array('steel' => array('label' => 'Стальные', 'query' => 'material', 'icon' => '/img/icons/disk-steel.png'), 'forged' => array('label' => 'Кованые', 'query' => 'material', 'icon' => '/img/icons/disk-cast.png'));
                             echo $this->element('custom_radio', array('label' => 'Материал:', 'options' => $material_options, 'size' => 'large'));
                             ?>
                         </div>
