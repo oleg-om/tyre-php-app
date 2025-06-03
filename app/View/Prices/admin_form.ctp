@@ -8,11 +8,12 @@ $this->Backend->addCheckbox('is_active', array(
     'label' => __d('admin_prices', 'label_is_active'),
     'acronym' => __d('admin_prices', 'acronym_is_active')
 ));
-//$this->Backend->addSelect('type', array(
-//	'label' => __d('admin_prices', 'label_type'),
-//	'options' => $types,
-//	'empty' => false
-//));
+$this->Backend->addSelect('type', array(
+    'label' => __d('admin_prices', 'label_type'),
+    'options' => $types,
+    'empty' => false,
+    'default' => 'cars'
+));
 $this->Backend->addText('title', array(
     'label' => __d('admin_prices', 'label_title'),
     'acronym' => __d('admin_prices', 'acronym_title'),
