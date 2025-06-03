@@ -22,9 +22,21 @@ class Price extends AppModel
                 'message' => 'error_price_numeric'
             )
         ),
-        "type" => array(
+        'type' => array(
             array(
-                "default" => 'cars'
+                'rule' => 'notEmpty',
+                'required' => true,
+                'message' => 'error_type_empty'
+            )
+        ),
+        "time" => array(
+            array(
+                'required' => false,
+            )
+        ),
+        "description" => array(
+            array(
+                'required' => false,
             )
         )
     );
@@ -36,7 +48,6 @@ class Price extends AppModel
         $this->virtualFields['is_deletable'] = 1;
         $this->types = array(
             'cars' => __d('admin_prices', 'type_car'),
-            'suv' => __d('admin_prices', 'type_suv')
         );
     }
 }
