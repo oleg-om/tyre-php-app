@@ -359,10 +359,12 @@ foreach ($models as $item) {
                                 <div class="prodImg floatl prodImg-tyres">
                                     <?php if ($item['BrandModel']['new']) { ?>
                                     <?php } elseif ($item['BrandModel']['popular']) { ?>
-                                    <?php } ?>
+                                    <?php }
+                                    $common_model = $this->Frontend->mergedTyreProduct($item);
+                                    ?>
                                     <table cellpadding="0" cellspacing="0">
                                         <tr>
-                                            <?php echo $this->element('tyre_model_icons', array('item' => $item)); ?>
+                                            <?php echo $this->element('tyre_icons', array('product' => $common_model, 'brandModel' => $common_model['BrandModel'])); ?>
                                             <?php echo $this->element('tyre_season', array('seasons' => $seasons, 'season' => $season, 'item' => $item)); ?>
                                             <?php echo $this->element('truck_axis', array('axis' => $item['Product'][0]['axis'])); ?>
                                             <td>
@@ -438,7 +440,7 @@ foreach ($models as $item) {
                                         <?php } ?>
 
                                     </div>
-                                    <?php echo $this->element('tyre_benefit', array('product' => $item['Product'][0])); ?>
+                                    <?php echo $this->element('tyre_benefit', array('product' => $common_model)); ?>
                                 </div>
                                 <div class="clear"></div>
                             <?php } elseif ($mode == 'list') { ?>
