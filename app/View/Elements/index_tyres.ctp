@@ -355,13 +355,13 @@ foreach ($models as $item) {
                                 $max_d = 0;
                             }
                             ?>
-                            <?php if ($mode == 'block') { ?>
+                            <?php if ($mode == 'block') {
+                                $common_model = $this->Frontend->mergedTyreProduct($item);
+                                ?>
                                 <div class="prodImg floatl prodImg-tyres">
                                     <?php if ($item['BrandModel']['new']) { ?>
                                     <?php } elseif ($item['BrandModel']['popular']) { ?>
-                                    <?php }
-                                    $common_model = $this->Frontend->mergedTyreProduct($item);
-                                    ?>
+                                    <?php } ?>
                                     <table cellpadding="0" cellspacing="0">
                                         <tr>
                                             <?php echo $this->element('tyre_icons', array('product' => $common_model, 'brandModel' => $common_model['BrandModel'])); ?>

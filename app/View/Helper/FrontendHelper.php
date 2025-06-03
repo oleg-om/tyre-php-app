@@ -946,7 +946,7 @@ class FrontendHelper extends AppHelper
 
             $products_count = count($item['Product']);
 
-            $new_product = array('p1' => 0, 'p2' => 0, 'p3' => 0, 'brand_id' => $item['Product'][0]['brand_id']);
+            $new_product = array('p1' => 0, 'p2' => 0, 'p3' => 0, 'brand_id' => $item['Product'][0]['brand_id'], 'size3' => $item['Product'][0]['size3']);
 
             if ($products_count == count($free_tyremount)) {
                 $new_product['p1'] = 1;
@@ -957,6 +957,7 @@ class FrontendHelper extends AppHelper
             if ($products_count == count($extra_warranty)) {
                 $new_product['p3'] = 1;
             }
+
             return $new_product;
         } else {
             return false;
