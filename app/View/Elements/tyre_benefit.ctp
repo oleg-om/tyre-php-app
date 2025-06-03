@@ -23,7 +23,7 @@ if (isset($product) && ($product['p1'] >= 1 || isset($product['p2']))) {
     }
     // storage
     $storage_value = 0;
-    if (isset($product['p2']) && isset($storage_price[$auto][$product['size3']])) {
+    if (isset($product['p2']) && $product['p2'] == 1 && isset($storage_price[$auto][$product['size3']])) {
         $auto = 'cars';
         $storage_value = floatval($storage_price[$auto][$product['size3']]);
         $text_array[] = 'Бесплатное хранение' . ' (' . $storage_value . ' р.)';
