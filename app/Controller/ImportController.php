@@ -5459,7 +5459,7 @@ class ImportController extends AppController
                                                     $save_data['size1'] = str_ireplace(',', '.', $mathces[1]);
                                                     $save_data['size2'] = str_ireplace(',', '.', $mathces[2]);
                                                     $save_data['size3'] = str_ireplace(array(',', 'С', 'с', ' '), array('.', 'C', 'C', ''), $mathces[4]);
-                                                    $save_data['size3'] = str_ireplace(array('ZRF', 'ZR', 'RF', 'LT'), '', $mathces[4]);
+                                                    $save_data['size3'] = str_ireplace(array('ZRF', 'ZR', 'RF', 'F'), '', $mathces[4]);
                                                     if (isset($title)) {
                                                         $title = trim(str_ireplace($mathces[0], ' ', $title));
                                                     }
@@ -5468,7 +5468,7 @@ class ImportController extends AppController
                                                     $save_data['size1'] = str_ireplace(',', '.', $mathces[1]);
                                                     $save_data['size2'] = '';
                                                     $save_data['size3'] = str_ireplace(array(',', 'С', 'с', ' '), array('.', 'C', 'C', ''), $mathces[3]);
-                                                    $save_data['size3'] = str_ireplace(array('ZRF', 'ZR', 'RF', 'LT'), '', $mathces[4]);
+                                                    $save_data['size3'] = str_ireplace(array('ZRF', 'ZR', 'RF', 'F'), '', $mathces[4]);
                                                     if (isset($title)) {
                                                         $title = trim(str_ireplace($mathces[0], ' ', $title));
                                                     }
