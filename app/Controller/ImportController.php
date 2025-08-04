@@ -2341,10 +2341,13 @@ class ImportController extends AppController
                                 // new synonyms enumeration
                                 $brand_model_id = $item['BrandModel']['id'];
                                 $brand_id = $item['BrandModel']['brand_id'];
-                                print_r('$model_synonyms_list[$brand_model_id]): '.$model_synonyms_list[$brand_model_id].'<br/>');
+
                                 if (isset($model_synonyms_list[$brand_model_id]) && !empty($model_synonyms_list[$brand_model_id])) {
+
+                                    print_r('$model_synonyms_list[$brand_model_id]): '.$model_synonyms_list[$brand_model_id].'<br/>');
+
                                     $model_array = $model_synonyms_list[$brand_model_id];
-                                    print_r('$model_array: '.$model_array.'<br/>');
+                                    print_r('$model_array: '.json_encode($model_array).'<br/>');
                                     foreach ($model_array as $model_title) {
                                         $model = trim($this->_clean_text($model_title, false));
                                         print_r('$model: ', $model);
