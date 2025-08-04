@@ -2345,6 +2345,7 @@ class ImportController extends AppController
                                     $model_array = $model_synonyms_list[$brand_model_id];
                                     foreach ($model_array as $model_title) {
                                         $model = trim($this->_clean_text($model_title, false));
+                                        print_r('$model', $model);
                                         $models[$brand_id][$model] = $brand_model_id;
                                     }
                                 }
