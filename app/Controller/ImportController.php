@@ -7345,12 +7345,11 @@ class ImportController extends AppController
 
     private function _clean_text($text, $only_alpha = true)
     {
-        $regex = '/[^0-9a-zА-я ]/u';
+        $regex = '/[^0-9a-zА-я]/u';
         if ($only_alpha) {
-            $regex = '/[^a-zА-я ]/u';
+            $regex = '/[^a-zА-я]/u';
         }
-        $ret = str_replace('*', ' ', mb_strtolower(trim($text)));
-        $ret = preg_replace($regex, '', $ret);
+        $ret = preg_replace($regex, '', mb_strtolower(trim($text)));
         $ret = preg_replace('/\s+/', ' ', $ret);
         return $ret;
     }
