@@ -2344,13 +2344,13 @@ class ImportController extends AppController
 
                                 if (isset($model_synonyms_list[$brand_model_id]) && !empty($model_synonyms_list[$brand_model_id])) {
 
-                                    print_r('$model_synonyms_list[$brand_model_id]): '.$model_synonyms_list[$brand_model_id].'<br/>');
+//                                    print_r('$model_synonyms_list[$brand_model_id]): '.$model_synonyms_list[$brand_model_id].'<br/>');
 
                                     $model_array = $model_synonyms_list[$brand_model_id];
-                                    print_r('$model_array: '.json_encode($model_array).'<br/>');
+//                                    print_r('$model_array: '.json_encode($model_array).'<br/>');
                                     foreach ($model_array as $model_title) {
                                         $model = trim($this->_clean_text($model_title, false));
-                                        print_r('$model: ', $model);
+//                                        print_r('$model: ', $model);
                                         $models[$brand_id][$model] = $brand_model_id;
                                     }
                                 }
@@ -7351,6 +7351,7 @@ class ImportController extends AppController
 
     private function _clean_text($text, $only_alpha = true)
     {
+        print_r('$text: '.$text);
         $regex = '/[^0-9a-zА-я ]/u';
         if ($only_alpha) {
             $regex = '/[^a-zА-я ]/u';
@@ -7358,6 +7359,7 @@ class ImportController extends AppController
         $ret = str_replace('*', ' ', mb_strtolower(trim($text)));
         $ret = preg_replace($regex, '', $ret);
         $ret = preg_replace('/\s+/', ' ', $ret);
+        print_r('$ret: '.$ret);
         return $ret;
     }
 }
