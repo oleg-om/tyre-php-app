@@ -8,7 +8,7 @@ if (isset($product) && ($product['p1'] >= 1 || isset($product['p2']))) {
     $text_array = array();
 
     $tyre_value = 0;
-    if (isset($product['p1']) && isset($tyre_price[$auto][$product['size3']])) {
+    if (isset($product['p1']) && $product['p1'] != 0 && isset($tyre_price[$auto][$product['size3']])) {
         $tyre_value = $tyre_price[$auto][$product['size3']];
 
         if ($product['p1'] == 1) {
