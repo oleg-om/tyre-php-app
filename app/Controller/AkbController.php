@@ -428,7 +428,10 @@ class AkbController extends AppController {
                 }
 
                 // redirect with sizes
-                $this->redirect(array('controller' => 'akb', 'action' => 'index', '?' => $filter));
+                if (!empty($item)) {
+                    $this->redirect(array('controller' => 'akb', 'action' => 'index', '?' => $filter));
+                }
+
             }
 
         }
