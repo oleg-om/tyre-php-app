@@ -1388,13 +1388,19 @@ class BackendHelper extends AppHelper {
 		$thumbnail->config_error_die_on_error = false;
 		$thumbnail->config_document_root = '';
 		$thumbnail->config_temp_directory = TMP;
-		if (!empty($watermark) && is_file($thumbnail->src)) {
-			if ($size = getimagesize($thumbnail->src)) {
-				if ($size[0] < 400) {
-					$watermark = 'wm-small.png';
+		if (!empty($watermark)) {
+			// Always apply watermark if specified, check file existence first
+			if (is_file($thumbnail->src)) {
+				if ($size = getimagesize($thumbnail->src)) {
+					if ($size[0] < 400) {
+						$watermark = 'wm-small.png';
+					}
+				}
+				$watermark_path = ROOT . DS . 'watermark' . DS . $watermark;
+				if (is_file($watermark_path)) {
+					$thumbnail->fltr[] = 'wmi|' . $watermark_path . '|B';
 				}
 			}
-			$thumbnail->fltr[] = 'wmi|' . ROOT . DS . 'watermark' . DS . $watermark . '|B';
 		}
 		if ($folder) {
 			$thumbnail->config_cache_directory = IMAGES . $path . DS . $folder . DS . $id . DS;
@@ -1404,6 +1410,11 @@ class BackendHelper extends AppHelper {
 		}
 		$thumbnail->config_cache_disable_warning = true;
 		$cacheFilename = $width . 'x' . $height . '_' . $filename;
+		// Include watermark in cache filename to ensure different cache for watermarked and non-watermarked versions
+		if (!empty($watermark)) {
+			$watermark_name = str_replace('.png', '', $watermark);
+			$cacheFilename = $width . 'x' . $height . '_wm_' . $watermark_name . '_' . $filename;
+		}
 		$thumbnail->cache_filename = $thumbnail->config_cache_directory . $cacheFilename;  
 		if (!is_file($thumbnail->cache_filename)) {
 			if ($thumbnail->GenerateThumbnail()) {
