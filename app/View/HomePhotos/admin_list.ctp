@@ -18,6 +18,13 @@ $this->Backend->addColumn('photo', array(
 $this->Backend->addColumn('link', array(
 	'label' => __d('admin_home_photos', 'column_link')
 ));
+$this->Backend->addColumn('dates', array(
+	'label' => 'Даты показа',
+	'filterable' => false,
+	'sortable' => false,
+	'width' => 150,
+	'renderer' => 'home_photo_dates'
+));
 $this->Backend->addColumn('sort_order', array(
 	'label' => __d('admin_home_photos', 'column_sort_order', true),
 	'width' => 85,
