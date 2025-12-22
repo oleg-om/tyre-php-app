@@ -509,7 +509,7 @@ foreach ($models as $item) {
                                                     } ?>"
                                                          title="<?php echo $seasons[$season]; ?>"><?php echo $seasons[$season]; ?></div>
                                                 </td>
-                                                <td class="desc-table"><?php echo $product['stud'] ? '<img src="/img/icons/studded.png" alt="шиповання" />' : ''; ?></td>
+                                                <td class="desc-table"><?php echo $product['stud'] ? '<img src="/img/icons/studded.png" alt="шиповання" width="18" height="18" />' : ''; ?></td>
                                                 <td><strong><?php
                                                         if ($this->Frontend->canShowTyrePrice($product['auto'], $product['not_show_price'])) {
                                                             echo $this->Frontend->getPrice($product['price'], 'tyres', array('delimiter' => '<br />'));
