@@ -139,4 +139,20 @@ class RendererHelper extends AppHelper {
 		$total = str_replace($replaces[0], $replaces[1], $item['currency_template']);
 		return '<td class="a-right">' . $total . '</td>';
 	}
+	public function home_photo_dates($item, $model) {
+		$date_start = !empty($item['date_start']) ? trim($item['date_start']) : '';
+		$date_end = !empty($item['date_end']) ? trim($item['date_end']) : '';
+		
+		if (!empty($date_start) && !empty($date_end)) {
+			$dates = h($date_start) . ' - ' . h($date_end);
+		} elseif (!empty($date_start)) {
+			$dates = h($date_start);
+		} elseif (!empty($date_end)) {
+			$dates = h($date_end);
+		} else {
+			$dates = '—';
+		}
+		
+		return '<td>' . $dates . '</td>';
+	}
 }
