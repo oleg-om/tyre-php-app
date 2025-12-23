@@ -40,6 +40,12 @@
         if ($country == 'япония') {
             $flag = '/img/flags/jp.svg';
         }
+        if ($country == 'чехия') {
+                $flag = '/img/flags/cz.svg';
+        }
+        if ($country == 'иран') {
+                $flag = '/img/flags/ir.svg';
+        }
     }
 
     if (!empty($flag)) { ?>
