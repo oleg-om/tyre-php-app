@@ -172,16 +172,18 @@ class AppController extends Controller {
 			$meta_keywords = $this->getMeta('keywords');
 			$meta_description = $this->getMeta('description');
 			if (empty($meta_title)) {
-				$meta_title = CONST_META_TITLE;
+				$meta_title = defined('CONST_META_TITLE') ? CONST_META_TITLE : '';
 			}
 			else {
-				$meta_title .= CONST_META_TITLE_DELIMITER . CONST_META_TITLE_SUFFIX;
+				$delimiter = defined('CONST_META_TITLE_DELIMITER') ? CONST_META_TITLE_DELIMITER : ' - ';
+				$suffix = defined('CONST_META_TITLE_SUFFIX') ? CONST_META_TITLE_SUFFIX : '';
+				$meta_title .= $delimiter . $suffix;
 			}
 			if (empty($meta_keywords)) {
-				$meta_keywords = CONST_META_KEYWORDS;
+				$meta_keywords = defined('CONST_META_KEYWORDS') ? CONST_META_KEYWORDS : '';
 			}
 			if (empty($meta_description)) {
-				$meta_description = CONST_META_DESCRIPTION;
+				$meta_description = defined('CONST_META_DESCRIPTION') ? CONST_META_DESCRIPTION : '';
 			}
 			$this->setBrands();
 			$this->set('meta_title', $meta_title);

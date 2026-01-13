@@ -245,11 +245,9 @@ Configure::write('Acl.database', 'default');
  *       and their setttings.
  */
 $engine = 'File';
-/*
 if (extension_loaded('apc') && function_exists('apc_dec') && (php_sapi_name() !== 'cli' || ini_get('apc.enable_cli'))) {
 	$engine = 'Apc';
 }
-*/
 // In development mode, caches should expire quickly.
 $duration = '+999 days';
 if (Configure::read('debug') >= 1) {
@@ -284,7 +282,7 @@ Cache::config('_cake_model_', array(
 ));
 
 Cache::config('very_long', array(
-        'engine' => 'File',
+        'engine' => $engine,
         'duration' => '+1 hour',
         'probability' => 100,
         'path' => CACHE,
@@ -293,7 +291,7 @@ Cache::config('very_long', array(
         'serialize' => ($engine === 'File'))
 );
 Cache::config('long', array(
-        'engine' => 'File',
+        'engine' => $engine,
         'duration' => '+30 minutes',
         'probability' => 100,
         'path' => CACHE,
@@ -302,7 +300,7 @@ Cache::config('long', array(
         'serialize' => ($engine === 'File'))
 );
 Cache::config('short', array(
-        'engine' => 'File',
+        'engine' => $engine,
         'duration' => '+30 seconds',
         'probability' => 100,
         'path' => CACHE,
@@ -311,7 +309,7 @@ Cache::config('short', array(
         'serialize' => ($engine === 'File'))
 );
 Cache::config('medium', array(
-        'engine' => 'File',
+        'engine' => $engine,
         'duration' => '+2 minutes',
         'probability' => 100,
         'path' => CACHE,

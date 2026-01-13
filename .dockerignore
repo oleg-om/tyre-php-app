@@ -1,0 +1,16 @@
+.git
+.gitignore
+.env
+.env.local
+*.md
+README.md
+docker-compose.yml
+Dockerfile
+.dockerignore
+app/tmp/*
+app/webroot/img/*
+!app/webroot/img/.gitkeep
+products/*
+node_modules
+.vscode
+.idea
