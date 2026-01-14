@@ -7,8 +7,7 @@ services:
     ports:
       - "8080:80"
     volumes:
-      - ./app/webroot/files:/var/www/html/app/webroot/files
-      - ./app/webroot/img:/var/www/html/app/webroot/img
+      - tyre-app-files:/var/www/html/app/webroot/files
       - ./app/webroot/.htaccess:/var/www/html/app/webroot/.htaccess
       - ./app/webroot/phpmy/config.inc.php:/var/www/html/app/webroot/phpmy/config.inc.php
       - ./app/tmp:/var/www/html/app/tmp
@@ -50,6 +49,8 @@ services:
 
 volumes:
   tyre-app-mysql-data:
+    driver: local
+  tyre-app-files:
     driver: local
 
 networks:
