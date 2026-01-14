@@ -7,3 +7,4 @@ postfixadmin-2.91.tar.gz
 /.idea/
 /test/
 /app/webroot/img/public/
+/app/webroot/files/

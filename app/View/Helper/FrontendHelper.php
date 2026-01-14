@@ -101,9 +101,9 @@ class FrontendHelper extends AppHelper
         }
         if (is_file($thumbnail->cache_filename)) {
             if ($folder) {
-                return '/img/' . $path . '/' . $folder . '/' . $id . '/' . $cacheFilename;
+                return '/files/' . $path . '/' . $folder . '/' . $id . '/' . $cacheFilename;
             } else {
-                return '/img/' . $path . '/' . $id . '/' . $cacheFilename;
+                return '/files/' . $path . '/' . $id . '/' . $cacheFilename;
             }
         }
         return '/img/spacer.gif';
