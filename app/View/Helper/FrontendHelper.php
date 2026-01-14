@@ -67,11 +67,16 @@ class FrontendHelper extends AppHelper
         extract($params);
         app::import('Vendor', 'phpthumb', array('file' => 'phpthumb' . DS . 'phpthumb.class.php'));
         $thumbnail = new phpthumb;
+        
+        // Пути, которые были перенесены в files/
+        $files_paths = array('akb', 'bolts', 'brands', 'calculator', 'datepicker', 'logos', 'models', 'tubes', 'tyres');
+        $base_images_path = in_array($path, $files_paths) ? WWW_ROOT . 'files' . DS : IMAGES;
+        
         if ($folder) {
             $folder = (floor($id / 5000) + 1);
-            $thumbnail->src = IMAGES . $path . DS . $folder . DS . $id . DS . $filename;
+            $thumbnail->src = $base_images_path . $path . DS . $folder . DS . $id . DS . $filename;
         } else {
-            $thumbnail->src = IMAGES . $path . DS . $id . DS . $filename;
+            $thumbnail->src = $base_images_path . $path . DS . $id . DS . $filename;
         }
         $thumbnail->w = $width;
         $thumbnail->h = $height;
@@ -86,9 +91,9 @@ class FrontendHelper extends AppHelper
         $thumbnail->config_document_root = '';
         $thumbnail->config_temp_directory = TMP;
         if ($folder) {
-            $thumbnail->config_cache_directory = IMAGES . $path . DS . $folder . DS . $id . DS;
+            $thumbnail->config_cache_directory = $base_images_path . $path . DS . $folder . DS . $id . DS;
         } else {
-            $thumbnail->config_cache_directory = IMAGES . $path . DS . $id . DS;
+            $thumbnail->config_cache_directory = $base_images_path . $path . DS . $id . DS;
         }
         $thumbnail->config_cache_disable_warning = true;
         $cacheFilename = $width . 'x' . $height . '_' . $filename;
@@ -100,10 +105,12 @@ class FrontendHelper extends AppHelper
             }
         }
         if (is_file($thumbnail->cache_filename)) {
+            // Пути, которые были перенесены в files/
+            $base_path = in_array($path, $files_paths) ? '/files' : '/img';
             if ($folder) {
-                return '/files/' . $path . '/' . $folder . '/' . $id . '/' . $cacheFilename;
+                return $base_path . '/' . $path . '/' . $folder . '/' . $id . '/' . $cacheFilename;
             } else {
-                return '/files/' . $path . '/' . $id . '/' . $cacheFilename;
+                return $base_path . '/' . $path . '/' . $id . '/' . $cacheFilename;
             }
         }
         return '/img/spacer.gif';
