@@ -5,3 +5,5 @@ dump.sql
 database.php
 postfixadmin-2.91.tar.gz
 /.idea/
+/test/
+/app/webroot/img/public/

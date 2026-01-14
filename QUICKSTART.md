@@ -22,11 +22,11 @@ docker-compose up -d
 ./restore-db.sh dumps/your_dump.sql
 ```
 
-## 4. Восстановление изображений
+## 4. Восстановление публичных файлов
 
 ```bash
-# Скопируйте изображения в директорию
-cp -r /path/to/backup/img/* app/webroot/img/
+# Скопируйте файлы в директорию
+cp -r /path/to/backup/files/* app/webroot/files/
 ```
 
 ## 5. Доступ к приложению

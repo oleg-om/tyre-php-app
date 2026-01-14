@@ -7,7 +7,9 @@ services:
     ports:
       - "8080:80"
     volumes:
+      - ./app/webroot/files:/var/www/html/app/webroot/files
       - ./app/webroot/img:/var/www/html/app/webroot/img
+      - ./app/webroot/.htaccess:/var/www/html/app/webroot/.htaccess
       - ./app/tmp:/var/www/html/app/tmp
       - ./app/Config:/var/www/html/app/Config
     environment:

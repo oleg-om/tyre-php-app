@@ -42,13 +42,14 @@ chmod +x restore-db.sh
 ./restore-db.sh /path/to/dump.sql
 ```
 
-## Восстановление изображений
+## Восстановление публичных файлов
 
-Директория `app/webroot/img` монтируется как volume, поэтому изображения сохраняются на хосте.
+Директории `app/webroot/files` и `app/webroot/img` монтируются как volumes, поэтому файлы сохраняются на хосте.
 
-Для восстановления изображений из бэкапа:
+Для восстановления файлов из бэкапа:
 ```bash
-# Скопируйте изображения в директорию
+# Скопируйте файлы в директории
+cp -r /path/to/backup/files/* app/webroot/files/
 cp -r /path/to/backup/img/* app/webroot/img/
 ```
 
@@ -109,7 +110,8 @@ mysql -h 127.0.0.1 -P 3307 -u tyre_user -p
 - `tyre-app-php` - PHP 5.6 контейнер с Apache
 - `tyre-app-mysql` - MySQL 5.7 контейнер
 - Volume `tyre-app-mysql-data` - данные MySQL
-- Volume `tyre-app-img` - изображения (app/webroot/img)
+- Volume `app/webroot/files` - публичные файлы (монтируется с хоста)
+- Volume `app/webroot/img` - изображения и статические файлы (монтируется с хоста)
 
 ## Порты
 
