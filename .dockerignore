@@ -10,6 +10,7 @@ Dockerfile
 app/tmp/*
 app/webroot/img/*
 !app/webroot/img/.gitkeep
+app/webroot/files/*
 products/*
 node_modules
 .vscode
