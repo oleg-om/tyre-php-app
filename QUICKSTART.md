@@ -24,8 +24,13 @@ docker-compose up -d
 
 ## 4. Восстановление публичных файлов
 
+Используйте скрипт для автоматического восстановления:
 ```bash
-# Скопируйте файлы в директорию
+./restore-files.sh /path/to/backup/files
+```
+
+Или вручную:
+```bash
 cp -r /path/to/backup/files/* app/webroot/files/
 ```
 

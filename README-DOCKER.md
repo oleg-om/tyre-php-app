@@ -46,7 +46,23 @@ chmod +x restore-db.sh
 
 Директории `app/webroot/files` и `app/webroot/img` монтируются как volumes, поэтому файлы сохраняются на хосте.
 
-Для восстановления файлов из бэкапа:
+### Использование скрипта restore-files.sh
+
+Скрипт автоматически копирует файлы и устанавливает правильные права доступа:
+
+```bash
+chmod +x restore-files.sh
+./restore-files.sh /path/to/backup/files
+```
+
+Или укажите относительный путь:
+```bash
+./restore-files.sh ./backup/files
+```
+
+### Ручное восстановление
+
+Для ручного восстановления файлов из бэкапа:
 ```bash
 # Скопируйте файлы в директории
 cp -r /path/to/backup/files/* app/webroot/files/
