@@ -1,11 +1,12 @@
 #!/bin/bash
-# Генерация SSL сертификата для продакшна
+# Генерация SSL сертификата (опционально, только если указан домен)
 
 SSL_DIR="/etc/apache2/ssl"
 CERT_FILE="$SSL_DIR/server.crt"
 KEY_FILE="$SSL_DIR/server.key"
 
-if [ "$APP_ENV" = "prod" ] && [ ! -z "$ALLOWED_DOMAIN" ]; then
+# Генерируем сертификат только если указан домен (опционально)
+if [ ! -z "$ALLOWED_DOMAIN" ]; then
     # Создаем директорию для сертификатов если её нет
     mkdir -p "$SSL_DIR"
     
@@ -32,5 +33,5 @@ if [ "$APP_ENV" = "prod" ] && [ ! -z "$ALLOWED_DOMAIN" ]; then
         echo "SSL certificate already exists, skipping generation"
     fi
 else
-    echo "SSL certificate generation skipped (dev mode or no domain specified)"
+    echo "SSL certificate generation skipped (no domain specified - optional)"
 fi

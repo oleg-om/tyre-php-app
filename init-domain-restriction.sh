@@ -1,46 +1,23 @@
 #!/bin/bash
-# Настройка ограничения по домену и редиректа HTTP -> HTTPS для продакшна
+# Настройка опционального редиректа HTTP -> HTTPS и ограничения по домену для продакшна
 
-if [ "$APP_ENV" = "prod" ] && [ ! -z "$ALLOWED_DOMAIN" ]; then
-    # Создаем .htaccess для ограничения доступа по домену и редиректа HTTPS
-    HTACCESS_DOMAIN="/var/www/html/app/webroot/.htaccess-domain"
+# Настраиваем Apache для HTTPS (опционально, если сертификат есть)
+SSL_DIR="/etc/apache2/ssl"
+CERT_FILE="$SSL_DIR/server.crt"
+KEY_FILE="$SSL_DIR/server.key"
+
+if [ -f "$CERT_FILE" ] && [ -f "$KEY_FILE" ]; then
+    echo "SSL certificate found, configuring HTTPS..."
     
-    cat > "$HTACCESS_DOMAIN" <<EOF
-<IfModule mod_rewrite.c>
-    RewriteEngine On
+    # Определяем домен для SSL конфигурации
+    SSL_DOMAIN="${ALLOWED_DOMAIN:-localhost}"
     
-    # Редирект HTTP -> HTTPS
-    RewriteCond %{HTTPS} off
-    RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
-    
-    # Ограничение доступа по домену
-    RewriteCond %{HTTP_HOST} !^${ALLOWED_DOMAIN}\$ [NC]
-    RewriteCond %{HTTP_HOST} !^www\.${ALLOWED_DOMAIN}\$ [NC]
-    RewriteRule ^(.*)$ - [F,L]
-</IfModule>
-EOF
-    
-    # Вставляем правила в начало .htaccess
-    if [ -f /var/www/html/app/webroot/.htaccess ]; then
-        cat "$HTACCESS_DOMAIN" /var/www/html/app/webroot/.htaccess > /var/www/html/app/webroot/.htaccess.tmp
-        mv /var/www/html/app/webroot/.htaccess.tmp /var/www/html/app/webroot/.htaccess
-        rm -f "$HTACCESS_DOMAIN"
-    else
-        mv "$HTACCESS_DOMAIN" /var/www/html/app/webroot/.htaccess
-    fi
-    
-    # Настраиваем Apache для HTTPS
-    SSL_DIR="/etc/apache2/ssl"
-    CERT_FILE="$SSL_DIR/server.crt"
-    KEY_FILE="$SSL_DIR/server.key"
-    
-    if [ -f "$CERT_FILE" ] && [ -f "$KEY_FILE" ]; then
-        # Создаем конфигурацию SSL виртуального хоста
-        cat > /etc/apache2/sites-available/default-ssl.conf <<EOF
+    # Создаем конфигурацию SSL виртуального хоста
+    cat > /etc/apache2/sites-available/default-ssl.conf <<EOF
 <IfModule mod_ssl.c>
     <VirtualHost *:443>
-        ServerName ${ALLOWED_DOMAIN}
-        ServerAlias www.${ALLOWED_DOMAIN}
+        ServerName ${SSL_DOMAIN}
+        ServerAlias www.${SSL_DOMAIN}
         DocumentRoot /var/www/html/app/webroot
         
         <Directory /var/www/html/app/webroot>
@@ -76,16 +53,42 @@ EOF
     </VirtualHost>
 </IfModule>
 EOF
+    
+    # Включаем SSL сайт
+    a2ensite default-ssl.conf 2>/dev/null || true
+    
+    # Если указан домен и режим продакшна, добавляем редирект HTTP -> HTTPS
+    if [ "$APP_ENV" = "prod" ] && [ ! -z "$ALLOWED_DOMAIN" ]; then
+        HTACCESS_DOMAIN="/var/www/html/app/webroot/.htaccess-domain"
         
-        # Включаем SSL сайт
-        a2ensite default-ssl.conf 2>/dev/null || true
+        cat > "$HTACCESS_DOMAIN" <<EOF
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    
+    # Редирект HTTP -> HTTPS (только если SSL настроен)
+    RewriteCond %{HTTPS} off
+    RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+</IfModule>
+EOF
         
-        echo "HTTPS configuration enabled for: $ALLOWED_DOMAIN"
-    else
-        echo "Warning: SSL certificate not found, HTTPS will not be available"
+        # Вставляем правила в начало .htaccess
+        if [ -f /var/www/html/app/webroot/.htaccess ]; then
+            cat "$HTACCESS_DOMAIN" /var/www/html/app/webroot/.htaccess > /var/www/html/app/webroot/.htaccess.tmp
+            mv /var/www/html/app/webroot/.htaccess.tmp /var/www/html/app/webroot/.htaccess
+            rm -f "$HTACCESS_DOMAIN"
+        else
+            mv "$HTACCESS_DOMAIN" /var/www/html/app/webroot/.htaccess
+        fi
+        
+        echo "HTTPS redirect enabled for: $ALLOWED_DOMAIN"
     fi
     
-    echo "Domain restriction and HTTP->HTTPS redirect enabled for: $ALLOWED_DOMAIN"
+    echo "HTTPS configuration enabled"
 else
-    echo "Domain restriction disabled (dev mode or no domain specified)"
+    echo "SSL certificate not found, HTTPS will not be available (HTTP only)"
+    # Отключаем SSL сайт, если он был включен ранее
+    a2dissite default-ssl.conf 2>/dev/null || true
 fi
+
+# Ограничение по домену отключено - доступ разрешен с любого домена
+echo "Domain restriction disabled - access allowed from any domain"
