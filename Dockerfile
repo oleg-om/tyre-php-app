@@ -36,8 +36,8 @@ RUN docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-di
 #     && apt-get clean \
 #     && rm -rf /var/lib/apt/lists/*
 
-# Включение mod_rewrite и mod_auth_basic для Apache
-RUN a2enmod rewrite auth_basic
+# Включение модулей Apache для оптимизации
+RUN a2enmod rewrite auth_basic headers expires deflate
 
 # Настройка PHP
 RUN echo "memory_limit = 1024M" > /usr/local/etc/php/conf.d/memory.ini \
@@ -45,7 +45,23 @@ RUN echo "memory_limit = 1024M" > /usr/local/etc/php/conf.d/memory.ini \
     && echo "post_max_size = 100M" >> /usr/local/etc/php/conf.d/upload.ini \
     && echo "max_execution_time = 300" > /usr/local/etc/php/conf.d/execution.ini \
     && echo "max_input_time = 300" >> /usr/local/etc/php/conf.d/execution.ini \
-    && echo "date.timezone = Europe/Moscow" > /usr/local/etc/php/conf.d/timezone.ini
+    && echo "date.timezone = Europe/Moscow" > /usr/local/etc/php/conf.d/timezone.ini \
+    && echo "realpath_cache_size = 4096K" > /usr/local/etc/php/conf.d/realpath.ini \
+    && echo "realpath_cache_ttl = 600" >> /usr/local/etc/php/conf.d/realpath.ini
+
+# Настройка Opcache для максимальной производительности
+RUN echo "opcache.enable=1" > /usr/local/etc/php/conf.d/opcache.ini \
+    && echo "opcache.enable_cli=0" >> /usr/local/etc/php/conf.d/opcache.ini \
+    && echo "opcache.memory_consumption=256" >> /usr/local/etc/php/conf.d/opcache.ini \
+    && echo "opcache.interned_strings_buffer=16" >> /usr/local/etc/php/conf.d/opcache.ini \
+    && echo "opcache.max_accelerated_files=20000" >> /usr/local/etc/php/conf.d/opcache.ini \
+    && echo "opcache.validate_timestamps=0" >> /usr/local/etc/php/conf.d/opcache.ini \
+    && echo "opcache.revalidate_freq=0" >> /usr/local/etc/php/conf.d/opcache.ini \
+    && echo "opcache.fast_shutdown=1" >> /usr/local/etc/php/conf.d/opcache.ini \
+    && echo "opcache.enable_file_override=1" >> /usr/local/etc/php/conf.d/opcache.ini \
+    && echo "opcache.optimization_level=0x7FFFBFFF" >> /usr/local/etc/php/conf.d/opcache.ini \
+    && echo "opcache.save_comments=0" >> /usr/local/etc/php/conf.d/opcache.ini \
+    && echo "opcache.max_wasted_percentage=10" >> /usr/local/etc/php/conf.d/opcache.ini
 
 # Установка Composer (старая версия для PHP 5.6)
 RUN apt-get update && apt-get install -y curl \
@@ -82,7 +98,41 @@ RUN sed -i 's|DocumentRoot /var/www/html|DocumentRoot /var/www/html/app/webroot|
     && echo "		AllowOverride All" >> /etc/apache2/sites-available/000-default.conf \
     && echo "		Require all granted" >> /etc/apache2/sites-available/000-default.conf \
     && echo "	</Directory>" >> /etc/apache2/sites-available/000-default.conf \
-    && echo "ServerName localhost" >> /etc/apache2/apache2.conf
+    && echo "ServerName localhost" >> /etc/apache2/apache2.conf \
+    && echo "" >> /etc/apache2/apache2.conf \
+    && echo "# Оптимизация Apache KeepAlive" >> /etc/apache2/apache2.conf \
+    && echo "KeepAlive On" >> /etc/apache2/apache2.conf \
+    && echo "MaxKeepAliveRequests 100" >> /etc/apache2/apache2.conf \
+    && echo "KeepAliveTimeout 5" >> /etc/apache2/apache2.conf \
+    && echo "" >> /etc/apache2/apache2.conf \
+    && echo "# Оптимизация процессов Apache (для mpm_prefork)" >> /etc/apache2/apache2.conf \
+    && echo "<IfModule mpm_prefork_module>" >> /etc/apache2/apache2.conf \
+    && echo "    StartServers 5" >> /etc/apache2/apache2.conf \
+    && echo "    MinSpareServers 5" >> /etc/apache2/apache2.conf \
+    && echo "    MaxSpareServers 10" >> /etc/apache2/apache2.conf \
+    && echo "    MaxRequestWorkers 150" >> /etc/apache2/apache2.conf \
+    && echo "    MaxConnectionsPerChild 0" >> /etc/apache2/apache2.conf \
+    && echo "</IfModule>" >> /etc/apache2/apache2.conf \
+    && echo "" >> /etc/apache2/sites-available/000-default.conf \
+    && echo "	# Оптимизация производительности" >> /etc/apache2/sites-available/000-default.conf \
+    && echo "	<IfModule mod_deflate.c>" >> /etc/apache2/sites-available/000-default.conf \
+    && echo "		AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css text/javascript application/javascript application/json" >> /etc/apache2/sites-available/000-default.conf \
+    && echo "	</IfModule>" >> /etc/apache2/sites-available/000-default.conf \
+    && echo "" >> /etc/apache2/sites-available/000-default.conf \
+    && echo "	<IfModule mod_expires.c>" >> /etc/apache2/sites-available/000-default.conf \
+    && echo "		ExpiresActive On" >> /etc/apache2/sites-available/000-default.conf \
+    && echo "		ExpiresByType image/jpeg \"access plus 1 year\"" >> /etc/apache2/sites-available/000-default.conf \
+    && echo "		ExpiresByType image/png \"access plus 1 year\"" >> /etc/apache2/sites-available/000-default.conf \
+    && echo "		ExpiresByType image/gif \"access plus 1 year\"" >> /etc/apache2/sites-available/000-default.conf \
+    && echo "		ExpiresByType text/css \"access plus 1 month\"" >> /etc/apache2/sites-available/000-default.conf \
+    && echo "		ExpiresByType application/javascript \"access plus 1 month\"" >> /etc/apache2/sites-available/000-default.conf \
+    && echo "	</IfModule>" >> /etc/apache2/sites-available/000-default.conf \
+    && echo "" >> /etc/apache2/sites-available/000-default.conf \
+    && echo "	<IfModule mod_headers.c>" >> /etc/apache2/sites-available/000-default.conf \
+    && echo "		<FilesMatch \"\\.(jpg|jpeg|png|gif|css|js)$\">" >> /etc/apache2/sites-available/000-default.conf \
+    && echo "			Header set Cache-Control \"max-age=31536000, public\"" >> /etc/apache2/sites-available/000-default.conf \
+    && echo "		</FilesMatch>" >> /etc/apache2/sites-available/000-default.conf \
+    && echo "	</IfModule>"
 
 # Создание скрипта инициализации для генерации .htpasswd
 RUN echo '#!/bin/bash' > /usr/local/bin/init-phpmyadmin-auth.sh && \
