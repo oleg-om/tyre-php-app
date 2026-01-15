@@ -77,7 +77,7 @@ COPY . /var/www/html/
 # Создание необходимых директорий и установка прав доступа
 # Удаляем .htaccess из app/, так как DocumentRoot уже указывает на webroot
 # Создаем .htaccess в webroot для правильной работы mod_rewrite
-RUN mkdir -p /var/www/html/app/tmp /var/www/html/app/webroot/files /var/www/html/app/webroot/phpmy \
+RUN mkdir -p /var/www/html/app/tmp /var/www/html/app/webroot/files /var/www/html/app/webroot/phpmy /var/www/html/app/webroot/xls \
     && rm -f /var/www/html/app/.htaccess \
     && echo '<IfModule mod_rewrite.c>' > /var/www/html/app/webroot/.htaccess \
     && echo '    RewriteEngine On' >> /var/www/html/app/webroot/.htaccess \
@@ -88,7 +88,8 @@ RUN mkdir -p /var/www/html/app/tmp /var/www/html/app/webroot/files /var/www/html
     && chown -R www-data:www-data /var/www/html \
     && chmod -R 755 /var/www/html \
     && chmod -R 777 /var/www/html/app/tmp \
-    && chmod -R 777 /var/www/html/app/webroot/files
+    && chmod -R 777 /var/www/html/app/webroot/files \
+    && chmod -R 777 /var/www/html/app/webroot/xls
 
 # Настройка Apache для CakePHP
 RUN sed -i 's|DocumentRoot /var/www/html|DocumentRoot /var/www/html/app/webroot|g' /etc/apache2/sites-available/000-default.conf \

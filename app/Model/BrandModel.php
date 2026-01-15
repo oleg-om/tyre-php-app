@@ -66,7 +66,7 @@ class BrandModel extends AppModel {
 		);
 		$this->virtualFields['is_deletable'] = 'BrandModel.products_count=0';
 		$this->virtualFields['old_brand_id'] = 'BrandModel.brand_id';
-		$this->files_path = IMAGES . 'models';
+		$this->files_path = WWW_ROOT . 'files' . DS . 'models';
 	}
 	function _getFolderById() {
 		$id = $this->id;
@@ -153,20 +153,24 @@ class BrandModel extends AppModel {
 			$this->Product = ClassRegistry::init('Product');
 			$this->Product->updateAll(array('brand_id' => $this->data[$this->name]['brand_id']), array('brand_id' => $this->data[$this->name]['old_brand_id'], 'model_id' => $this->id));
 		}
-		if ($this->tmp_file != null) {
+		if ($this->tmp_file != null && !empty($this->id)) {
 			$folder = $this->_getFolderById();
 			$from = TMP . $this->tmp_file;
 			$to = $folder . $this->tmp_name . '.' . $this->tmp_ext;
-			if ($dh = opendir($folder)) {
-				while ($file = readdir($dh)) {
-					if ($file != '.' && $file != '..') {
-						unlink($folder . $file);
+			if (is_dir($folder)) {
+				if ($dh = opendir($folder)) {
+					while ($file = readdir($dh)) {
+						if ($file != '.' && $file != '..') {
+							unlink($folder . $file);
+						}
 					}
+					closedir($dh);
 				}
-				closedir($dh);
 			}
-			rename($from, $to);
-			chmod($to, 0777);
+			if (file_exists($from)) {
+				rename($from, $to);
+				chmod($to, 0777);
+			}
 		}
 		Cache::delete('brands_1', 'long');
 		Cache::delete('brands_2', 'long');
