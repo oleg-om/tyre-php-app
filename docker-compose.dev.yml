@@ -1,13 +1,9 @@
-# По умолчанию используется dev окружение
-# Для продакшна используйте: docker-compose -f docker-compose.prod.yml
-# Подробнее: README-ENVIRONMENTS.md
-
 services:
   tyre-app-php:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: tyre-app-php
+    container_name: tyre-app-php-dev
     ports:
       - "8080:80"
     volumes:
@@ -25,8 +21,8 @@ services:
       - DB_PASSWORD=${DB_PASSWORD:-tyre_password}
       - PHPMYADMIN_USER=${PHPMYADMIN_USER:-admin}
       - PHPMYADMIN_PASSWORD=${PHPMYADMIN_PASSWORD:-admin_password}
-      - APP_ENV=${APP_ENV:-dev}
-      - ALLOWED_DOMAIN=${ALLOWED_DOMAIN:-}
+      - APP_ENV=dev
+      - ALLOWED_DOMAIN=
     depends_on:
       - tyre-app-mysql
     networks:
@@ -35,7 +31,7 @@ services:
   tyre-app-mysql:
     image: mysql:5.7
     platform: linux/amd64
-    container_name: tyre-app-mysql
+    container_name: tyre-app-mysql-dev
     ports:
       - "3307:3306"
     environment:
@@ -44,7 +40,7 @@ services:
       - MYSQL_USER=${DB_USER:-tyre_user}
       - MYSQL_PASSWORD=${DB_PASSWORD:-tyre_password}
     volumes:
-      - tyre-app-mysql-data:/var/lib/mysql
+      - tyre-app-mysql-data-dev:/var/lib/mysql
       - ./mysql-init:/docker-entrypoint-initdb.d
       - ./dumps:/dumps
     command: --sql-mode="STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION" --character-set-server=utf8 --collation-server=utf8_general_ci
@@ -57,7 +53,7 @@ services:
       retries: 5
 
 volumes:
-  tyre-app-mysql-data:
+  tyre-app-mysql-data-dev:
     driver: local
   tyre-app-files:
     driver: local

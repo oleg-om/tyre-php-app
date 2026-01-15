@@ -5,27 +5,66 @@
 - Docker
 - Docker Compose
 
-## Быстрый старт
+## Окружения
+
+Приложение поддерживает два окружения:
+- **Development (dev)** - для разработки (порт 8080, без ограничений)
+- **Production (prod)** - для продакшна (порт 80, ограничение по домену)
+
+**Подробная документация:** `README-ENVIRONMENTS.md`
+
+## Быстрый старт (Development)
 
 1. Скопируйте файл с переменными окружения:
 ```bash
 cp env.example .env
 ```
 
-2. Отредактируйте `.env` файл и укажите свои настройки базы данных:
+2. Отредактируйте `.env` файл:
 ```env
+APP_ENV=dev
+ALLOWED_DOMAIN=
 DB_NAME=tyre_db
 DB_USER=tyre_user
 DB_PASSWORD=your_password
 MYSQL_ROOT_PASSWORD=root_password
+PHPMYADMIN_USER=admin
+PHPMYADMIN_PASSWORD=admin_password
 ```
 
 3. Запустите контейнеры:
 ```bash
-docker-compose up -d
+docker-compose -f docker-compose.dev.yml up -d
 ```
 
 4. Приложение будет доступно по адресу: http://localhost:8080
+5. phpMyAdmin: http://localhost:8080/phpmy/ (с Basic Auth)
+
+## Быстрый старт (Production)
+
+1. Скопируйте файл с переменными окружения:
+```bash
+cp env.example .env
+```
+
+2. Отредактируйте `.env` файл:
+```env
+APP_ENV=prod
+ALLOWED_DOMAIN=example.com
+DB_NAME=tyre_db
+DB_USER=tyre_user
+DB_PASSWORD=your_password
+MYSQL_ROOT_PASSWORD=root_password
+PHPMYADMIN_USER=admin
+PHPMYADMIN_PASSWORD=admin_password
+```
+
+3. Запустите контейнеры:
+```bash
+docker-compose -f docker-compose.prod.yml up -d
+```
+
+4. Приложение будет доступно только с указанного домена: http://example.com
 
 ## Восстановление базы данных из дампа
 

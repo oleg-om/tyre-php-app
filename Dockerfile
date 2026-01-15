@@ -14,7 +14,7 @@ RUN apt-get update && \
     apt-get install -y libmcrypt-dev && \
     apt-get install -y libicu-dev && \
     apt-get install -y libxml2-dev zlib1g-dev && \
-    apt-get install -y git unzip apache2-utils && \
+    apt-get install -y git unzip apache2-utils openssl && \
     rm -rf /var/lib/apt/lists/*
 
 # Установка PHP расширений
@@ -71,6 +71,11 @@ RUN apt-get update && apt-get install -y curl \
 # Установка рабочей директории
 WORKDIR /var/www/html
 
+# Копирование скриптов инициализации (до копирования приложения)
+COPY init-domain-restriction.sh /usr/local/bin/init-domain-restriction.sh
+COPY generate-ssl-cert.sh /usr/local/bin/generate-ssl-cert.sh
+RUN chmod +x /usr/local/bin/init-domain-restriction.sh /usr/local/bin/generate-ssl-cert.sh
+
 # Копирование файлов приложения
 COPY . /var/www/html/
 
@@ -100,6 +105,9 @@ RUN sed -i 's|DocumentRoot /var/www/html|DocumentRoot /var/www/html/app/webroot|
     && echo "		Require all granted" >> /etc/apache2/sites-available/000-default.conf \
     && echo "	</Directory>" >> /etc/apache2/sites-available/000-default.conf \
     && echo "ServerName localhost" >> /etc/apache2/apache2.conf \
+    && echo "" >> /etc/apache2/apache2.conf \
+    && echo "# Создание директории для SSL сертификатов" >> /etc/apache2/apache2.conf \
+    && mkdir -p /etc/apache2/ssl
     && echo "" >> /etc/apache2/apache2.conf \
     && echo "# Оптимизация Apache KeepAlive" >> /etc/apache2/apache2.conf \
     && echo "KeepAlive On" >> /etc/apache2/apache2.conf \
@@ -145,7 +153,8 @@ RUN echo '#!/bin/bash' > /usr/local/bin/init-phpmyadmin-auth.sh && \
     echo 'fi' >> /usr/local/bin/init-phpmyadmin-auth.sh && \
     chmod +x /usr/local/bin/init-phpmyadmin-auth.sh
 
-EXPOSE 80
+
+EXPOSE 80 443
 
 # Запуск инициализации и Apache
-CMD ["/bin/bash", "-c", "/usr/local/bin/init-phpmyadmin-auth.sh && apache2-foreground"]
+CMD ["/bin/bash", "-c", "/usr/local/bin/init-phpmyadmin-auth.sh && /usr/local/bin/generate-ssl-cert.sh && /usr/local/bin/init-domain-restriction.sh && apache2-foreground"]

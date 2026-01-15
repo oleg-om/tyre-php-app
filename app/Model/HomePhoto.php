@@ -18,7 +18,7 @@ class HomePhoto extends AppModel {
 	public function __construct() {
 		parent::__construct();
 		$this->virtualFields['is_deletable'] = '1';
-		$this->files_path = IMAGES . 'slider';
+		$this->files_path = WWW_ROOT . 'files' . DS . 'slider';
 	}
 	public function beforeDelete($cascade = true) {
 		if (parent::beforeDelete()) {
@@ -100,20 +100,24 @@ class HomePhoto extends AppModel {
 		return false;
 	}
 	public function afterSave($created, $options = array()) {
-		if ($this->tmp_file != null) {
+		if ($this->tmp_file != null && !empty($this->id)) {
 			$folder = $this->_getFolderById();
 			$from = TMP . $this->tmp_file;
 			$to = $folder . $this->tmp_name . '.' . $this->tmp_ext;
-			if ($dh = opendir($folder)) {
-				while ($file = readdir($dh)) {
-					if ($file != '.' && $file != '..') {
-						unlink($folder . $file);
+			if (is_dir($folder)) {
+				if ($dh = opendir($folder)) {
+					while ($file = readdir($dh)) {
+						if ($file != '.' && $file != '..') {
+							unlink($folder . $file);
+						}
 					}
+					closedir($dh);
 				}
-				closedir($dh);
 			}
-			rename($from, $to);
-			chmod($to, 0777);
+			if (file_exists($from)) {
+				rename($from, $to);
+				chmod($to, 0777);
+			}
 		}
 		$this->tmp_file = null;
 	}
