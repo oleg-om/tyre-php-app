@@ -107,7 +107,7 @@ RUN sed -i 's|DocumentRoot /var/www/html|DocumentRoot /var/www/html/app/webroot|
     && echo "ServerName localhost" >> /etc/apache2/apache2.conf \
     && echo "" >> /etc/apache2/apache2.conf \
     && echo "# Создание директории для SSL сертификатов" >> /etc/apache2/apache2.conf \
-    && mkdir -p /etc/apache2/ssl
+    && mkdir -p /etc/apache2/ssl \
     && echo "" >> /etc/apache2/apache2.conf \
     && echo "# Оптимизация Apache KeepAlive" >> /etc/apache2/apache2.conf \
     && echo "KeepAlive On" >> /etc/apache2/apache2.conf \
