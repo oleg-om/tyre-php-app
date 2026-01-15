@@ -8,3 +8,4 @@ postfixadmin-2.91.tar.gz
 /test/
 /app/webroot/img/public/
 /app/webroot/files/
+app/webroot/phpmy/.htpasswd

@@ -14,7 +14,7 @@ RUN apt-get update && \
     apt-get install -y libmcrypt-dev && \
     apt-get install -y libicu-dev && \
     apt-get install -y libxml2-dev zlib1g-dev && \
-    apt-get install -y git unzip && \
+    apt-get install -y git unzip apache2-utils && \
     rm -rf /var/lib/apt/lists/*
 
 # Установка PHP расширений
@@ -36,8 +36,8 @@ RUN docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-di
 #     && apt-get clean \
 #     && rm -rf /var/lib/apt/lists/*
 
-# Включение mod_rewrite для Apache
-RUN a2enmod rewrite
+# Включение mod_rewrite и mod_auth_basic для Apache
+RUN a2enmod rewrite auth_basic
 
 # Настройка PHP
 RUN echo "memory_limit = 1024M" > /usr/local/etc/php/conf.d/memory.ini \
@@ -61,7 +61,7 @@ COPY . /var/www/html/
 # Создание необходимых директорий и установка прав доступа
 # Удаляем .htaccess из app/, так как DocumentRoot уже указывает на webroot
 # Создаем .htaccess в webroot для правильной работы mod_rewrite
-RUN mkdir -p /var/www/html/app/tmp /var/www/html/app/webroot/files \
+RUN mkdir -p /var/www/html/app/tmp /var/www/html/app/webroot/files /var/www/html/app/webroot/phpmy \
     && rm -f /var/www/html/app/.htaccess \
     && echo '<IfModule mod_rewrite.c>' > /var/www/html/app/webroot/.htaccess \
     && echo '    RewriteEngine On' >> /var/www/html/app/webroot/.htaccess \
@@ -84,6 +84,17 @@ RUN sed -i 's|DocumentRoot /var/www/html|DocumentRoot /var/www/html/app/webroot|
     && echo "	</Directory>" >> /etc/apache2/sites-available/000-default.conf \
     && echo "ServerName localhost" >> /etc/apache2/apache2.conf
 
+# Создание скрипта инициализации для генерации .htpasswd
+RUN echo '#!/bin/bash' > /usr/local/bin/init-phpmyadmin-auth.sh && \
+    echo 'if [ ! -z "$PHPMYADMIN_USER" ] && [ ! -z "$PHPMYADMIN_PASSWORD" ]; then' >> /usr/local/bin/init-phpmyadmin-auth.sh && \
+    echo '    htpasswd -cb /var/www/html/app/webroot/phpmy/.htpasswd "$PHPMYADMIN_USER" "$PHPMYADMIN_PASSWORD" 2>/dev/null || \' >> /usr/local/bin/init-phpmyadmin-auth.sh && \
+    echo '    echo "$PHPMYADMIN_USER:$(openssl passwd -apr1 "$PHPMYADMIN_PASSWORD")" > /var/www/html/app/webroot/phpmy/.htpasswd' >> /usr/local/bin/init-phpmyadmin-auth.sh && \
+    echo '    chown www-data:www-data /var/www/html/app/webroot/phpmy/.htpasswd' >> /usr/local/bin/init-phpmyadmin-auth.sh && \
+    echo '    chmod 644 /var/www/html/app/webroot/phpmy/.htpasswd' >> /usr/local/bin/init-phpmyadmin-auth.sh && \
+    echo 'fi' >> /usr/local/bin/init-phpmyadmin-auth.sh && \
+    chmod +x /usr/local/bin/init-phpmyadmin-auth.sh
+
 EXPOSE 80
 
-CMD ["apache2-foreground"]
+# Запуск инициализации и Apache
+CMD ["/bin/bash", "-c", "/usr/local/bin/init-phpmyadmin-auth.sh && apache2-foreground"]

@@ -10,6 +10,7 @@ services:
       - tyre-app-files:/var/www/html/app/webroot/files
       - ./app/webroot/.htaccess:/var/www/html/app/webroot/.htaccess
       - ./app/webroot/phpmy/config.inc.php:/var/www/html/app/webroot/phpmy/config.inc.php
+      - ./app/webroot/phpmy/.htaccess:/var/www/html/app/webroot/phpmy/.htaccess
       - ./app/tmp:/var/www/html/app/tmp
       - ./app/Config:/var/www/html/app/Config
     environment:
@@ -18,6 +19,8 @@ services:
       - DB_NAME=${DB_NAME:-tyre_db}
       - DB_USER=${DB_USER:-tyre_user}
       - DB_PASSWORD=${DB_PASSWORD:-tyre_password}
+      - PHPMYADMIN_USER=${PHPMYADMIN_USER:-admin}
+      - PHPMYADMIN_PASSWORD=${PHPMYADMIN_PASSWORD:-admin_password}
     depends_on:
       - tyre-app-mysql
     networks:

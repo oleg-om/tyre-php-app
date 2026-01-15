@@ -18,21 +18,6 @@ NC='\033[0m' # No Color
 CONTAINER_NAME="tyre-app-php"
 CONTAINER_TARGET_DIR="/var/www/html/app/webroot/files"
 
-# Функция для отображения прогресс-бара
-show_progress() {
-    local current=$1
-    local total=$2
-    local width=50
-    local percentage=$((current * 100 / total))
-    local filled=$((width * current / total))
-    local empty=$((width - filled))
-    
-    printf "\r${BLUE}["
-    printf "%${filled}s" | tr ' ' '='
-    printf "%${empty}s" | tr ' ' ' '
-    printf "] ${NC}%3d%% (%d/%d файлов)" "$percentage" "$current" "$total"
-}
-
 # Путь к директории с файлами
 FILES_DIR=${1:-}
 
@@ -75,6 +60,11 @@ if ! docker exec "$CONTAINER_NAME" mkdir -p "$CONTAINER_TARGET_DIR"; then
     exit 1
 fi
 
+# Установка начальных прав доступа для директории
+echo -e "${YELLOW}Установка начальных прав доступа...${NC}"
+docker exec "$CONTAINER_NAME" chown -R www-data:www-data "$CONTAINER_TARGET_DIR" 2>/dev/null || true
+docker exec "$CONTAINER_NAME" chmod -R 777 "$CONTAINER_TARGET_DIR" 2>/dev/null || true
+
 # Подсчет файлов
 echo -e "${YELLOW}Подсчет файлов...${NC}"
 FILE_COUNT=$(find "$FILES_DIR" -type f | wc -l | tr -d ' ')
@@ -86,57 +76,80 @@ if [ "$FILE_COUNT" -eq 0 ]; then
     exit 0
 fi
 
-# Копирование файлов напрямую в контейнер с прогресс-баром
-echo -e "${YELLOW}Копирование файлов в контейнер...${NC}"
+# Копирование файлов напрямую в контейнер
+echo -e "${YELLOW}Копирование файлов в контейнер (это может занять некоторое время)...${NC}"
+echo -e "${BLUE}Используется оптимизированный метод передачи через tar...${NC}"
 
-# Используем tar для более эффективной передачи файлов с прогрессом
-# Создаем архив и передаем его в контейнер через stdin
-echo -e "${YELLOW}Подготовка и передача файлов в контейнер...${NC}"
+# Запоминаем время начала
+START_TIME=$(date +%s)
 
-# Используем tar для создания архива и передачи через docker exec
-# Это более эффективно для большого количества файлов
+# Используем tar для максимально быстрой передачи файлов
+# Опции tar:
+# --no-same-owner - не сохранять владельца (установим позже)
+# --no-same-permissions - не сохранять права (установим позже)
+# Это значительно ускоряет передачу
 (
     cd "$FILES_DIR"
-    tar -cf - . 2>/dev/null | docker exec -i "$CONTAINER_NAME" tar -xf - -C "$CONTAINER_TARGET_DIR" 2>/dev/null
-) &
-TAR_PID=$!
-
-# Показываем прогресс пока идет копирование
-CURRENT=0
-while kill -0 $TAR_PID 2>/dev/null; do
-    # Подсчитываем уже скопированные файлы
-    COPIED_NOW=$(docker exec "$CONTAINER_NAME" find "$CONTAINER_TARGET_DIR" -type f 2>/dev/null | wc -l | tr -d ' ' || echo "0")
-    if [ "$COPIED_NOW" -gt "$CURRENT" ] && [ "$COPIED_NOW" -le "$FILE_COUNT" ]; then
-        CURRENT=$COPIED_NOW
-        show_progress "$CURRENT" "$FILE_COUNT"
-    fi
-    sleep 0.5
-done
-
-# Ждем завершения процесса
-wait $TAR_PID
+    tar --no-same-owner --no-same-permissions -cf - . 2>/dev/null | \
+    docker exec -i "$CONTAINER_NAME" tar --no-same-owner --no-same-permissions -xf - -C "$CONTAINER_TARGET_DIR" 2>/dev/null
+)
 TAR_EXIT=$?
 
+# Вычисляем время выполнения
+END_TIME=$(date +%s)
+ELAPSED=$((END_TIME - START_TIME))
+MINUTES=$((ELAPSED / 60))
+SECONDS=$((ELAPSED % 60))
+
 if [ $TAR_EXIT -eq 0 ]; then
-    # Показываем 100% после завершения
-    show_progress "$FILE_COUNT" "$FILE_COUNT"
-    echo ""
+    echo -e "${GREEN}✓ Копирование завершено за ${MINUTES}м ${SECONDS}с${NC}"
 else
-    echo ""
-    echo -e "${YELLOW}Копирование завершено (возможны предупреждения)${NC}"
+    echo -e "${YELLOW}⚠ Копирование завершено с предупреждениями (время: ${MINUTES}м ${SECONDS}с)${NC}"
 fi
 
 echo ""
 echo -e "${GREEN}Файлы успешно скопированы в контейнер!${NC}"
 
-# Подсчет скопированных файлов в контейнере
+# Подсчет скопированных файлов в контейнере (быстрая проверка)
+echo -e "${YELLOW}Проверка скопированных файлов...${NC}"
 COPIED_COUNT=$(docker exec "$CONTAINER_NAME" find "$CONTAINER_TARGET_DIR" -type f 2>/dev/null | wc -l | tr -d ' ')
-echo "Скопировано файлов в контейнер: $COPIED_COUNT"
+echo "Найдено файлов в контейнере: $COPIED_COUNT"
 
-# Установка прав доступа в контейнере
-echo -e "${YELLOW}Установка прав доступа в контейнере...${NC}"
-docker exec "$CONTAINER_NAME" chmod -R 777 "$CONTAINER_TARGET_DIR" || true
-docker exec "$CONTAINER_NAME" chown -R www-data:www-data "$CONTAINER_TARGET_DIR" || true
+# Оптимизированная установка прав доступа в контейнере
+# Используем find с -exec для более быстрой обработки больших директорий
+echo -e "${YELLOW}Установка прав доступа в контейнере (это может занять некоторое время)...${NC}"
+
+# Установка владельца через find (быстрее для больших директорий)
+echo -e "${YELLOW}  - Установка владельца www-data:www-data...${NC}"
+START_CHOWN=$(date +%s)
+if docker exec "$CONTAINER_NAME" find "$CONTAINER_TARGET_DIR" -exec chown www-data:www-data {} + 2>/dev/null; then
+    END_CHOWN=$(date +%s)
+    CHOWN_TIME=$((END_CHOWN - START_CHOWN))
+    echo -e "${GREEN}  ✓ Владелец установлен (за ${CHOWN_TIME}с)${NC}"
+else
+    # Fallback на стандартный метод, если find с + не поддерживается
+    if docker exec "$CONTAINER_NAME" chown -R www-data:www-data "$CONTAINER_TARGET_DIR" 2>/dev/null; then
+        echo -e "${GREEN}  ✓ Владелец установлен${NC}"
+    else
+        echo -e "${YELLOW}  ⚠ Предупреждение: не удалось установить владельца${NC}"
+    fi
+fi
+
+# Установка прав доступа через find (быстрее для больших директорий)
+echo -e "${YELLOW}  - Установка прав доступа 777...${NC}"
+START_CHMOD=$(date +%s)
+if docker exec "$CONTAINER_NAME" find "$CONTAINER_TARGET_DIR" -exec chmod 777 {} + 2>/dev/null; then
+    END_CHMOD=$(date +%s)
+    CHMOD_TIME=$((END_CHMOD - START_CHMOD))
+    echo -e "${GREEN}  ✓ Права доступа установлены (за ${CHMOD_TIME}с)${NC}"
+else
+    # Fallback на стандартный метод, если find с + не поддерживается
+    if docker exec "$CONTAINER_NAME" chmod -R 777 "$CONTAINER_TARGET_DIR" 2>/dev/null; then
+        echo -e "${GREEN}  ✓ Права доступа установлены${NC}"
+    else
+        echo -e "${YELLOW}  ⚠ Предупреждение: не удалось установить права доступа${NC}"
+    fi
+fi
 
 echo ""
 echo -e "${GREEN}Файлы успешно восстановлены в контейнер $CONTAINER_NAME!${NC}"
