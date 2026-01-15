@@ -69,8 +69,7 @@ class FrontendHelper extends AppHelper
         $thumbnail = new phpthumb;
         
         // Пути, которые были перенесены в files/
-        $files_paths = array('akb', 'bolts', 'brands', 'calculator', 'datepicker', 'logos', 'models', 'slider', 'tubes', 'tyres');
-        $base_images_path = in_array($path, $files_paths) ? WWW_ROOT . 'files' . DS : IMAGES;
+        $base_images_path = WWW_ROOT . 'files' . DS;
         
         if ($folder) {
             $folder = (floor($id / 5000) + 1);
@@ -106,8 +105,7 @@ class FrontendHelper extends AppHelper
         }
         if (is_file($thumbnail->cache_filename)) {
             // Пути, которые были перенесены в files/
-            $files_paths = array('akb', 'bolts', 'brands', 'calculator', 'datepicker', 'logos', 'models', 'slider', 'tubes', 'tyres');
-            $base_path = in_array($path, $files_paths) ? '/files' : '/img';
+            $base_path = '/files';
             if ($folder) {
                 return $base_path . '/' . $path . '/' . $folder . '/' . $id . '/' . $cacheFilename;
             } else {
