@@ -9,3 +9,4 @@ postfixadmin-2.91.tar.gz
 /app/webroot/img/public/
 /app/webroot/files/
 app/webroot/phpmy/.htpasswd
+.env

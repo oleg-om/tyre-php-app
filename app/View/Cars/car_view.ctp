@@ -2,7 +2,7 @@
 <div class="selectionCarImg"><?php
 $image = '';
 if (!empty($car_image)) {
-    $image = $this->Html->image('car_generations/' . $car_image, array('alt' => $car_brand['CarBrand']['title']));
+    $image = $this->Html->image('/files/car_generations/' . $car_image, array('alt' => $car_brand['CarBrand']['title']));
 }
 echo $image;
 ?></div>
