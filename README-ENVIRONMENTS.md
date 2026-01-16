@@ -197,36 +197,70 @@ docker-compose up -d
 
 ### Использование Let's Encrypt (рекомендуется для продакшна)
 
-Для получения валидного SSL сертификата от Let's Encrypt:
+Для получения валидного SSL сертификата от Let's Encrypt используйте автоматический скрипт:
+
+#### Автоматическая настройка (рекомендуется)
+
+```bash
+# 1. Убедитесь, что домен указывает на ваш сервер (A запись -> IP сервера)
+# 2. Запустите скрипт настройки
+./setup-letsencrypt.sh example.com
+```
+
+Скрипт автоматически:
+- Установит certbot (если не установлен)
+- Проверит DNS настройки
+- Остановит контейнер PHP
+- Получит сертификат от Let's Encrypt
+- Скопирует сертификаты в Docker volume
+- Запустит контейнер обратно
+- Настроит автоматическое обновление через cron
+
+#### Ручная настройка
+
+Если предпочитаете настройку вручную:
 
 1. Убедитесь, что домен указывает на ваш сервер
-2. Установите certbot на хосте:
+2. Установите certbot:
 ```bash
 sudo apt-get update
 sudo apt-get install certbot
 ```
 
-3. Получите сертификат:
+3. Остановите контейнер PHP:
+```bash
+docker compose stop tyre-app-php
+```
+
+4. Получите сертификат:
 ```bash
 sudo certbot certonly --standalone -d example.com -d www.example.com
 ```
 
-4. Скопируйте сертификаты в Docker volume:
+5. Скопируйте сертификаты в Docker volume:
 ```bash
-# Остановите контейнер
-docker-compose -f docker-compose.prod.yml down
-
-# Скопируйте сертификаты
-docker run --rm -v tyre-php-app_tyre-app-ssl-prod:/ssl -v /etc/letsencrypt/live/example.com:/certs alpine sh -c "cp /certs/fullchain.pem /ssl/server.crt && cp /certs/privkey.pem /ssl/server.key && chmod 600 /ssl/server.key && chmod 644 /ssl/server.crt"
-
-# Запустите контейнер
-docker-compose -f docker-compose.prod.yml up -d
+docker run --rm \
+  -v tyre-app-ssl:/ssl \
+  -v /etc/letsencrypt/live/example.com:/certs:ro \
+  alpine sh -c "
+    cp /certs/fullchain.pem /ssl/server.crt
+    cp /certs/privkey.pem /ssl/server.key
+    chmod 600 /ssl/server.key
+    chmod 644 /ssl/server.crt
+  "
 ```
 
-5. Настройте автоматическое обновление сертификата (cron):
+6. Запустите контейнер:
 ```bash
-# Добавьте в crontab (sudo crontab -e):
-0 0 * * * certbot renew --quiet && docker run --rm -v tyre-php-app_tyre-app-ssl-prod:/ssl -v /etc/letsencrypt/live/example.com:/certs alpine sh -c "cp /certs/fullchain.pem /ssl/server.crt && cp /certs/privkey.pem /ssl/server.key && chmod 600 /ssl/server.key && chmod 644 /ssl/server.crt" && docker-compose -f docker-compose.prod.yml restart tyre-app-php-prod
+docker compose up -d tyre-app-php
+```
+
+#### Обновление сертификата
+
+Сертификат обновляется автоматически через cron. Для ручного обновления:
+
+```bash
+./update-ssl-cert.sh example.com
 ```
 
 ### Просмотр SSL сертификата
