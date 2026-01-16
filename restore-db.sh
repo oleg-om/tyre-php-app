@@ -60,19 +60,45 @@ docker cp "$DUMP_FILE" tyre-app-mysql:/tmp/dump.sql
 # Восстановление базы данных
 echo -e "${YELLOW}Восстановление базы данных...${NC}"
 
-# Удаление существующей базы и создание новой
+# Тщательная очистка существующей базы данных
+echo -e "${YELLOW}Очистка существующей базы данных...${NC}"
 docker exec -i tyre-app-mysql mysql -uroot -p"$MYSQL_ROOT_PASSWORD" <<EOF
+-- Отключаем проверки для ускорения удаления
+SET FOREIGN_KEY_CHECKS = 0;
+SET UNIQUE_CHECKS = 0;
+
+-- Удаляем базу данных если существует
 DROP DATABASE IF EXISTS \`$DB_NAME\`;
+
+-- Включаем проверки обратно
+SET FOREIGN_KEY_CHECKS = 1;
+SET UNIQUE_CHECKS = 1;
+
+-- Создаем новую базу данных
 CREATE DATABASE \`$DB_NAME\` CHARACTER SET utf8 COLLATE utf8_general_ci;
+
+-- Предоставляем права пользователю
 GRANT ALL PRIVILEGES ON \`$DB_NAME\`.* TO '$DB_USER'@'%';
 FLUSH PRIVILEGES;
 EOF
 
-# Восстановление из дампа (игнорируем ошибки связанные с пользователями)
-echo -e "${YELLOW}Восстановление из дампа (игнорируем ошибки пользователей)...${NC}"
-# Используем --force для игнорирования ошибок и фильтруем предупреждения
-# Используем файл из контейнера через bash -c для правильного перенаправления
-docker exec -i tyre-app-mysql bash -c "mysql -uroot -p'$MYSQL_ROOT_PASSWORD' '$DB_NAME' --force < /tmp/dump.sql" 2>&1 | grep -v "ERROR 1133\|ERROR 1396\|Using a password" || true
+# Фильтрация команд пользователей из дампа перед восстановлением
+echo -e "${YELLOW}Фильтрация команд пользователей из дампа...${NC}"
+docker exec -i tyre-app-mysql bash -c "grep -v -E '^(CREATE USER|DROP USER|GRANT.*ON \*\.\*|REVOKE.*ON \*\.\*|FLUSH PRIVILEGES)' /tmp/dump.sql > /tmp/dump_filtered.sql" || true
+
+# Восстановление из отфильтрованного дампа
+echo -e "${YELLOW}Восстановление из дампа...${NC}"
+# Отключаем проверки для ускорения восстановления
+docker exec -i tyre-app-mysql bash -c "mysql -uroot -p'$MYSQL_ROOT_PASSWORD' '$DB_NAME' --force <<SQL
+SET FOREIGN_KEY_CHECKS = 0;
+SET UNIQUE_CHECKS = 0;
+SET SQL_MODE = 'NO_AUTO_VALUE_ON_ZERO';
+SET SQL_NOTES = 0;
+SOURCE /tmp/dump_filtered.sql;
+SET FOREIGN_KEY_CHECKS = 1;
+SET UNIQUE_CHECKS = 1;
+SQL
+" 2>&1 | grep -v "ERROR 1133\|ERROR 1396\|Using a password\|Warning" || true
 
 # Настройка sql_mode
 echo -e "${YELLOW}Настройка sql_mode...${NC}"
@@ -82,7 +108,7 @@ SET GLOBAL sql_mode=(SELECT REPLACE(@@sql_mode, "ONLY_FULL_GROUP_BY,", ""));
 SET SESSION sql_mode=(SELECT REPLACE(@@sql_mode, "ONLY_FULL_GROUP_BY,", ""));
 EOF
 
-# Удаление временного файла из контейнера
-docker exec tyre-app-mysql rm -f /tmp/dump.sql
+# Удаление временных файлов из контейнера
+docker exec tyre-app-mysql rm -f /tmp/dump.sql /tmp/dump_filtered.sql
 
 echo -e "${GREEN}База данных успешно восстановлена!${NC}"
