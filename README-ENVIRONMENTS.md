@@ -190,10 +190,11 @@ docker-compose up -d
 
 ### Self-signed сертификат (по умолчанию)
 
-При первом запуске продакшн окружения автоматически генерируется self-signed SSL сертификат:
-- Сертификат сохраняется в Docker volume `tyre-app-ssl-prod`
+При первом запуске продакшн окружения (если указан `ALLOWED_DOMAIN`) автоматически генерируется self-signed SSL сертификат:
+- Сертификат сохраняется в Docker volume `tyre-app-ssl`
 - Действителен 365 дней
 - Браузеры могут показывать предупреждение о безопасности
+- Для продакшна рекомендуется использовать Let's Encrypt (см. ниже)
 
 ### Использование Let's Encrypt (рекомендуется для продакшна)
 
@@ -267,10 +268,13 @@ docker compose up -d tyre-app-php
 
 ```bash
 # Просмотр содержимого volume
-docker run --rm -v tyre-php-app_tyre-app-ssl-prod:/ssl alpine ls -la /ssl
+docker run --rm -v tyre-app-ssl:/ssl alpine ls -la /ssl
 
 # Просмотр информации о сертификате
-docker run --rm -v tyre-php-app_tyre-app-ssl-prod:/ssl alpine sh -c "openssl x509 -in /ssl/server.crt -text -noout"
+docker run --rm -v tyre-app-ssl:/ssl alpine sh -c "openssl x509 -in /ssl/server.crt -text -noout"
+
+# Проверка срока действия сертификата
+docker run --rm -v tyre-app-ssl:/ssl alpine sh -c "openssl x509 -in /ssl/server.crt -noout -dates"
 ```
 
 ## Важные замечания
