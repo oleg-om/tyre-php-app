@@ -77,8 +77,9 @@ SET UNIQUE_CHECKS = 1;
 -- Создаем новую базу данных
 CREATE DATABASE \`$DB_NAME\` CHARACTER SET utf8 COLLATE utf8_general_ci;
 
--- Предоставляем права пользователю
-GRANT ALL PRIVILEGES ON \`$DB_NAME\`.* TO '$DB_USER'@'%';
+-- Создаем пользователя (если не существует) и предоставляем права
+-- В MySQL 5.7 GRANT с IDENTIFIED BY создаст пользователя автоматически
+GRANT ALL PRIVILEGES ON \`$DB_NAME\`.* TO '$DB_USER'@'%' IDENTIFIED BY '$DB_PASSWORD';
 FLUSH PRIVILEGES;
 EOF
 
