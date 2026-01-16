@@ -84,26 +84,29 @@ if [ "$APP_ENV" = "prod" ] && [ ! -z "$ALLOWED_DOMAIN" ]; then
     
     # Создаем новый .htaccess с правилами в правильном порядке
     # Все правила должны быть в одном блоке <IfModule mod_rewrite.c>
+    # Порядок важен: сначала ограничение по домену, потом редиректы
     {
         echo "<IfModule mod_rewrite.c>"
         echo "    RewriteEngine On"
         echo ""
-        echo "    # Редирект www.domain.com -> domain.com (приоритет 1)"
+        echo "    # Ограничение доступа только с разрешенного домена (приоритет 1)"
+        echo "    # Блокируем все запросы, которые не идут с разрешенного домена"
+        echo "    # Это должно быть ПЕРВЫМ правилом, чтобы блокировать запросы по IP до редиректов"
+        echo "    RewriteCond %{HTTP_HOST} !^${ESCAPED_DOMAIN}\$ [NC]"
+        echo "    RewriteCond %{HTTP_HOST} !^www\\.${ESCAPED_DOMAIN}\$ [NC]"
+        echo "    RewriteRule ^(.*)$ - [F,L]"
+        echo ""
+        echo "    # Редирект www.domain.com -> domain.com (приоритет 2)"
         echo "    # Редиректим www на основной домен с правильным протоколом"
         echo "    RewriteCond %{HTTP_HOST} ^www\\.${ESCAPED_DOMAIN}\$ [NC]"
         echo "    RewriteRule ^(.*)$ ${WWW_REDIRECT_PROTO}://${ALLOWED_DOMAIN}%{REQUEST_URI} [L,R=301]"
         echo ""
-        echo "    # Редирект HTTP -> HTTPS (приоритет 2, только если SSL настроен)"
+        echo "    # Редирект HTTP -> HTTPS (приоритет 3, только если SSL настроен)"
         if [ -f "$CERT_FILE" ] && [ -f "$KEY_FILE" ]; then
             echo "    RewriteCond %{HTTPS} off"
             echo "    RewriteCond %{REQUEST_URI} !^/\\.well-known"
             echo "    RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]"
         fi
-        echo ""
-        echo "    # Ограничение доступа только с разрешенного домена (приоритет 3)"
-        echo "    # Разрешаем только основной домен (без www, так как www уже редиректится)"
-        echo "    RewriteCond %{HTTP_HOST} !^${ESCAPED_DOMAIN}\$ [NC]"
-        echo "    RewriteRule ^(.*)$ - [F,L]"
         echo ""
         echo "    # CakePHP routing rules"
         echo "    RewriteCond %{REQUEST_FILENAME} !-d"
