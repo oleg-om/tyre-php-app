@@ -72,15 +72,28 @@ EOF
 EOF
         
         # Вставляем правила в начало .htaccess
+        # Проверяем, можно ли записать в файл (не является ли он bind mount)
         if [ -f /var/www/html/app/webroot/.htaccess ]; then
-            cat "$HTACCESS_DOMAIN" /var/www/html/app/webroot/.htaccess > /var/www/html/app/webroot/.htaccess.tmp
-            mv /var/www/html/app/webroot/.htaccess.tmp /var/www/html/app/webroot/.htaccess
-            rm -f "$HTACCESS_DOMAIN"
+            # Пробуем создать временный файл и переместить его
+            if cat "$HTACCESS_DOMAIN" /var/www/html/app/webroot/.htaccess > /var/www/html/app/webroot/.htaccess.tmp 2>/dev/null; then
+                # Пробуем переместить, если не получается - значит файл смонтирован как volume
+                if mv /var/www/html/app/webroot/.htaccess.tmp /var/www/html/app/webroot/.htaccess 2>/dev/null; then
+                    rm -f "$HTACCESS_DOMAIN"
+                    echo "HTTPS redirect enabled for: $ALLOWED_DOMAIN"
+                else
+                    # Файл смонтирован как volume, добавляем правила через sed или просто пропускаем
+                    echo "Warning: .htaccess is mounted as volume, cannot modify. HTTPS redirect may not work."
+                    rm -f /var/www/html/app/webroot/.htaccess.tmp
+                    rm -f "$HTACCESS_DOMAIN"
+                fi
+            else
+                echo "Warning: Cannot write to .htaccess"
+                rm -f "$HTACCESS_DOMAIN"
+            fi
         else
-            mv "$HTACCESS_DOMAIN" /var/www/html/app/webroot/.htaccess
+            # Файл не существует, создаем новый
+            mv "$HTACCESS_DOMAIN" /var/www/html/app/webroot/.htaccess 2>/dev/null || echo "Warning: Cannot create .htaccess"
         fi
-        
-        echo "HTTPS redirect enabled for: $ALLOWED_DOMAIN"
     fi
     
     echo "HTTPS configuration enabled"

@@ -48,7 +48,12 @@ echo "Хост: $DB_HOST:$DB_PORT"
 # Проверка, запущен ли контейнер
 if ! docker ps | grep -q "tyre-app-mysql"; then
     echo -e "${YELLOW}Контейнер MySQL не запущен. Запускаю...${NC}"
-    docker-compose up -d tyre-app-mysql
+    # Используем docker compose (без дефиса) если доступен, иначе docker-compose
+    if command -v docker &> /dev/null && docker compose version &> /dev/null; then
+        docker compose up -d tyre-app-mysql
+    else
+        docker-compose up -d tyre-app-mysql
+    fi
     echo -e "${YELLOW}Ожидание готовности MySQL...${NC}"
     sleep 10
 fi

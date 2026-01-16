@@ -39,7 +39,13 @@ fi
 # Проверка, запущен ли контейнер
 if ! docker ps | grep -q "$CONTAINER_NAME"; then
     echo -e "${YELLOW}Контейнер $CONTAINER_NAME не запущен. Запускаю...${NC}"
-    if ! docker-compose up -d "$CONTAINER_NAME"; then
+    # Используем docker compose (без дефиса) если доступен, иначе docker-compose
+    if command -v docker &> /dev/null && docker compose version &> /dev/null; then
+        DOCKER_COMPOSE_CMD="docker compose"
+    else
+        DOCKER_COMPOSE_CMD="docker-compose"
+    fi
+    if ! $DOCKER_COMPOSE_CMD up -d "$CONTAINER_NAME"; then
         echo -e "${RED}Ошибка: Не удалось запустить контейнер${NC}"
         exit 1
     fi
