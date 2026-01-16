@@ -67,79 +67,54 @@ fi
 if [ "$APP_ENV" = "prod" ] && [ ! -z "$ALLOWED_DOMAIN" ]; then
     echo "Configuring domain restrictions and redirects for production: $ALLOWED_DOMAIN"
     
-    HTACCESS_RULES="/tmp/htaccess-rules-$$"
-    
     # Экранируем точки в домене для использования в регулярных выражениях
     ESCAPED_DOMAIN=$(echo "$ALLOWED_DOMAIN" | sed 's/\./\\./g')
     
     # Определяем протокол для редиректа www -> domain
     if [ -f "$CERT_FILE" ] && [ -f "$KEY_FILE" ]; then
         # Если SSL настроен, редиректим www на HTTPS версию основного домена
-        WWW_REDIRECT="https://${ALLOWED_DOMAIN}%{REQUEST_URI}"
+        WWW_REDIRECT_PROTO="https"
     else
         # Если SSL не настроен, редиректим на HTTP версию
-        WWW_REDIRECT="http://${ALLOWED_DOMAIN}%{REQUEST_URI}"
+        WWW_REDIRECT_PROTO="http"
     fi
-    
-    cat > "$HTACCESS_RULES" <<EOF
-<IfModule mod_rewrite.c>
-    RewriteEngine On
-    
-    # Редирект www.domain.com -> domain.com (приоритет 1)
-    # Редиректим www на основной домен с правильным протоколом
-    RewriteCond %{HTTP_HOST} ^www\.${ESCAPED_DOMAIN}$ [NC]
-    RewriteRule ^(.*)$ ${WWW_REDIRECT} [L,R=301]
-    
-    # Редирект HTTP -> HTTPS (приоритет 2, только если SSL настроен)
-    RewriteCond %{HTTPS} off
-    RewriteCond %{REQUEST_URI} !^/\.well-known
-    RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
-    
-    # Ограничение доступа только с разрешенного домена (приоритет 3)
-    # Разрешаем только основной домен (без www, так как www уже редиректится)
-    RewriteCond %{HTTP_HOST} !^${ESCAPED_DOMAIN}$ [NC]
-    RewriteRule ^(.*)$ - [F,L]
-</IfModule>
-EOF
     
     # Пытаемся обновить .htaccess файл
     HTACCESS_FILE="/var/www/html/app/webroot/.htaccess"
     
-    # Если файл существует, читаем оригинальные правила CakePHP
-    CAKEPHP_RULES=""
-    if [ -f "$HTACCESS_FILE" ]; then
-        # Извлекаем правила CakePHP (после всех редиректов)
-        CAKEPHP_RULES=$(grep -A 10 "RewriteCond %{REQUEST_FILENAME} !-d" "$HTACCESS_FILE" | head -n 5 | grep -v "^--$" || echo "")
-    fi
-    
     # Создаем новый .htaccess с правилами в правильном порядке
+    # Все правила должны быть в одном блоке <IfModule mod_rewrite.c>
     {
-        # Правила домена и редиректов (в начале)
-        cat "$HTACCESS_RULES"
-        
-        # Пустая строка для разделения
+        echo "<IfModule mod_rewrite.c>"
+        echo "    RewriteEngine On"
         echo ""
-        
-        # Оригинальные правила CakePHP (если были)
-        if [ ! -z "$CAKEPHP_RULES" ]; then
-            echo "# CakePHP routing rules"
-            echo "$CAKEPHP_RULES"
-        else
-            # Стандартные правила CakePHP, если их не было
-            echo "# CakePHP routing rules"
-            echo "<IfModule mod_rewrite.c>"
-            echo "    RewriteCond %{REQUEST_FILENAME} !-d"
-            echo "    RewriteCond %{REQUEST_FILENAME} !-f"
-            echo "    RewriteRule ^ index.php [L]"
-            echo "</IfModule>"
+        echo "    # Редирект www.domain.com -> domain.com (приоритет 1)"
+        echo "    # Редиректим www на основной домен с правильным протоколом"
+        echo "    RewriteCond %{HTTP_HOST} ^www\\.${ESCAPED_DOMAIN}\$ [NC]"
+        echo "    RewriteRule ^(.*)$ ${WWW_REDIRECT_PROTO}://${ALLOWED_DOMAIN}%{REQUEST_URI} [L,R=301]"
+        echo ""
+        echo "    # Редирект HTTP -> HTTPS (приоритет 2, только если SSL настроен)"
+        if [ -f "$CERT_FILE" ] && [ -f "$KEY_FILE" ]; then
+            echo "    RewriteCond %{HTTPS} off"
+            echo "    RewriteCond %{REQUEST_URI} !^/\\.well-known"
+            echo "    RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]"
         fi
+        echo ""
+        echo "    # Ограничение доступа только с разрешенного домена (приоритет 3)"
+        echo "    # Разрешаем только основной домен (без www, так как www уже редиректится)"
+        echo "    RewriteCond %{HTTP_HOST} !^${ESCAPED_DOMAIN}\$ [NC]"
+        echo "    RewriteRule ^(.*)$ - [F,L]"
+        echo ""
+        echo "    # CakePHP routing rules"
+        echo "    RewriteCond %{REQUEST_FILENAME} !-d"
+        echo "    RewriteCond %{REQUEST_FILENAME} !-f"
+        echo "    RewriteRule ^ index.php [L]"
+        echo "</IfModule>"
     } > "$HTACCESS_FILE"
     
     # Устанавливаем права доступа
     chmod 644 "$HTACCESS_FILE" 2>/dev/null || true
     chown www-data:www-data "$HTACCESS_FILE" 2>/dev/null || true
-    
-    rm -f "$HTACCESS_RULES"
     
     echo "Domain restrictions and redirects enabled for: $ALLOWED_DOMAIN"
     
