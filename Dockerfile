@@ -39,8 +39,8 @@ RUN docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-di
 # Включение модулей Apache для оптимизации
 RUN a2enmod rewrite auth_basic headers expires deflate
 
-# Настройка PHP
-RUN echo "memory_limit = 1024M" > /usr/local/etc/php/conf.d/memory.ini \
+# Настройка PHP (оптимизировано для 3 core / 4GB RAM)
+RUN echo "memory_limit = 256M" > /usr/local/etc/php/conf.d/memory.ini \
     && echo "upload_max_filesize = 100M" > /usr/local/etc/php/conf.d/upload.ini \
     && echo "post_max_size = 100M" >> /usr/local/etc/php/conf.d/upload.ini \
     && echo "max_execution_time = 300" > /usr/local/etc/php/conf.d/execution.ini \
@@ -49,12 +49,12 @@ RUN echo "memory_limit = 1024M" > /usr/local/etc/php/conf.d/memory.ini \
     && echo "realpath_cache_size = 4096K" > /usr/local/etc/php/conf.d/realpath.ini \
     && echo "realpath_cache_ttl = 600" >> /usr/local/etc/php/conf.d/realpath.ini
 
-# Настройка Opcache для максимальной производительности
+# Настройка Opcache (оптимизировано для 4GB RAM)
 RUN echo "opcache.enable=1" > /usr/local/etc/php/conf.d/opcache.ini \
     && echo "opcache.enable_cli=0" >> /usr/local/etc/php/conf.d/opcache.ini \
-    && echo "opcache.memory_consumption=256" >> /usr/local/etc/php/conf.d/opcache.ini \
-    && echo "opcache.interned_strings_buffer=16" >> /usr/local/etc/php/conf.d/opcache.ini \
-    && echo "opcache.max_accelerated_files=20000" >> /usr/local/etc/php/conf.d/opcache.ini \
+    && echo "opcache.memory_consumption=128" >> /usr/local/etc/php/conf.d/opcache.ini \
+    && echo "opcache.interned_strings_buffer=8" >> /usr/local/etc/php/conf.d/opcache.ini \
+    && echo "opcache.max_accelerated_files=10000" >> /usr/local/etc/php/conf.d/opcache.ini \
     && echo "opcache.validate_timestamps=0" >> /usr/local/etc/php/conf.d/opcache.ini \
     && echo "opcache.revalidate_freq=0" >> /usr/local/etc/php/conf.d/opcache.ini \
     && echo "opcache.fast_shutdown=1" >> /usr/local/etc/php/conf.d/opcache.ini \
@@ -114,13 +114,13 @@ RUN sed -i 's|DocumentRoot /var/www/html|DocumentRoot /var/www/html/app/webroot|
     && echo "MaxKeepAliveRequests 100" >> /etc/apache2/apache2.conf \
     && echo "KeepAliveTimeout 5" >> /etc/apache2/apache2.conf \
     && echo "" >> /etc/apache2/apache2.conf \
-    && echo "# Оптимизация процессов Apache (для mpm_prefork)" >> /etc/apache2/apache2.conf \
+    && echo "# Оптимизация процессов Apache для 3 core / 4GB RAM (mpm_prefork)" >> /etc/apache2/apache2.conf \
     && echo "<IfModule mpm_prefork_module>" >> /etc/apache2/apache2.conf \
-    && echo "    StartServers 5" >> /etc/apache2/apache2.conf \
-    && echo "    MinSpareServers 5" >> /etc/apache2/apache2.conf \
-    && echo "    MaxSpareServers 10" >> /etc/apache2/apache2.conf \
-    && echo "    MaxRequestWorkers 150" >> /etc/apache2/apache2.conf \
-    && echo "    MaxConnectionsPerChild 0" >> /etc/apache2/apache2.conf \
+    && echo "    StartServers 3" >> /etc/apache2/apache2.conf \
+    && echo "    MinSpareServers 3" >> /etc/apache2/apache2.conf \
+    && echo "    MaxSpareServers 6" >> /etc/apache2/apache2.conf \
+    && echo "    MaxRequestWorkers 35" >> /etc/apache2/apache2.conf \
+    && echo "    MaxConnectionsPerChild 10000" >> /etc/apache2/apache2.conf \
     && echo "</IfModule>" >> /etc/apache2/apache2.conf \
     && echo "" >> /etc/apache2/sites-available/000-default.conf \
     && echo "	# Оптимизация производительности" >> /etc/apache2/sites-available/000-default.conf \

@@ -189,7 +189,7 @@ define('PREFER_IMAGEMAGICK', true);
 setlocale(LC_ALL, 'ru_RU.UTF-8');
 ini_set('max_execution_time', 300);
 ini_set('max_input_time', 0);
-ini_set('memory_limit', '1024M');
+ini_set('memory_limit', '256M');
 function hexbin($temp) {
 	$data = '';
 	$len = strlen($temp);

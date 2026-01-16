@@ -207,3 +207,48 @@ docker exec -it tyre-app-php rm -rf /var/www/html/app/tmp/cache/*
 ```bash
 docker exec -it tyre-app-php php -r "echo getenv('DB_HOST');"
 ```
+
+## Очистка неиспользуемых директорий tyres
+
+Скрипт `cleanup-tyres-dirs.sh` удаляет директории с изображениями шин, которых нет в базе данных.
+
+### Использование
+
+1. **Просмотр (dry-run)** - показывает, что будет удалено, но не удаляет:
+```bash
+./cleanup-tyres-dirs.sh
+```
+
+2. **Реальное удаление**:
+```bash
+./cleanup-tyres-dirs.sh --execute
+```
+
+### Параметры
+
+Скрипт использует переменные окружения из `.env` файла или можно указать вручную:
+
+```bash
+# Использование Docker контейнера MySQL
+USE_DOCKER=1 ./cleanup-tyres-dirs.sh --execute
+
+# Или прямое подключение к MySQL
+DB_HOST=localhost DB_PORT=3306 DB_NAME=tyre_db DB_USER=tyre_user DB_PASSWORD=password ./cleanup-tyres-dirs.sh --execute
+
+# Изменение пути к директории
+TYRES_DIR=/path/to/tyres ./cleanup-tyres-dirs.sh --execute
+```
+
+### Что делает скрипт
+
+1. Подключается к базе данных
+2. Получает список всех `id` из таблицы `products` где `category_id = 1` (шины)
+3. Проверяет директории в `/root/backup/files-new/tyres/`
+4. Удаляет директории, `id` которых нет в базе данных
+5. Показывает статистику: сколько сохранено, сколько удалено, сколько места освобождено
+
+### Безопасность
+
+- По умолчанию скрипт работает в режиме **dry-run** (только просмотр)
+- Для реального удаления нужно указать параметр `--execute`
+- Скрипт проверяет, что директория существует перед удалением

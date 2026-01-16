@@ -68,8 +68,11 @@ GRANT ALL PRIVILEGES ON \`$DB_NAME\`.* TO '$DB_USER'@'%';
 FLUSH PRIVILEGES;
 EOF
 
-# Восстановление из дампа
-docker exec -i tyre-app-mysql mysql -uroot -p"$MYSQL_ROOT_PASSWORD" "$DB_NAME" < "$DUMP_FILE"
+# Восстановление из дампа (игнорируем ошибки связанные с пользователями)
+echo -e "${YELLOW}Восстановление из дампа (игнорируем ошибки пользователей)...${NC}"
+# Используем --force для игнорирования ошибок и фильтруем предупреждения
+# Используем файл из контейнера через bash -c для правильного перенаправления
+docker exec -i tyre-app-mysql bash -c "mysql -uroot -p'$MYSQL_ROOT_PASSWORD' '$DB_NAME' --force < /tmp/dump.sql" 2>&1 | grep -v "ERROR 1133\|ERROR 1396\|Using a password" || true
 
 # Настройка sql_mode
 echo -e "${YELLOW}Настройка sql_mode...${NC}"
