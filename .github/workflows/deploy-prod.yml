@@ -23,7 +23,7 @@ jobs:
             set -e
             
             # Переход в директорию проекта
-            PROJECT_PATH="${PROJECT_PATH_PROD:-/var/www/vhosts/kerchshina.com}"
+            PROJECT_PATH="${PROJECT_PATH_PROD:-/root/tyre-php-app}"
             cd "\$PROJECT_PATH"
             
             # Обновление кода из репозитория
@@ -80,4 +80,4 @@ jobs:
             echo "Deployment completed successfully!"
           EOF
           env:
-            PROJECT_PATH_PROD: ${{ secrets.PROJECT_PATH_PROD || '/var/www/vhosts/kerchshina.com' }}
+            PROJECT_PATH_PROD: ${{ secrets.PROJECT_PATH_PROD || '/root/tyre-php-app' }}

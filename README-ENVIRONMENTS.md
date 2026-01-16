@@ -127,30 +127,37 @@ docker-compose restart
 ## Ограничение доступа по домену и HTTPS редирект в продакшне
 
 В продакшне приложение автоматически:
-1. Ограничивает доступ только для указанного домена
-2. Перенаправляет все HTTP запросы на HTTPS
+1. Редиректит `www.domain.com` на `domain.com` (301 редирект)
+2. Редиректит все HTTP запросы на HTTPS (если SSL настроен)
+3. Ограничивает доступ только для указанного домена (403 для остальных)
 
-Правила в `.htaccess`:
+Правила в `.htaccess` (пример для `ALLOWED_DOMAIN=domain.com`):
 
 ```apache
 <IfModule mod_rewrite.c>
     RewriteEngine On
     
-    # Редирект HTTP -> HTTPS
+    # Редирект www.domain.com -> domain.com (приоритет 1)
+    RewriteCond %{HTTP_HOST} ^www\.domain\.com$ [NC]
+    RewriteRule ^(.*)$ https://domain.com%{REQUEST_URI} [L,R=301]
+    
+    # Редирект HTTP -> HTTPS (приоритет 2, только если SSL настроен)
     RewriteCond %{HTTPS} off
+    RewriteCond %{REQUEST_URI} !^/\.well-known
     RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
     
-    # Ограничение доступа по домену
-    RewriteCond %{HTTP_HOST} !^example.com$ [NC]
-    RewriteCond %{HTTP_HOST} !^www\.example.com$ [NC]
+    # Ограничение доступа только с разрешенного домена (приоритет 3)
+    RewriteCond %{HTTP_HOST} !^domain\.com$ [NC]
     RewriteRule ^(.*)$ - [F,L]
 </IfModule>
 ```
 
 Это означает:
-- ✅ Разрешены запросы с `example.com` и `www.example.com`
-- ✅ Все HTTP запросы автоматически перенаправляются на HTTPS
+- ✅ `www.domain.com` → редирект на `https://domain.com`
+- ✅ `http://domain.com` → редирект на `https://domain.com` (если SSL настроен)
+- ✅ Разрешены запросы только с `domain.com`
 - ❌ Все остальные домены получат 403 Forbidden
+- ❌ Запросы по IP адресу получат 403 Forbidden
 
 ## Переключение между окружениями
 
