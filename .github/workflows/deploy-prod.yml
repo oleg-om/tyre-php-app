@@ -50,15 +50,15 @@ jobs:
             
             # Пересборка образов
             echo "Building Docker images..."
-            $DOCKER_COMPOSE_CMD -f docker-compose.prod.yml build --no-cache
+            $DOCKER_COMPOSE_CMD build --no-cache
             
             # Остановка старых контейнеров
             echo "Stopping old containers..."
-            $DOCKER_COMPOSE_CMD -f docker-compose.prod.yml down
+            $DOCKER_COMPOSE_CMD down
             
             # Запуск новых контейнеров
             echo "Starting new containers..."
-            $DOCKER_COMPOSE_CMD -f docker-compose.prod.yml up -d
+            $DOCKER_COMPOSE_CMD up -d
             
             # Ожидание готовности контейнеров
             echo "Waiting for containers to be ready..."
@@ -66,12 +66,12 @@ jobs:
             
             # Проверка статуса контейнеров
             echo "Checking container status..."
-            $DOCKER_COMPOSE_CMD -f docker-compose.prod.yml ps
+            $DOCKER_COMPOSE_CMD ps
             
             # Очистка кеша приложения
             echo "Clearing application cache..."
-            docker exec tyre-app-php-prod rm -rf /var/www/html/app/tmp/cache/* || echo "Cache directory not found or already empty"
-            docker exec tyre-app-php-prod chmod -R 777 /var/www/html/app/tmp || true
+            docker exec tyre-app-php rm -rf /var/www/html/app/tmp/cache/* || echo "Cache directory not found or already empty"
+            docker exec tyre-app-php chmod -R 777 /var/www/html/app/tmp || true
             
             # Очистка кеша через приложение (если доступно)
             echo "Clearing cache via application..."
