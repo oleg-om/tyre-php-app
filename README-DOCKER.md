@@ -24,6 +24,9 @@ cp env.example .env
 ```env
 APP_ENV=dev
 ALLOWED_DOMAIN=
+HTTP_PORT=8080
+HTTPS_PORT=443
+MYSQL_PORT=3307
 DB_NAME=tyre_db
 DB_USER=tyre_user
 DB_PASSWORD=your_password
@@ -34,7 +37,7 @@ PHPMYADMIN_PASSWORD=admin_password
 
 3. Запустите контейнеры:
 ```bash
-docker-compose -f docker-compose.dev.yml up -d
+docker-compose up -d
 ```
 
 4. Приложение будет доступно по адресу: http://localhost:8080
@@ -51,6 +54,9 @@ cp env.example .env
 ```env
 APP_ENV=prod
 ALLOWED_DOMAIN=example.com
+HTTP_PORT=80
+HTTPS_PORT=443
+MYSQL_PORT=3306
 DB_NAME=tyre_db
 DB_USER=tyre_user
 DB_PASSWORD=your_password
@@ -61,10 +67,10 @@ PHPMYADMIN_PASSWORD=admin_password
 
 3. Запустите контейнеры:
 ```bash
-docker-compose -f docker-compose.prod.yml up -d
+docker-compose up -d
 ```
 
-4. Приложение будет доступно только с указанного домена: http://example.com
+4. Приложение будет доступно по адресу: http://example.com или https://example.com
 
 ## Восстановление базы данных из дампа
 

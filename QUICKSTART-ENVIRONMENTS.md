@@ -5,10 +5,15 @@
 ```bash
 # 1. Настройка
 cp env.example .env
-# Отредактируйте .env: APP_ENV=dev, ALLOWED_DOMAIN=
+# Отредактируйте .env:
+# APP_ENV=dev
+# ALLOWED_DOMAIN=
+# HTTP_PORT=8080
+# HTTPS_PORT=443
+# MYSQL_PORT=3307
 
 # 2. Запуск
-docker-compose -f docker-compose.dev.yml up -d
+docker-compose up -d
 
 # 3. Доступ
 # http://localhost:8080
@@ -22,13 +27,16 @@ cp env.example .env
 # Отредактируйте .env:
 # APP_ENV=prod
 # ALLOWED_DOMAIN=example.com
+# HTTP_PORT=80
+# HTTPS_PORT=443
+# MYSQL_PORT=3306
 
 # 2. Запуск
-docker-compose -f docker-compose.prod.yml up -d
+docker-compose up -d
 
 # 3. Доступ
-# https://example.com (только с указанного домена!)
-# HTTP запросы автоматически перенаправляются на HTTPS
+# http://example.com или https://example.com
+# HTTP запросы автоматически перенаправляются на HTTPS (если SSL настроен)
 ```
 
 ## Важно для продакшна

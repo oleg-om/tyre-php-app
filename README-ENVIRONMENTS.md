@@ -7,18 +7,19 @@
 ### Development (dev)
 - Порт: **8080**
 - Доступ: без ограничений по домену
-- Контейнеры: `tyre-app-php-dev`, `tyre-app-mysql-dev`
-- Volumes: `tyre-app-mysql-data-dev`, `tyre-app-files`
+- Контейнеры: `tyre-app-php`, `tyre-app-mysql`
+- Volumes: `tyre-app-mysql-data`, `tyre-app-files`, `tyre-app-ssl`
+- MySQL порт: **3307**
 
 ### Production (prod)
-- Порт HTTP: **80** (автоматический редирект на HTTPS)
+- Порт HTTP: **80** (автоматический редирект на HTTPS, если SSL настроен)
 - Порт HTTPS: **443**
-- SSL: автоматическая генерация self-signed сертификата
-- Редирект: HTTP → HTTPS (автоматически)
-- Доступ: только с указанного домена (через переменную `ALLOWED_DOMAIN`)
-- Контейнеры: `tyre-app-php-prod`, `tyre-app-mysql-prod`
-- Volumes: `tyre-app-mysql-data-prod`, `tyre-app-files-prod`, `tyre-app-ssl-prod`
-- MySQL порт: **3306** (вместо 3307)
+- SSL: автоматическая генерация self-signed сертификата (опционально)
+- Редирект: HTTP → HTTPS (автоматически, если SSL настроен)
+- Доступ: с любого домена (ограничение по домену отключено)
+- Контейнеры: `tyre-app-php`, `tyre-app-mysql`
+- Volumes: `tyre-app-mysql-data`, `tyre-app-files`, `tyre-app-ssl`
+- MySQL порт: **3306**
 
 ## Быстрый старт
 
@@ -33,11 +34,14 @@ cp env.example .env
 ```env
 APP_ENV=dev
 ALLOWED_DOMAIN=
+HTTP_PORT=8080
+HTTPS_PORT=443
+MYSQL_PORT=3307
 ```
 
 3. Запустите контейнеры:
 ```bash
-docker-compose -f docker-compose.dev.yml up -d
+docker-compose up -d
 ```
 
 4. Приложение будет доступно по адресу: http://localhost:8080
@@ -53,18 +57,19 @@ cp env.example .env
 ```env
 APP_ENV=prod
 ALLOWED_DOMAIN=example.com
-# или с www:
-# ALLOWED_DOMAIN=www.example.com
+HTTP_PORT=80
+HTTPS_PORT=443
+MYSQL_PORT=3306
 ```
 
 3. Запустите контейнеры:
 ```bash
-docker-compose -f docker-compose.prod.yml up -d
+docker-compose up -d
 ```
 
-4. Приложение будет доступно по адресу: https://example.com (только с указанного домена)
-   - HTTP запросы автоматически перенаправляются на HTTPS
-   - SSL сертификат генерируется автоматически при первом запуске
+4. Приложение будет доступно по адресу: http://example.com или https://example.com
+   - HTTP запросы автоматически перенаправляются на HTTPS (если SSL сертификат настроен)
+   - SSL сертификат генерируется автоматически при первом запуске (если указан ALLOWED_DOMAIN)
 
 **Важно:** 
 - В продакшне приложение будет возвращать 403 Forbidden для всех запросов, которые не приходят с указанного домена
@@ -92,31 +97,31 @@ docker-compose -f docker-compose.prod.yml up -d
 ### Development
 ```bash
 # Запуск
-docker-compose -f docker-compose.dev.yml up -d
+docker-compose up -d
 
 # Остановка
-docker-compose -f docker-compose.dev.yml down
+docker-compose down
 
 # Просмотр логов
-docker-compose -f docker-compose.dev.yml logs -f
+docker-compose logs -f
 
 # Перезапуск
-docker-compose -f docker-compose.dev.yml restart
+docker-compose restart
 ```
 
 ### Production
 ```bash
 # Запуск
-docker-compose -f docker-compose.prod.yml up -d
+docker-compose up -d
 
 # Остановка
-docker-compose -f docker-compose.prod.yml down
+docker-compose down
 
 # Просмотр логов
-docker-compose -f docker-compose.prod.yml logs -f
+docker-compose logs -f
 
 # Перезапуск
-docker-compose -f docker-compose.prod.yml restart
+docker-compose restart
 ```
 
 ## Ограничение доступа по домену и HTTPS редирект в продакшне
@@ -152,27 +157,33 @@ docker-compose -f docker-compose.prod.yml restart
 ### С dev на prod
 ```bash
 # Остановите dev окружение
-docker-compose -f docker-compose.dev.yml down
+docker-compose down
 
 # Обновите .env файл
 # APP_ENV=prod
 # ALLOWED_DOMAIN=example.com
+# HTTP_PORT=80
+# HTTPS_PORT=443
+# MYSQL_PORT=3306
 
 # Запустите prod окружение
-docker-compose -f docker-compose.prod.yml up -d
+docker-compose up -d
 ```
 
 ### С prod на dev
 ```bash
 # Остановите prod окружение
-docker-compose -f docker-compose.prod.yml down
+docker-compose down
 
 # Обновите .env файл
 # APP_ENV=dev
 # ALLOWED_DOMAIN=
+# HTTP_PORT=8080
+# HTTPS_PORT=443
+# MYSQL_PORT=3307
 
 # Запустите dev окружение
-docker-compose -f docker-compose.dev.yml up -d
+docker-compose up -d
 ```
 
 ## SSL сертификаты
@@ -230,20 +241,21 @@ docker run --rm -v tyre-php-app_tyre-app-ssl-prod:/ssl alpine sh -c "openssl x50
 
 ## Важные замечания
 
-1. **Разные volumes**: Dev и Prod используют разные volumes, поэтому данные не пересекаются
+1. **Общие volumes**: Dev и Prod используют одни и те же volumes (`tyre-app-mysql-data`, `tyre-app-files`, `tyre-app-ssl`). При переключении между окружениями убедитесь, что остановили предыдущее окружение.
 2. **Порты**: Убедитесь, что порты 80, 443 и 8080 не заняты другими приложениями
-3. **Домен в продакшне**: Обязательно укажите `ALLOWED_DOMAIN` в продакшне, иначе приложение будет недоступно
-4. **MySQL порты**: В dev MySQL доступен на порту 3307, в prod - на 3306
-5. **HTTPS редирект**: В продакшне все HTTP запросы автоматически перенаправляются на HTTPS
-6. **SSL сертификат**: Self-signed сертификат генерируется автоматически, но для продакшна рекомендуется использовать Let's Encrypt
+3. **MySQL порты**: В dev MySQL доступен на порту 3307, в prod - на 3306
+4. **HTTPS редирект**: HTTP запросы автоматически перенаправляются на HTTPS только если SSL сертификат настроен
+5. **SSL сертификат**: Self-signed сертификат генерируется автоматически (если указан ALLOWED_DOMAIN), но для продакшна рекомендуется использовать Let's Encrypt
+6. **Доступ по домену**: Ограничение доступа по домену отключено - приложение доступно с любого домена/IP
 
 ## Troubleshooting
 
 ### Приложение недоступно в продакшне
-- Проверьте, что `ALLOWED_DOMAIN` указан правильно
-- Убедитесь, что вы обращаетесь к приложению с правильного домена
-- Проверьте логи: `docker-compose -f docker-compose.prod.yml logs -f`
+- Проверьте, что контейнеры запущены: `docker-compose ps`
+- Проверьте логи: `docker-compose logs -f`
+- Убедитесь, что порты 80 и 443 свободны
+- Проверьте, что Apache запущен внутри контейнера: `docker exec tyre-app-php ps aux | grep apache`
 
 ### Конфликт портов
 - Убедитесь, что порт 80 (prod) или 8080 (dev) свободен
-- Измените порт в соответствующем `docker-compose.*.yml` файле при необходимости
+- Измените порт в `.env` файле (HTTP_PORT, HTTPS_PORT, MYSQL_PORT)
