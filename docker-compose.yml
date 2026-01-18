@@ -15,7 +15,8 @@ services:
     volumes:
       - tyre-app-files:/var/www/html/app/webroot/files
       - tyre-app-ssl:/etc/apache2/ssl
-      - ./app/webroot/.htaccess:/var/www/html/app/webroot/.htaccess
+      # .htaccess управляется скриптом init-domain-restriction.sh, не монтируем как volume
+      # - ./app/webroot/.htaccess:/var/www/html/app/webroot/.htaccess
       - ./app/webroot/phpmy/config.inc.php:/var/www/html/app/webroot/phpmy/config.inc.php
       - ./app/webroot/phpmy/.htaccess:/var/www/html/app/webroot/phpmy/.htaccess
       - ./app/tmp:/var/www/html/app/tmp

@@ -84,29 +84,31 @@ if [ "$APP_ENV" = "prod" ] && [ ! -z "$ALLOWED_DOMAIN" ]; then
     
     # Создаем новый .htaccess с правилами в правильном порядке
     # Все правила должны быть в одном блоке <IfModule mod_rewrite.c>
-    # Порядок важен: сначала ограничение по домену, потом редиректы
+    # Порядок важен: сначала редиректы, потом ограничение по домену
     {
         echo "<IfModule mod_rewrite.c>"
         echo "    RewriteEngine On"
         echo ""
-        echo "    # Ограничение доступа только с разрешенного домена (приоритет 1)"
-        echo "    # Блокируем все запросы, которые не идут с разрешенного домена"
-        echo "    # Это должно быть ПЕРВЫМ правилом, чтобы блокировать запросы по IP до редиректов"
-        echo "    RewriteCond %{HTTP_HOST} !^${ESCAPED_DOMAIN}\$ [NC]"
-        echo "    RewriteCond %{HTTP_HOST} !^www\\.${ESCAPED_DOMAIN}\$ [NC]"
-        echo "    RewriteRule ^(.*)$ - [F,L]"
-        echo ""
-        echo "    # Редирект www.domain.com -> domain.com (приоритет 2)"
+        echo "    # Редирект www.domain.com -> domain.com (приоритет 1)"
         echo "    # Редиректим www на основной домен с правильным протоколом"
         echo "    RewriteCond %{HTTP_HOST} ^www\\.${ESCAPED_DOMAIN}\$ [NC]"
         echo "    RewriteRule ^(.*)$ ${WWW_REDIRECT_PROTO}://${ALLOWED_DOMAIN}%{REQUEST_URI} [L,R=301]"
         echo ""
-        echo "    # Редирект HTTP -> HTTPS (приоритет 3, только если SSL настроен)"
+        echo "    # Редирект HTTP -> HTTPS (приоритет 2, только если SSL настроен)"
+        echo "    # НЕ применяем редирект для запросов по IP, чтобы избежать ERR_CONNECTION_REFUSED"
         if [ -f "$CERT_FILE" ] && [ -f "$KEY_FILE" ]; then
             echo "    RewriteCond %{HTTPS} off"
+            echo "    RewriteCond %{HTTP_HOST} ^${ESCAPED_DOMAIN}\$ [NC]"
             echo "    RewriteCond %{REQUEST_URI} !^/\\.well-known"
             echo "    RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]"
         fi
+        echo ""
+        echo "    # Ограничение доступа только с разрешенного домена (приоритет 3)"
+        echo "    # Блокируем все запросы, которые не идут с разрешенного домена"
+        echo "    # Это включает запросы по IP адресу (HTTP_HOST будет содержать IP)"
+        echo "    RewriteCond %{HTTP_HOST} !^${ESCAPED_DOMAIN}\$ [NC]"
+        echo "    RewriteCond %{HTTP_HOST} !^www\\.${ESCAPED_DOMAIN}\$ [NC]"
+        echo "    RewriteRule ^(.*)$ - [F,L]"
         echo ""
         echo "    # CakePHP routing rules"
         echo "    RewriteCond %{REQUEST_FILENAME} !-d"
@@ -131,4 +133,19 @@ if [ "$APP_ENV" = "prod" ] && [ ! -z "$ALLOWED_DOMAIN" ]; then
     fi
 else
     echo "Development mode or no domain specified - access allowed from any domain"
+    
+    # В dev режиме создаем базовый .htaccess без ограничений
+    HTACCESS_FILE="/var/www/html/app/webroot/.htaccess"
+    {
+        echo "<IfModule mod_rewrite.c>"
+        echo "    RewriteEngine On"
+        echo "    RewriteCond %{REQUEST_FILENAME} !-d"
+        echo "    RewriteCond %{REQUEST_FILENAME} !-f"
+        echo "    RewriteRule ^ index.php [L]"
+        echo "</IfModule>"
+    } > "$HTACCESS_FILE"
+    
+    # Устанавливаем права доступа
+    chmod 644 "$HTACCESS_FILE" 2>/dev/null || true
+    chown www-data:www-data "$HTACCESS_FILE" 2>/dev/null || true
 fi
