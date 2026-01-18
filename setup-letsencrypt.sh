@@ -195,14 +195,38 @@ else
     echo -e "${YELLOW}⚠ .env файл не найден, создайте его вручную${NC}"
 fi
 
-# Запуск контейнера обратно
-echo -e "${YELLOW}Запуск контейнера PHP...${NC}"
-$DOCKER_COMPOSE_CMD up -d "$CONTAINER_NAME" 2>/dev/null || $DOCKER_COMPOSE_CMD start "$CONTAINER_NAME" 2>/dev/null
+# Полное пересоздание контейнера для применения обновленных сертификатов
+echo -e "${YELLOW}Пересоздание контейнера PHP для применения сертификатов...${NC}"
+$DOCKER_COMPOSE_CMD stop "$CONTAINER_NAME" 2>/dev/null || true
+$DOCKER_COMPOSE_CMD rm -f "$CONTAINER_NAME" 2>/dev/null || true
+$DOCKER_COMPOSE_CMD up -d "$CONTAINER_NAME" 2>/dev/null
 
 if [ $? -eq 0 ]; then
-    echo -e "${GREEN}✓ Контейнер запущен${NC}"
+    echo -e "${GREEN}✓ Контейнер пересоздан${NC}"
+    
+    # Ждем запуска контейнера
+    echo -e "${YELLOW}Ожидание запуска контейнера...${NC}"
+    sleep 5
+    
+    # Проверяем, что контейнер видит правильные сертификаты
+    echo -e "${YELLOW}Проверка сертификата в контейнере...${NC}"
+    if docker exec "$CONTAINER_NAME" openssl x509 -in /etc/apache2/ssl/server.crt -noout -issuer 2>/dev/null | grep -qi "let's encrypt\|letsencrypt"; then
+        echo -e "${GREEN}✓ Let's Encrypt сертификат активен в контейнере${NC}"
+        docker exec "$CONTAINER_NAME" openssl x509 -in /etc/apache2/ssl/server.crt -noout -subject -issuer -dates 2>/dev/null || true
+    else
+        echo -e "${YELLOW}⚠ Внимание: Контейнер все еще использует старый сертификат${NC}"
+        echo "Проверяю содержимое volume и контейнера..."
+        echo "Volume:"
+        docker run --rm -v ${VOLUME_NAME}:/ssl alpine sh -c "openssl x509 -in /ssl/server.crt -noout -issuer 2>/dev/null || echo 'Cannot read'" 2>/dev/null
+        echo "Container:"
+        docker exec "$CONTAINER_NAME" openssl x509 -in /etc/apache2/ssl/server.crt -noout -issuer 2>/dev/null || echo "Cannot read"
+        echo ""
+        echo -e "${YELLOW}Попробуйте полностью пересоздать контейнер:${NC}"
+        echo "  docker compose down"
+        echo "  docker compose up -d"
+    fi
 else
-    echo -e "${RED}✗ Ошибка при запуске контейнера${NC}"
+    echo -e "${RED}✗ Ошибка при запуске контейнера. Проверьте логи.${NC}"
     exit 1
 fi
 
