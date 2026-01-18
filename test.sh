@@ -1,8 +1,8 @@
 #!/bin/bash
 
 # === НАСТРОЙКИ ===
-SOURCE_DIR="/var/www/vhosts/kerchshina.com/app/webroot"
-BACKUP_DIR="/home/backup"
+SOURCE_DIR="/root/tyre-php-app/app/webroot/files"
+BACKUP_DIR="/root/backup/files"
 ARCHIVE_NAME="backup_$(date +%Y-%m-%d_%H-%M-%S).tar.gz"
 REMOTE_NAME="s3:autodom/kerchshina_static"
 
