@@ -57,11 +57,16 @@ EOF
     # Включаем SSL сайт
     a2ensite default-ssl.conf 2>/dev/null || true
     
-    # Перезагружаем Apache для применения SSL конфигурации
-    # Используем graceful reload, чтобы не прерывать текущие соединения
-    apache2ctl graceful 2>/dev/null || true
-    
-    echo "HTTPS configuration enabled"
+    # Проверяем конфигурацию Apache перед перезагрузкой
+    if apache2ctl configtest 2>&1 | grep -q "Syntax OK"; then
+        # Перезагружаем Apache для применения SSL конфигурации
+        # Используем graceful reload, чтобы не прерывать текущие соединения
+        apache2ctl graceful 2>/dev/null || apache2ctl restart 2>/dev/null || true
+        echo "HTTPS configuration enabled and Apache reloaded"
+    else
+        echo "WARNING: Apache configuration has errors, SSL may not work"
+        apache2ctl configtest 2>&1
+    fi
 else
     echo "SSL certificate not found, HTTPS will not be available (HTTP only)"
     # Отключаем SSL сайт, если он был включен ранее
