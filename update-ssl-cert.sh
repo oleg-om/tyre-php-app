@@ -95,20 +95,53 @@ fi
 
 # Монтируем архивную директорию, где находятся реальные файлы
 ARCHIVE_DIR=$(dirname "$FULLCHAIN_PATH")
+FULLCHAIN_BASENAME=$(basename "$FULLCHAIN_PATH")
+PRIVKEY_BASENAME=$(basename "$PRIVKEY_PATH")
+
+echo "Copying certificates from:"
+echo "  Fullchain: $FULLCHAIN_PATH -> /ssl/server.crt"
+echo "  Privkey: $PRIVKEY_PATH -> /ssl/server.key"
+echo "  Archive dir: $ARCHIVE_DIR"
+
 docker run --rm \
     -v ${VOLUME_NAME}:/ssl \
     -v ${ARCHIVE_DIR}:/certs:ro \
     alpine sh -c "
-        cp /certs/$(basename $FULLCHAIN_PATH) /ssl/server.crt
-        cp /certs/$(basename $PRIVKEY_PATH) /ssl/server.key
+        # Удаляем старые сертификаты
+        rm -f /ssl/server.crt /ssl/server.key
+        
+        # Копируем новые сертификаты
+        cp /certs/${FULLCHAIN_BASENAME} /ssl/server.crt
+        cp /certs/${PRIVKEY_BASENAME} /ssl/server.key
+        
+        # Устанавливаем права доступа
         chmod 600 /ssl/server.key
         chmod 644 /ssl/server.crt
         chown root:root /ssl/server.key /ssl/server.crt
-        echo 'Certificates copied successfully'
+        
+        # Проверяем, что файлы скопировались
+        if [ -f /ssl/server.crt ] && [ -f /ssl/server.key ]; then
+            echo 'Certificates copied successfully'
+            ls -lh /ssl/
+        else
+            echo 'ERROR: Failed to copy certificates'
+            exit 1
+        fi
     " 2>&1
 
 if [ $? -eq 0 ]; then
     echo -e "${GREEN}✓ Сертификаты скопированы в Docker volume${NC}"
+    
+    # Проверяем, что сертификаты действительно Let's Encrypt
+    echo -e "${YELLOW}Проверка сертификата в volume...${NC}"
+    CERT_CHECK=$(docker run --rm -v ${VOLUME_NAME}:/ssl alpine sh -c "openssl x509 -in /ssl/server.crt -noout -issuer 2>/dev/null" | grep -i "let's encrypt" || echo "")
+    if [ ! -z "$CERT_CHECK" ]; then
+        echo -e "${GREEN}✓ Let's Encrypt сертификат подтвержден в volume${NC}"
+    else
+        echo -e "${YELLOW}⚠ Внимание: Сертификат в volume не является Let's Encrypt${NC}"
+        echo "Проверьте содержимое volume:"
+        docker run --rm -v ${VOLUME_NAME}:/ssl alpine sh -c "openssl x509 -in /ssl/server.crt -noout -subject -issuer 2>/dev/null || echo 'Cannot read certificate'"
+    fi
 else
     echo -e "${RED}✗ Ошибка при копировании сертификатов${NC}"
     exit 1
@@ -125,6 +158,18 @@ fi
 
 if $DOCKER_COMPOSE_CMD restart "$CONTAINER_NAME" 2>/dev/null; then
     echo -e "${GREEN}✓ Контейнер перезапущен${NC}"
+    
+    # Ждем немного, чтобы Apache запустился
+    sleep 3
+    
+    # Проверяем сертификат в контейнере
+    echo -e "${YELLOW}Проверка сертификата в контейнере...${NC}"
+    if docker exec "$CONTAINER_NAME" openssl x509 -in /etc/apache2/ssl/server.crt -noout -issuer 2>/dev/null | grep -qi "let's encrypt"; then
+        echo -e "${GREEN}✓ Let's Encrypt сертификат активен в контейнере${NC}"
+    else
+        echo -e "${YELLOW}⚠ Внимание: Контейнер все еще использует старый сертификат${NC}"
+        echo "Попробуйте пересобрать контейнер: docker compose down && docker compose up -d --build"
+    fi
 else
     echo -e "${YELLOW}⚠ Не удалось перезапустить контейнер автоматически${NC}"
     echo "Перезапустите вручную: docker compose restart $CONTAINER_NAME"
