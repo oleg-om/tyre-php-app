@@ -81,48 +81,64 @@ fi
 # Копирование сертификатов в Docker volume
 echo -e "${YELLOW}Копирование сертификатов в Docker volume...${NC}"
 
-# Определяем реальные пути к файлам (разрешаем символические ссылки)
-FULLCHAIN_PATH=$(readlink -f /etc/letsencrypt/live/${DOMAIN}/fullchain.pem 2>/dev/null || echo "")
-PRIVKEY_PATH=$(readlink -f /etc/letsencrypt/live/${DOMAIN}/privkey.pem 2>/dev/null || echo "")
+# Определяем пути к файлам (используем прямые пути, readlink разрешит символические ссылки)
+FULLCHAIN_SOURCE="/etc/letsencrypt/live/${DOMAIN}/fullchain.pem"
+PRIVKEY_SOURCE="/etc/letsencrypt/live/${DOMAIN}/privkey.pem"
 
-if [ -z "$FULLCHAIN_PATH" ] || [ -z "$PRIVKEY_PATH" ] || [ ! -f "$FULLCHAIN_PATH" ] || [ ! -f "$PRIVKEY_PATH" ]; then
-    echo -e "${RED}Ошибка: Не удалось найти файлы сертификатов${NC}"
-    echo "Проверьте пути:"
-    echo "  fullchain: $FULLCHAIN_PATH"
-    echo "  privkey: $PRIVKEY_PATH"
+# Проверяем существование файлов
+if [ ! -f "$FULLCHAIN_SOURCE" ] || [ ! -r "$FULLCHAIN_SOURCE" ]; then
+    echo -e "${RED}Ошибка: Не удалось найти или прочитать fullchain.pem${NC}"
+    echo "Путь: $FULLCHAIN_SOURCE"
     exit 1
 fi
 
-# Монтируем архивную директорию, где находятся реальные файлы
-ARCHIVE_DIR=$(dirname "$FULLCHAIN_PATH")
-FULLCHAIN_BASENAME=$(basename "$FULLCHAIN_PATH")
-PRIVKEY_BASENAME=$(basename "$PRIVKEY_PATH")
+if [ ! -f "$PRIVKEY_SOURCE" ] || [ ! -r "$PRIVKEY_SOURCE" ]; then
+    echo -e "${RED}Ошибка: Не удалось найти или прочитать privkey.pem${NC}"
+    echo "Путь: $PRIVKEY_SOURCE"
+    exit 1
+fi
 
-echo "Copying certificates from:"
-echo "  Fullchain: $FULLCHAIN_PATH -> /ssl/server.crt"
-echo "  Privkey: $PRIVKEY_PATH -> /ssl/server.key"
-echo "  Archive dir: $ARCHIVE_DIR"
+# Определяем реальные пути (разрешаем символические ссылки)
+FULLCHAIN_REAL=$(readlink -f "$FULLCHAIN_SOURCE" 2>/dev/null || realpath "$FULLCHAIN_SOURCE" 2>/dev/null || echo "$FULLCHAIN_SOURCE")
+PRIVKEY_REAL=$(readlink -f "$PRIVKEY_SOURCE" 2>/dev/null || realpath "$PRIVKEY_SOURCE" 2>/dev/null || echo "$PRIVKEY_SOURCE")
 
+echo "Copying certificates:"
+echo "  Source fullchain: $FULLCHAIN_SOURCE (real: $FULLCHAIN_REAL)"
+echo "  Source privkey: $PRIVKEY_SOURCE (real: $PRIVKEY_REAL)"
+echo "  Target volume: $VOLUME_NAME"
+
+# Копируем файлы напрямую, читая их содержимое и записывая в volume
+# Это гарантирует, что мы копируем реальные файлы, а не символические ссылки
 docker run --rm \
     -v ${VOLUME_NAME}:/ssl \
-    -v ${ARCHIVE_DIR}:/certs:ro \
+    -v "$FULLCHAIN_REAL:/source_fullchain:ro" \
+    -v "$PRIVKEY_REAL:/source_privkey:ro" \
     alpine sh -c "
         # Удаляем старые сертификаты
         rm -f /ssl/server.crt /ssl/server.key
         
-        # Копируем новые сертификаты
-        cp /certs/${FULLCHAIN_BASENAME} /ssl/server.crt
-        cp /certs/${PRIVKEY_BASENAME} /ssl/server.key
+        # Копируем содержимое файлов
+        cat /source_fullchain > /ssl/server.crt
+        cat /source_privkey > /ssl/server.key
         
         # Устанавливаем права доступа
         chmod 600 /ssl/server.key
         chmod 644 /ssl/server.crt
         chown root:root /ssl/server.key /ssl/server.crt
         
-        # Проверяем, что файлы скопировались
+        # Проверяем, что файлы скопировались и валидны
         if [ -f /ssl/server.crt ] && [ -f /ssl/server.key ]; then
-            echo 'Certificates copied successfully'
-            ls -lh /ssl/
+            # Проверяем, что это валидные PEM файлы
+            if openssl x509 -in /ssl/server.crt -noout -text > /dev/null 2>&1; then
+                echo 'Certificates copied and validated successfully'
+                ls -lh /ssl/
+                echo ''
+                echo 'Certificate info:'
+                openssl x509 -in /ssl/server.crt -noout -subject -issuer -dates
+            else
+                echo 'ERROR: Copied certificate is not valid'
+                exit 1
+            fi
         else
             echo 'ERROR: Failed to copy certificates'
             exit 1
