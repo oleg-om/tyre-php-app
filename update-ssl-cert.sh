@@ -135,16 +135,28 @@ docker run --rm \
                     ls -lh /ssl/
                     echo ''
                     echo 'Certificate file structure validated (PEM format)'
+                    echo 'File sizes:'
+                    wc -c /ssl/server.crt /ssl/server.key
+                    echo ''
+                    echo 'First 3 lines of certificate:'
+                    head -3 /ssl/server.crt
+                    echo 'Last 3 lines of certificate:'
+                    tail -3 /ssl/server.crt
                 else
                     echo 'ERROR: Private key is not in PEM format'
+                    echo 'First 3 lines of key:'
+                    head -3 /ssl/server.key
                     exit 1
                 fi
             else
                 echo 'ERROR: Certificate is not in PEM format'
+                echo 'First 3 lines of certificate:'
+                head -3 /ssl/server.crt
                 exit 1
             fi
         else
             echo 'ERROR: Failed to copy certificates'
+            ls -la /ssl/
             exit 1
         fi
     " 2>&1
