@@ -149,7 +149,8 @@ docker run --rm \
         fi
     " 2>&1
 
-if [ $? -eq 0 ]; then
+COPY_RESULT=$?
+if [ $COPY_RESULT -eq 0 ]; then
     echo -e "${GREEN}✓ Сертификаты скопированы в Docker volume${NC}"
     
     # Проверяем, что сертификаты действительно Let's Encrypt (используем openssl на хосте)
@@ -162,25 +163,38 @@ if [ $? -eq 0 ]; then
         if [ -f "$TEMP_CERT" ] && [ -s "$TEMP_CERT" ]; then
             CERT_ISSUER=$(openssl x509 -in "$TEMP_CERT" -noout -issuer 2>/dev/null || echo "")
             CERT_SUBJECT=$(openssl x509 -in "$TEMP_CERT" -noout -subject 2>/dev/null || echo "")
+            CERT_DATES=$(openssl x509 -in "$TEMP_CERT" -noout -dates 2>/dev/null || echo "")
             rm -f "$TEMP_CERT"
             
             if echo "$CERT_ISSUER" | grep -qi "let's encrypt\|letsencrypt"; then
                 echo -e "${GREEN}✓ Let's Encrypt сертификат подтвержден в volume${NC}"
                 echo "  Subject: $CERT_SUBJECT"
                 echo "  Issuer: $CERT_ISSUER"
+                echo "  Dates: $CERT_DATES"
             else
-                echo -e "${YELLOW}⚠ Внимание: Сертификат в volume не является Let's Encrypt${NC}"
+                echo -e "${RED}✗ ОШИБКА: Сертификат в volume не является Let's Encrypt!${NC}"
                 echo "  Subject: $CERT_SUBJECT"
                 echo "  Issuer: $CERT_ISSUER"
+                echo "  Dates: $CERT_DATES"
+                echo ""
+                echo -e "${YELLOW}Проверьте исходные файлы Let's Encrypt:${NC}"
+                echo "  Fullchain: $FULLCHAIN_SOURCE"
+                echo "  Privkey: $PRIVKEY_SOURCE"
+                if [ -f "$FULLCHAIN_SOURCE" ]; then
+                    echo "  Fullchain issuer: $(openssl x509 -in "$FULLCHAIN_SOURCE" -noout -issuer 2>/dev/null || echo 'Cannot read')"
+                fi
+                exit 1
             fi
         else
-            echo -e "${YELLOW}⚠ Не удалось прочитать сертификат из volume для проверки${NC}"
+            echo -e "${RED}✗ Не удалось прочитать сертификат из volume для проверки${NC}"
+            exit 1
         fi
     else
         echo -e "${YELLOW}⚠ openssl не установлен на хосте, пропускаем проверку issuer${NC}"
+        echo -e "${YELLOW}⚠ Рекомендуется установить openssl для проверки сертификатов${NC}"
     fi
 else
-    echo -e "${RED}✗ Ошибка при копировании сертификатов${NC}"
+    echo -e "${RED}✗ Ошибка при копировании сертификатов (код выхода: $COPY_RESULT)${NC}"
     exit 1
 fi
 
