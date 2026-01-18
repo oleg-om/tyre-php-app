@@ -211,15 +211,45 @@ if $DOCKER_COMPOSE_CMD restart "$CONTAINER_NAME" 2>/dev/null; then
     echo -e "${GREEN}✓ Контейнер перезапущен${NC}"
     
     # Ждем немного, чтобы Apache запустился
-    sleep 3
+    sleep 5
     
     # Проверяем сертификат в контейнере
     echo -e "${YELLOW}Проверка сертификата в контейнере...${NC}"
-    if docker exec "$CONTAINER_NAME" openssl x509 -in /etc/apache2/ssl/server.crt -noout -issuer 2>/dev/null | grep -qi "let's encrypt"; then
+    
+    # Проверяем, что файлы в контейнере обновлены
+    CONTAINER_CERT_SIZE=$(docker exec "$CONTAINER_NAME" stat -c%s /etc/apache2/ssl/server.crt 2>/dev/null || echo "0")
+    VOLUME_CERT_SIZE=$(docker run --rm -v ${VOLUME_NAME}:/ssl alpine stat -c%s /ssl/server.crt 2>/dev/null || echo "0")
+    
+    if [ "$CONTAINER_CERT_SIZE" = "$VOLUME_CERT_SIZE" ] && [ "$CONTAINER_CERT_SIZE" != "0" ]; then
+        echo -e "${GREEN}✓ Размеры файлов совпадают (${CONTAINER_CERT_SIZE} bytes)${NC}"
+    else
+        echo -e "${YELLOW}⚠ Размеры файлов не совпадают (контейнер: ${CONTAINER_CERT_SIZE}, volume: ${VOLUME_CERT_SIZE})${NC}"
+    fi
+    
+    # Проверяем issuer сертификата в контейнере
+    if docker exec "$CONTAINER_NAME" openssl x509 -in /etc/apache2/ssl/server.crt -noout -issuer 2>/dev/null | grep -qi "let's encrypt\|letsencrypt"; then
         echo -e "${GREEN}✓ Let's Encrypt сертификат активен в контейнере${NC}"
+        docker exec "$CONTAINER_NAME" openssl x509 -in /etc/apache2/ssl/server.crt -noout -subject -issuer -dates 2>/dev/null
     else
         echo -e "${YELLOW}⚠ Внимание: Контейнер все еще использует старый сертификат${NC}"
-        echo "Попробуйте пересобрать контейнер: docker compose down && docker compose up -d --build"
+        echo "Проверяю содержимое файла в контейнере..."
+        docker exec "$CONTAINER_NAME" openssl x509 -in /etc/apache2/ssl/server.crt -noout -subject -issuer -dates 2>/dev/null || echo "Не удалось прочитать сертификат"
+        
+        # Пытаемся перезагрузить Apache более агрессивно
+        echo -e "${YELLOW}Попытка перезагрузки Apache внутри контейнера...${NC}"
+        docker exec "$CONTAINER_NAME" apache2ctl graceful 2>/dev/null || docker exec "$CONTAINER_NAME" service apache2 reload 2>/dev/null || true
+        
+        sleep 3
+        
+        # Проверяем снова
+        if docker exec "$CONTAINER_NAME" openssl x509 -in /etc/apache2/ssl/server.crt -noout -issuer 2>/dev/null | grep -qi "let's encrypt\|letsencrypt"; then
+            echo -e "${GREEN}✓ Let's Encrypt сертификат активен после перезагрузки Apache${NC}"
+        else
+            echo -e "${RED}✗ Контейнер все еще использует старый сертификат${NC}"
+            echo -e "${YELLOW}Попробуйте полностью перезапустить контейнер:${NC}"
+            echo "  docker compose down"
+            echo "  docker compose up -d"
+        fi
     fi
 else
     echo -e "${YELLOW}⚠ Не удалось перезапустить контейнер автоматически${NC}"
