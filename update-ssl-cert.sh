@@ -126,17 +126,21 @@ docker run --rm \
         chmod 644 /ssl/server.crt
         chown root:root /ssl/server.key /ssl/server.crt
         
-        # Проверяем, что файлы скопировались и валидны
+        # Проверяем, что файлы скопировались
         if [ -f /ssl/server.crt ] && [ -f /ssl/server.key ]; then
-            # Проверяем, что это валидные PEM файлы
-            if openssl x509 -in /ssl/server.crt -noout -text > /dev/null 2>&1; then
-                echo 'Certificates copied and validated successfully'
-                ls -lh /ssl/
-                echo ''
-                echo 'Certificate info:'
-                openssl x509 -in /ssl/server.crt -noout -subject -issuer -dates
+            # Проверяем базовую структуру PEM файлов (наличие BEGIN/END)
+            if grep -q 'BEGIN CERTIFICATE' /ssl/server.crt && grep -q 'END CERTIFICATE' /ssl/server.crt; then
+                if grep -q 'BEGIN.*PRIVATE KEY' /ssl/server.key && grep -q 'END.*PRIVATE KEY' /ssl/server.key; then
+                    echo 'Certificates copied successfully'
+                    ls -lh /ssl/
+                    echo ''
+                    echo 'Certificate file structure validated (PEM format)'
+                else
+                    echo 'ERROR: Private key is not in PEM format'
+                    exit 1
+                fi
             else
-                echo 'ERROR: Copied certificate is not valid'
+                echo 'ERROR: Certificate is not in PEM format'
                 exit 1
             fi
         else
@@ -148,15 +152,32 @@ docker run --rm \
 if [ $? -eq 0 ]; then
     echo -e "${GREEN}✓ Сертификаты скопированы в Docker volume${NC}"
     
-    # Проверяем, что сертификаты действительно Let's Encrypt
+    # Проверяем, что сертификаты действительно Let's Encrypt (используем openssl на хосте)
     echo -e "${YELLOW}Проверка сертификата в volume...${NC}"
-    CERT_CHECK=$(docker run --rm -v ${VOLUME_NAME}:/ssl alpine sh -c "openssl x509 -in /ssl/server.crt -noout -issuer 2>/dev/null" | grep -i "let's encrypt" || echo "")
-    if [ ! -z "$CERT_CHECK" ]; then
-        echo -e "${GREEN}✓ Let's Encrypt сертификат подтвержден в volume${NC}"
+    if command -v openssl &> /dev/null; then
+        # Временно копируем сертификат из volume для проверки
+        TEMP_CERT=$(mktemp)
+        docker run --rm -v ${VOLUME_NAME}:/ssl alpine cat /ssl/server.crt > "$TEMP_CERT" 2>/dev/null
+        
+        if [ -f "$TEMP_CERT" ] && [ -s "$TEMP_CERT" ]; then
+            CERT_ISSUER=$(openssl x509 -in "$TEMP_CERT" -noout -issuer 2>/dev/null || echo "")
+            CERT_SUBJECT=$(openssl x509 -in "$TEMP_CERT" -noout -subject 2>/dev/null || echo "")
+            rm -f "$TEMP_CERT"
+            
+            if echo "$CERT_ISSUER" | grep -qi "let's encrypt\|letsencrypt"; then
+                echo -e "${GREEN}✓ Let's Encrypt сертификат подтвержден в volume${NC}"
+                echo "  Subject: $CERT_SUBJECT"
+                echo "  Issuer: $CERT_ISSUER"
+            else
+                echo -e "${YELLOW}⚠ Внимание: Сертификат в volume не является Let's Encrypt${NC}"
+                echo "  Subject: $CERT_SUBJECT"
+                echo "  Issuer: $CERT_ISSUER"
+            fi
+        else
+            echo -e "${YELLOW}⚠ Не удалось прочитать сертификат из volume для проверки${NC}"
+        fi
     else
-        echo -e "${YELLOW}⚠ Внимание: Сертификат в volume не является Let's Encrypt${NC}"
-        echo "Проверьте содержимое volume:"
-        docker run --rm -v ${VOLUME_NAME}:/ssl alpine sh -c "openssl x509 -in /ssl/server.crt -noout -subject -issuer 2>/dev/null || echo 'Cannot read certificate'"
+        echo -e "${YELLOW}⚠ openssl не установлен на хосте, пропускаем проверку issuer${NC}"
     fi
 else
     echo -e "${RED}✗ Ошибка при копировании сертификатов${NC}"

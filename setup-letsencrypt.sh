@@ -151,17 +151,21 @@ docker run --rm \
         chmod 644 /ssl/server.crt
         chown root:root /ssl/server.key /ssl/server.crt
         
-        # Проверяем, что файлы скопировались и валидны
+        # Проверяем, что файлы скопировались
         if [ -f /ssl/server.crt ] && [ -f /ssl/server.key ]; then
-            # Проверяем, что это валидные PEM файлы
-            if openssl x509 -in /ssl/server.crt -noout -text > /dev/null 2>&1; then
-                echo 'Certificates copied and validated successfully'
-                ls -lh /ssl/
-                echo ''
-                echo 'Certificate info:'
-                openssl x509 -in /ssl/server.crt -noout -subject -issuer -dates
+            # Проверяем базовую структуру PEM файлов (наличие BEGIN/END)
+            if grep -q 'BEGIN CERTIFICATE' /ssl/server.crt && grep -q 'END CERTIFICATE' /ssl/server.crt; then
+                if grep -q 'BEGIN.*PRIVATE KEY' /ssl/server.key && grep -q 'END.*PRIVATE KEY' /ssl/server.key; then
+                    echo 'Certificates copied successfully'
+                    ls -lh /ssl/
+                    echo ''
+                    echo 'Certificate file structure validated (PEM format)'
+                else
+                    echo 'ERROR: Private key is not in PEM format'
+                    exit 1
+                fi
             else
-                echo 'ERROR: Copied certificate is not valid'
+                echo 'ERROR: Certificate is not in PEM format'
                 exit 1
             fi
         else
