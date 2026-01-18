@@ -82,6 +82,9 @@ if [ "$APP_ENV" = "prod" ] && [ ! -z "$ALLOWED_DOMAIN" ]; then
     # Пытаемся обновить .htaccess файл
     HTACCESS_FILE="/var/www/html/app/webroot/.htaccess"
     
+    # Создаем временный файл, затем перемещаем его (более надежный способ)
+    HTACCESS_TMP="/tmp/.htaccess-$$"
+    
     # Создаем новый .htaccess с правилами в правильном порядке
     # Все правила должны быть в одном блоке <IfModule mod_rewrite.c>
     # Порядок важен: сначала редиректы, потом ограничение по домену
@@ -115,11 +118,34 @@ if [ "$APP_ENV" = "prod" ] && [ ! -z "$ALLOWED_DOMAIN" ]; then
         echo "    RewriteCond %{REQUEST_FILENAME} !-f"
         echo "    RewriteRule ^ index.php [L]"
         echo "</IfModule>"
-    } > "$HTACCESS_FILE"
+    } > "$HTACCESS_TMP"
+    
+    # Удаляем старый файл, если он существует и принадлежит root
+    if [ -f "$HTACCESS_FILE" ] && [ "$(stat -c '%U' "$HTACCESS_FILE" 2>/dev/null)" = "root" ]; then
+        rm -f "$HTACCESS_FILE" 2>/dev/null || true
+    fi
+    
+    # Перемещаем временный файл на место (это атомарная операция)
+    mv "$HTACCESS_TMP" "$HTACCESS_FILE" 2>/dev/null || {
+        # Если не удалось переместить, пробуем скопировать
+        cp "$HTACCESS_TMP" "$HTACCESS_FILE" 2>/dev/null || {
+            echo "ERROR: Failed to update .htaccess file"
+            rm -f "$HTACCESS_TMP"
+            exit 1
+        }
+        rm -f "$HTACCESS_TMP"
+    }
     
     # Устанавливаем права доступа
     chmod 644 "$HTACCESS_FILE" 2>/dev/null || true
     chown www-data:www-data "$HTACCESS_FILE" 2>/dev/null || true
+    
+    # Проверяем, что файл действительно обновился
+    if [ -f "$HTACCESS_FILE" ] && grep -q "Ограничение доступа только с разрешенного домена" "$HTACCESS_FILE" 2>/dev/null; then
+        echo ".htaccess file updated successfully"
+    else
+        echo "WARNING: .htaccess file may not have been updated correctly"
+    fi
     
     echo "Domain restrictions and redirects enabled for: $ALLOWED_DOMAIN"
     
