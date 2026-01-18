@@ -57,17 +57,16 @@ EOF
     # Включаем SSL сайт
     a2ensite default-ssl.conf 2>/dev/null || true
     
-    # Проверяем конфигурацию Apache перед перезагрузкой
+    # Проверяем конфигурацию Apache
     if apache2ctl configtest 2>&1 | grep -q "Syntax OK"; then
         # Убеждаемся, что порт 443 указан в ports.conf
         if ! grep -q "^Listen 443" /etc/apache2/ports.conf 2>/dev/null; then
             echo "Listen 443" >> /etc/apache2/ports.conf
         fi
         
-        # Перезагружаем Apache для применения SSL конфигурации
-        # Используем restart, так как graceful может не применить изменения портов
-        apache2ctl restart 2>/dev/null || service apache2 restart 2>/dev/null || true
-        echo "HTTPS configuration enabled and Apache restarted"
+        # НЕ перезагружаем Apache здесь - он будет запущен apache2-foreground в CMD
+        # Apache запустится автоматически после выполнения всех скриптов инициализации
+        echo "HTTPS configuration enabled (Apache will start after initialization)"
     else
         echo "WARNING: Apache configuration has errors, SSL may not work"
         apache2ctl configtest 2>&1
