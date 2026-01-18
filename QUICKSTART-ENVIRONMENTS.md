@@ -46,7 +46,7 @@ docker-compose up -d
 - **Доступ только с домена** - все запросы с других доменов/IP получат 403 Forbidden
 - **www редирект** - `www.domain.com` автоматически редиректится на `domain.com`
 - **HTTPS редирект** - все HTTP запросы автоматически перенаправляются на HTTPS (если SSL настроен)
-- **SSL сертификат** - автоматически генерируется self-signed сертификат (браузер может показать предупреждение)
+- **SSL сертификат** - только Let's Encrypt (self-signed не генерируются, используйте `setup-letsencrypt.sh`)
 - **Let's Encrypt** - для продакшна рекомендуется использовать Let's Encrypt (см. README-ENVIRONMENTS.md)
 
 Подробная документация: `README-ENVIRONMENTS.md`

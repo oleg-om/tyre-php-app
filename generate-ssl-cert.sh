@@ -1,80 +1,59 @@
 #!/bin/bash
-# Генерация SSL сертификата (опционально, только если указан домен)
-# Генерирует self-signed сертификат ТОЛЬКО если сертификат не существует
-# Не перезаписывает существующие сертификаты (например, Let's Encrypt)
+# Проверка SSL сертификатов (только Let's Encrypt, без генерации self-signed)
+# Скрипт только проверяет наличие сертификатов в volume
+# Self-signed сертификаты НЕ генерируются
 
 SSL_DIR="/etc/apache2/ssl"
 CERT_FILE="$SSL_DIR/server.crt"
 KEY_FILE="$SSL_DIR/server.key"
 
-# Генерируем сертификат только если указан домен (опционально)
-if [ ! -z "$ALLOWED_DOMAIN" ]; then
-    # Создаем директорию для сертификатов если её нет
+# Отладочная информация
+echo "SSL certificate check script started"
+echo "SSL directory: $SSL_DIR"
+echo "Certificate file: $CERT_FILE"
+echo "Key file: $KEY_FILE"
+
+# Проверяем, что директория существует
+if [ ! -d "$SSL_DIR" ]; then
+    echo "Creating SSL directory: $SSL_DIR"
     mkdir -p "$SSL_DIR"
+fi
+
+# Проверяем наличие сертификатов
+if [ -f "$CERT_FILE" ] && [ -f "$KEY_FILE" ]; then
+    CERT_SIZE=$(stat -c%s "$CERT_FILE" 2>/dev/null || echo "0")
+    KEY_SIZE=$(stat -c%s "$KEY_FILE" 2>/dev/null || echo "0")
     
-    # Проверяем, существует ли уже сертификат
-    # ВАЖНО: Проверяем размер файлов, чтобы не перезаписывать Let's Encrypt сертификаты
-    # Let's Encrypt fullchain обычно больше 2KB, self-signed обычно меньше 2KB
-    CERT_EXISTS=false
-    CERT_IS_LETSENCRYPT=false
+    echo "Found existing certificate: size=${CERT_SIZE} bytes, key_size=${KEY_SIZE} bytes"
     
-    if [ -f "$CERT_FILE" ] && [ -f "$KEY_FILE" ]; then
-        CERT_EXISTS=true
-        # Проверяем, является ли сертификат Let's Encrypt
-        if command -v openssl &> /dev/null; then
-            if openssl x509 -in "$CERT_FILE" -noout -issuer 2>/dev/null | grep -qi "let's encrypt\|letsencrypt"; then
-                CERT_IS_LETSENCRYPT=true
-            fi
+    # Проверяем, является ли сертификат Let's Encrypt
+    if command -v openssl &> /dev/null; then
+        CERT_ISSUER=$(openssl x509 -in "$CERT_FILE" -noout -issuer 2>/dev/null || echo "")
+        CERT_SUBJECT=$(openssl x509 -in "$CERT_FILE" -noout -subject 2>/dev/null || echo "")
+        
+        if echo "$CERT_ISSUER" | grep -qi "let's encrypt\|letsencrypt"; then
+            echo "✓ Let's Encrypt certificate found"
+            echo "  Subject: $CERT_SUBJECT"
+            echo "  Issuer: $CERT_ISSUER"
         else
-            # Если openssl недоступен, проверяем размер файла
-            # Let's Encrypt fullchain обычно больше 2KB
-            CERT_SIZE=$(stat -c%s "$CERT_FILE" 2>/dev/null || echo "0")
-            if [ "$CERT_SIZE" -gt 2000 ]; then
-                CERT_IS_LETSENCRYPT=true
-            fi
-        fi
-    fi
-    
-    if [ "$CERT_EXISTS" = true ] && [ "$CERT_IS_LETSENCRYPT" = true ]; then
-        echo "Let's Encrypt certificate found in volume, skipping self-signed generation"
-        echo "Certificate: $CERT_FILE"
-        echo "Private key: $KEY_FILE"
-        # Показываем информацию о сертификате для подтверждения
-        if command -v openssl &> /dev/null; then
-            openssl x509 -in "$CERT_FILE" -noout -subject -issuer -dates 2>/dev/null || true
-        fi
-    elif [ "$CERT_EXISTS" = true ]; then
-        # Проверяем размер файла - если он больше 2KB, это может быть Let's Encrypt
-        CERT_SIZE=$(stat -c%s "$CERT_FILE" 2>/dev/null || echo "0")
-        if [ "$CERT_SIZE" -gt 2000 ]; then
-            echo "Large certificate file found (${CERT_SIZE} bytes), assuming Let's Encrypt, skipping generation"
-            echo "Certificate: $CERT_FILE"
-            echo "Private key: $KEY_FILE"
-        else
-            echo "SSL certificate already exists (self-signed, ${CERT_SIZE} bytes), skipping generation"
-            echo "Certificate: $CERT_FILE"
-            echo "Private key: $KEY_FILE"
+            echo "⚠ Warning: Certificate found but it's not Let's Encrypt"
+            echo "  Subject: $CERT_SUBJECT"
+            echo "  Issuer: $CERT_ISSUER"
+            echo "  Note: Self-signed certificates are not generated. Use setup-letsencrypt.sh to get Let's Encrypt certificate."
         fi
     else
-        echo "Generating self-signed SSL certificate for domain: $ALLOWED_DOMAIN"
-        echo "Note: For production, use Let's Encrypt certificates (see setup-letsencrypt.sh)"
-        
-        # Генерируем self-signed сертификат
-        openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
-            -keyout "$KEY_FILE" \
-            -out "$CERT_FILE" \
-            -subj "/C=RU/ST=State/L=City/O=Organization/CN=$ALLOWED_DOMAIN" \
-            2>/dev/null
-        
-        # Устанавливаем права доступа
-        chmod 600 "$KEY_FILE"
-        chmod 644 "$CERT_FILE"
-        chown root:root "$KEY_FILE" "$CERT_FILE"
-        
-        echo "Self-signed SSL certificate generated successfully"
-        echo "Certificate: $CERT_FILE"
-        echo "Private key: $KEY_FILE"
+        # Если openssl недоступен, проверяем размер файла
+        # Let's Encrypt fullchain обычно больше 2KB
+        if [ "$CERT_SIZE" -gt 2000 ]; then
+            echo "✓ Large certificate file found (${CERT_SIZE} bytes), likely Let's Encrypt"
+        else
+            echo "⚠ Warning: Small certificate file found (${CERT_SIZE} bytes), may not be Let's Encrypt"
+            echo "  Note: Self-signed certificates are not generated. Use setup-letsencrypt.sh to get Let's Encrypt certificate."
+        fi
     fi
 else
-    echo "SSL certificate generation skipped (no domain specified - optional)"
+    echo "⚠ No SSL certificates found in $SSL_DIR"
+    echo "  Note: Self-signed certificates are not generated."
+    echo "  To get Let's Encrypt certificate, run: ./setup-letsencrypt.sh <domain>"
+    echo "  Apache will start without SSL (HTTP only)"
 fi
