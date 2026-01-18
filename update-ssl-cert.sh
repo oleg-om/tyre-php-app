@@ -80,12 +80,27 @@ fi
 
 # Копирование сертификатов в Docker volume
 echo -e "${YELLOW}Копирование сертификатов в Docker volume...${NC}"
+
+# Определяем реальные пути к файлам (разрешаем символические ссылки)
+FULLCHAIN_PATH=$(readlink -f /etc/letsencrypt/live/${DOMAIN}/fullchain.pem 2>/dev/null || echo "")
+PRIVKEY_PATH=$(readlink -f /etc/letsencrypt/live/${DOMAIN}/privkey.pem 2>/dev/null || echo "")
+
+if [ -z "$FULLCHAIN_PATH" ] || [ -z "$PRIVKEY_PATH" ] || [ ! -f "$FULLCHAIN_PATH" ] || [ ! -f "$PRIVKEY_PATH" ]; then
+    echo -e "${RED}Ошибка: Не удалось найти файлы сертификатов${NC}"
+    echo "Проверьте пути:"
+    echo "  fullchain: $FULLCHAIN_PATH"
+    echo "  privkey: $PRIVKEY_PATH"
+    exit 1
+fi
+
+# Монтируем архивную директорию, где находятся реальные файлы
+ARCHIVE_DIR=$(dirname "$FULLCHAIN_PATH")
 docker run --rm \
     -v ${VOLUME_NAME}:/ssl \
-    -v /etc/letsencrypt/live/${DOMAIN}:/certs:ro \
+    -v ${ARCHIVE_DIR}:/certs:ro \
     alpine sh -c "
-        cp /certs/fullchain.pem /ssl/server.crt
-        cp /certs/privkey.pem /ssl/server.key
+        cp /certs/$(basename $FULLCHAIN_PATH) /ssl/server.crt
+        cp /certs/$(basename $PRIVKEY_PATH) /ssl/server.key
         chmod 600 /ssl/server.key
         chmod 644 /ssl/server.crt
         chown root:root /ssl/server.key /ssl/server.crt
