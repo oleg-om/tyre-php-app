@@ -114,12 +114,18 @@ docker run --rm \
     -v "$FULLCHAIN_REAL:/source_fullchain:ro" \
     -v "$PRIVKEY_REAL:/source_privkey:ro" \
     alpine sh -c "
-        # Удаляем старые сертификаты
-        rm -f /ssl/server.crt /ssl/server.key
+        # Удаляем старые сертификаты (включая скрытые файлы)
+        rm -f /ssl/server.crt /ssl/server.key /ssl/.server.crt /ssl/.server.key
+        
+        # Синхронизируем файловую систему для гарантии удаления
+        sync
         
         # Копируем содержимое файлов
         cat /source_fullchain > /ssl/server.crt
         cat /source_privkey > /ssl/server.key
+        
+        # Синхронизируем файловую систему для гарантии записи
+        sync
         
         # Устанавливаем права доступа
         chmod 600 /ssl/server.key
