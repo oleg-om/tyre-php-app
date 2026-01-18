@@ -106,6 +106,10 @@ RUN sed -i 's|DocumentRoot /var/www/html|DocumentRoot /var/www/html/app/webroot|
     && echo "	</Directory>" >> /etc/apache2/sites-available/000-default.conf \
     && echo "ServerName localhost" >> /etc/apache2/apache2.conf \
     && echo "" >> /etc/apache2/apache2.conf \
+    && echo "# Настройка портов для HTTP и HTTPS" >> /etc/apache2/apache2.conf \
+    && echo "Listen 80" >> /etc/apache2/ports.conf \
+    && echo "Listen 443" >> /etc/apache2/ports.conf \
+    && echo "" >> /etc/apache2/apache2.conf \
     && echo "# Создание директории для SSL сертификатов" >> /etc/apache2/apache2.conf \
     && mkdir -p /etc/apache2/ssl \
     && echo "" >> /etc/apache2/apache2.conf \

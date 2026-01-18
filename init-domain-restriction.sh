@@ -59,10 +59,15 @@ EOF
     
     # Проверяем конфигурацию Apache перед перезагрузкой
     if apache2ctl configtest 2>&1 | grep -q "Syntax OK"; then
+        # Убеждаемся, что порт 443 указан в ports.conf
+        if ! grep -q "^Listen 443" /etc/apache2/ports.conf 2>/dev/null; then
+            echo "Listen 443" >> /etc/apache2/ports.conf
+        fi
+        
         # Перезагружаем Apache для применения SSL конфигурации
-        # Используем graceful reload, чтобы не прерывать текущие соединения
-        apache2ctl graceful 2>/dev/null || apache2ctl restart 2>/dev/null || true
-        echo "HTTPS configuration enabled and Apache reloaded"
+        # Используем restart, так как graceful может не применить изменения портов
+        apache2ctl restart 2>/dev/null || service apache2 restart 2>/dev/null || true
+        echo "HTTPS configuration enabled and Apache restarted"
     else
         echo "WARNING: Apache configuration has errors, SSL may not work"
         apache2ctl configtest 2>&1
