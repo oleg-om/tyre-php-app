@@ -36,8 +36,8 @@ RUN docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-di
 #     && apt-get clean \
 #     && rm -rf /var/lib/apt/lists/*
 
-# Включение модулей Apache для оптимизации
-RUN a2enmod rewrite auth_basic headers expires deflate
+# Включение модулей Apache для оптимизации и SSL
+RUN a2enmod rewrite auth_basic headers expires deflate ssl
 
 # Настройка PHP (оптимизировано для 3 core / 4GB RAM)
 RUN echo "memory_limit = 256M" > /usr/local/etc/php/conf.d/memory.ini \
