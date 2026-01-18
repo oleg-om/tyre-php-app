@@ -1,5 +1,7 @@
 #!/bin/bash
 # Генерация SSL сертификата (опционально, только если указан домен)
+# Генерирует self-signed сертификат ТОЛЬКО если сертификат не существует
+# Не перезаписывает существующие сертификаты (например, Let's Encrypt)
 
 SSL_DIR="/etc/apache2/ssl"
 CERT_FILE="$SSL_DIR/server.crt"
@@ -12,7 +14,8 @@ if [ ! -z "$ALLOWED_DOMAIN" ]; then
     
     # Проверяем, существует ли уже сертификат
     if [ ! -f "$CERT_FILE" ] || [ ! -f "$KEY_FILE" ]; then
-        echo "Generating SSL certificate for domain: $ALLOWED_DOMAIN"
+        echo "Generating self-signed SSL certificate for domain: $ALLOWED_DOMAIN"
+        echo "Note: For production, use Let's Encrypt certificates (see setup-letsencrypt.sh)"
         
         # Генерируем self-signed сертификат
         openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
@@ -26,11 +29,16 @@ if [ ! -z "$ALLOWED_DOMAIN" ]; then
         chmod 644 "$CERT_FILE"
         chown root:root "$KEY_FILE" "$CERT_FILE"
         
-        echo "SSL certificate generated successfully"
+        echo "Self-signed SSL certificate generated successfully"
         echo "Certificate: $CERT_FILE"
         echo "Private key: $KEY_FILE"
     else
-        echo "SSL certificate already exists, skipping generation"
+        # Проверяем, какой тип сертификата установлен
+        if openssl x509 -in "$CERT_FILE" -noout -issuer 2>/dev/null | grep -q "Let's Encrypt"; then
+            echo "Let's Encrypt certificate found, skipping self-signed generation"
+        else
+            echo "SSL certificate already exists, skipping generation"
+        fi
     fi
 else
     echo "SSL certificate generation skipped (no domain specified - optional)"
