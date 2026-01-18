@@ -264,9 +264,17 @@ if $DOCKER_COMPOSE_CMD restart "$CONTAINER_NAME" 2>/dev/null; then
             echo -e "${GREEN}✓ Let's Encrypt сертификат активен после перезагрузки Apache${NC}"
         else
             echo -e "${RED}✗ Контейнер все еще использует старый сертификат${NC}"
-            echo -e "${YELLOW}Попробуйте полностью перезапустить контейнер:${NC}"
-            echo "  docker compose down"
-            echo "  docker compose up -d"
+            echo -e "${YELLOW}Пробуем принудительно пересоздать контейнер...${NC}"
+            $DOCKER_COMPOSE_CMD stop "$CONTAINER_NAME" 2>/dev/null || true
+            $DOCKER_COMPOSE_CMD rm -f "$CONTAINER_NAME" 2>/dev/null || true
+            $DOCKER_COMPOSE_CMD up -d "$CONTAINER_NAME" 2>/dev/null
+            sleep 5
+            if docker exec "$CONTAINER_NAME" openssl x509 -in /etc/apache2/ssl/server.crt -noout -issuer 2>/dev/null | grep -qi "let's encrypt\|letsencrypt"; then
+                echo -e "${GREEN}✓ Let's Encrypt сертификат активен после пересоздания контейнера${NC}"
+            else
+                echo -e "${RED}✗ Проблема сохраняется. Проверьте монтирование volume:${NC}"
+                echo "  docker inspect $CONTAINER_NAME | grep -A 10 Mounts"
+            fi
         fi
     fi
 else
