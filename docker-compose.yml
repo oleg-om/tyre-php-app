@@ -33,8 +33,25 @@ services:
       - ALLOWED_DOMAIN=${ALLOWED_DOMAIN:-}
     depends_on:
       - tyre-app-mysql
+      - tyre-app-redis
     networks:
       - tyre-app-network
+
+  tyre-app-redis:
+    image: redis:5-alpine
+    container_name: tyre-app-redis
+    ports:
+      - "${REDIS_PORT:-6379}:6379"
+    volumes:
+      - tyre-app-redis-data:/data
+    command: redis-server --appendonly yes --maxmemory 256mb --maxmemory-policy allkeys-lru
+    networks:
+      - tyre-app-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   tyre-app-mysql:
     image: mysql:5.7
@@ -66,6 +83,8 @@ volumes:
   tyre-app-files:
     driver: local
   tyre-app-ssl:
+    driver: local
+  tyre-app-redis-data:
     driver: local
 
 networks:

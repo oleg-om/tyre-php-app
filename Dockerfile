@@ -15,6 +15,7 @@ RUN apt-get update && \
     apt-get install -y libicu-dev && \
     apt-get install -y libxml2-dev zlib1g-dev && \
     apt-get install -y git unzip apache2-utils openssl && \
+    apt-get install -y pkg-config && \
     rm -rf /var/lib/apt/lists/*
 
 # Установка PHP расширений
@@ -28,6 +29,14 @@ RUN docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-di
     mcrypt \
     xml \
     opcache
+
+# Установка Redis расширения через PECL (версия 2.2.8 для совместимости с PHP 5.6)
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends libhiredis-dev && \
+    pecl install redis-2.2.8 && \
+    docker-php-ext-enable redis && \
+    apt-get purge -y libhiredis-dev && \
+    rm -rf /var/lib/apt/lists/*
 
 # Установка zip расширения (опционально, если нужно)
 # Для PHP 5.6 zip может быть недоступен через стандартный установщик
