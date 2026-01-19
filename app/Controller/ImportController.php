@@ -2365,6 +2365,7 @@ class ImportController extends AppController
                                     }
                                     $model_name = trim(str_replace(array('(ведущая)', '(грузовой)', '(наварка ведущая)', '(наварка прицеп)', '(наварка универ)', '(прицепная)', '(рулевая)', '(с/х)', '(универсальная)', '(прицеп)'), '', $model_name));
                                     $title = trim($data->sheets[0]['cells'][$i][3]);
+                                    $title = $this->_clean_text($title);
                                     $title = trim(str_replace(array(' (ведущая)', ' (грузовой)', ' (наварка ведущая)', ' (наварка прицеп)', ' (наварка универ)', ' (прицепная)', ' (рулевая)', ' (с/х)', ' (универсальная)', '(прицеп)'), '', $title));
                                     $brand = $this->_clean_text($brand_name);
                                     $model = $this->_clean_text($model_name, false);
