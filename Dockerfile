@@ -49,19 +49,21 @@ RUN echo "memory_limit = 256M" > /usr/local/etc/php/conf.d/memory.ini \
     && echo "realpath_cache_size = 4096K" > /usr/local/etc/php/conf.d/realpath.ini \
     && echo "realpath_cache_ttl = 600" >> /usr/local/etc/php/conf.d/realpath.ini
 
-# Настройка Opcache (оптимизировано для 4GB RAM)
+# Настройка Opcache (оптимизировано для 4GB RAM, увеличенная память для лучшей производительности)
 RUN echo "opcache.enable=1" > /usr/local/etc/php/conf.d/opcache.ini \
     && echo "opcache.enable_cli=0" >> /usr/local/etc/php/conf.d/opcache.ini \
-    && echo "opcache.memory_consumption=128" >> /usr/local/etc/php/conf.d/opcache.ini \
-    && echo "opcache.interned_strings_buffer=8" >> /usr/local/etc/php/conf.d/opcache.ini \
-    && echo "opcache.max_accelerated_files=10000" >> /usr/local/etc/php/conf.d/opcache.ini \
+    && echo "opcache.memory_consumption=256" >> /usr/local/etc/php/conf.d/opcache.ini \
+    && echo "opcache.interned_strings_buffer=16" >> /usr/local/etc/php/conf.d/opcache.ini \
+    && echo "opcache.max_accelerated_files=20000" >> /usr/local/etc/php/conf.d/opcache.ini \
     && echo "opcache.validate_timestamps=0" >> /usr/local/etc/php/conf.d/opcache.ini \
     && echo "opcache.revalidate_freq=0" >> /usr/local/etc/php/conf.d/opcache.ini \
     && echo "opcache.fast_shutdown=1" >> /usr/local/etc/php/conf.d/opcache.ini \
     && echo "opcache.enable_file_override=1" >> /usr/local/etc/php/conf.d/opcache.ini \
     && echo "opcache.optimization_level=0x7FFFBFFF" >> /usr/local/etc/php/conf.d/opcache.ini \
-    && echo "opcache.save_comments=0" >> /usr/local/etc/php/conf.d/opcache.ini \
-    && echo "opcache.max_wasted_percentage=10" >> /usr/local/etc/php/conf.d/opcache.ini
+    && echo "opcache.save_comments=1" >> /usr/local/etc/php/conf.d/opcache.ini \
+    && echo "opcache.load_comments=1" >> /usr/local/etc/php/conf.d/opcache.ini \
+    && echo "opcache.max_wasted_percentage=10" >> /usr/local/etc/php/conf.d/opcache.ini \
+    && echo "opcache.use_cwd=1" >> /usr/local/etc/php/conf.d/opcache.ini
 
 # Установка Composer (старая версия для PHP 5.6)
 RUN apt-get update && apt-get install -y curl \
