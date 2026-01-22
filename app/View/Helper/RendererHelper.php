@@ -67,7 +67,7 @@ class RendererHelper extends AppHelper {
 	}
 	public function car_brand_photo($item, $model) {
 		if (!empty($item['filename'])) {
-			$src = 'car_brands/' . $item['filename'];
+			$src = '/files/car_brands/' . $item['filename'];
 		}
 		else {
 			$src = 'no-160x20.gif';

@@ -10,7 +10,7 @@
                     <?php
                     $image = '';
                     if (!empty($item['CarGeneration']['image_preview'])) {
-                        $image = $this->Html->image('car_generations/' . $item['CarGeneration']['image_preview'], array('alt' => $item['CarGeneration']['title']));
+                        $image = $this->Html->image('/files/car_generations/' . $item['CarGeneration']['image_preview'], array('alt' => $item['CarGeneration']['title']));
                     }
                      echo $image;
                     ?>

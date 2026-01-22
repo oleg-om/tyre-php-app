@@ -1,6 +1,10 @@
 app/tmp
-app/webroot/xls
 files
 dump.sql
 database.php
 postfixadmin-2.91.tar.gz
+/.idea/
+/test/
+/app/webroot/files/
+app/webroot/phpmy/.htpasswd
+.env

@@ -2,7 +2,7 @@ name: Deploy to Prod
 
 on:
   push:
-    branches: [ "master" ] # Триггер на пуш в ветку main
+    branches: [ "master" ] # Триггер на пуш в ветку master
 
 jobs:
   deploy:
@@ -17,11 +17,67 @@ jobs:
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY_PROD }}
 
-      - name: Pull changes
+      - name: Deploy to production
         run: |
-          ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST_PROD }} << 'EOF'
+          ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST_PROD }} << EOF
             set -e
-            cd /var/www/vhosts/kerchshina.com
-            git pull origin master
-            curl https://kerchshina.com/admin/cache/clear
+            
+            # Переход в директорию проекта
+            PROJECT_PATH="${PROJECT_PATH_PROD:-/root/tyre-php-app}"
+            cd "\$PROJECT_PATH"
+            
+            # Обновление кода из репозитория
+            echo "Pulling latest changes from master branch..."
+            git fetch origin master
+            git reset --hard origin/master
+            
+            # Проверка наличия Docker и Docker Compose
+            if ! command -v docker &> /dev/null; then
+              echo "Error: Docker is not installed"
+              exit 1
+            fi
+            
+            if ! command -v docker-compose &> /dev/null && ! docker compose version &> /dev/null; then
+              echo "Error: Docker Compose is not installed"
+              exit 1
+            fi
+            
+            # Определение команды docker-compose (docker-compose или docker compose)
+            DOCKER_COMPOSE_CMD="docker-compose"
+            if ! command -v docker-compose &> /dev/null; then
+              DOCKER_COMPOSE_CMD="docker compose"
+            fi
+            
+            # Пересборка образов
+            echo "Building Docker images..."
+            $DOCKER_COMPOSE_CMD build --no-cache
+            
+            # Остановка старых контейнеров
+            echo "Stopping old containers..."
+            $DOCKER_COMPOSE_CMD down
+            
+            # Запуск новых контейнеров
+            echo "Starting new containers..."
+            $DOCKER_COMPOSE_CMD up -d
+            
+            # Ожидание готовности контейнеров
+            echo "Waiting for containers to be ready..."
+            sleep 10
+            
+            # Проверка статуса контейнеров
+            echo "Checking container status..."
+            $DOCKER_COMPOSE_CMD ps
+            
+            # Очистка кеша приложения
+            echo "Clearing application cache..."
+            docker exec tyre-app-php rm -rf /var/www/html/app/tmp/cache/* || echo "Cache directory not found or already empty"
+            docker exec tyre-app-php chmod -R 777 /var/www/html/app/tmp || true
+            
+            # Очистка кеша через приложение (если доступно)
+            echo "Clearing cache via application..."
+            curl -k -f https://kerchshina.com/admin/cache/clear || echo "Cache clear endpoint not available or already cleared"
+            
+            echo "Deployment completed successfully!"
           EOF
+          env:
+            PROJECT_PATH_PROD: ${{ secrets.PROJECT_PATH_PROD || '/root/tyre-php-app' }}

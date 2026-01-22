@@ -43,7 +43,7 @@ class Brand extends AppModel {
 	public function __construct() {
 		parent::__construct();
 		$this->virtualFields['is_deletable'] = 'Brand.products_count=0 AND Brand.models_count=0';
-		$this->files_path = IMAGES . 'brands';
+		$this->files_path = WWW_ROOT . 'files' . DS . 'brands';
 	}
 	function _getFolderById() {
 		$id = $this->id;

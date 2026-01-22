@@ -1,0 +1,4 @@
+AuthType Basic
+AuthName "phpMyAdmin Access"
+AuthUserFile /var/www/html/app/webroot/phpmy/.htpasswd
+Require valid-user

@@ -93,12 +93,12 @@ class Product extends AppModel {
 			'ring' => __d('admin_bolts', 'type_ring'),
 			'valve' => __d('admin_bolts', 'type_valve')
 		);
-		$this->files_path = IMAGES . 'akb';
+		$this->files_path = WWW_ROOT . 'files' . DS . 'akb';
 	}
 	function _getFolderById() {
 		$id = $this->id;
 		if (isset($this->data[$this->name]['category_id']) && $this->data[$this->name]['category_id'] == 4) {
-			$this->files_path = IMAGES . 'tubes';
+			$this->files_path = WWW_ROOT . 'files' . DS . 'tubes';
 		}
 
         if (isset($this->data[$this->name]['category_id']) && $this->data[$this->name]['category_id'] == 3) {
@@ -144,7 +144,7 @@ class Product extends AppModel {
 				}
 			}
 			if (isset($this->data[$this->name]['category_id']) && $this->data[$this->name]['category_id'] == 5) {
-				$this->files_path = IMAGES . 'bolts';
+				$this->files_path = WWW_ROOT . 'files' . DS . 'bolts';
 			}
 			$uploaded_image = false;
 			$error_message = null;
@@ -330,13 +330,13 @@ class Product extends AppModel {
 			$this->tmp_data = $this->read(array('is_deletable', 'category_id', 'brand_id', 'model_id'));
 			if (isset($this->tmp_data[$this->name]['category_id'])) {
 				if ($this->tmp_data[$this->name]['category_id'] == 1) {
-					$this->files_path = IMAGES . 'tyres';
+					$this->files_path = WWW_ROOT . 'files' . DS . 'tyres';
 				}
 				elseif ($this->tmp_data[$this->name]['category_id'] == 2) {
-					$this->files_path = IMAGES . 'disks';
+					$this->files_path = WWW_ROOT . 'files' . DS . 'disks';
 				}
 				elseif ($this->tmp_data[$this->name]['category_id'] == 3) {
-					$this->files_path = IMAGES . 'akb';
+					$this->files_path = WWW_ROOT . 'files' . DS . 'akb';
 				}
 			}
 			if (!$this->tmp_data[$this->name]['is_deletable']) return false;

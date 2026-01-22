@@ -1305,13 +1305,17 @@ class BackendHelper extends AppHelper {
 		extract($params);
 		app::import('Vendor', 'phpthumb', array('file' => 'phpthumb' . DS . 'phpthumb.class.php'));
 		$thumbnail = new phpthumb;
+		
+		// Пути, которые были перенесены в files/
+		$base_images_path = WWW_ROOT . 'files' . DS;
+		
 		if ($folder) {
 			$folder = (floor($id / 5000) + 1);
 
-			$thumbnail->src = IMAGES . $path . DS . $folder . DS . $id . DS . $filename;
+			$thumbnail->src = $base_images_path . $path . DS . $folder . DS . $id . DS . $filename;
 		}
 		else {
-			$thumbnail->src = IMAGES . $path . DS . $id . DS . $filename;
+			$thumbnail->src = $base_images_path . $path . DS . $id . DS . $filename;
 		}
 		$thumbnail->w = $width;
 		$thumbnail->h = $height;
@@ -1320,10 +1324,10 @@ class BackendHelper extends AppHelper {
 			$thumbnail->zc = 'C';
 		}
 		if ($folder) {
-			$thumbnail->config_cache_directory = IMAGES . $path . DS . $folder . DS . $id . DS;
+			$thumbnail->config_cache_directory = $base_images_path . $path . DS . $folder . DS . $id . DS;
 		}
 		else {
-			$thumbnail->config_cache_directory = IMAGES . $path . DS . $id . DS;
+			$thumbnail->config_cache_directory = $base_images_path . $path . DS . $id . DS;
 		}
 		$cacheFilename = $width . 'x' . $height . '_' . $filename;
 		if ($tyre && is_file($thumbnail->config_cache_directory . $cacheFilename)) {
@@ -1402,11 +1406,14 @@ class BackendHelper extends AppHelper {
 				}
 			}
 		}
+		// Пути, которые были перенесены в files/
+		$base_images_path = WWW_ROOT . 'files' . DS;
+		
 		if ($folder) {
-			$thumbnail->config_cache_directory = IMAGES . $path . DS . $folder . DS . $id . DS;
+			$thumbnail->config_cache_directory = $base_images_path . $path . DS . $folder . DS . $id . DS;
 		}
 		else {
-			$thumbnail->config_cache_directory = IMAGES . $path . DS . $id . DS;
+			$thumbnail->config_cache_directory = $base_images_path . $path . DS . $id . DS;
 		}
 		$thumbnail->config_cache_disable_warning = true;
 		$cacheFilename = $width . 'x' . $height . '_' . $filename;
@@ -1427,11 +1434,13 @@ class BackendHelper extends AppHelper {
 			@unlink($tyre_400);
 		}
 		if (is_file($thumbnail->cache_filename)) {
+			// Пути, которые были перенесены в files/
+			$base_path = '/files';
 			if ($folder) {
-				return '/img/' . $path . '/' . $folder . '/' . $id . '/' . $cacheFilename;
+				return $base_path . '/' . $path . '/' . $folder . '/' . $id . '/' . $cacheFilename;
 			}
 			else {
-				return '/img/' . $path . '/' . $id . '/' . $cacheFilename;
+				return $base_path . '/' . $path . '/' . $id . '/' . $cacheFilename;
 			}
 		}
 		return '/img/spacer.gif';

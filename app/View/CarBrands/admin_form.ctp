@@ -20,7 +20,7 @@ $this->Backend->addText('slug', array(
 	'required' => true
 ));
 if (!empty($this->data['CarBrand']['filename'])) {
-	$this->Backend->addHtml('<div class="item_div">' . $this->Html->image('car_brands/' . $this->data['CarBrand']['filename']) . '</div>');
+	$this->Backend->addHtml('<div class="item_div">' . $this->Html->image('/files/car_brands/' . $this->data['CarBrand']['filename']) . '</div>');
 }
 $this->Backend->addFile('file', array(
 	'label' => __d('admin_car_brands', 'label_file')

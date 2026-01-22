@@ -21,7 +21,7 @@ jobs:
         run: |
           ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST_DEV }} << 'EOF'
             set -e
-            cd /var/www/vhosts/kerchshina.com
+            cd /root/tyre-php-app
             git reset --hard
             git pull origin develop
             curl http://95.142.45.63/admin/cache/clear

@@ -143,9 +143,9 @@ class ModelsController extends AppController {
 		$this->set('materials', $this->BrandModel->materials);
 		$this->set('seasons', $this->BrandModel->seasons);
 		$this->set('auto', $this->BrandModel->auto);
-        $this->set('extra_filenames', $data[$this->model]['extra_filenames']);
-        $this->set('brand_model_id', $data[$this->model]['id']);
-        $this->set('brand_id', $data[$this->model]['brand_id']);
+        $this->set('extra_filenames', !empty($data[$this->model]['extra_filenames']) ? $data[$this->model]['extra_filenames'] : '');
+        $this->set('brand_model_id', !empty($data[$this->model]['id']) ? $data[$this->model]['id'] : 0);
+        $this->set('brand_id', !empty($data[$this->model]['brand_id']) ? $data[$this->model]['brand_id'] : 0);
         $this->set('additional_js', array('lightbox'));
         $this->set('additional_css', array('lightbox'));
 		return $title;

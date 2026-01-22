@@ -244,12 +244,25 @@ Configure::write('Acl.database', 'default');
  *       Please check the comments in boostrap.php for more info on the cache engines available
  *       and their setttings.
  */
+// Определяем движок кеша (приоритет: Redis > APC > File)
 $engine = 'File';
-/*
-if (extension_loaded('apc') && function_exists('apc_dec') && (php_sapi_name() !== 'cli' || ini_get('apc.enable_cli'))) {
+$cacheEngineConfig = array();
+
+// Проверяем Redis (приоритет 1)
+if (extension_loaded('redis')) {
+	$engine = 'Redis';
+	$cacheEngineConfig = array(
+		'server' => 'tyre-app-redis',
+		'port' => 6379,
+		'timeout' => 0,
+		'persistent' => true
+	);
+}
+// Проверяем APC (приоритет 2, только если Redis недоступен)
+elseif (extension_loaded('apc') && function_exists('apc_dec') && (php_sapi_name() !== 'cli' || ini_get('apc.enable_cli'))) {
 	$engine = 'Apc';
 }
-*/
+
 // In development mode, caches should expire quickly.
 $duration = '+999 days';
 if (Configure::read('debug') >= 1) {
@@ -263,60 +276,81 @@ $prefix = 'kerchshina_';
  * Configure the cache used for general framework caching.  Path information,
  * object listings, and translation cache files are stored with this configuration.
  */
-Cache::config('_cake_core_', array(
+$cakeCoreConfig = array_merge(array(
     'engine' => $engine,
     'prefix' => $prefix . 'cake_core_',
-    'path' => CACHE . 'persistent' . DS,
-    'serialize' => ($engine === 'File'),
     'duration' => $duration
-));
+), $cacheEngineConfig);
+if ($engine === 'File') {
+    $cakeCoreConfig['path'] = CACHE . 'persistent' . DS;
+    $cakeCoreConfig['serialize'] = true;
+}
+Cache::config('_cake_core_', $cakeCoreConfig);
 
 /**
  * Configure the cache for model and datasource caches.  This cache configuration
  * is used to store schema descriptions, and table listings in connections.
  */
-Cache::config('_cake_model_', array(
+$cakeModelConfig = array_merge(array(
     'engine' => $engine,
     'prefix' => $prefix . 'cake_model_',
-    'path' => CACHE . 'models' . DS,
-    'serialize' => ($engine === 'File'),
     'duration' => $duration
-));
+), $cacheEngineConfig);
+if ($engine === 'File') {
+    $cakeModelConfig['path'] = CACHE . 'models' . DS;
+    $cakeModelConfig['serialize'] = true;
+}
+Cache::config('_cake_model_', $cakeModelConfig);
 
-Cache::config('very_long', array(
-        'engine' => 'File',
-        'duration' => '+1 hour',
-        'probability' => 100,
-        'path' => CACHE,
-        'prefix' => 'cake_',
-        'lock' => true,
-        'serialize' => ($engine === 'File'))
-);
-Cache::config('long', array(
-        'engine' => 'File',
-        'duration' => '+30 minutes',
-        'probability' => 100,
-        'path' => CACHE,
-        'prefix' => 'cake_',
-        'lock' => true,
-        'serialize' => ($engine === 'File'))
-);
-Cache::config('short', array(
-        'engine' => 'File',
-        'duration' => '+30 seconds',
-        'probability' => 100,
-        'path' => CACHE,
-        'prefix' => 'cake_',
-        'lock' => true,
-        'serialize' => ($engine === 'File'))
-);
-Cache::config('medium', array(
-        'engine' => 'File',
-        'duration' => '+2 minutes',
-        'probability' => 100,
-        'path' => CACHE,
-        'prefix' => 'cake_',
-        'lock' => true,
-        'serialize' => ($engine === 'File'))
-);
+$veryLongConfig = array_merge(array(
+    'engine' => $engine,
+    'duration' => '+1 hour',
+    'probability' => 100,
+    'prefix' => 'cake_'
+), $cacheEngineConfig);
+if ($engine === 'File') {
+    $veryLongConfig['path'] = CACHE;
+    $veryLongConfig['lock'] = true;
+    $veryLongConfig['serialize'] = true;
+}
+Cache::config('very_long', $veryLongConfig);
+
+$longConfig = array_merge(array(
+    'engine' => $engine,
+    'duration' => '+30 minutes',
+    'probability' => 100,
+    'prefix' => 'cake_'
+), $cacheEngineConfig);
+if ($engine === 'File') {
+    $longConfig['path'] = CACHE;
+    $longConfig['lock'] = true;
+    $longConfig['serialize'] = true;
+}
+Cache::config('long', $longConfig);
+
+$shortConfig = array_merge(array(
+    'engine' => $engine,
+    'duration' => '+30 seconds',
+    'probability' => 100,
+    'prefix' => 'cake_'
+), $cacheEngineConfig);
+if ($engine === 'File') {
+    $shortConfig['path'] = CACHE;
+    $shortConfig['lock'] = true;
+    $shortConfig['serialize'] = true;
+}
+Cache::config('short', $shortConfig);
+
+$mediumConfig = array_merge(array(
+    'engine' => $engine,
+    'duration' => '+2 minutes',
+    'probability' => 100,
+    'prefix' => 'cake_'
+), $cacheEngineConfig);
+if ($engine === 'File') {
+    $mediumConfig['path'] = CACHE;
+    $mediumConfig['lock'] = true;
+    $mediumConfig['serialize'] = true;
+}
+Cache::config('medium', $mediumConfig);
 Cache::config('default', Cache::settings('medium'));

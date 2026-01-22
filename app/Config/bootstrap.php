@@ -96,7 +96,29 @@
  *		'persistent' => true, // [optional] set this to false for non-persistent connections
  *	));
  */
-Cache::config('default', array('engine' => 'File'));
+// Определяем движок кеша (приоритет: Redis > APC > File)
+$cacheEngine = 'File';
+$cacheConfig = array('engine' => $cacheEngine);
+
+// Проверяем Redis (приоритет 1)
+if (extension_loaded('redis')) {
+	$cacheEngine = 'Redis';
+	$cacheConfig = array(
+		'engine' => 'Redis',
+		'server' => 'tyre-app-redis',
+		'port' => 6379,
+		'timeout' => 0,
+		'persistent' => true,
+		'prefix' => 'kerchshina_'
+	);
+}
+// Проверяем APC (приоритет 2, только если Redis недоступен)
+elseif (extension_loaded('apc') && function_exists('apc_dec') && (php_sapi_name() !== 'cli' || ini_get('apc.enable_cli'))) {
+	$cacheEngine = 'Apc';
+	$cacheConfig = array('engine' => 'Apc');
+}
+
+Cache::config('default', $cacheConfig);
 
 /**
  * The settings below can be used to set additional paths to models, views and controllers.
@@ -182,9 +204,9 @@ CakeLog::config('error', array(
 define('IMAGEMAGICK', '/usr/bin/');
 define('PREFER_IMAGEMAGICK', true);
 setlocale(LC_ALL, 'ru_RU.UTF-8');
-ini_set('max_execution_time', 0);
+ini_set('max_execution_time', 300);
 ini_set('max_input_time', 0);
-ini_set('memory_limit', '1024M');
+ini_set('memory_limit', '256M');
 function hexbin($temp) {
 	$data = '';
 	$len = strlen($temp);
