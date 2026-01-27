@@ -37,6 +37,11 @@ services:
       - tyre-app-redis
     networks:
       - tyre-app-network
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
 
   tyre-app-redis:
     image: redis:5-alpine
@@ -52,6 +57,11 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
 
   tyre-app-mysql:
     image: mysql:5.7
@@ -75,6 +85,11 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
 
 volumes:
   tyre-app-mysql-data:
