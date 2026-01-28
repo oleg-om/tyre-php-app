@@ -161,13 +161,47 @@ class Brand extends AppModel {
 	}
 	public function recountProducts($ids) {
 		if (!is_array($ids)) $ids = array($ids);
+		if (empty($ids)) return;
+		
 		$this->Product = ClassRegistry::init('Product');
+		
+		// Оптимизация: используем один запрос для всех брендов вместо отдельных запросов
+		$ids_str = implode(',', array_map('intval', $ids));
+		
+		// Получаем все счетчики одним запросом
+		$results = $this->Product->query("
+			SELECT 
+				brand_id,
+				COUNT(*) as products_count,
+				SUM(CASE WHEN is_active = 1 AND price > 0 THEN 1 ELSE 0 END) as active_products_count
+			FROM products
+			WHERE brand_id IN ({$ids_str})
+			GROUP BY brand_id
+		");
+		
+		// Обновляем каждый бренд
 		foreach ($ids as $id) {
-			$this->id = $id;
-			if ($data = $this->read(array('id'))) {
-				$products_count = $this->Product->find('count', array('conditions' => array('Product.brand_id' => $id)));
-				$active_products_count = $this->Product->find('count', array('conditions' => array('Product.brand_id' => $id, 'Product.is_active' => 1, 'Product.price > ' => 0/*, 'Product.stock_count > ' => 0*/)));
-				$this->save(array('products_count' => $products_count, 'active_products_count' => $active_products_count), false);
+			$found = false;
+			foreach ($results as $result) {
+				if ($result[0]['brand_id'] == $id) {
+					$this->id = $id;
+					$this->save(array(
+						'products_count' => $result[0]['products_count'],
+						'active_products_count' => $result[0]['active_products_count']
+					), false);
+					$found = true;
+					break;
+				}
+			}
+			// Если бренд не найден в результатах, значит у него 0 продуктов
+			if (!$found) {
+				$this->id = $id;
+				if ($data = $this->read(array('id'))) {
+					$this->save(array(
+						'products_count' => 0,
+						'active_products_count' => 0
+					), false);
+				}
 			}
 		}
 	}

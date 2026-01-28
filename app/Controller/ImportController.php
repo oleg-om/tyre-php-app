@@ -712,6 +712,10 @@ class ImportController extends AppController
             ob_start();
         }
         
+        // Отключаем пересчет счетчиков во время импорта для ускорения
+        // Счетчики будут пересчитаны в конце батчами
+        Configure::write('Product.skip_recount_on_save', true);
+        
         //echo "22222";
         //exit();
         $this->layout = 'admin';
@@ -908,14 +912,12 @@ class ImportController extends AppController
                                                 if ($product = $this->Product->find('first', array('conditions' => $conditions, 'fields' => array('Product.id', 'Product.price', 'Product.supplier_id')))) {
                                                     if ($price != $product['Product']['price'] || $ignore_prices) {
                                                         if (!$only_suppliers || ($only_suppliers && $supplier_id == $product['Product']['supplier_id'])) {
-                                                            $this->Product->id = $product['Product']['id'];
-                                                            if ($this->Product->saveField('price', $price)) {
-                                                                $this->Product->saveField('supplier_id', $supplier_id);
-                                                                $updated_products++;
-                                                            } else {
-                                                                $not_updated_products++;
-                                                                debug($this->Product->validationErrors);
-                                                            }
+                                                            // Оптимизация: используем updateAll вместо двух saveField для одного UPDATE запроса
+                                                            $this->Product->updateAll(
+                                                                array('Product.price' => $price, 'Product.supplier_id' => $supplier_id),
+                                                                array('Product.id' => $product['Product']['id'])
+                                                            );
+                                                            $updated_products++;
                                                         } else {
                                                             $nothing_update_products++;
                                                         }
@@ -1811,14 +1813,12 @@ class ImportController extends AppController
                                                 if ($product = $this->Product->find('first', array('conditions' => $conditions, 'fields' => array('Product.id', 'Product.price', 'Product.supplier_id')))) {
                                                     if ($price != $product['Product']['price'] || $ignore_prices) {
                                                         if (!$only_suppliers || ($only_suppliers && $supplier_id == $product['Product']['supplier_id'])) {
-                                                            $this->Product->id = $product['Product']['id'];
-                                                            if ($this->Product->saveField('price', $price)) {
-                                                                $this->Product->saveField('supplier_id', $supplier_id);
-                                                                $updated_products++;
-                                                            } else {
-                                                                $not_updated_products++;
-                                                                debug($this->Product->validationErrors);
-                                                            }
+                                                            // Оптимизация: используем updateAll вместо двух saveField для одного UPDATE запроса
+                                                            $this->Product->updateAll(
+                                                                array('Product.price' => $price, 'Product.supplier_id' => $supplier_id),
+                                                                array('Product.id' => $product['Product']['id'])
+                                                            );
+                                                            $updated_products++;
                                                         } else {
                                                             $nothing_update_products++;
                                                         }
@@ -2172,14 +2172,12 @@ class ImportController extends AppController
                                                 if ($product = $this->Product->find('first', array('conditions' => $conditions, 'fields' => array('Product.id', 'Product.price', 'Product.supplier_id')))) {
                                                     if ($price != $product['Product']['price'] || $ignore_prices) {
                                                         if (!$only_suppliers || ($only_suppliers && $supplier_id == $product['Product']['supplier_id'])) {
-                                                            $this->Product->id = $product['Product']['id'];
-                                                            if ($this->Product->saveField('price', $price)) {
-                                                                $this->Product->saveField('supplier_id', $supplier_id);
-                                                                $updated_products++;
-                                                            } else {
-                                                                $not_updated_products++;
-                                                                debug($this->Product->validationErrors);
-                                                            }
+                                                            // Оптимизация: используем updateAll вместо двух saveField для одного UPDATE запроса
+                                                            $this->Product->updateAll(
+                                                                array('Product.price' => $price, 'Product.supplier_id' => $supplier_id),
+                                                                array('Product.id' => $product['Product']['id'])
+                                                            );
+                                                            $updated_products++;
                                                         } else {
                                                             $nothing_update_products++;
                                                         }
@@ -3678,14 +3676,12 @@ class ImportController extends AppController
                                                 if ($product = $this->Product->find('first', array('conditions' => $conditions, 'fields' => array('Product.id', 'Product.price', 'Product.supplier_id')))) {
                                                     if ($price != $product['Product']['price'] || $ignore_prices) {
                                                         if (!$only_suppliers || ($only_suppliers && $supplier_id == $product['Product']['supplier_id'])) {
-                                                            $this->Product->id = $product['Product']['id'];
-                                                            if ($this->Product->saveField('price', $price)) {
-                                                                $this->Product->saveField('supplier_id', $supplier_id);
-                                                                $updated_products++;
-                                                            } else {
-                                                                $not_updated_products++;
-                                                                debug($this->Product->validationErrors);
-                                                            }
+                                                            // Оптимизация: используем updateAll вместо двух saveField для одного UPDATE запроса
+                                                            $this->Product->updateAll(
+                                                                array('Product.price' => $price, 'Product.supplier_id' => $supplier_id),
+                                                                array('Product.id' => $product['Product']['id'])
+                                                            );
+                                                            $updated_products++;
                                                         } else {
                                                             $nothing_update_products++;
                                                         }
@@ -4204,14 +4200,12 @@ class ImportController extends AppController
                                                 if ($product = $this->Product->find('first', array('conditions' => $conditions, 'fields' => array('Product.id', 'Product.price', 'Product.supplier_id')))) {
                                                     if ($price != $product['Product']['price'] || $ignore_prices) {
                                                         if (!$only_suppliers || ($only_suppliers && $supplier_id == $product['Product']['supplier_id'])) {
-                                                            $this->Product->id = $product['Product']['id'];
-                                                            if ($this->Product->saveField('price', $price)) {
-                                                                $this->Product->saveField('supplier_id', $supplier_id);
-                                                                $updated_products++;
-                                                            } else {
-                                                                $not_updated_products++;
-                                                                debug($this->Product->validationErrors);
-                                                            }
+                                                            // Оптимизация: используем updateAll вместо двух saveField для одного UPDATE запроса
+                                                            $this->Product->updateAll(
+                                                                array('Product.price' => $price, 'Product.supplier_id' => $supplier_id),
+                                                                array('Product.id' => $product['Product']['id'])
+                                                            );
+                                                            $updated_products++;
                                                         } else {
                                                             $nothing_update_products++;
                                                         }
@@ -4737,13 +4731,22 @@ class ImportController extends AppController
                     }
                     /****** конец switch **********/
 
-
+                    // Включаем обратно пересчет счетчиков
+                    Configure::write('Product.skip_recount_on_save', false);
+                    
+                    // Пересчитываем счетчики батчами в конце импорта (быстрее чем для каждого save)
                     if (!empty($recount_models)) {
-                        $this->BrandModel->recountProducts($recount_models);
+                        $this->BrandModel->recountProducts(array_unique($recount_models));
                     }
                     if (!empty($recount_brands)) {
-                        $this->Brand->recountModels($recount_brands);
-                        $this->Brand->recountProducts($recount_brands);
+                        $this->Brand->recountModels(array_unique($recount_brands));
+                        $this->Brand->recountProducts(array_unique($recount_brands));
+                    }
+                    
+                    // Очищаем кеш батчами в конце импорта (вместо удаления при каждом save)
+                    $cache_keys = array('brands_1', 'brands_2', 'brands_3', 'akb_ah', 'akb_current', 'akb_height', 'akb_length', 'akb_width', 'disk_size1', 'disk_size2', 'tyre_axis', 'tyre_size1', 'tyre_size2', 'tyre_size3');
+                    foreach ($cache_keys as $key) {
+                        Cache::delete($key, 'long');
                     }
                     $error_lines_message = null;
                     if (!empty($error_lines)) {
@@ -4773,6 +4776,9 @@ class ImportController extends AppController
                     if (!empty($error_lines_message)) {
                         $message_lines[] = $error_lines_message;
                     }
+                    // Убеждаемся, что пересчет счетчиков включен обратно (на случай ошибки)
+                    Configure::write('Product.skip_recount_on_save', false);
+                    
                     $this->Session->write('message_lines', $message_lines);
                     $this->info($this->t('message_item_saved'));
                     // Очищаем output buffer перед редиректом

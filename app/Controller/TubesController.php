@@ -71,7 +71,11 @@ class TubesController extends AppController {
 	}
 	public function admin_clear() {
 		$this->loadModel($this->model);
+		// Отключаем пересчет счетчиков в afterDelete для ускорения массового удаления
+		Configure::write('Product.skip_recount_on_delete', true);
 		$this->{$this->model}->deleteAll($this->conditions, true, true);
+		Configure::write('Product.skip_recount_on_delete', false);
+		// Обнуляем счетчики одним запросом после удаления
 		$this->{$this->model}->query('UPDATE brands SET products_count=0,active_products_count=0 WHERE category_id=4');
 		$this->{$this->model}->query('UPDATE brand_models SET products_count=0,active_products_count=0 WHERE category_id=4');
 		$this->info($this->t('message_data_cleared'));

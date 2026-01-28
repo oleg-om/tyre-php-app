@@ -219,18 +219,50 @@ class BrandModel extends AppModel {
 	}
 	public function recountProducts($ids) {
 		if (!is_array($ids)) $ids = array($ids);
+		if (empty($ids)) return;
+		
 		$this->Product = ClassRegistry::init('Product');
+		
+		// Оптимизация: используем один запрос для всех моделей вместо отдельных запросов
+		$ids_str = implode(',', array_map('intval', $ids));
+		
+		// Получаем все счетчики одним запросом
+		$results = $this->Product->query("
+			SELECT 
+				model_id,
+				COUNT(*) as products_count,
+				SUM(CASE WHEN is_active = 1 AND price > 0 THEN 1 ELSE 0 END) as active_products_count,
+				MAX(CASE WHEN in_stock = 1 THEN 1 ELSE 0 END) as products_in_stock
+			FROM products
+			WHERE model_id IN ({$ids_str})
+			GROUP BY model_id
+		");
+		
+		// Обновляем каждую модель
 		foreach ($ids as $id) {
-			$this->id = $id;
-			if ($data = $this->read(array('id'))) {
-				$products_count = $this->Product->find('count', array('conditions' => array('Product.model_id' => $id)));
-				$active_products_count = $this->Product->find('count', array('conditions' => array('Product.model_id' => $id, 'Product.is_active' => 1, 'Product.price > ' => 0/*, 'Product.stock_count > ' => 0*/)));
-				$in_stock_products_count = $this->Product->find('count', array('conditions' => array('Product.model_id' => $id, 'Product.in_stock' => 1)));
-				$products_in_stock = 0;
-				if ($in_stock_products_count > 0) { 
-					$products_in_stock = 1;
+			$found = false;
+			foreach ($results as $result) {
+				if ($result[0]['model_id'] == $id) {
+					$this->id = $id;
+					$this->save(array(
+						'products_count' => $result[0]['products_count'],
+						'active_products_count' => $result[0]['active_products_count'],
+						'products_in_stock' => $result[0]['products_in_stock']
+					), false);
+					$found = true;
+					break;
 				}
-				$this->save(array('products_count' => $products_count, 'active_products_count' => $active_products_count, 'products_in_stock' => $products_in_stock), false);
+			}
+			// Если модель не найдена в результатах, значит у неё 0 продуктов
+			if (!$found) {
+				$this->id = $id;
+				if ($data = $this->read(array('id'))) {
+					$this->save(array(
+						'products_count' => 0,
+						'active_products_count' => 0,
+						'products_in_stock' => 0
+					), false);
+				}
 			}
 		}
 	}

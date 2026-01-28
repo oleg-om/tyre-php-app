@@ -102,7 +102,11 @@ class DisksController extends AppController
     public function admin_clear()
     {
         $this->loadModel($this->model);
+        // Отключаем пересчет счетчиков в afterDelete для ускорения массового удаления
+        Configure::write('Product.skip_recount_on_delete', true);
         $this->{$this->model}->deleteAll($this->conditions, true, true);
+        Configure::write('Product.skip_recount_on_delete', false);
+        // Обнуляем счетчики одним запросом после удаления
         $this->{$this->model}->query('UPDATE brands SET products_count=0,active_products_count=0 WHERE category_id=2');
         $this->{$this->model}->query('UPDATE brand_models SET products_count=0,active_products_count=0 WHERE category_id=2');
         $this->info($this->t('message_data_cleared'));
@@ -117,7 +121,10 @@ class DisksController extends AppController
 
         if (!empty($supplier_id)) {
             $this->conditions['Product.supplier_id'] = $supplier_id;
+            // Отключаем пересчет счетчиков для ускорения массового удаления
+            Configure::write('Product.skip_recount_on_delete', true);
             $this->{$this->model}->deleteAll($this->conditions, true, true);
+            Configure::write('Product.skip_recount_on_delete', false);
             $this->info($this->t('message_supplier_data_cleared'));
         } else {
             $this->error($this->t('message_fill_supplier'));

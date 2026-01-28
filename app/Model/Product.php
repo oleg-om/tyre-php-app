@@ -138,10 +138,19 @@ class Product extends AppModel {
 	}
 	public function beforeSave($options = array()) {
 		if (parent::beforeSave()) {
+			// Пропускаем обработку файлов во время импорта (для ускорения)
+			$skip_recount = Configure::read('Product.skip_recount_on_save');
+			
 			if (isset($this->data[$this->name]['category_id']) && $this->data[$this->name]['category_id'] == 1) {
 				if (isset($this->data[$this->name]['size3'])) {
 					$this->data[$this->name]['size3'] = str_replace('С', 'C', $this->data[$this->name]['size3']);
 				}
+			}
+			
+			// Пропускаем обработку загрузки файлов во время импорта
+			if ($skip_recount) {
+				// Во время импорта пропускаем обработку файлов
+				return true;
 			}
 			if (isset($this->data[$this->name]['category_id']) && $this->data[$this->name]['category_id'] == 5) {
 				$this->files_path = WWW_ROOT . 'files' . DS . 'bolts';
@@ -200,19 +209,27 @@ class Product extends AppModel {
 		}
 	}
 	public function afterSave($created, $options = array()) {
-		$fields = array('brand_id' => 'Brand', 'model_id' => 'BrandModel');
-		foreach ($fields as $field => $model) {
-			$ids = array();
-			if (isset($this->data[$this->name]['old_' . $field]) && $this->data[$this->name]['old_' . $field] > 0) {
-				$ids[] = $this->data[$this->name]['old_' . $field];
-			}
-			if (isset($this->data[$this->name][$field]) && $this->data[$this->name][$field] > 0) {
-				$ids[] = $this->data[$this->name][$field];
-			}
-			if (!empty($ids)) {
-				$ids = array_unique($ids);
-				$this->{$model} = ClassRegistry::init($model);
-				$this->{$model}->recountProducts($ids);
+		// Пропускаем пересчет счетчиков и удаление кеша во время импорта (для ускорения)
+		// Счетчики и кеш будут обработаны в конце импорта батчами
+		$skip_recount = Configure::read('Product.skip_recount_on_save');
+		if ($skip_recount) {
+			// Во время импорта пропускаем пересчет счетчиков и удаление кеша
+			// Обрабатываем только файлы (если есть)
+		} else {
+			$fields = array('brand_id' => 'Brand', 'model_id' => 'BrandModel');
+			foreach ($fields as $field => $model) {
+				$ids = array();
+				if (isset($this->data[$this->name]['old_' . $field]) && $this->data[$this->name]['old_' . $field] > 0) {
+					$ids[] = $this->data[$this->name]['old_' . $field];
+				}
+				if (isset($this->data[$this->name][$field]) && $this->data[$this->name][$field] > 0) {
+					$ids[] = $this->data[$this->name][$field];
+				}
+				if (!empty($ids)) {
+					$ids = array_unique($ids);
+					$this->{$model} = ClassRegistry::init($model);
+					$this->{$model}->recountProducts($ids);
+				}
 			}
 		}
 		if ($this->tmp_file != null) {
@@ -231,7 +248,10 @@ class Product extends AppModel {
 			chmod($to, 0777);
 		}
 
-        if (!empty($this->data[$this->name]['model_id'])) {
+        // Обработка extra_filenames для BrandModel (только если не идет импорт)
+        // Во время импорта это замедляет процесс из-за дополнительных SELECT и UPDATE запросов
+        $skip_recount = Configure::read('Product.skip_recount_on_save');
+        if (!$skip_recount && !empty($this->data[$this->name]['model_id'])) {
             $this->BrandModel = ClassRegistry::init('BrandModel');
             $model_id = $this->data[$this->name]['model_id'];
 
@@ -274,29 +294,56 @@ class Product extends AppModel {
 
         }
 
-		Cache::delete('brands_1', 'long');
-		Cache::delete('brands_2', 'long');
-		Cache::delete('brands_3', 'long');
-		Cache::delete('akb_ah', 'long');
-		Cache::delete('akb_current', 'long');
-		Cache::delete('akb_height', 'long');
-		Cache::delete('akb_length', 'long');
-		Cache::delete('akb_width', 'long');
-		Cache::delete('disk_size1', 'long');
-		Cache::delete('disk_size2', 'long');
-		Cache::delete('tyre_axis', 'long');
-		Cache::delete('tyre_size1', 'long');
-		Cache::delete('tyre_size2', 'long');
-		Cache::delete('tyre_size3', 'long');
+		// Удаляем кеш только если не идет импорт (для ускорения импорта)
+		// Во время импорта кеш будет очищен один раз в конце
+		$skip_recount = Configure::read('Product.skip_recount_on_save');
+		if (!$skip_recount) {
+			Cache::delete('brands_1', 'long');
+			Cache::delete('brands_2', 'long');
+			Cache::delete('brands_3', 'long');
+			Cache::delete('akb_ah', 'long');
+			Cache::delete('akb_current', 'long');
+			Cache::delete('akb_height', 'long');
+			Cache::delete('akb_length', 'long');
+			Cache::delete('akb_width', 'long');
+			Cache::delete('disk_size1', 'long');
+			Cache::delete('disk_size2', 'long');
+			Cache::delete('tyre_axis', 'long');
+			Cache::delete('tyre_size1', 'long');
+			Cache::delete('tyre_size2', 'long');
+			Cache::delete('tyre_size3', 'long');
+		}
 	}
 	public function afterDelete() {
-		if (!empty($this->tmp_data)) {
+		// Пропускаем пересчет счетчиков при массовом удалении (admin_clear)
+		// так как счетчики обнуляются вручную после удаления
+		$skip_recount = Configure::read('Product.skip_recount_on_delete');
+		if ($skip_recount) {
+			// Только очищаем кеш, пересчет счетчиков пропускаем
+		} else if (!empty($this->tmp_data)) {
 			$fields = array('brand_id' => 'Brand', 'model_id' => 'BrandModel');
+			$brand_ids = array();
+			$model_ids = array();
+			
+			// Собираем все ID для батч-обновления вместо отдельных вызовов
 			foreach ($fields as $field => $model) {
 				if (isset($this->tmp_data[$this->name][$field]) && $this->tmp_data[$this->name][$field] != 0) {
-					$this->{$model} = ClassRegistry::init($model);
-					$this->{$model}->recountProducts($this->tmp_data[$this->name][$field]);
+					if ($field == 'brand_id') {
+						$brand_ids[] = $this->tmp_data[$this->name][$field];
+					} else {
+						$model_ids[] = $this->tmp_data[$this->name][$field];
+					}
 				}	
+			}
+			
+			// Обновляем счетчики батчами вместо отдельных вызовов
+			if (!empty($brand_ids)) {
+				$Brand = ClassRegistry::init('Brand');
+				$Brand->recountProducts(array_unique($brand_ids));
+			}
+			if (!empty($model_ids)) {
+				$BrandModel = ClassRegistry::init('BrandModel');
+				$BrandModel->recountProducts(array_unique($model_ids));
 			}
 		}
 		$folder = $this->_getFolderById();
