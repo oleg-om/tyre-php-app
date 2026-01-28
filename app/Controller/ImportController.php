@@ -802,10 +802,10 @@ class ImportController extends AppController
                                     $total_rows++;
                                     // Периодически логируем прогресс и делаем паузу для освобождения ресурсов MySQL
                                     // Пауза дает MySQL время обработать другие запросы от пользователей сайта
-                                    if ($total_rows % 50 == 0) {
+                                    if ($total_rows % 200 == 0) {
                                         CakeLog::info("Import progress: $total_rows rows processed");
-                                        // Пауза 50мс каждые 50 строк - освобождает ресурсы для других запросов
-                                        usleep(50000);
+                                        // Пауза 20мс каждые 200 строк - освобождает ресурсы для других запросов, но не замедляет импорт сильно
+                                        usleep(20000);
                                     }
                                     $brand_id = null;
                                     $model_id = null;
@@ -1301,10 +1301,10 @@ class ImportController extends AppController
                                     $total_rows++;
                                     // Периодически логируем прогресс и делаем паузу для освобождения ресурсов MySQL
                                     // Пауза дает MySQL время обработать другие запросы от пользователей сайта
-                                    if ($total_rows % 50 == 0) {
+                                    if ($total_rows % 200 == 0) {
                                         CakeLog::info("Import progress: $total_rows rows processed");
-                                        // Пауза 50мс каждые 50 строк - освобождает ресурсы для других запросов
-                                        usleep(50000);
+                                        // Пауза 20мс каждые 200 строк - освобождает ресурсы для других запросов, но не замедляет импорт сильно
+                                        usleep(20000);
                                     }
                                     $brand_id = null;
                                     $model_id = null;
