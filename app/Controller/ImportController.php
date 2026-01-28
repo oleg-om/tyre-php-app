@@ -707,10 +707,9 @@ class ImportController extends AppController
         ini_set('max_execution_time', 0);
         ini_set('memory_limit', '512M');
         
-        // Отправляем заголовки для предотвращения таймаутов
-        if (!headers_sent()) {
-            header('Content-Type: text/html; charset=utf-8');
-            header('X-Accel-Buffering: no'); // Отключаем буферизацию в Nginx (если используется)
+        // Включаем output buffering для возможности очистки перед редиректом
+        if (ob_get_level() == 0) {
+            ob_start();
         }
         
         //echo "22222";
@@ -797,12 +796,8 @@ class ImportController extends AppController
                             for ($i = 7; $i <= $data->sheets[0]['numRows']; $i++) {
                                 if (isset($data->sheets[0]['cells'][$i][1])) {
                                     $total_rows++;
-                                    // Периодически отправляем данные браузеру, чтобы соединение не закрывалось
+                                    // Периодически логируем прогресс (без вывода в браузер, чтобы не нарушить редирект)
                                     if ($total_rows % 100 == 0) {
-                                        if (ob_get_level() > 0) {
-                                            ob_flush();
-                                        }
-                                        flush();
                                         CakeLog::info("Import progress: $total_rows rows processed");
                                     }
                                     $brand_id = null;
@@ -1299,12 +1294,8 @@ class ImportController extends AppController
                             for ($i = 1; $i <= $data->sheets[0]['numRows']; $i++) {
                                 if (isset($data->sheets[0]['cells'][$i][1]) && !empty($data->sheets[0]['cells'][$i][1])) {
                                     $total_rows++;
-                                    // Периодически отправляем данные браузеру, чтобы соединение не закрывалось
+                                    // Периодически логируем прогресс (без вывода в браузер, чтобы не нарушить редирект)
                                     if ($total_rows % 100 == 0) {
-                                        if (ob_get_level() > 0) {
-                                            ob_flush();
-                                        }
-                                        flush();
                                         CakeLog::info("Import progress: $total_rows rows processed");
                                     }
                                     $brand_id = null;
@@ -4784,6 +4775,10 @@ class ImportController extends AppController
                     }
                     $this->Session->write('message_lines', $message_lines);
                     $this->info($this->t('message_item_saved'));
+                    // Очищаем output buffer перед редиректом
+                    if (ob_get_level() > 0) {
+                        ob_clean();
+                    }
                     $this->redirect(array('controller' => Inflector::underscore($this->name), 'action' => 'admin_import'));
                 } else {
                     $this->Import->invalidate('file', __d('admin_import', 'error_bad_file'));
