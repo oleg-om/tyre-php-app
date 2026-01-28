@@ -52,8 +52,8 @@ RUN a2enmod rewrite auth_basic headers expires deflate ssl reqtimeout
 RUN echo "memory_limit = 256M" > /usr/local/etc/php/conf.d/memory.ini \
     && echo "upload_max_filesize = 100M" > /usr/local/etc/php/conf.d/upload.ini \
     && echo "post_max_size = 100M" >> /usr/local/etc/php/conf.d/upload.ini \
-    && echo "max_execution_time = 300" > /usr/local/etc/php/conf.d/execution.ini \
-    && echo "max_input_time = 300" >> /usr/local/etc/php/conf.d/execution.ini \
+    && echo "max_execution_time = 0" > /usr/local/etc/php/conf.d/execution.ini \
+    && echo "max_input_time = 0" >> /usr/local/etc/php/conf.d/execution.ini \
     && echo "date.timezone = Europe/Moscow" > /usr/local/etc/php/conf.d/timezone.ini \
     && echo "realpath_cache_size = 4096K" > /usr/local/etc/php/conf.d/realpath.ini \
     && echo "realpath_cache_ttl = 600" >> /usr/local/etc/php/conf.d/realpath.ini
@@ -151,11 +151,11 @@ RUN sed -i 's|DocumentRoot /var/www/html|DocumentRoot /var/www/html/app/webroot|
     && echo "		<FilesMatch \"\\.(jpg|jpeg|png|gif|css|js)$\">" >> /etc/apache2/sites-available/000-default.conf \
     && echo "			Header set Cache-Control \"max-age=31536000, public\"" >> /etc/apache2/sites-available/000-default.conf \
     && echo "		</FilesMatch>" >> /etc/apache2/sites-available/000-default.conf \
-    && echo "	</IfModule>" \
+    && echo "	</IfModule>" >> /etc/apache2/sites-available/000-default.conf \
     && echo "" >> /etc/apache2/sites-available/000-default.conf \
-    && echo "	# Timeout настройки для защиты от медленных соединений" >> /etc/apache2/sites-available/000-default.conf \
-    && echo "	Timeout 30" >> /etc/apache2/sites-available/000-default.conf \
-    && echo "	RequestReadTimeout header=20-40,MinRate=500 body=20,MinRate=500" >> /etc/apache2/sites-available/000-default.conf
+    && echo "	# Timeout настройки для защиты от медленных соединений и долгих операций" >> /etc/apache2/sites-available/000-default.conf \
+    && echo "	Timeout 3600" >> /etc/apache2/sites-available/000-default.conf \
+    && echo "	RequestReadTimeout header=0-3600,MinRate=1 body=0,MinRate=1" >> /etc/apache2/sites-available/000-default.conf
 
 # Создание скрипта инициализации для генерации .htpasswd
 RUN echo '#!/bin/bash' > /usr/local/bin/init-phpmyadmin-auth.sh && \

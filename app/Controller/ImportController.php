@@ -702,6 +702,27 @@ class ImportController extends AppController
 
     public function admin_import()
     {
+        // Отключаем лимит времени выполнения для долгих импортов
+        set_time_limit(0);
+        ini_set('max_execution_time', 0);
+        ini_set('memory_limit', '512M');
+        
+        // Отправляем заголовки для предотвращения таймаутов
+        if (!headers_sent()) {
+            header('Content-Type: text/html; charset=utf-8');
+            header('X-Accel-Buffering: no'); // Отключаем буферизацию в Nginx (если используется)
+        }
+        
+        // Отправляем начальный вывод, чтобы соединение не закрывалось
+        if (ob_get_level() == 0) {
+            ob_start();
+        }
+        echo str_repeat(' ', 1024); // Минимум 1KB для некоторых прокси
+        flush();
+        if (ob_get_level() > 0) {
+            ob_flush();
+        }
+        
         //echo "22222";
         //exit();
         $this->layout = 'admin';
@@ -786,6 +807,14 @@ class ImportController extends AppController
                             for ($i = 7; $i <= $data->sheets[0]['numRows']; $i++) {
                                 if (isset($data->sheets[0]['cells'][$i][1])) {
                                     $total_rows++;
+                                    // Периодически отправляем данные браузеру, чтобы соединение не закрывалось
+                                    if ($total_rows % 100 == 0) {
+                                        if (ob_get_level() > 0) {
+                                            ob_flush();
+                                        }
+                                        flush();
+                                        CakeLog::info("Import progress: $total_rows rows processed");
+                                    }
                                     $brand_id = null;
                                     $model_id = null;
                                     $brand_name = trim($data->sheets[0]['cells'][$i][1]);
@@ -1280,6 +1309,14 @@ class ImportController extends AppController
                             for ($i = 1; $i <= $data->sheets[0]['numRows']; $i++) {
                                 if (isset($data->sheets[0]['cells'][$i][1]) && !empty($data->sheets[0]['cells'][$i][1])) {
                                     $total_rows++;
+                                    // Периодически отправляем данные браузеру, чтобы соединение не закрывалось
+                                    if ($total_rows % 100 == 0) {
+                                        if (ob_get_level() > 0) {
+                                            ob_flush();
+                                        }
+                                        flush();
+                                        CakeLog::info("Import progress: $total_rows rows processed");
+                                    }
                                     $brand_id = null;
                                     $model_id = null;
                                     $auto = 'cars';
