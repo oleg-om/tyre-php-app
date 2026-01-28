@@ -713,16 +713,6 @@ class ImportController extends AppController
             header('X-Accel-Buffering: no'); // Отключаем буферизацию в Nginx (если используется)
         }
         
-        // Отправляем начальный вывод, чтобы соединение не закрывалось
-        if (ob_get_level() == 0) {
-            ob_start();
-        }
-        echo str_repeat(' ', 1024); // Минимум 1KB для некоторых прокси
-        flush();
-        if (ob_get_level() > 0) {
-            ob_flush();
-        }
-        
         //echo "22222";
         //exit();
         $this->layout = 'admin';
