@@ -800,9 +800,12 @@ class ImportController extends AppController
                             for ($i = 7; $i <= $data->sheets[0]['numRows']; $i++) {
                                 if (isset($data->sheets[0]['cells'][$i][1])) {
                                     $total_rows++;
-                                    // Периодически логируем прогресс (без вывода в браузер, чтобы не нарушить редирект)
-                                    if ($total_rows % 100 == 0) {
+                                    // Периодически логируем прогресс и делаем паузу для освобождения ресурсов MySQL
+                                    // Пауза дает MySQL время обработать другие запросы от пользователей сайта
+                                    if ($total_rows % 50 == 0) {
                                         CakeLog::info("Import progress: $total_rows rows processed");
+                                        // Пауза 50мс каждые 50 строк - освобождает ресурсы для других запросов
+                                        usleep(50000);
                                     }
                                     $brand_id = null;
                                     $model_id = null;
@@ -1296,9 +1299,12 @@ class ImportController extends AppController
                             for ($i = 1; $i <= $data->sheets[0]['numRows']; $i++) {
                                 if (isset($data->sheets[0]['cells'][$i][1]) && !empty($data->sheets[0]['cells'][$i][1])) {
                                     $total_rows++;
-                                    // Периодически логируем прогресс (без вывода в браузер, чтобы не нарушить редирект)
-                                    if ($total_rows % 100 == 0) {
+                                    // Периодически логируем прогресс и делаем паузу для освобождения ресурсов MySQL
+                                    // Пауза дает MySQL время обработать другие запросы от пользователей сайта
+                                    if ($total_rows % 50 == 0) {
                                         CakeLog::info("Import progress: $total_rows rows processed");
+                                        // Пауза 50мс каждые 50 строк - освобождает ресурсы для других запросов
+                                        usleep(50000);
                                     }
                                     $brand_id = null;
                                     $model_id = null;
