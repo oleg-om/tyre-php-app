@@ -4785,12 +4785,25 @@ class ImportController extends AppController
                     // Убеждаемся, что пересчет счетчиков включен обратно (на случай ошибки)
                     Configure::write('Product.skip_recount_on_save', false);
                     
+                    // Сохраняем сообщения в сессию
                     $this->Session->write('message_lines', $message_lines);
                     $this->info($this->t('message_item_saved'));
-                    // Очищаем output buffer перед редиректом
-                    if (ob_get_level() > 0) {
-                        ob_clean();
+                    
+                    // Закрываем сессию явно, чтобы сохранить данные (важно для долгих операций)
+                    if (method_exists($this->Session, 'close')) {
+                        $this->Session->close();
+                    } else {
+                        session_write_close();
                     }
+                    
+                    // Очищаем все уровни output buffer перед редиректом
+                    while (ob_get_level() > 0) {
+                        ob_end_clean();
+                    }
+                    
+                    // Используем стандартный редирект CakePHP, но с явным завершением
+                    $this->autoRender = false;
+                    $this->response->header('Connection', 'close');
                     $this->redirect(array('controller' => Inflector::underscore($this->name), 'action' => 'admin_import'));
                 } else {
                     $this->Import->invalidate('file', __d('admin_import', 'error_bad_file'));
