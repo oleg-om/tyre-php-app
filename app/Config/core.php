@@ -304,8 +304,8 @@ Cache::config('_cake_model_', $cakeModelConfig);
 
 $veryLongConfig = array_merge(array(
     'engine' => $engine,
-    'duration' => '+1 hour',
-    'probability' => 100,
+        'duration' => '+1 hour',
+        'probability' => 100,
     'prefix' => 'cake_'
 ), $cacheEngineConfig);
 if ($engine === 'File') {
@@ -317,8 +317,8 @@ Cache::config('very_long', $veryLongConfig);
 
 $longConfig = array_merge(array(
     'engine' => $engine,
-    'duration' => '+30 minutes',
-    'probability' => 100,
+        'duration' => '+30 minutes',
+        'probability' => 100,
     'prefix' => 'cake_'
 ), $cacheEngineConfig);
 if ($engine === 'File') {
@@ -330,8 +330,8 @@ Cache::config('long', $longConfig);
 
 $shortConfig = array_merge(array(
     'engine' => $engine,
-    'duration' => '+30 seconds',
-    'probability' => 100,
+        'duration' => '+30 seconds',
+        'probability' => 100,
     'prefix' => 'cake_'
 ), $cacheEngineConfig);
 if ($engine === 'File') {
@@ -343,8 +343,8 @@ Cache::config('short', $shortConfig);
 
 $mediumConfig = array_merge(array(
     'engine' => $engine,
-    'duration' => '+2 minutes',
-    'probability' => 100,
+        'duration' => '+2 minutes',
+        'probability' => 100,
     'prefix' => 'cake_'
 ), $cacheEngineConfig);
 if ($engine === 'File') {

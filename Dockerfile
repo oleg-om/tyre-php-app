@@ -46,7 +46,7 @@ RUN apt-get update && \
 #     && rm -rf /var/lib/apt/lists/*
 
 # Включение модулей Apache для оптимизации и SSL
-RUN a2enmod rewrite auth_basic headers expires deflate ssl
+RUN a2enmod rewrite auth_basic headers expires deflate ssl reqtimeout
 
 # Настройка PHP (оптимизировано для 3 core / 4GB RAM)
 RUN echo "memory_limit = 256M" > /usr/local/etc/php/conf.d/memory.ini \
@@ -92,15 +92,9 @@ COPY . /var/www/html/
 
 # Создание необходимых директорий и установка прав доступа
 # Удаляем .htaccess из app/, так как DocumentRoot уже указывает на webroot
-# Создаем .htaccess в webroot для правильной работы mod_rewrite
+# .htaccess в webroot создается из файла проекта
 RUN mkdir -p /var/www/html/app/tmp /var/www/html/app/webroot/files /var/www/html/app/webroot/phpmy /var/www/html/app/webroot/xls \
     && rm -f /var/www/html/app/.htaccess \
-    && echo '<IfModule mod_rewrite.c>' > /var/www/html/app/webroot/.htaccess \
-    && echo '    RewriteEngine On' >> /var/www/html/app/webroot/.htaccess \
-    && echo '    RewriteCond %{REQUEST_FILENAME} !-d' >> /var/www/html/app/webroot/.htaccess \
-    && echo '    RewriteCond %{REQUEST_FILENAME} !-f' >> /var/www/html/app/webroot/.htaccess \
-    && echo '    RewriteRule ^ index.php [L]' >> /var/www/html/app/webroot/.htaccess \
-    && echo '</IfModule>' >> /var/www/html/app/webroot/.htaccess \
     && chown -R www-data:www-data /var/www/html \
     && chmod -R 755 /var/www/html \
     && chmod -R 777 /var/www/html/app/tmp \
@@ -129,13 +123,14 @@ RUN sed -i 's|DocumentRoot /var/www/html|DocumentRoot /var/www/html/app/webroot|
     && echo "MaxKeepAliveRequests 100" >> /etc/apache2/apache2.conf \
     && echo "KeepAliveTimeout 5" >> /etc/apache2/apache2.conf \
     && echo "" >> /etc/apache2/apache2.conf \
-    && echo "# Оптимизация процессов Apache для 3 core / 4GB RAM (mpm_prefork)" >> /etc/apache2/apache2.conf \
+    && echo "# Оптимизация процессов Apache для высокой нагрузки (mpm_prefork)" >> /etc/apache2/apache2.conf \
     && echo "<IfModule mpm_prefork_module>" >> /etc/apache2/apache2.conf \
-    && echo "    StartServers 3" >> /etc/apache2/apache2.conf \
-    && echo "    MinSpareServers 3" >> /etc/apache2/apache2.conf \
-    && echo "    MaxSpareServers 6" >> /etc/apache2/apache2.conf \
-    && echo "    MaxRequestWorkers 35" >> /etc/apache2/apache2.conf \
-    && echo "    MaxConnectionsPerChild 10000" >> /etc/apache2/apache2.conf \
+    && echo "    StartServers 5" >> /etc/apache2/apache2.conf \
+    && echo "    MinSpareServers 5" >> /etc/apache2/apache2.conf \
+    && echo "    MaxSpareServers 15" >> /etc/apache2/apache2.conf \
+    && echo "    MaxRequestWorkers 150" >> /etc/apache2/apache2.conf \
+    && echo "    MaxConnectionsPerChild 5000" >> /etc/apache2/apache2.conf \
+    && echo "    ServerLimit 150" >> /etc/apache2/apache2.conf \
     && echo "</IfModule>" >> /etc/apache2/apache2.conf \
     && echo "" >> /etc/apache2/sites-available/000-default.conf \
     && echo "	# Оптимизация производительности" >> /etc/apache2/sites-available/000-default.conf \
@@ -156,7 +151,11 @@ RUN sed -i 's|DocumentRoot /var/www/html|DocumentRoot /var/www/html/app/webroot|
     && echo "		<FilesMatch \"\\.(jpg|jpeg|png|gif|css|js)$\">" >> /etc/apache2/sites-available/000-default.conf \
     && echo "			Header set Cache-Control \"max-age=31536000, public\"" >> /etc/apache2/sites-available/000-default.conf \
     && echo "		</FilesMatch>" >> /etc/apache2/sites-available/000-default.conf \
-    && echo "	</IfModule>"
+    && echo "	</IfModule>" \
+    && echo "" >> /etc/apache2/sites-available/000-default.conf \
+    && echo "	# Timeout настройки для защиты от медленных соединений" >> /etc/apache2/sites-available/000-default.conf \
+    && echo "	Timeout 30" >> /etc/apache2/sites-available/000-default.conf \
+    && echo "	RequestReadTimeout header=20-40,MinRate=500 body=20,MinRate=500" >> /etc/apache2/sites-available/000-default.conf
 
 # Создание скрипта инициализации для генерации .htpasswd
 RUN echo '#!/bin/bash' > /usr/local/bin/init-phpmyadmin-auth.sh && \

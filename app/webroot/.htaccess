@@ -1,6 +1,29 @@
 <IfModule mod_rewrite.c>
     RewriteEngine On
+    
+    # ============================================
+    # Защита от ботов и rate limiting
+    # ============================================
+    
+    # Блокировка известных ботов и краулеров (кроме основных поисковых)
+    # Разрешаем только Googlebot и Yandex для SEO
+    RewriteCond %{HTTP_USER_AGENT} ^.*(GPTBot|ClaudeBot|ChatGPT|OpenAI|anthropic|PetalBot|SemrushBot|AhrefsBot|MJ12bot|DotBot|Baiduspider|Sogou|Exabot|facebot|facebookexternalhit|meta-externalagent|Twitterbot|LinkedInBot|WhatsApp|SkypeUriPreview|Applebot|bingbot|Slurp|DuckDuckBot|BingPreview|ia_archiver|archive\.org_bot|msnbot|Amazonbot).* [NC]
+    RewriteRule .* - [F,L]
+    
+    # Блокировка подозрительных User-Agent (исключая разрешенные поисковые боты)
+    RewriteCond %{HTTP_USER_AGENT} ^$ [OR]
+    RewriteCond %{HTTP_USER_AGENT} ^(curl|wget|python|java|perl|ruby|bash|shell|cmd|powershell).* [NC,OR]
+    RewriteCond %{HTTP_USER_AGENT} .*(libwww-perl|nikto|scan|sqlmap|nmap|masscan|zmap).* [NC,OR]
+    # Блокируем ботов, но разрешаем Googlebot и Yandex
+    RewriteCond %{HTTP_USER_AGENT} !(Googlebot|Yandex|YandexBot|YandexImages|YandexVideo|YandexMedia|YandexBlogs|YandexFavicons|YandexWebmaster|YandexPagechecker|YandexImageResizer|YandexMetrika|YandexDirect|YandexScreenshotBot|YandexAccessibilityBot|YandexMobileScreenShotBot|YandexCalendar|YandexSitelinks|YandexNews|YandexCatalog|YandexAntivirus|YandexMarket|YandexVertis|YandexForDomain|YandexSpravBot|YandexSearchShop|YandexMedianaBot|YandexOntoDB|YandexOntoDBAPI|YandexTurbo|YandexVerticals|YandexNotifier) [NC]
+    RewriteCond %{HTTP_USER_AGENT} .*(harvest|extract|grab|miner|crawler|spider|bot|scraper).* [NC]
+    RewriteRule .* - [F,L]
+    
+    # CakePHP routing rules
     RewriteCond %{REQUEST_FILENAME} !-d
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteRule ^ index.php [L]
 </IfModule>
+
+# Ограничение размера запроса (10MB)
+LimitRequestBody 10485760

@@ -37,13 +37,16 @@ services:
       - tyre-app-redis
     networks:
       - tyre-app-network
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
 
   tyre-app-redis:
     image: redis:5-alpine
     container_name: tyre-app-redis
     restart: always
-    ports:
-      - "${REDIS_PORT:-6379}:6379"
     volumes:
       - tyre-app-redis-data:/data
     command: redis-server --appendonly yes --maxmemory 256mb --maxmemory-policy allkeys-lru
@@ -54,14 +57,17 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
 
   tyre-app-mysql:
     image: mysql:5.7
     platform: linux/amd64
     container_name: tyre-app-mysql
     restart: always
-    ports:
-      - "${MYSQL_PORT:-3307}:3306"
     environment:
       - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD:-root_password}
       - MYSQL_DATABASE=${DB_NAME:-tyre_db}
@@ -71,7 +77,7 @@ services:
       - tyre-app-mysql-data:/var/lib/mysql
       - ./mysql-init:/docker-entrypoint-initdb.d
       - ./dumps:/dumps
-    command: --sql-mode="NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION" --character-set-server=utf8 --collation-server=utf8_general_ci --innodb-buffer-pool-size=512M --max-connections=100 --query-cache-size=64M --query-cache-type=1 --query-cache-limit=2M --innodb-flush-log-at-trx-commit=2 --innodb-log-file-size=128M
+    command: --sql-mode="NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION" --character-set-server=utf8 --collation-server=utf8_general_ci --innodb-buffer-pool-size=1024M --max-connections=50 --query-cache-size=128M --query-cache-type=1 --query-cache-limit=2M --innodb-flush-log-at-trx-commit=2 --innodb-log-file-size=256M --innodb-thread-concurrency=0 --innodb-read-io-threads=4 --innodb-write-io-threads=4 --table-open-cache=4000 --thread-cache-size=50 --innodb-lock-wait-timeout=10
     networks:
       - tyre-app-network
     healthcheck:
@@ -79,6 +85,11 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
 
 volumes:
   tyre-app-mysql-data:
