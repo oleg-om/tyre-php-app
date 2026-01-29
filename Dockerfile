@@ -52,7 +52,7 @@ RUN a2enmod rewrite auth_basic headers expires deflate ssl reqtimeout
 RUN echo "memory_limit = 256M" > /usr/local/etc/php/conf.d/memory.ini \
     && echo "upload_max_filesize = 100M" > /usr/local/etc/php/conf.d/upload.ini \
     && echo "post_max_size = 100M" >> /usr/local/etc/php/conf.d/upload.ini \
-    && echo "max_execution_time = 0" > /usr/local/etc/php/conf.d/execution.ini \
+    && echo "max_execution_time = 60" > /usr/local/etc/php/conf.d/execution.ini \
     && echo "max_input_time = 0" >> /usr/local/etc/php/conf.d/execution.ini \
     && echo "date.timezone = Europe/Moscow" > /usr/local/etc/php/conf.d/timezone.ini \
     && echo "realpath_cache_size = 4096K" > /usr/local/etc/php/conf.d/realpath.ini \
@@ -61,11 +61,11 @@ RUN echo "memory_limit = 256M" > /usr/local/etc/php/conf.d/memory.ini \
 # Настройка Opcache (оптимизировано для 4GB RAM, увеличенная память для лучшей производительности)
 RUN echo "opcache.enable=1" > /usr/local/etc/php/conf.d/opcache.ini \
     && echo "opcache.enable_cli=0" >> /usr/local/etc/php/conf.d/opcache.ini \
-    && echo "opcache.memory_consumption=512" >> /usr/local/etc/php/conf.d/opcache.ini \
-    && echo "opcache.interned_strings_buffer=16" >> /usr/local/etc/php/conf.d/opcache.ini \
-    && echo "opcache.max_accelerated_files=40000" >> /usr/local/etc/php/conf.d/opcache.ini \
-    && echo "opcache.validate_timestamps=0" >> /usr/local/etc/php/conf.d/opcache.ini \
-    && echo "opcache.revalidate_freq=0" >> /usr/local/etc/php/conf.d/opcache.ini \
+    && echo "opcache.memory_consumption=128" >> /usr/local/etc/php/conf.d/opcache.ini \
+    && echo "opcache.interned_strings_buffer=8" >> /usr/local/etc/php/conf.d/opcache.ini \
+    && echo "opcache.max_accelerated_files=20000" >> /usr/local/etc/php/conf.d/opcache.ini \
+    && echo "opcache.validate_timestamps=1" >> /usr/local/etc/php/conf.d/opcache.ini \
+    && echo "opcache.revalidate_freq=60" >> /usr/local/etc/php/conf.d/opcache.ini \
     && echo "opcache.fast_shutdown=1" >> /usr/local/etc/php/conf.d/opcache.ini \
     && echo "opcache.enable_file_override=1" >> /usr/local/etc/php/conf.d/opcache.ini \
     && echo "opcache.optimization_level=0x7FFFBFFF" >> /usr/local/etc/php/conf.d/opcache.ini \
@@ -125,12 +125,12 @@ RUN sed -i 's|DocumentRoot /var/www/html|DocumentRoot /var/www/html/app/webroot|
     && echo "" >> /etc/apache2/apache2.conf \
     && echo "# Оптимизация процессов Apache для высокой нагрузки (mpm_prefork)" >> /etc/apache2/apache2.conf \
     && echo "<IfModule mpm_prefork_module>" >> /etc/apache2/apache2.conf \
-    && echo "    StartServers 5" >> /etc/apache2/apache2.conf \
-    && echo "    MinSpareServers 5" >> /etc/apache2/apache2.conf \
-    && echo "    MaxSpareServers 15" >> /etc/apache2/apache2.conf \
-    && echo "    MaxRequestWorkers 150" >> /etc/apache2/apache2.conf \
+    && echo "    StartServers 2" >> /etc/apache2/apache2.conf \
+    && echo "    MinSpareServers 2" >> /etc/apache2/apache2.conf \
+    && echo "    MaxSpareServers 5" >> /etc/apache2/apache2.conf \
+    && echo "    MaxRequestWorkers 30" >> /etc/apache2/apache2.conf \
     && echo "    MaxConnectionsPerChild 5000" >> /etc/apache2/apache2.conf \
-    && echo "    ServerLimit 150" >> /etc/apache2/apache2.conf \
+    && echo "    ServerLimit 30" >> /etc/apache2/apache2.conf \
     && echo "</IfModule>" >> /etc/apache2/apache2.conf \
     && echo "" >> /etc/apache2/sites-available/000-default.conf \
     && echo "	# Оптимизация производительности" >> /etc/apache2/sites-available/000-default.conf \
