@@ -128,9 +128,9 @@ RUN sed -i 's|DocumentRoot /var/www/html|DocumentRoot /var/www/html/app/webroot|
     && echo "    StartServers 2" >> /etc/apache2/apache2.conf \
     && echo "    MinSpareServers 2" >> /etc/apache2/apache2.conf \
     && echo "    MaxSpareServers 5" >> /etc/apache2/apache2.conf \
-    && echo "    MaxRequestWorkers 30" >> /etc/apache2/apache2.conf \
+    && echo "    MaxRequestWorkers 80" >> /etc/apache2/apache2.conf \
     && echo "    MaxConnectionsPerChild 5000" >> /etc/apache2/apache2.conf \
-    && echo "    ServerLimit 30" >> /etc/apache2/apache2.conf \
+    && echo "    ServerLimit 80" >> /etc/apache2/apache2.conf \
     && echo "</IfModule>" >> /etc/apache2/apache2.conf \
     && echo "" >> /etc/apache2/sites-available/000-default.conf \
     && echo "	# Оптимизация производительности" >> /etc/apache2/sites-available/000-default.conf \
