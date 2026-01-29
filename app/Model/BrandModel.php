@@ -253,12 +253,18 @@ class BrandModel extends AppModel {
 		foreach ($ids as $id) {
 			$found = false;
 			foreach ($results as $result) {
-				if ($result[0]['model_id'] == $id) {
+				// Безопасный доступ к результату запроса (CakePHP может возвращать разные форматы)
+				$model_id = isset($result[0]['model_id']) ? $result[0]['model_id'] : (isset($result['model_id']) ? $result['model_id'] : null);
+				if ($model_id == $id) {
+					$products_count = isset($result[0]['products_count']) ? $result[0]['products_count'] : (isset($result['products_count']) ? $result['products_count'] : 0);
+					$active_products_count = isset($result[0]['active_products_count']) ? $result[0]['active_products_count'] : (isset($result['active_products_count']) ? $result['active_products_count'] : 0);
+					$products_in_stock = isset($result[0]['products_in_stock']) ? $result[0]['products_in_stock'] : (isset($result['products_in_stock']) ? $result['products_in_stock'] : 0);
+					
 					$this->id = $id;
 					$this->save(array(
-						'products_count' => $result[0]['products_count'],
-						'active_products_count' => $result[0]['active_products_count'],
-						'products_in_stock' => $result[0]['products_in_stock']
+						'products_count' => $products_count,
+						'active_products_count' => $active_products_count,
+						'products_in_stock' => $products_in_stock
 					), false);
 					$found = true;
 					break;
