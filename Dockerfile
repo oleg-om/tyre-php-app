@@ -133,9 +133,13 @@ RUN sed -i 's|DocumentRoot /var/www/html|DocumentRoot /var/www/html/app/webroot|
     && echo "    ServerLimit 80" >> /etc/apache2/apache2.conf \
     && echo "</IfModule>" >> /etc/apache2/apache2.conf \
     && echo "" >> /etc/apache2/sites-available/000-default.conf \
-    && echo "	# Оптимизация производительности" >> /etc/apache2/sites-available/000-default.conf \
+    && echo "	# Оптимизация производительности - Gzip сжатие" >> /etc/apache2/sites-available/000-default.conf \
     && echo "	<IfModule mod_deflate.c>" >> /etc/apache2/sites-available/000-default.conf \
-    && echo "		AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css text/javascript application/javascript application/json" >> /etc/apache2/sites-available/000-default.conf \
+    && echo "		AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css text/javascript application/javascript application/json application/xml" >> /etc/apache2/sites-available/000-default.conf \
+    && echo "		AddOutputFilterByType DEFLATE image/svg+xml" >> /etc/apache2/sites-available/000-default.conf \
+    && echo "		SetOutputFilter DEFLATE" >> /etc/apache2/sites-available/000-default.conf \
+    && echo "		SetEnvIfNoCase Request_URI \\.(?:gif|jpe?g|png)$ no-gzip dont-vary" >> /etc/apache2/sites-available/000-default.conf \
+    && echo "		SetEnvIfNoCase Request_URI \\.(?:exe|t?gz|zip|bz2|sit|rar)$ no-gzip dont-vary" >> /etc/apache2/sites-available/000-default.conf \
     && echo "	</IfModule>" >> /etc/apache2/sites-available/000-default.conf \
     && echo "" >> /etc/apache2/sites-available/000-default.conf \
     && echo "	<IfModule mod_expires.c>" >> /etc/apache2/sites-available/000-default.conf \

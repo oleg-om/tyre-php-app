@@ -30,9 +30,13 @@ if [ -f "$CERT_FILE" ] && [ -f "$KEY_FILE" ]; then
         SSLCertificateFile ${CERT_FILE}
         SSLCertificateKeyFile ${KEY_FILE}
         
-        # Оптимизация производительности
+        # Оптимизация производительности - Gzip сжатие
         <IfModule mod_deflate.c>
-            AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css text/javascript application/javascript application/json
+            AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css text/javascript application/javascript application/json application/xml
+            AddOutputFilterByType DEFLATE image/svg+xml
+            SetOutputFilter DEFLATE
+            SetEnvIfNoCase Request_URI \\.(?:gif|jpe?g|png)$ no-gzip dont-vary
+            SetEnvIfNoCase Request_URI \\.(?:exe|t?gz|zip|bz2|sit|rar)$ no-gzip dont-vary
         </IfModule>
         
         <IfModule mod_expires.c>
