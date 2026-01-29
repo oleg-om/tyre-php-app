@@ -254,7 +254,7 @@ if (extension_loaded('redis')) {
 	$cacheEngineConfig = array(
 		'server' => 'tyre-app-redis',
 		'port' => 6379,
-		'timeout' => 0,
+		'timeout' => 1, // Уменьшен timeout с 0 до 1 секунды для предотвращения зависаний
 		'persistent' => true
 	);
 }

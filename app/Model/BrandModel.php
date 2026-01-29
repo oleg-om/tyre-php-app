@@ -134,21 +134,27 @@ class BrandModel extends AppModel {
 		return false;
 	}
 	public function afterSave($created, $options = array()) {
-		$fields = array('brand_id' => 'Brand');
-		foreach ($fields as $field => $model) {
-			$ids = array();
-			if (isset($this->data[$this->name]['old_' . $field]) && $this->data[$this->name]['old_' . $field] > 0) {
-				$ids[] = $this->data[$this->name]['old_' . $field];
-			}
-			if (isset($this->data[$this->name][$field]) && $this->data[$this->name][$field] > 0) {
-				$ids[] = $this->data[$this->name][$field];
-			}
-			if (!empty($ids)) {
-				$ids = array_unique($ids);
-				$this->{$model} = ClassRegistry::init($model);
-				$this->{$model}->recountModels($ids);
+		// Пропускаем пересчет счетчиков и удаление кеша во время импорта (для ускорения)
+		$skip_after_save = Configure::read('Product.skip_recount_on_save');
+		
+		if (!$skip_after_save) {
+			$fields = array('brand_id' => 'Brand');
+			foreach ($fields as $field => $model) {
+				$ids = array();
+				if (isset($this->data[$this->name]['old_' . $field]) && $this->data[$this->name]['old_' . $field] > 0) {
+					$ids[] = $this->data[$this->name]['old_' . $field];
+				}
+				if (isset($this->data[$this->name][$field]) && $this->data[$this->name][$field] > 0) {
+					$ids[] = $this->data[$this->name][$field];
+				}
+				if (!empty($ids)) {
+					$ids = array_unique($ids);
+					$this->{$model} = ClassRegistry::init($model);
+					$this->{$model}->recountModels($ids);
+				}
 			}
 		}
+		
 		if (isset($this->data[$this->name]['old_brand_id']) && isset($this->data[$this->name]['brand_id']) && $this->data[$this->name]['old_brand_id'] != $this->data[$this->name]['brand_id']) {
 			$this->Product = ClassRegistry::init('Product');
 			$this->Product->updateAll(array('brand_id' => $this->data[$this->name]['brand_id']), array('brand_id' => $this->data[$this->name]['old_brand_id'], 'model_id' => $this->id));
@@ -172,13 +178,18 @@ class BrandModel extends AppModel {
 				chmod($to, 0777);
 			}
 		}
-		Cache::delete('brands_1', 'long');
-		Cache::delete('brands_2', 'long');
-		Cache::delete('brands_3', 'long');
-		Cache::delete('import_models_1', 'long');
-		Cache::delete('import_models_2', 'long');
-		Cache::delete('import_models_by_id_1', 'long');
-		Cache::delete('import_models_by_id_2', 'long');
+		
+		// Удаляем кеш только если не идет импорт (для ускорения импорта)
+		// Во время импорта кеш будет очищен один раз в конце
+		if (!$skip_after_save) {
+			Cache::delete('brands_1', 'long');
+			Cache::delete('brands_2', 'long');
+			Cache::delete('brands_3', 'long');
+			Cache::delete('import_models_1', 'long');
+			Cache::delete('import_models_2', 'long');
+			Cache::delete('import_models_by_id_1', 'long');
+			Cache::delete('import_models_by_id_2', 'long');
+		}
 	}
 	public function afterDelete() {
 		if (!empty($this->tmp_data)) {
