@@ -769,17 +769,25 @@ class ImportController extends AppController
                             $brand_slugs = $this->Brand->find('list', array('fields' => array('Brand.slug', 'Brand.id')));
                             $all_brands = $this->Brand->find('list', array('conditions' => array('Brand.category_id' => $category_id), 'fields' => array('Brand.title', 'Brand.id')));
                             $all_models = $this->BrandModel->find('all', array('conditions' => array('BrandModel.category_id' => $category_id), 'fields' => array('BrandModel.id', 'BrandModel.brand_id', 'BrandModel.title')));
-                            $model_synonyms = $this->ModelSynonym->find('all');
-                            $brand_synonyms = $this->BrandSynonym->find('all');
+                            
+                            // Оптимизация: используем кешированные синонимы
+                            $synonyms = $this->_loadSynonymsWithCache();
+                            $brand_synonyms_list = $synonyms['brand_synonyms_list'];
+                            $model_synonyms_list = $synonyms['model_synonyms_list'];
+                            
                             $brands = array();
                             $models = array();
                             foreach ($all_brands as $brand => $id) {
-                                $brand = $this->_clean_text($brand);
-                                $brands[$brand] = $id;
-                                foreach ($brand_synonyms as $synonym) {
-                                    if ($synonym['BrandSynonym']['brand_id'] == $id) {
-                                        $brand = trim($this->_clean_text($synonym['BrandSynonym']['title']));
-                                        $brands[$brand] = $id;
+                                $brand = trim($this->_clean_text($brand));
+                                if (mb_strlen($brand) > 1) {
+                                    $brands[$brand] = $id;
+                                }
+                                // new synonyms enumeration
+                                if (isset($brand_synonyms_list[$id]) && !empty($brand_synonyms_list[$id])) {
+                                    $brand_array = $brand_synonyms_list[$id];
+                                    foreach ($brand_array as $brand_item) {
+                                        $item = trim($this->_clean_text($brand_item));
+                                        $brands[$item] = $id;
                                     }
                                 }
                             }
@@ -789,10 +797,14 @@ class ImportController extends AppController
                                 }
                                 $model = $this->_clean_text($item['BrandModel']['title'], false);
                                 $models[$item['BrandModel']['brand_id']][$model] = $item['BrandModel']['id'];
-                                foreach ($model_synonyms as $synonym) {
-                                    if ($synonym['ModelSynonym']['model_id'] == $item['BrandModel']['id']) {
-                                        $model = trim($this->_clean_text($synonym['ModelSynonym']['title'], false));
-                                        $models[$item['BrandModel']['brand_id']][$model] = $item['BrandModel']['id'];
+                                // new synonyms enumeration
+                                $brand_model_id = $item['BrandModel']['id'];
+                                $syn_brand_id = $item['BrandModel']['brand_id'];
+                                if (isset($model_synonyms_list[$brand_model_id]) && !empty($model_synonyms_list[$brand_model_id])) {
+                                    $model_array = $model_synonyms_list[$brand_model_id];
+                                    foreach ($model_array as $model_item) {
+                                        $model = trim($this->_clean_text($model_item, false));
+                                        $models[$syn_brand_id][$model] = $brand_model_id;
                                     }
                                 }
                             }
@@ -1003,17 +1015,25 @@ class ImportController extends AppController
                             $brand_slugs = $this->Brand->find('list', array('fields' => array('Brand.slug', 'Brand.id')));
                             $all_brands = $this->Brand->find('list', array('conditions' => array('Brand.category_id' => $category_id), 'fields' => array('Brand.title', 'Brand.id')));
                             $all_models = $this->BrandModel->find('all', array('conditions' => array('BrandModel.category_id' => $category_id), 'fields' => array('BrandModel.id', 'BrandModel.brand_id', 'BrandModel.title')));
-                            $model_synonyms = $this->ModelSynonym->find('all');
-                            $brand_synonyms = $this->BrandSynonym->find('all');
+                            
+                            // Оптимизация: используем кешированные синонимы
+                            $synonyms = $this->_loadSynonymsWithCache();
+                            $brand_synonyms_list = $synonyms['brand_synonyms_list'];
+                            $model_synonyms_list = $synonyms['model_synonyms_list'];
+                            
                             $brands = array();
                             $models = array();
                             foreach ($all_brands as $brand => $id) {
-                                $brand = $this->_clean_text($brand);
-                                $brands[$brand] = $id;
-                                foreach ($brand_synonyms as $synonym) {
-                                    if ($synonym['BrandSynonym']['brand_id'] == $id) {
-                                        $brand = trim($this->_clean_text($synonym['BrandSynonym']['title']));
-                                        $brands[$brand] = $id;
+                                $brand = trim($this->_clean_text($brand));
+                                if (mb_strlen($brand) > 1) {
+                                    $brands[$brand] = $id;
+                                }
+                                // new synonyms enumeration
+                                if (isset($brand_synonyms_list[$id]) && !empty($brand_synonyms_list[$id])) {
+                                    $brand_array = $brand_synonyms_list[$id];
+                                    foreach ($brand_array as $brand_item) {
+                                        $item = trim($this->_clean_text($brand_item));
+                                        $brands[$item] = $id;
                                     }
                                 }
                             }
@@ -1023,10 +1043,14 @@ class ImportController extends AppController
                                 }
                                 $model = $this->_clean_text($item['BrandModel']['title'], false);
                                 $models[$item['BrandModel']['brand_id']][$model] = $item['BrandModel']['id'];
-                                foreach ($model_synonyms as $synonym) {
-                                    if ($synonym['ModelSynonym']['model_id'] == $item['BrandModel']['id']) {
-                                        $model = trim($this->_clean_text($synonym['ModelSynonym']['title'], false));
-                                        $models[$item['BrandModel']['brand_id']][$model] = $item['BrandModel']['id'];
+                                // new synonyms enumeration
+                                $brand_model_id = $item['BrandModel']['id'];
+                                $syn_brand_id = $item['BrandModel']['brand_id'];
+                                if (isset($model_synonyms_list[$brand_model_id]) && !empty($model_synonyms_list[$brand_model_id])) {
+                                    $model_array = $model_synonyms_list[$brand_model_id];
+                                    foreach ($model_array as $model_item) {
+                                        $model = trim($this->_clean_text($model_item, false));
+                                        $models[$syn_brand_id][$model] = $brand_model_id;
                                     }
                                 }
                             }
@@ -1233,33 +1257,21 @@ class ImportController extends AppController
                             $brand_slugs = $this->Brand->find('list', array('fields' => array('Brand.slug', 'Brand.id')));
                             $all_brands = $this->Brand->find('list', array('conditions' => array('Brand.category_id' => $category_id), 'fields' => array('Brand.title', 'Brand.id')));
                             $all_models = $this->BrandModel->find('all', array('conditions' => array('BrandModel.category_id' => $category_id), 'fields' => array('BrandModel.id', 'BrandModel.brand_id', 'BrandModel.filename', 'BrandModel.title')));
-                            $model_synonyms = $this->ModelSynonym->find('all');
-                            $brand_synonyms = $this->BrandSynonym->find('all');
+                            
+                            // Оптимизация: используем кешированные синонимы
+                            $synonyms = $this->_loadSynonymsWithCache();
+                            $brand_synonyms_list = $synonyms['brand_synonyms_list'];
+                            $model_synonyms_list = $synonyms['model_synonyms_list'];
+                            
                             $brands = array();
                             $models = array();
                             $model_photos = array();
 
-                            // new synonyms enumeration
-                            $brand_synonyms_list = array();
-                            foreach ($brand_synonyms as $synonym) {
-                                $brand_synonyms_list[$synonym['BrandSynonym']['brand_id']][] = $synonym['BrandSynonym']['title'];
-                            }
-                            $model_synonyms_list = array();
-                            foreach ($model_synonyms as $synonym) {
-                                $model_synonyms_list[$synonym['ModelSynonym']['model_id']][] = $synonym['ModelSynonym']['title'];
-                            }
-                            // new synonyms enumeration
-
                             foreach ($all_brands as $brand => $id) {
-                                $brand = $this->_clean_text($brand);
-                                $brands[$brand] = $id;
-                                //								foreach ($brand_synonyms as $synonym) {
-//									if ($synonym['BrandSynonym']['brand_id'] == $id) {
-//										$brand = trim($this->_clean_text($synonym['BrandSynonym']['title']));
-//										$brands[$brand] = $id;
-//									}
-//								}
-
+                                $brand = trim($this->_clean_text($brand));
+                                if (mb_strlen($brand) > 1) {
+                                    $brands[$brand] = $id;
+                                }
                                 // new synonyms enumeration
                                 if (isset($brand_synonyms_list[$id]) && !empty($brand_synonyms_list[$id])) {
                                     $brand_array = $brand_synonyms_list[$id];
@@ -1277,12 +1289,6 @@ class ImportController extends AppController
                                 $model_photos[$item['BrandModel']['id']] = !empty($item['BrandModel']['filename']);
                                 $model = $this->_clean_text($item['BrandModel']['title'], false);
                                 $models[$item['BrandModel']['brand_id']][$model] = $item['BrandModel']['id'];
-                                //								foreach ($model_synonyms as $synonym) {
-//									if ($synonym['ModelSynonym']['model_id'] == $item['BrandModel']['id']) {
-//										$model = trim($this->_clean_text($synonym['ModelSynonym']['title'], false));
-//										$models[$item['BrandModel']['brand_id']][$model] = $item['BrandModel']['id'];
-//									}
-//								}
                                 // new synonyms enumeration
                                 $brand_model_id = $item['BrandModel']['id'];
                                 $brand_id = $item['BrandModel']['brand_id'];
@@ -2311,32 +2317,21 @@ class ImportController extends AppController
                             $brand_slugs = $this->Brand->find('list', array('fields' => array('Brand.slug', 'Brand.id')));
                             $all_brands = $this->Brand->find('list', array('conditions' => array('Brand.category_id' => $category_id), 'fields' => array('Brand.title', 'Brand.id')));
                             $all_models = $this->BrandModel->find('all', array('conditions' => array('BrandModel.category_id' => $category_id), 'fields' => array('BrandModel.id', 'BrandModel.brand_id', 'BrandModel.filename', 'BrandModel.title'), 'order' => array('LENGTH(BrandModel.title)' => 'desc')));
-                            $model_synonyms = $this->ModelSynonym->find('all');
-                            $brand_synonyms = $this->BrandSynonym->find('all');
+                            
+                            // Оптимизация: используем кешированные синонимы
+                            $synonyms = $this->_loadSynonymsWithCache();
+                            $brand_synonyms_list = $synonyms['brand_synonyms_list'];
+                            $model_synonyms_list = $synonyms['model_synonyms_list'];
+                            
                             $brands = array();
                             $models = array();
                             $model_photos = array();
 
-                            // new synonyms enumeration
-                            $brand_synonyms_list = array();
-                            foreach ($brand_synonyms as $synonym) {
-                                $brand_synonyms_list[$synonym['BrandSynonym']['brand_id']][] = $synonym['BrandSynonym']['title'];
-                            }
-                            $model_synonyms_list = array();
-                            foreach ($model_synonyms as $synonym) {
-                                $model_synonyms_list[$synonym['ModelSynonym']['model_id']][] = $synonym['ModelSynonym']['title'];
-                            }
-                            // new synonyms enumeration
-
                             foreach ($all_brands as $brand => $id) {
-                                $brand = $this->_clean_text($brand);
-                                $brands[$brand] = $id;
-                                //								foreach ($brand_synonyms as $synonym) {
-//									if ($synonym['BrandSynonym']['brand_id'] == $id) {
-//										$brand = trim($this->_clean_text($synonym['BrandSynonym']['title']));
-//										$brands[$brand] = $id;
-//									}
-//								}
+                                $brand = trim($this->_clean_text($brand));
+                                if (mb_strlen($brand) > 1) {
+                                    $brands[$brand] = $id;
+                                }
                                 // new synonyms enumeration
                                 if (isset($brand_synonyms_list[$id]) && !empty($brand_synonyms_list[$id])) {
                                     $brand_array = $brand_synonyms_list[$id];
@@ -2762,7 +2757,11 @@ class ImportController extends AppController
                         case 7:
                             $category_id = 4;
                             $all_models = $this->BrandModel->find('all', array('conditions' => array('BrandModel.category_id' => $category_id), 'fields' => array('BrandModel.id', 'BrandModel.brand_id', 'BrandModel.title'), 'order' => array('LENGTH(BrandModel.title)' => 'desc')));
-                            $model_synonyms = $this->ModelSynonym->find('all');
+                            
+                            // Оптимизация: используем кешированные синонимы
+                            $synonyms = $this->_loadSynonymsWithCache();
+                            $model_synonyms_list = $synonyms['model_synonyms_list'];
+                            
                             $tube_brand = $this->Brand->find('first', array('conditions' => array('Brand.title' => 'Камеры (без бренда)'), 'fields' => array('Brand.id')));
                             if (empty($tube_brand)) {
                                 $this->Brand->create();
@@ -2774,11 +2773,6 @@ class ImportController extends AppController
                                 );
                                 $this->Brand->save($save_brand);
                                 $tube_brand = $this->Brand->find('first', array('conditions' => array('Brand.title' => 'Камеры'), 'fields' => array('Brand.id')));
-                            }
-                            // new synonyms enumeration
-                            $model_synonyms_list = array();
-                            foreach ($model_synonyms as $synonym) {
-                                $model_synonyms_list[$synonym['ModelSynonym']['model_id']][] = $synonym['ModelSynonym']['title'];
                             }
 
                             // tube model
@@ -3412,22 +3406,15 @@ class ImportController extends AppController
                             $brand_slugs = $this->Brand->find('list', array('fields' => array('Brand.slug', 'Brand.id')));
                             $all_brands = $this->Brand->find('list', array('conditions' => array('Brand.category_id' => $category_id), 'fields' => array('Brand.title', 'Brand.id')));
                             $all_models = $this->BrandModel->find('all', array('conditions' => array('BrandModel.category_id' => $category_id), 'fields' => array('BrandModel.id', 'BrandModel.brand_id', 'BrandModel.title', 'BrandModel.extra_filenames')));
-                            $model_synonyms = $this->ModelSynonym->find('all');
-                            $brand_synonyms = $this->BrandSynonym->find('all');
+                            
+                            // Оптимизация: используем кешированные синонимы
+                            $synonyms = $this->_loadSynonymsWithCache();
+                            $brand_synonyms_list = $synonyms['brand_synonyms_list'];
+                            $model_synonyms_list = $synonyms['model_synonyms_list'];
+                            
                             $brands = array();
                             $models = array();
                             $model_extra_filenames = array();
-
-                            // new synonyms enumeration
-                            $brand_synonyms_list = array();
-                            foreach ($brand_synonyms as $synonym) {
-                                $brand_synonyms_list[$synonym['BrandSynonym']['brand_id']][] = $synonym['BrandSynonym']['title'];
-                            }
-                            $model_synonyms_list = array();
-                            foreach ($model_synonyms as $synonym) {
-                                $model_synonyms_list[$synonym['ModelSynonym']['model_id']][] = $synonym['ModelSynonym']['title'];
-                            }
-                            // new synonyms enumeration
 
                             foreach ($all_brands as $brand => $id) {
                                 $brand = $this->_clean_text($brand);
@@ -3467,7 +3454,7 @@ class ImportController extends AppController
                                 $brand_model_id = $item['BrandModel']['id'];
                                 $brand_id = $item['BrandModel']['brand_id'];
                                 if (isset($model_synonyms_list[$brand_model_id]) && !empty($model_synonyms_list[$brand_model_id])) {
-                                    $model_array = $model_synonyms_list[$id];
+                                    $model_array = $model_synonyms_list[$brand_model_id];
                                     foreach ($model_array as $model_item) {
                                         $model = trim($this->_clean_text($model_item));
                                         $models[$brand_id][$model] = $brand_model_id;
@@ -3819,21 +3806,14 @@ class ImportController extends AppController
                             $brand_slugs = $this->Brand->find('list', array('fields' => array('Brand.slug', 'Brand.id')));
                             $all_brands = $this->Brand->find('list', array('conditions' => array('Brand.category_id' => $category_id), 'fields' => array('Brand.title', 'Brand.id')));
                             $all_models = $this->BrandModel->find('all', array('conditions' => array('BrandModel.category_id' => $category_id), 'fields' => array('BrandModel.id', 'BrandModel.brand_id', 'BrandModel.title'), 'order' => array('LENGTH(BrandModel.title)' => 'desc')));
-                            $model_synonyms = $this->ModelSynonym->find('all');
-                            $brand_synonyms = $this->BrandSynonym->find('all');
+                            
+                            // Оптимизация: используем кешированные синонимы
+                            $synonyms = $this->_loadSynonymsWithCache();
+                            $brand_synonyms_list = $synonyms['brand_synonyms_list'];
+                            $model_synonyms_list = $synonyms['model_synonyms_list'];
+                            
                             $brands = array();
                             $models = array();
-
-                            // new synonyms enumeration
-                            $brand_synonyms_list = array();
-                            foreach ($brand_synonyms as $synonym) {
-                                $brand_synonyms_list[$synonym['BrandSynonym']['brand_id']][] = $synonym['BrandSynonym']['title'];
-                            }
-                            $model_synonyms_list = array();
-                            foreach ($model_synonyms as $synonym) {
-                                $model_synonyms_list[$synonym['ModelSynonym']['model_id']][] = $synonym['ModelSynonym']['title'];
-                            }
-                            // new synonyms enumeration
 
                             foreach ($all_brands as $brand => $id) {
                                 $brand = $this->_clean_text($brand);
@@ -4360,21 +4340,14 @@ class ImportController extends AppController
                             $brand_slugs = $this->Brand->find('list', array('fields' => array('Brand.slug', 'Brand.id')));
                             $all_brands = $this->Brand->find('list', array('conditions' => array('Brand.category_id' => $category_id), 'fields' => array('Brand.title', 'Brand.id')));
                             $all_models = $this->BrandModel->find('all', array('conditions' => array('BrandModel.category_id' => $category_id), 'fields' => array('BrandModel.id', 'BrandModel.brand_id', 'BrandModel.title')));
-                            $model_synonyms = $this->ModelSynonym->find('all');
-                            $brand_synonyms = $this->BrandSynonym->find('all');
+                            
+                            // Оптимизация: используем кешированные синонимы
+                            $synonyms = $this->_loadSynonymsWithCache();
+                            $brand_synonyms_list = $synonyms['brand_synonyms_list'];
+                            $model_synonyms_list = $synonyms['model_synonyms_list'];
+                            
                             $brands = array();
                             $models = array();
-
-                            // new synonyms enumeration
-                            $brand_synonyms_list = array();
-                            foreach ($brand_synonyms as $synonym) {
-                                $brand_synonyms_list[$synonym['BrandSynonym']['brand_id']][] = $synonym['BrandSynonym']['title'];
-                            }
-                            $model_synonyms_list = array();
-                            foreach ($model_synonyms as $synonym) {
-                                $model_synonyms_list[$synonym['ModelSynonym']['model_id']][] = $synonym['ModelSynonym']['title'];
-                            }
-                            // new synonyms enumeration
 
                             foreach ($all_brands as $brand => $id) {
                                 $brand = $this->_clean_text($brand);
