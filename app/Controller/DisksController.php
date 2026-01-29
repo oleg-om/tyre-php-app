@@ -1208,8 +1208,19 @@ class DisksController extends AppController
                 $sizes = array($car_factory_sizes[0], $car_tuning_sizes[0], $car_factory_sizes[1], $car_tuning_sizes[1]);
                 $sizes_count = array();
 
+                // Убеждаемся, что Product загружен
+                if (empty($this->Product)) {
+                    $this->loadModel('Product');
+                }
+                
                 $this->Product->virtualFields['width_number'] = 'CONVERT(size3,DECIMAL(5,1))';
                 foreach ($sizes as $key => $size_item) {
+                    // Пропускаем пустые элементы
+                    if (empty($size_item) || empty($size_item['CarWheels'])) {
+                        $sizes_count[$key] = 0;
+                        continue;
+                    }
+                    
                     $item = $size_item['CarWheels'];
                     $count_filter = array('Product.size1' => $item['front_axle_diameter']);
                     $count_filter['Product.category_id'] = 2;
