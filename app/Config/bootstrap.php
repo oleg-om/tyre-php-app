@@ -107,7 +107,7 @@ if (extension_loaded('redis')) {
 		'engine' => 'Redis',
 		'server' => 'tyre-app-redis',
 		'port' => 6379,
-		'timeout' => 1, // Уменьшен timeout с 0 до 1 секунды для предотвращения зависаний
+		'timeout' => 0.5, // Уменьшен timeout до 0.5 секунды для быстрого отказа при проблемах с Redis
 		'persistent' => true,
 		'prefix' => 'kerchshina_'
 	);
