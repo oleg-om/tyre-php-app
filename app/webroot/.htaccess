@@ -6,21 +6,24 @@
     RewriteCond %{REQUEST_FILENAME} -f
     RewriteRule ^(img|css|js|files)/(.*)$ - [L]
     
-    # Исключаем админ-панель из проверок ботов для производительности импорта
-    RewriteCond %{REQUEST_URI} ^/admin [NC,OR]
-    RewriteCond %{REQUEST_URI} ^/app/webroot [NC]
-    RewriteRule .* - [L]
-    
     # ============================================
     # Защита от ботов и rate limiting (только для публичных страниц)
     # ============================================
+    # Исключаем админ-панель из проверок ботов для производительности импорта
+    # НЕ используем [L] здесь, чтобы запрос продолжал обрабатываться CakePHP
     
     # Блокировка известных ботов и краулеров (кроме основных поисковых)
     # Разрешаем только Googlebot и Yandex для SEO
+    # Пропускаем проверку для админ-панели
+    RewriteCond %{REQUEST_URI} !^/admin [NC]
+    RewriteCond %{REQUEST_URI} !^/app/webroot [NC]
     RewriteCond %{HTTP_USER_AGENT} ^.*(GPTBot|ClaudeBot|ChatGPT|OpenAI|anthropic|PetalBot|SemrushBot|AhrefsBot|MJ12bot|DotBot|Baiduspider|Sogou|Exabot|facebot|facebookexternalhit|meta-externalagent|Twitterbot|LinkedInBot|WhatsApp|SkypeUriPreview|Applebot|bingbot|Slurp|DuckDuckBot|BingPreview|ia_archiver|archive\.org_bot|msnbot|Amazonbot).* [NC]
     RewriteRule .* - [F,L]
     
     # Блокировка подозрительных User-Agent (исключая разрешенные поисковые боты)
+    # Пропускаем проверку для админ-панели
+    RewriteCond %{REQUEST_URI} !^/admin [NC]
+    RewriteCond %{REQUEST_URI} !^/app/webroot [NC]
     RewriteCond %{HTTP_USER_AGENT} ^$ [OR]
     RewriteCond %{HTTP_USER_AGENT} ^(curl|wget|python|java|perl|ruby|bash|shell|cmd|powershell).* [NC,OR]
     RewriteCond %{HTTP_USER_AGENT} .*(libwww-perl|nikto|scan|sqlmap|nmap|masscan|zmap).* [NC,OR]
