@@ -8,3 +8,5 @@ postfixadmin-2.91.tar.gz
 /app/webroot/files/
 app/webroot/phpmy/.htpasswd
 .env
+webroot/version.txt
+.envapp/webroot/version.txt

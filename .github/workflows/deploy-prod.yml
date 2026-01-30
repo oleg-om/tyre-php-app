@@ -64,6 +64,13 @@ jobs:
             echo "Checking container status..."
             docker compose ps
             
+            # Генерация файла версии для cache busting CSS/JS
+            echo "Generating version file for cache busting..."
+            VERSION_HASH=$(date +%s)-$(echo $GITHUB_SHA | cut -c1-7)
+            echo "$VERSION_HASH" > app/webroot/version.txt
+            docker exec tyre-app-php bash -c "echo '$VERSION_HASH' > /var/www/html/app/webroot/version.txt"
+            echo "Version hash: $VERSION_HASH"
+            
             # Очистка кеша приложения
             echo "Clearing application cache..."
             docker exec tyre-app-php rm -rf /var/www/html/app/tmp/cache/* || echo "Cache directory not found or already empty"

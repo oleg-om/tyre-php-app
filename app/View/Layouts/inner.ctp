@@ -14,7 +14,16 @@
     <link href="https://fonts.googleapis.com/css?family=Open+Sans+Condensed:300,700&subset=latin,cyrillic"
           rel="stylesheet" type="text/css">
     <?php
-    $css = array('main-style', 'main-style-media', 'virtual-select.min');
+    // Cache busting для CSS - добавляем хэш версии к файлам стилей
+    $version_file = WWW_ROOT . 'version.txt';
+    $css_version = file_exists($version_file) ? trim(file_get_contents($version_file)) : time();
+    
+    // Подключаем CSS с версией вручную для cache busting
+    ?>
+    <link rel="stylesheet" type="text/css" href="/css/main-style.css?v=<?php echo $css_version; ?>">
+    <link rel="stylesheet" type="text/css" href="/css/main-style-media.css?v=<?php echo $css_version; ?>">
+    <?php
+    $css = array('virtual-select.min');
     if (isset($additional_css)) {
         $css = array_merge($css, $additional_css);
     }
