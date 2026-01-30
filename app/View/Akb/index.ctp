@@ -28,6 +28,7 @@ echo $this->element('currency');
 			$image = '';
 			if (!empty($item['Brand']['filename'])) {
 				$image = $this->Html->image($this->Backend->thumbnail(array('id' => $item['Brand']['id'], 'filename' => $item['Brand']['filename'], 'path' => 'brands', 'width' => 160, 'height' => 60, 'crop' => false, 'folder' => false)), array('alt' => $item['Brand']['title']));
+				$image = str_replace('<img ', '<img loading="lazy" ', $image);
 			}
 			echo $this->Html->link('<span>' . $image . '</span><strong>' . $item['Brand']['title'] . '</strong>', array('controller' => 'akb', 'action' => 'brand', 'slug' => $item['Brand']['slug']), array('escape' => false, 'class' => 'img-brand', 'title' => $item['Brand']['title']));
 			echo '</div>';

@@ -9,6 +9,7 @@
 			$image = '';
 			if (!empty($item['CarBrand']['filename'])) {
 				$image = $this->Html->image('/files/car_brands/' . $item['CarBrand']['filename'], array('alt' => $item['CarBrand']['title']));
+				$image = str_replace('<img ', '<img loading="lazy" ', $image);
 			}
 			echo $this->Html->link('<span>' . $image . '</span><strong>' . $item['CarBrand']['title'] . '</strong>', array('controller' => 'car_brands', 'action' => 'view', 'slug' => $item['CarBrand']['slug']), array('escape' => false, 'class' => 'img-brand', 'title' => $item['CarBrand']['title']));
 		?></div>
