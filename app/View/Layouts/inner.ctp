@@ -14,7 +14,7 @@
     <link href="https://fonts.googleapis.com/css?family=Open+Sans+Condensed:300,700&subset=latin,cyrillic"
           rel="stylesheet" type="text/css">
     <?php
-    $css = array('main-style.v25', 'main-style-media.v25', 'virtual-select.min');
+    $css = array('main-style', 'main-style-media', 'virtual-select.min');
     if (isset($additional_css)) {
         $css = array_merge($css, $additional_css);
     }
