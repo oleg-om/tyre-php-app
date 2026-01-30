@@ -107,9 +107,11 @@ foreach ($models as $item) {
                                             <td>
                                                 <?php
                                                 $image = $this->Html->image('no-tyre-little.jpg', array('class' => 'no-img-tyre'));
+                                                $image = str_replace('<img ', '<img loading="lazy" ', $image);
                                                 $image_big = false;
                                                 if (!empty($item['BrandModel']['filename'])) {
                                                     $image = $this->Html->image($this->Backend->thumbnail(array('id' => $item['BrandModel']['id'], 'filename' => $item['BrandModel']['filename'], 'path' => 'models', 'width' => 280, 'height' => 320, 'tyre' => true, 'crop' => false, 'folder' => false)), array('alt' => $item['BrandModel']['title']));
+                                                    $image = str_replace('<img ', '<img loading="lazy" ', $image);
                                                     $image_big = $this->Backend->thumbnail(array('id' => $item['BrandModel']['id'], 'filename' => $item['BrandModel']['filename'], 'path' => 'models', 'width' => 800, 'height' => 600, 'crop' => false, 'folder' => false, 'watermark' => 'wm.png'), array('alt' => $item['BrandModel']['title']));
                                                 }
                                                 if ($image_big) {
@@ -209,9 +211,11 @@ foreach ($models as $item) {
 
                                                 <?php
                                                 $image = $this->Html->image('no-tyre-little.jpg', array('class' => 'no-img-tyre'));
+                                                $image = str_replace('<img ', '<img loading="lazy" ', $image);
                                                 $image_big = false;
                                                 if (!empty($item['BrandModel']['filename'])) {
                                                     $image = $this->Html->image($this->Backend->thumbnail(array('id' => $item['BrandModel']['id'], 'filename' => $item['BrandModel']['filename'], 'path' => 'models', 'width' => 117, 'height' => 113, 'crop' => false, 'folder' => false, 'tyre' => true)), array('alt' => $item['BrandModel']['title']));
+                                                    $image = str_replace('<img ', '<img loading="lazy" ', $image);
                                                     $image_big = $this->Backend->thumbnail(array('id' => $item['BrandModel']['id'], 'filename' => $item['BrandModel']['filename'], 'path' => 'models', 'width' => 800, 'height' => 600, 'crop' => false, 'folder' => false, 'watermark' => 'wm.png'), array('alt' => $item['BrandModel']['title']));
                                                 }
                                                 if ($item['BrandModel']['new']) {
@@ -370,9 +374,11 @@ foreach ($models as $item) {
                                             <td>
                                                 <?php
                                                 $image = $this->Html->image('no-tyre-little.jpg', array('class' => 'no-img-tyre'));
+                                                $image = str_replace('<img ', '<img loading="lazy" ', $image);
                                                 $image_big = false;
                                                 if (!empty($item['BrandModel']['filename'])) {
                                                     $image = $this->Html->image($this->Backend->thumbnail(array('id' => $item['BrandModel']['id'], 'filename' => $item['BrandModel']['filename'], 'path' => 'models', 'width' => 280, 'height' => 320, 'tyre' => true, 'crop' => false, 'folder' => false)), array('alt' => $item['BrandModel']['title']));
+                                                    $image = str_replace('<img ', '<img loading="lazy" ', $image);
                                                     $image_big = $this->Backend->thumbnail(array('id' => $item['BrandModel']['id'], 'filename' => $item['BrandModel']['filename'], 'path' => 'models', 'width' => 800, 'height' => 600, 'crop' => false, 'folder' => false, 'watermark' => 'wm.png'), array('alt' => $item['BrandModel']['title']));
                                                 }
                                                 if ($image_big) {
@@ -450,9 +456,11 @@ foreach ($models as $item) {
                                             <td>
                                                 <?php
                                                 $image = $this->Html->image('no-tyre-little.jpg', array('class' => 'no-img-tyre'));
+                                                $image = str_replace('<img ', '<img loading="lazy" ', $image);
                                                 $image_big = false;
                                                 if (!empty($item['BrandModel']['filename'])) {
                                                     $image = $this->Html->image($this->Backend->thumbnail(array('id' => $item['BrandModel']['id'], 'filename' => $item['BrandModel']['filename'], 'path' => 'models', 'width' => 117, 'height' => 113, 'crop' => false, 'folder' => false, 'tyre' => true)), array('alt' => $item['BrandModel']['title']));
+                                                    $image = str_replace('<img ', '<img loading="lazy" ', $image);
                                                     $image_big = $this->Backend->thumbnail(array('id' => $item['BrandModel']['id'], 'filename' => $item['BrandModel']['filename'], 'path' => 'models', 'width' => 800, 'height' => 600, 'crop' => false, 'folder' => false, 'watermark' => 'wm.png'), array('alt' => $item['BrandModel']['title']));
                                                 }
                                                 if ($item['BrandModel']['new']) {

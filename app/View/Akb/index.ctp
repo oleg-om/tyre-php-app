@@ -118,6 +118,7 @@ echo $this->element('currency');
 
                                             <?php
                                             $placeholder = $this->Html->image('no-tyre-little.jpg', array('class' => 'no-img-tyre'));
+                                            $placeholder = str_replace('<img ', '<img loading="lazy" ', $placeholder);
                                             $filename = null;
                                             if (!empty($item['Product']['filename'])) {
                                                 $filename = $item['Product']['filename'];
@@ -132,7 +133,9 @@ echo $this->element('currency');
                                             if (!empty($filename)) {
                                                 $imgBig = $this->Backend->thumbnail(array('id' => $id, 'filename' => $filename, 'path' => $pathAkb, 'width' => 800, 'height' => 600, 'crop' => false, 'folder' => false));
                                                 $imgSmall = $this->Backend->thumbnail(array('id' => $id, 'filename' => $filename, 'path' => $pathAkb, 'width' => 150, 'height' => 150, 'crop' => false, 'folder' => false));
-                                                echo $this->Html->link($this->Html->image($imgSmall, array('alt' => $brand['Brand']['title'] . ' ' . $item['BrandModel']['title'])), $imgBig, array('escape' => false, 'class' => 'lightbox', 'title' => $brand['Brand']['title'] . ' ' . $item['BrandModel']['title']));
+                                                $img = $this->Html->image($imgSmall, array('alt' => $brand['Brand']['title'] . ' ' . $item['BrandModel']['title']));
+                                                $img = str_replace('<img ', '<img loading="lazy" ', $img);
+                                                echo $this->Html->link($img, $imgBig, array('escape' => false, 'class' => 'lightbox', 'title' => $brand['Brand']['title'] . ' ' . $item['BrandModel']['title']));
                                             }
                                             else {
                                                 echo $placeholder;
