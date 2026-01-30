@@ -137,7 +137,6 @@ RUN sed -i 's|DocumentRoot /var/www/html|DocumentRoot /var/www/html/app/webroot|
     && echo "	<IfModule mod_deflate.c>" >> /etc/apache2/sites-available/000-default.conf \
     && echo "		AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css text/javascript application/javascript application/json application/xml" >> /etc/apache2/sites-available/000-default.conf \
     && echo "		AddOutputFilterByType DEFLATE image/svg+xml" >> /etc/apache2/sites-available/000-default.conf \
-    && echo "		SetOutputFilter DEFLATE" >> /etc/apache2/sites-available/000-default.conf \
     && echo "		SetEnvIfNoCase Request_URI \\.(?:gif|jpe?g|png)$ no-gzip dont-vary" >> /etc/apache2/sites-available/000-default.conf \
     && echo "		SetEnvIfNoCase Request_URI \\.(?:exe|t?gz|zip|bz2|sit|rar)$ no-gzip dont-vary" >> /etc/apache2/sites-available/000-default.conf \
     && echo "	</IfModule>" >> /etc/apache2/sites-available/000-default.conf \
