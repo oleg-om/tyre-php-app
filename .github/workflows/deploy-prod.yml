@@ -37,28 +37,22 @@ jobs:
               exit 1
             fi
             
-            if ! command -v docker-compose &> /dev/null && ! docker compose version &> /dev/null; then
+            if ! command -v docker compose &> /dev/null && ! docker compose version &> /dev/null; then
               echo "Error: Docker Compose is not installed"
               exit 1
             fi
-            
-            # Определение команды docker-compose (docker-compose или docker compose)
-            DOCKER_COMPOSE_CMD="docker-compose"
-            if ! command -v docker-compose &> /dev/null; then
-              DOCKER_COMPOSE_CMD="docker compose"
-            fi
-            
+
             # Пересборка образов
             echo "Building Docker images..."
-            $DOCKER_COMPOSE_CMD build --no-cache
+            docker compose build --no-cache
             
             # Остановка старых контейнеров
             echo "Stopping old containers..."
-            $DOCKER_COMPOSE_CMD down
+            docker compose down
             
             # Запуск новых контейнеров
             echo "Starting new containers..."
-            $DOCKER_COMPOSE_CMD up -d
+            docker compose up -d
             
             # Ожидание готовности контейнеров
             echo "Waiting for containers to be ready..."
@@ -66,7 +60,7 @@ jobs:
             
             # Проверка статуса контейнеров
             echo "Checking container status..."
-            $DOCKER_COMPOSE_CMD ps
+            docker compose ps
             
             # Очистка кеша приложения
             echo "Clearing application cache..."
