@@ -233,12 +233,13 @@ class BrandModel extends AppModel {
 		if (empty($ids)) return;
 		
 		$this->Product = ClassRegistry::init('Product');
+		$db = $this->getDataSource();
 		
 		// Оптимизация: используем один запрос для всех моделей вместо отдельных запросов
 		$ids_str = implode(',', array_map('intval', $ids));
 		
 		// Получаем все счетчики одним запросом
-		$results = $this->Product->query("
+		$sql = "
 			SELECT 
 				model_id,
 				COUNT(*) as products_count,
@@ -247,40 +248,51 @@ class BrandModel extends AppModel {
 			FROM products
 			WHERE model_id IN ({$ids_str})
 			GROUP BY model_id
-		");
+		";
 		
-		// Обновляем каждую модель
+		$results = $db->fetchAll($sql);
+		
+		// Создаем массив для быстрого поиска по model_id
+		$counts_by_model = array();
+		foreach ($results as $result) {
+			// fetchAll() возвращает результаты в формате:
+			// $result['table_name']['field_name'] для обычных полей
+			// $result[0]['field_name'] для агрегатных функций
+			$model_id = isset($result['products']['model_id']) ? intval($result['products']['model_id']) : null;
+			$products_count = isset($result[0]['products_count']) ? intval($result[0]['products_count']) : 0;
+			$active_products_count = isset($result[0]['active_products_count']) ? intval($result[0]['active_products_count']) : 0;
+			$products_in_stock = isset($result[0]['products_in_stock']) ? intval($result[0]['products_in_stock']) : 0;
+			
+			if ($model_id !== null) {
+				$counts_by_model[$model_id] = array(
+					'products_count' => $products_count,
+					'active_products_count' => $active_products_count,
+					'products_in_stock' => $products_in_stock
+				);
+			}
+		}
+		
+		// Обновляем каждую модель используя прямой SQL запрос
 		foreach ($ids as $id) {
-			$found = false;
-			foreach ($results as $result) {
-				// Безопасный доступ к результату запроса (CakePHP может возвращать разные форматы)
-				$model_id = isset($result[0]['model_id']) ? $result[0]['model_id'] : (isset($result['model_id']) ? $result['model_id'] : null);
-				if ($model_id == $id) {
-					$products_count = isset($result[0]['products_count']) ? $result[0]['products_count'] : (isset($result['products_count']) ? $result['products_count'] : 0);
-					$active_products_count = isset($result[0]['active_products_count']) ? $result[0]['active_products_count'] : (isset($result['active_products_count']) ? $result['active_products_count'] : 0);
-					$products_in_stock = isset($result[0]['products_in_stock']) ? $result[0]['products_in_stock'] : (isset($result['products_in_stock']) ? $result['products_in_stock'] : 0);
-					
-					$this->id = $id;
-					$this->save(array(
-						'products_count' => $products_count,
-						'active_products_count' => $active_products_count,
-						'products_in_stock' => $products_in_stock
-					), false);
-					$found = true;
-					break;
-				}
+			$id = intval($id);
+			if (isset($counts_by_model[$id])) {
+				$counts = $counts_by_model[$id];
+				$sql = "
+					UPDATE brand_models 
+					SET products_count = " . intval($counts['products_count']) . ",
+						active_products_count = " . intval($counts['active_products_count']) . ",
+						products_in_stock = " . intval($counts['products_in_stock']) . "
+					WHERE id = " . $id;
+			} else {
+				// Если модель не найдена в результатах, значит у неё 0 продуктов
+				$sql = "
+					UPDATE brand_models 
+					SET products_count = 0,
+						active_products_count = 0,
+						products_in_stock = 0
+					WHERE id = " . $id;
 			}
-			// Если модель не найдена в результатах, значит у неё 0 продуктов
-			if (!$found) {
-				$this->id = $id;
-				if ($data = $this->read(array('id'))) {
-					$this->save(array(
-						'products_count' => 0,
-						'active_products_count' => 0,
-						'products_in_stock' => 0
-					), false);
-				}
-			}
+			$db->execute($sql);
 		}
 	}
 }

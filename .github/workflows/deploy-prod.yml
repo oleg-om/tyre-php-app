@@ -75,7 +75,7 @@ jobs:
             
             # Очистка кеша через приложение (если доступно)
             echo "Clearing cache via application..."
-            curl -k -f https://kerchshina.com/admin/cache/clear || echo "Cache clear endpoint not available or already cleared"
+            curl -k -f ${{ secrets.DOMAIN }}/admin/cache/clear || echo "Cache clear endpoint not available or already cleared"
             
             echo "Deployment completed successfully!"
           EOF

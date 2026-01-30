@@ -4711,23 +4711,30 @@ class ImportController extends AppController
                     }
                     /****** конец switch **********/
 
-                    // Включаем обратно пересчет счетчиков
-                    Configure::write('Product.skip_recount_on_save', false);
-                    
                     // Пересчитываем счетчики батчами в конце импорта (быстрее чем для каждого save)
+                    // ВАЖНО: пересчет ДО сброса флага skip_recount_on_save, чтобы избежать повторных пересчетов
                     if (!empty($recount_models)) {
-                        $this->BrandModel->recountProducts(array_unique($recount_models));
+                        $unique_models = array_unique($recount_models);
+                        $this->BrandModel->recountProducts($unique_models);
                     }
                     if (!empty($recount_brands)) {
-                        $this->Brand->recountModels(array_unique($recount_brands));
-                        $this->Brand->recountProducts(array_unique($recount_brands));
+                        $unique_brands = array_unique($recount_brands);
+                        $this->Brand->recountModels($unique_brands);
+                        $this->Brand->recountProducts($unique_brands);
                     }
+                    
+                    // Включаем обратно пересчет счетчиков ПОСЛЕ пересчета батчами
+                    Configure::write('Product.skip_recount_on_save', false);
                     
                     // Очищаем кеш батчами в конце импорта (вместо удаления при каждом save)
                     $cache_keys = array('brands_1', 'brands_2', 'brands_3', 'akb_ah', 'akb_current', 'akb_height', 'akb_length', 'akb_width', 'disk_size1', 'disk_size2', 'tyre_axis', 'tyre_size1', 'tyre_size2', 'tyre_size3');
                     foreach ($cache_keys as $key) {
                         Cache::delete($key, 'long');
                     }
+                    
+                    // Очищаем кеш синонимов, чтобы при следующем импорте они перезагрузились с актуальными данными
+                    Cache::delete('import_brand_synonyms_list', 'long');
+                    Cache::delete('import_model_synonyms_list', 'long');
                     $error_lines_message = null;
                     if (!empty($error_lines)) {
                         $error_lines_message = __d('admin_import', 'message_skipped_rows_list');
@@ -4735,16 +4742,19 @@ class ImportController extends AppController
                             $error_lines_message .= __d('admin_import', 'message_skipped_rows_line', $line);
                         }
                     }
+                    // Получаем имя загруженного файла
+                    $uploaded_filename = isset($this->request->data['Import']['file']['name']) ? $this->request->data['Import']['file']['name'] : 'Неизвестно';
+                    
                     $message_lines = array(
-                        __d('admin_import', 'message_total_rows', $total_rows),
-                        __d('admin_import', 'message_skipped_rows', $skipped_rows),
-                        __d('admin_import', 'message_updated_products', $updated_products),
-                        __d('admin_import', 'message_created_products', $created_products),
-                        __d('admin_import', 'message_not_created_products', $not_created_products),
-                        __d('admin_import', 'message_not_updated_products', $not_updated_products),
-                        __d('admin_import', 'message_nothing_update_products', $nothing_update_products),
-                        //__d('admin_import', 'message_created_brands', $created_brands),
-                        __d('admin_import', 'message_created_models', $created_models)
+                        '<strong>Файл:</strong> ' . h($uploaded_filename),
+                        '<strong>Обработано строк файла:</strong> ' . $total_rows,
+                        '<strong>Пропущено строк:</strong> ' . $skipped_rows,
+                        '<strong>Обновлено товаров:</strong> ' . $updated_products,
+                        '<strong>Создано товаров:</strong> ' . $created_products,
+                        '<strong>Не создано товаров из-за ошибок:</strong> ' . $not_created_products,
+                        '<strong>Не обновлено товаров из-за ошибок:</strong> ' . $not_updated_products,
+                        '<strong>Товаров, для которых нечего обновлять:</strong> ' . $nothing_update_products,
+                        '<strong>Создано моделей:</strong> ' . $created_models
                     );
                     if (!empty($need_to_create_brands)) {
                         $need_to_create_brands_lines = array();
