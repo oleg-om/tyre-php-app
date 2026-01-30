@@ -66,10 +66,12 @@ jobs:
             
             # Генерация файла версии для cache busting CSS/JS
             echo "Generating version file for cache busting..."
-            VERSION_HASH=$(date +%s)-$(echo $GITHUB_SHA | cut -c1-7)
-            echo "$VERSION_HASH" > app/webroot/version.txt
-            docker exec tyre-app-php bash -c "echo '$VERSION_HASH' > /var/www/html/app/webroot/version.txt"
-            echo "Version hash: $VERSION_HASH"
+            VERSION_HASH=\$(date +%s)-\$(git rev-parse --short HEAD 2>/dev/null || echo "prod")
+            echo "Version hash: \$VERSION_HASH"
+            echo "\$VERSION_HASH" > app/webroot/version.txt
+            docker cp app/webroot/version.txt tyre-app-php:/var/www/html/app/webroot/version.txt
+            docker exec tyre-app-php chmod 644 /var/www/html/app/webroot/version.txt
+            docker exec tyre-app-php chown www-data:www-data /var/www/html/app/webroot/version.txt
             
             # Очистка кеша приложения
             echo "Clearing application cache..."
@@ -78,7 +80,7 @@ jobs:
             
             # Очистка кеша через приложение (если доступно)
             echo "Clearing cache via application..."
-            curl -k -f ${{ secrets.DOMAIN }}/admin/cache/clear || echo "Cache clear endpoint not available or already cleared"
+            curl -k -f https://${{ secrets.DOMAIN }}/admin/cache/clear || echo "Cache clear endpoint not available or already cleared"
             
             echo "Deployment completed successfully!"
           EOF
