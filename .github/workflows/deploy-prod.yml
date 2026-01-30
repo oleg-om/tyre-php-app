@@ -18,6 +18,8 @@ jobs:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY_PROD }}
 
       - name: Deploy to production
+        env:
+          PROJECT_PATH_PROD: ${{ secrets.PROJECT_PATH_PROD || '/root/tyre-php-app' }}
         run: |
           ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST_PROD }} << EOF
             set -e
@@ -73,5 +75,3 @@ jobs:
             
             echo "Deployment completed successfully!"
           EOF
-          env:
-            PROJECT_PATH_PROD: ${{ secrets.PROJECT_PATH_PROD || '/root/tyre-php-app' }}
