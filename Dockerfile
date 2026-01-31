@@ -16,6 +16,7 @@ RUN apt-get update && \
     apt-get install -y libxml2-dev zlib1g-dev && \
     apt-get install -y git unzip apache2-utils openssl && \
     apt-get install -y pkg-config && \
+    apt-get install -y sendmail && \
     rm -rf /var/lib/apt/lists/*
 
 # Установка PHP расширений
@@ -57,6 +58,9 @@ RUN echo "memory_limit = 256M" > /usr/local/etc/php/conf.d/memory.ini \
     && echo "date.timezone = Europe/Moscow" > /usr/local/etc/php/conf.d/timezone.ini \
     && echo "realpath_cache_size = 4096K" > /usr/local/etc/php/conf.d/realpath.ini \
     && echo "realpath_cache_ttl = 600" >> /usr/local/etc/php/conf.d/realpath.ini
+
+# Настройка sendmail для PHP
+RUN echo 'sendmail_path = /usr/sbin/sendmail -t -i' > /usr/local/etc/php/conf.d/sendmail.ini
 
 # Настройка Opcache (оптимизировано для 4GB RAM, увеличенная память для лучшей производительности)
 RUN echo "opcache.enable=1" > /usr/local/etc/php/conf.d/opcache.ini \
@@ -174,4 +178,4 @@ RUN echo '#!/bin/bash' > /usr/local/bin/init-phpmyadmin-auth.sh && \
 EXPOSE 80 443
 
 # Запуск инициализации и Apache
-CMD ["/bin/bash", "-c", "/usr/local/bin/init-phpmyadmin-auth.sh && /usr/local/bin/generate-ssl-cert.sh && /usr/local/bin/init-domain-restriction.sh && apache2-foreground"]
+CMD ["/bin/bash", "-c", "service sendmail start && /usr/local/bin/init-phpmyadmin-auth.sh && /usr/local/bin/generate-ssl-cert.sh && /usr/local/bin/init-domain-restriction.sh && apache2-foreground"]
