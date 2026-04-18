@@ -18,7 +18,10 @@ fi
 
 # Определение домена
 DOMAIN=${1:-${ALLOWED_DOMAIN:-}}
-VOLUME_NAME="tyre-app-ssl"
+# Docker Compose добавляет префикс имени проекта к volumes
+# Автоопределение имени проекта из docker-compose.yml или директории
+PROJECT_NAME=$(basename "$(pwd)")
+VOLUME_NAME="${PROJECT_NAME}_tyre-app-ssl"
 CONTAINER_NAME="tyre-app-php"
 
 # Проверка аргументов
