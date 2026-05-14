@@ -124,10 +124,36 @@ class TyresController extends AppController
 
         if (!empty($supplier_id)) {
             $this->conditions['Product.supplier_id'] = $supplier_id;
-            // Отключаем пересчет счетчиков для ускорения массового удаления
+
+            // Собираем затронутые бренды и модели ДО удаления
+            $affected_brands = $this->{$this->model}->find('all', array(
+                'conditions' => $this->conditions,
+                'fields' => array('DISTINCT Product.brand_id'),
+            ));
+            $brand_ids = array_filter(array_unique(array_map(function($p) { return $p['Product']['brand_id']; }, $affected_brands)));
+
+            $affected_models = $this->{$this->model}->find('all', array(
+                'conditions' => $this->conditions,
+                'fields' => array('DISTINCT Product.model_id'),
+            ));
+            $model_ids = array_filter(array_unique(array_map(function($p) { return $p['Product']['model_id']; }, $affected_models)));
+
+            // Удаляем без пересчёта на каждый delete (слишком медленно при массовом удалении)
             Configure::write('Product.skip_recount_on_delete', true);
             $this->{$this->model}->deleteAll($this->conditions, true, true);
             Configure::write('Product.skip_recount_on_delete', false);
+
+            // Пересчитываем счётчики для затронутых брендов и моделей
+            if (!empty($brand_ids)) {
+                $this->loadModel('Brand');
+                $this->Brand->recountProducts($brand_ids);
+                $this->Brand->recountModels($brand_ids);
+            }
+            if (!empty($model_ids)) {
+                $this->loadModel('BrandModel');
+                $this->BrandModel->recountProducts($model_ids);
+            }
+
             $this->info($this->t('message_supplier_data_cleared'));
         } else {
             $this->error($this->t('message_fill_supplier'));
