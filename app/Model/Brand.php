@@ -162,125 +162,57 @@ class Brand extends AppModel {
 	public function recountProducts($ids) {
 		if (!is_array($ids)) $ids = array($ids);
 		if (empty($ids)) return;
-		
-		$this->Product = ClassRegistry::init('Product');
+
 		$db = $this->getDataSource();
-		
-		// Оптимизация: используем один запрос для всех брендов вместо отдельных запросов
 		$ids_str = implode(',', array_map('intval', $ids));
-		
-		// Получаем все счетчики одним запросом
+
+		// Один атомарный UPDATE с LEFT JOIN вместо SELECT→PHP→UPDATE.
+		// COALESCE обнуляет счётчики для брендов, у которых товаров не осталось.
 		$sql = "
-			SELECT 
-				brand_id,
-				COUNT(*) as products_count,
-				SUM(CASE WHEN is_active = 1 AND price > 0 THEN 1 ELSE 0 END) as active_products_count
-			FROM products
-			WHERE brand_id IN ({$ids_str})
-			GROUP BY brand_id
+			UPDATE brands b
+			LEFT JOIN (
+				SELECT
+					brand_id,
+					COUNT(*) AS products_count,
+					SUM(CASE WHEN is_active = 1 AND price > 0 THEN 1 ELSE 0 END) AS active_products_count
+				FROM products
+				WHERE brand_id IN ({$ids_str})
+				GROUP BY brand_id
+			) AS p ON b.id = p.brand_id
+			SET
+				b.products_count        = COALESCE(p.products_count, 0),
+				b.active_products_count = COALESCE(p.active_products_count, 0)
+			WHERE b.id IN ({$ids_str})
 		";
-		
-		$results = $db->fetchAll($sql);
-		
-		// Создаем массив для быстрого поиска по brand_id
-		$counts_by_brand = array();
-		foreach ($results as $result) {
-			// fetchAll() возвращает результаты в формате:
-			// $result['table_name']['field_name'] для обычных полей
-			// $result[0]['field_name'] для агрегатных функций
-			$brand_id = isset($result['products']['brand_id']) ? intval($result['products']['brand_id']) : null;
-			$products_count = isset($result[0]['products_count']) ? intval($result[0]['products_count']) : 0;
-			$active_products_count = isset($result[0]['active_products_count']) ? intval($result[0]['active_products_count']) : 0;
-			
-			if ($brand_id !== null) {
-				$counts_by_brand[$brand_id] = array(
-					'products_count' => $products_count,
-					'active_products_count' => $active_products_count
-				);
-			}
-		}
-		
-		// Обновляем каждый бренд используя прямой SQL запрос
-		foreach ($ids as $id) {
-			$id = intval($id);
-			if (isset($counts_by_brand[$id])) {
-				$counts = $counts_by_brand[$id];
-				$sql = "
-					UPDATE brands 
-					SET products_count = " . intval($counts['products_count']) . ",
-						active_products_count = " . intval($counts['active_products_count']) . "
-					WHERE id = " . $id;
-			} else {
-				// Если бренд не найден в результатах, значит у него 0 продуктов
-				$sql = "
-					UPDATE brands 
-					SET products_count = 0,
-						active_products_count = 0
-					WHERE id = " . $id;
-			}
-			$db->execute($sql);
-		}
+		$db->execute($sql);
 	}
 	public function recountModels($ids) {
 		if (!is_array($ids)) $ids = array($ids);
 		if (empty($ids)) return;
-		
-		$this->BrandModel = ClassRegistry::init('BrandModel');
+
 		$db = $this->getDataSource();
-		
-		// Оптимизация: используем один запрос для всех брендов вместо отдельных запросов
 		$ids_str = implode(',', array_map('intval', $ids));
-		
-		// Получаем все счетчики одним запросом
+
+		// Один атомарный UPDATE с LEFT JOIN.
+		// Считаем только модели с products_count > 0 (обновлённым до этого вызова),
+		// поэтому BrandModel::recountProducts должен быть вызван ДО этого метода.
+		// COALESCE обнуляет счётчики для брендов, у которых моделей с товарами не осталось.
 		$sql = "
-			SELECT 
-				brand_id,
-				COUNT(*) as models_count,
-				SUM(CASE WHEN is_active = 1 THEN 1 ELSE 0 END) as active_models_count
-			FROM brand_models
-			WHERE brand_id IN ({$ids_str})
-			GROUP BY brand_id
+			UPDATE brands b
+			LEFT JOIN (
+				SELECT
+					brand_id,
+					COUNT(*) AS models_count,
+					SUM(CASE WHEN is_active = 1 THEN 1 ELSE 0 END) AS active_models_count
+				FROM brand_models
+				WHERE brand_id IN ({$ids_str}) AND products_count > 0
+				GROUP BY brand_id
+			) AS m ON b.id = m.brand_id
+			SET
+				b.models_count        = COALESCE(m.models_count, 0),
+				b.active_models_count = COALESCE(m.active_models_count, 0)
+			WHERE b.id IN ({$ids_str})
 		";
-		
-		$results = $db->fetchAll($sql);
-		
-		// Создаем массив для быстрого поиска по brand_id
-		$counts_by_brand = array();
-		foreach ($results as $result) {
-			// fetchAll() возвращает результаты в формате:
-			// $result['table_name']['field_name'] для обычных полей
-			// $result[0]['field_name'] для агрегатных функций
-			$brand_id = isset($result['brand_models']['brand_id']) ? intval($result['brand_models']['brand_id']) : null;
-			$models_count = isset($result[0]['models_count']) ? intval($result[0]['models_count']) : 0;
-			$active_models_count = isset($result[0]['active_models_count']) ? intval($result[0]['active_models_count']) : 0;
-			
-			if ($brand_id !== null) {
-				$counts_by_brand[$brand_id] = array(
-					'models_count' => $models_count,
-					'active_models_count' => $active_models_count
-				);
-			}
-		}
-		
-		// Обновляем каждый бренд используя прямой SQL запрос
-		foreach ($ids as $id) {
-			$id = intval($id);
-			if (isset($counts_by_brand[$id])) {
-				$counts = $counts_by_brand[$id];
-				$sql = "
-					UPDATE brands 
-					SET models_count = " . intval($counts['models_count']) . ",
-						active_models_count = " . intval($counts['active_models_count']) . "
-					WHERE id = " . $id;
-			} else {
-				// Если бренд не найден в результатах, значит у него 0 моделей
-				$sql = "
-					UPDATE brands 
-					SET models_count = 0,
-						active_models_count = 0
-					WHERE id = " . $id;
-			}
-			$db->execute($sql);
-		}
+		$db->execute($sql);
 	}
 }

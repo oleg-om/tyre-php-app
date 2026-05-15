@@ -231,68 +231,30 @@ class BrandModel extends AppModel {
 	public function recountProducts($ids) {
 		if (!is_array($ids)) $ids = array($ids);
 		if (empty($ids)) return;
-		
-		$this->Product = ClassRegistry::init('Product');
+
 		$db = $this->getDataSource();
-		
-		// Оптимизация: используем один запрос для всех моделей вместо отдельных запросов
 		$ids_str = implode(',', array_map('intval', $ids));
-		
-		// Получаем все счетчики одним запросом
+
+		// Один атомарный UPDATE с LEFT JOIN вместо SELECT→PHP→UPDATE.
+		// COALESCE обнуляет счётчики для моделей, у которых товаров не осталось.
 		$sql = "
-			SELECT 
-				model_id,
-				COUNT(*) as products_count,
-				SUM(CASE WHEN is_active = 1 AND price > 0 THEN 1 ELSE 0 END) as active_products_count,
-				MAX(CASE WHEN in_stock = 1 THEN 1 ELSE 0 END) as products_in_stock
-			FROM products
-			WHERE model_id IN ({$ids_str})
-			GROUP BY model_id
+			UPDATE brand_models bm
+			LEFT JOIN (
+				SELECT
+					model_id,
+					COUNT(*) AS products_count,
+					SUM(CASE WHEN is_active = 1 AND price > 0 THEN 1 ELSE 0 END) AS active_products_count,
+					MAX(CASE WHEN in_stock = 1 THEN 1 ELSE 0 END) AS products_in_stock
+				FROM products
+				WHERE model_id IN ({$ids_str})
+				GROUP BY model_id
+			) AS p ON bm.id = p.model_id
+			SET
+				bm.products_count        = COALESCE(p.products_count, 0),
+				bm.active_products_count = COALESCE(p.active_products_count, 0),
+				bm.products_in_stock     = COALESCE(p.products_in_stock, 0)
+			WHERE bm.id IN ({$ids_str})
 		";
-		
-		$results = $db->fetchAll($sql);
-		
-		// Создаем массив для быстрого поиска по model_id
-		$counts_by_model = array();
-		foreach ($results as $result) {
-			// fetchAll() возвращает результаты в формате:
-			// $result['table_name']['field_name'] для обычных полей
-			// $result[0]['field_name'] для агрегатных функций
-			$model_id = isset($result['products']['model_id']) ? intval($result['products']['model_id']) : null;
-			$products_count = isset($result[0]['products_count']) ? intval($result[0]['products_count']) : 0;
-			$active_products_count = isset($result[0]['active_products_count']) ? intval($result[0]['active_products_count']) : 0;
-			$products_in_stock = isset($result[0]['products_in_stock']) ? intval($result[0]['products_in_stock']) : 0;
-			
-			if ($model_id !== null) {
-				$counts_by_model[$model_id] = array(
-					'products_count' => $products_count,
-					'active_products_count' => $active_products_count,
-					'products_in_stock' => $products_in_stock
-				);
-			}
-		}
-		
-		// Обновляем каждую модель используя прямой SQL запрос
-		foreach ($ids as $id) {
-			$id = intval($id);
-			if (isset($counts_by_model[$id])) {
-				$counts = $counts_by_model[$id];
-				$sql = "
-					UPDATE brand_models 
-					SET products_count = " . intval($counts['products_count']) . ",
-						active_products_count = " . intval($counts['active_products_count']) . ",
-						products_in_stock = " . intval($counts['products_in_stock']) . "
-					WHERE id = " . $id;
-			} else {
-				// Если модель не найдена в результатах, значит у неё 0 продуктов
-				$sql = "
-					UPDATE brand_models 
-					SET products_count = 0,
-						active_products_count = 0,
-						products_in_stock = 0
-					WHERE id = " . $id;
-			}
-			$db->execute($sql);
-		}
+		$db->execute($sql);
 	}
 }

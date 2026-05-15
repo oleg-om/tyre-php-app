@@ -143,15 +143,17 @@ class TyresController extends AppController
             $this->{$this->model}->deleteAll($this->conditions, true, true);
             Configure::write('Product.skip_recount_on_delete', false);
 
-            // Пересчитываем счётчики для затронутых брендов и моделей
+            // Пересчитываем счётчики для затронутых брендов и моделей.
+            // Важен порядок: сначала products_count в моделях, затем models_count в брендах
+            // (Brand::recountModels считает только модели с products_count > 0).
+            if (!empty($model_ids)) {
+                $this->loadModel('BrandModel');
+                $this->BrandModel->recountProducts($model_ids);
+            }
             if (!empty($brand_ids)) {
                 $this->loadModel('Brand');
                 $this->Brand->recountProducts($brand_ids);
                 $this->Brand->recountModels($brand_ids);
-            }
-            if (!empty($model_ids)) {
-                $this->loadModel('BrandModel');
-                $this->BrandModel->recountProducts($model_ids);
             }
 
             $this->info($this->t('message_supplier_data_cleared'));

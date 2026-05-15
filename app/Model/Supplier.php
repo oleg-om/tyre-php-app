@@ -66,14 +66,16 @@ class Supplier extends AppModel
         $Product->deleteAll(array('Product.supplier_id' => $this->id), true, true);
         Configure::write('Product.skip_recount_on_delete', false);
 
+        // Важен порядок: сначала products_count в моделях, затем models_count в брендах
+        // (Brand::recountModels считает только модели с products_count > 0).
+        if (!empty($this->tmp_data['model_ids'])) {
+            $BrandModel = ClassRegistry::init('BrandModel');
+            $BrandModel->recountProducts($this->tmp_data['model_ids']);
+        }
         if (!empty($this->tmp_data['brand_ids'])) {
             $Brand = ClassRegistry::init('Brand');
             $Brand->recountProducts($this->tmp_data['brand_ids']);
             $Brand->recountModels($this->tmp_data['brand_ids']);
-        }
-        if (!empty($this->tmp_data['model_ids'])) {
-            $BrandModel = ClassRegistry::init('BrandModel');
-            $BrandModel->recountProducts($this->tmp_data['model_ids']);
         }
 
         Cache::delete('brands_1', 'long');
