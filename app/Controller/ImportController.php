@@ -700,6 +700,63 @@ class ImportController extends AppController
         'A',
     );
 
+    /**
+     * Читает XLS или XLSX файл и возвращает объект с интерфейсом, совместимым
+     * с Spreadsheet_Excel_Reader: $data->sheets[n]['cells'][$row][$col] и
+     * $data->sheets[n]['numRows'].
+     *
+     * @param string $filepath  Путь к временному файлу
+     * @param string $ext       Расширение оригинального файла (xls/xlsx)
+     * @return object|false     Совместимый объект или false при ошибке
+     */
+    protected function _readExcelFile($filepath, $ext)
+    {
+        if (strtolower($ext) === 'xlsx') {
+            app::import('Vendor', 'PHPExcel', array('file' => 'PHPExcel' . DS . 'PHPExcel.php'));
+            try {
+                $reader = PHPExcel_IOFactory::createReader('Excel2007');
+                $excel  = $reader->load($filepath);
+            } catch (Exception $e) {
+                return false;
+            }
+
+            $sheets = array();
+            foreach ($excel->getWorksheetIterator() as $sheetIndex => $worksheet) {
+                $highestRow = $worksheet->getHighestRow();
+                $highestCol = PHPExcel_Cell::columnIndexFromString($worksheet->getHighestColumn());
+
+                $cells = array();
+                for ($row = 1; $row <= $highestRow; $row++) {
+                    for ($col = 1; $col <= $highestCol; $col++) {
+                        $cell  = $worksheet->getCellByColumnAndRow($col - 1, $row);
+                        $value = $cell->getValue();
+                        if ($value !== null && $value !== '') {
+                            $cells[$row][$col] = (string)$value;
+                        }
+                    }
+                }
+
+                $sheets[$sheetIndex] = array(
+                    'numRows' => $highestRow,
+                    'cells'   => $cells,
+                );
+            }
+
+            $data         = new stdClass();
+            $data->sheets = $sheets;
+            return $data;
+        }
+
+        // XLS (бинарный формат) — используем прежний ридер
+        app::import('Vendor', 'Spreadsheet_Excel_Reader', array('file' => 'phpExcelReader' . DS . 'Excel' . DS . 'reader.php'));
+        $data = new Spreadsheet_Excel_Reader();
+        $data->setOutputEncoding('UTF-8');
+        if (!$data->read($filepath)) {
+            return false;
+        }
+        return $data;
+    }
+
     public function admin_import()
     {
         // Отключаем лимит времени выполнения для долгих импортов
@@ -729,10 +786,8 @@ class ImportController extends AppController
             //exit();
             $this->Import->set($this->request->data);
             if ($this->Import->validates()) {
-                app::import('Vendor', 'Spreadsheet_Excel_Reader', array('file' => 'phpExcelReader' . DS . 'Excel' . DS . 'reader.php'));
-                $data = new Spreadsheet_Excel_Reader();
-                $data->setOutputEncoding('UTF-8');
-                if ($data->read(TMP . $this->Import->tmp_file)) {
+                $data = $this->_readExcelFile(TMP . $this->Import->tmp_file, $this->Import->tmp_ext);
+                if ($data !== false) {
                     $this->Currency->id = $this->request->data['Import']['currency_id'];
                     $rate = 1;
                     if ($currency = $this->Currency->read()) {
@@ -4819,10 +4874,8 @@ class ImportController extends AppController
             $this->Import->set($this->request->data);
             unset($this->Import->validate['type']);
             if ($this->Import->validates()) {
-                app::import('Vendor', 'Spreadsheet_Excel_Reader', array('file' => 'phpExcelReader' . DS . 'Excel' . DS . 'reader.php'));
-                $data = new Spreadsheet_Excel_Reader();
-                $data->setOutputEncoding('UTF-8');
-                if ($data->read(TMP . $this->Import->tmp_file)) {
+                $data = $this->_readExcelFile(TMP . $this->Import->tmp_file, $this->Import->tmp_ext);
+                if ($data !== false) {
                     unlink(TMP . $this->Import->tmp_file);
                     foreach ($data->sheets as $sheet_number => $sheet) {
                         if (isset($sheet['cells'])) {
@@ -5921,10 +5974,8 @@ class ImportController extends AppController
             $this->Import->set($this->request->data);
             unset($this->Import->validate['type']);
             if ($this->Import->validates()) {
-                app::import('Vendor', 'Spreadsheet_Excel_Reader', array('file' => 'phpExcelReader' . DS . 'Excel' . DS . 'reader.php'));
-                $data = new Spreadsheet_Excel_Reader();
-                $data->setOutputEncoding('UTF-8');
-                if ($data->read(TMP . $this->Import->tmp_file)) {
+                $data = $this->_readExcelFile(TMP . $this->Import->tmp_file, $this->Import->tmp_ext);
+                if ($data !== false) {
                     unlink(TMP . $this->Import->tmp_file);
                     if (!empty($data)) {
                         $column_fields = array(
@@ -6171,10 +6222,8 @@ class ImportController extends AppController
             $this->Import->set($this->request->data);
             unset($this->Import->validate['type']);
             if ($this->Import->validates()) {
-                app::import('Vendor', 'Spreadsheet_Excel_Reader', array('file' => 'phpExcelReader' . DS . 'Excel' . DS . 'reader.php'));
-                $data = new Spreadsheet_Excel_Reader();
-                $data->setOutputEncoding('UTF-8');
-                if ($data->read(TMP . $this->Import->tmp_file)) {
+                $data = $this->_readExcelFile(TMP . $this->Import->tmp_file, $this->Import->tmp_ext);
+                if ($data !== false) {
                     unlink(TMP . $this->Import->tmp_file);
                     if (!empty($data)) {
                         $column_fields = array(

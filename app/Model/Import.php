@@ -19,6 +19,7 @@ class Import extends AppModel {
 		)
 	);
 	public $tmp_file = null;
+	public $tmp_ext  = null;
 	public $types = array();
 	public function __construct() {
 		parent::__construct();
@@ -43,6 +44,7 @@ class Import extends AppModel {
 			if (isset($this->data[$this->name]['file']['tmp_name']) && $this->data[$this->name]['file']['tmp_name'] != '') {
 				$this->tmp_file = md5(uniqid(rand(), true));
 				$this->tmp_name = time();
+				$this->tmp_ext  = strtolower(pathinfo($this->data[$this->name]['file']['name'], PATHINFO_EXTENSION));
 				if (copy($this->data[$this->name]['file']['tmp_name'], TMP . $this->tmp_file)) {
 					$uploaded_file = true;
 				}

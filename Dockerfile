@@ -19,8 +19,9 @@ RUN apt-get update && \
     apt-get install -y sendmail && \
     rm -rf /var/lib/apt/lists/*
 
-# Установка PHP расширений
-RUN docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ \
+# Установка PHP расширений (включая zip — нужен PHPExcel для чтения XLSX)
+RUN apt-get update && apt-get install -y --no-install-recommends libzip-dev && \
+    docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ \
     && docker-php-ext-install -j$(nproc) \
     gd \
     mysqli \
@@ -29,7 +30,9 @@ RUN docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-di
     mbstring \
     mcrypt \
     xml \
-    opcache
+    opcache \
+    zip \
+    && rm -rf /var/lib/apt/lists/*
 
 # Установка Redis расширения через PECL (версия 2.2.8 для совместимости с PHP 5.6)
 RUN apt-get update && \
@@ -38,13 +41,6 @@ RUN apt-get update && \
     docker-php-ext-enable redis && \
     apt-get purge -y libhiredis-dev && \
     rm -rf /var/lib/apt/lists/*
-
-# Установка zip расширения (опционально, если нужно)
-# Для PHP 5.6 zip может быть недоступен через стандартный установщик
-# RUN apt-get update && apt-get install -y --no-install-recommends libzip-dev \
-#     && docker-php-ext-install zip \
-#     && apt-get clean \
-#     && rm -rf /var/lib/apt/lists/*
 
 # Включение модулей Apache для оптимизации и SSL
 RUN a2enmod rewrite auth_basic headers expires deflate ssl reqtimeout
