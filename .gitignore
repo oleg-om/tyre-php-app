@@ -10,3 +10,4 @@ app/webroot/phpmy/.htpasswd
 .env
 webroot/version.txt
 .envapp/webroot/version.txt
+/.ai-trace/

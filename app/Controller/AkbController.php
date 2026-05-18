@@ -402,7 +402,7 @@ class AkbController extends AppController {
             $this->set('start_stop', $this->request->query['start_stop']);
 
             // if no sizes in query url use first factory size
-            if (empty($this->request->query['ah_from']) && empty($this->request->query['ah_to']) && empty($this->request->query['length_from'])) {
+            if (empty($this->request->query['ah_from']) && empty($this->request->query['ah_to']) && empty($this->request->query['length_from']) && empty($this->request->query['current_from'])) {
 
                 if (!empty($factory_sizes)) {
                     $first_size = array_values($factory_sizes)[0];
@@ -413,6 +413,12 @@ class AkbController extends AppController {
                 // getAkbParams
                 $item = $first_size['CarBatteries'];
                 $filter = array('ah_from' => $item['capacity_min'], 'ah_to' => $item['capacity_max'], 'length_from' => $item['length_min'], 'length_to' => $item['length_max'], 'width_from' => $item['width_min'], 'width_to' => $item['width_max'], 'height_from' => $item['height_min'], 'height_to' => $item['height_max'], 'modification' => $item['modification_slug'], 'start_stop' => $item['start_stop']);
+                if (!empty($item['current_min'])) {
+                    $filter['current_from'] = $item['current_min'];
+                }
+                if (!empty($item['current_max'])) {
+                    $filter['current_to'] = $item['current_max'];
+                }
 
                 if ($item['type_case_id'] == 1) {
                     $filter['f1'] = 'euro';

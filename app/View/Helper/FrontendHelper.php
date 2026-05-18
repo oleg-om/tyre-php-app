@@ -429,6 +429,13 @@ class FrontendHelper extends AppHelper
 
         $filter = array('ah_from' => $item['capacity_min'], 'ah_to' => $item['capacity_max'], 'length_from' => $item['length_min'], 'length_to' => $item['length_max'], 'width_from' => $item['width_min'], 'width_to' => $item['width_max'], 'height_from' => $item['height_min'], 'height_to' => $item['height_max'], 'modification' => $item['modification_slug']);
 
+        if (!empty($item['current_min'])) {
+            $filter['current_from'] = $item['current_min'];
+        }
+        if (!empty($item['current_max'])) {
+            $filter['current_to'] = $item['current_max'];
+        }
+
         if ($item['type_case_id'] == 1) {
             $filter['f1'] = 'euro';
         }
@@ -446,6 +453,14 @@ class FrontendHelper extends AppHelper
             $filter['f2'] = 'left';
         }
 
+        $current_match = (
+            empty($item['current_min']) ||
+            (
+                $this->request->query['current_from'] === $item['current_min'] &&
+                $this->request->query['current_to'] === $item['current_max']
+            )
+        );
+
         if ($this->request->query['ah_from'] === $item['capacity_min'] &&
             $this->request->query['ah_to'] === $item['capacity_max'] &&
             $this->request->query['length_from'] === $item['length_min'] &&
@@ -453,7 +468,8 @@ class FrontendHelper extends AppHelper
             $this->request->query['width_from'] === $item['width_min'] &&
             $this->request->query['width_to'] === $item['width_max'] &&
             $this->request->query['height_from'] === $item['height_min'] &&
-            $this->request->query['height_to'] === $item['height_max']
+            $this->request->query['height_to'] === $item['height_max'] &&
+            $current_match
         ) {
             $filter['is_active'] = 1;
         } else {

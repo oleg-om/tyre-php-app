@@ -92,7 +92,16 @@ echo $image;
                                 ?>
                                 <li>
                                     <span class="<?php if ($filter['is_active'] == 1) { echo 'is_active'; }?>">
-                                        <?php if ($filter['is_active'] == 1) { echo '• '; }?><?php echo $this->Html->link($size['CarBatteries']['capacity_min'].'-'.$size['CarBatteries']['capacity_max'].' Ач, '.$size['CarBatteries']['polarity'].' полярность, размер (ДхШхВ) '.$size['CarBatteries']['length_min'].'-'.$size['CarBatteries']['length_max'].'x'.$size['CarBatteries']['width_min'].'-'.$size['CarBatteries']['width_max'].'x'.$size['CarBatteries']['height_min'].'-'.$size['CarBatteries']['height_max'].' мм', array('controller' => 'akb', 'action' => 'index', '?' => $filter), array('escape' => false));?>
+                                        <?php if ($filter['is_active'] == 1) { echo '• '; }?><?php
+                                        $label = $size['CarBatteries']['capacity_min'].'-'.$size['CarBatteries']['capacity_max'].' Ач, '.$size['CarBatteries']['polarity'].' полярность, размер (ДхШхВ) '.$size['CarBatteries']['length_min'].'-'.$size['CarBatteries']['length_max'].'x'.$size['CarBatteries']['width_min'].'-'.$size['CarBatteries']['width_max'].'x'.$size['CarBatteries']['height_min'].'-'.$size['CarBatteries']['height_max'].' мм';
+                                        if (!empty($size['CarBatteries']['current_min'])) {
+                                            $label .= ', ток '.$size['CarBatteries']['current_min'];
+                                            if (!empty($size['CarBatteries']['current_max'])) {
+                                                $label .= '-'.$size['CarBatteries']['current_max'];
+                                            }
+                                            $label .= ' А';
+                                        }
+                                        echo $this->Html->link($label, array('controller' => 'akb', 'action' => 'index', '?' => $filter), array('escape' => false));?>
                                     </span>
                                 </li>
                             <?php } ?>
@@ -110,7 +119,16 @@ echo $image;
                                 ?>
                                 <li>
                                     <span class="<?php if ($filter['is_active'] == 1) { echo 'is_active'; }?>">
-                                        <?php if ($filter['is_active'] == 1) { echo '• '; }?><?php echo $this->Html->link($size['CarBatteries']['capacity_min'].'-'.$size['CarBatteries']['capacity_max'].' Ач, '.$size['CarBatteries']['polarity'].' полярность, размер (ДхШхВ) '.$size['CarBatteries']['length_min'].'-'.$size['CarBatteries']['length_max'].'x'.$size['CarBatteries']['width_min'].'-'.$size['CarBatteries']['width_max'].'x'.$size['CarBatteries']['height_min'].'-'.$size['CarBatteries']['height_max'].' мм', array('controller' => 'akb', 'action' => 'index', '?' => $filter), array('escape' => false));?>
+                                        <?php if ($filter['is_active'] == 1) { echo '• '; }?><?php
+                                        $label = $size['CarBatteries']['capacity_min'].'-'.$size['CarBatteries']['capacity_max'].' Ач, '.$size['CarBatteries']['polarity'].' полярность, размер (ДхШхВ) '.$size['CarBatteries']['length_min'].'-'.$size['CarBatteries']['length_max'].'x'.$size['CarBatteries']['width_min'].'-'.$size['CarBatteries']['width_max'].'x'.$size['CarBatteries']['height_min'].'-'.$size['CarBatteries']['height_max'].' мм';
+                                        if (!empty($size['CarBatteries']['current_min'])) {
+                                            $label .= ', ток '.$size['CarBatteries']['current_min'];
+                                            if (!empty($size['CarBatteries']['current_max'])) {
+                                                $label .= '-'.$size['CarBatteries']['current_max'];
+                                            }
+                                            $label .= ' А';
+                                        }
+                                        echo $this->Html->link($label, array('controller' => 'akb', 'action' => 'index', '?' => $filter), array('escape' => false));?>
                                     </span>
                                 </li>
                             <?php } ?>

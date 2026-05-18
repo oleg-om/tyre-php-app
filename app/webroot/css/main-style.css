@@ -4488,7 +4488,7 @@ table.withlines {
 }
 
 .car__sizes-right {
-    max-width: 70%;
+    width: 100%;
     display: flex;
     flex-direction: column;
     flex: 1;
@@ -4565,7 +4565,6 @@ table.withlines {
     background-color: #ffffff;
     border: 1px solid #e0e0e0;
     border-radius: 8px;
-    gap: 30px;
     grid-template-rows: repeat(3, auto);
     grid-template-columns: auto;
     transition: .15s linear;
@@ -4578,7 +4577,7 @@ table.withlines {
 }
 
 .list-view__info-col {
-    padding: 20px 0 20px 20px;
+    padding: 20px 0 0 20px;
 }
 
 .list-view__info-col .akb-polarity {
@@ -4654,7 +4653,7 @@ table.withlines {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    padding: 20px 20px 20px 0;
+    padding: 0 20px 20px 0;
     align-items: center;
     gap: 5px;
 }

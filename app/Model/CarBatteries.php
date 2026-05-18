@@ -45,6 +45,10 @@ class CarBatteries extends AppModel {
         ),
         'height_max' => array(
         ),
+        'current_min' => array(
+        ),
+        'current_max' => array(
+        ),
         'grouped_params' => array(
         )
     );

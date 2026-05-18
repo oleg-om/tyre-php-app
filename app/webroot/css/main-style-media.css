@@ -86,10 +86,16 @@
     .list-view__item {
         grid-template-columns: auto 139px 131px;
         grid-template-rows: auto;
+        gap: 30px;
     }
 
     .list-view__price-col {
+        padding: 20px 20px 20px 0;
         margin-left: 0;
+    }
+
+    .list-view__info-col {
+        padding: 20px 0 20px 20px;
     }
 
     .list-view__info-col .akb-polarity {
@@ -397,7 +403,8 @@
     }
 
     .car__sizes-right {
-        max-width: 30%;
+        min-width: 30%;
+        max-width: 35%;
     }
 
     .car__sizes-right img {
