@@ -174,4 +174,4 @@ RUN echo '#!/bin/bash' > /usr/local/bin/init-phpmyadmin-auth.sh && \
 EXPOSE 80 443
 
 # Запуск инициализации и Apache
-CMD ["/bin/bash", "-c", "service sendmail start && /usr/local/bin/init-phpmyadmin-auth.sh && /usr/local/bin/generate-ssl-cert.sh && /usr/local/bin/init-domain-restriction.sh && apache2-foreground"]
+CMD ["/bin/bash", "-c", "service sendmail start && /usr/local/bin/init-phpmyadmin-auth.sh && /usr/local/bin/generate-ssl-cert.sh && /usr/local/bin/init-domain-restriction.sh && find /var/www/html/app/tmp/cache -mindepth 1 -type f -delete 2>/dev/null || true && apache2-foreground"]
