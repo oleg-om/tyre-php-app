@@ -2436,6 +2436,7 @@ class ImportController extends AppController
                                         $model_name = '';
                                     }
                                     $model_name = trim(str_replace(array('(ведущая)', '(грузовой)', '(наварка ведущая)', '(наварка прицеп)', '(наварка универ)', '(прицепная)', '(рулевая)', '(с/х)', '(универсальная)', '(прицеп)'), '', $model_name));
+                                    $model_name = $this->_normalize_superscripts($model_name);
                                     $title = trim($data->sheets[0]['cells'][$i][3]);
                                     // Убираем обработку через _clean_text для title, чтобы сохранить оригинальный формат с пробелами и регистром
                                     // $title = $this->_clean_text($title);
@@ -4110,6 +4111,7 @@ class ImportController extends AppController
                                     $f1 = mb_substr($f, 0, -1);
                                     $f2 = mb_substr($f, -1);
                                     $model_name = trim(str_replace($f, '', $title));
+                                    $model_name = $this->_normalize_superscripts($model_name);
                                     $model = $this->_clean_text($model_name, false);
                                     $delimiter = null;
                                     if (substr_count($size, '/') == 1) {
@@ -7409,8 +7411,21 @@ class ImportController extends AppController
         return false;
     }
 
+    private function _normalize_superscripts($text)
+    {
+        // Raw Latin-1 bytes (from XLS "compressed Unicode" reader — single byte, no UTF-8 conversion)
+        $text = str_replace(["\xB9", "\xB2", "\xB3"], ['1', '2', '3'], $text);
+        // UTF-8 encoded superscript digits
+        return str_replace(
+            ['⁰', '¹', '²', '³', '⁴', '⁵', '⁶', '⁷', '⁸', '⁹'],
+            ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'],
+            $text
+        );
+    }
+
     private function _clean_text($text, $only_alpha = true)
     {
+        $text = $this->_normalize_superscripts($text);
         $regex = '/[^0-9a-zА-я]/u';
         if ($only_alpha) {
             $regex = '/[^a-zА-я]/u';
