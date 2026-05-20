@@ -3,6 +3,16 @@ name: Deploy to Prod
 on:
   push:
     branches: [ "master" ] # Триггер на пуш в ветку master
+  workflow_dispatch:
+    inputs:
+      clear_app_cache:
+        description: 'Очистить кеш приложения (app/tmp/cache)'
+        type: boolean
+        default: false
+      clear_redis_cache:
+        description: 'Очистить кеш Redis'
+        type: boolean
+        default: false
 
 jobs:
   deploy:
@@ -83,4 +93,38 @@ jobs:
             curl -k -f https://${{ secrets.DOMAIN }}/admin/cache/clear || echo "Cache clear endpoint not available or already cleared"
             
             echo "Deployment completed successfully!"
+          EOF
+
+  clear-cache:
+    needs: deploy
+    if: ${{ github.event_name == 'workflow_dispatch' && (inputs.clear_app_cache || inputs.clear_redis_cache) }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install SSH key
+        uses: webfactory/ssh-agent@v0.10.0
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY_PROD }}
+
+      - name: Clear caches
+        env:
+          PROJECT_PATH_PROD: ${{ secrets.PROJECT_PATH_PROD || '/root/tyre-php-app' }}
+        run: |
+          ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST_PROD }} << EOF
+            set -e
+            PROJECT_PATH="${PROJECT_PATH_PROD:-/root/tyre-php-app}"
+            cd "\$PROJECT_PATH"
+
+            if [ "${{ inputs.clear_app_cache }}" = "true" ]; then
+              echo "Clearing application cache..."
+              docker exec tyre-app-php rm -rf /var/www/html/app/tmp/cache/* || echo "Cache directory not found or already empty"
+              docker exec tyre-app-php chmod -R 777 /var/www/html/app/tmp || true
+              curl -k -f https://${{ secrets.DOMAIN }}/admin/cache/clear || echo "Cache clear endpoint not available"
+              echo "Application cache cleared."
+            fi
+
+            if [ "${{ inputs.clear_redis_cache }}" = "true" ]; then
+              echo "Clearing Redis cache..."
+              docker exec tyre-app-redis redis-cli FLUSHDB
+              echo "Redis cache cleared."
+            fi
           EOF
