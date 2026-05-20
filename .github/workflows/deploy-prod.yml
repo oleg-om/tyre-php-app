@@ -3,11 +3,9 @@ name: Deploy to Prod
 on:
   push:
     branches: [ "master" ] # Триггер на пуш в ветку master
-  workflow_dispatch:
 
 jobs:
   deploy:
-    if: ${{ github.event_name == 'push' }}
     runs-on: ubuntu-latest
 
     steps:
@@ -85,33 +83,4 @@ jobs:
             curl -k -f https://${{ secrets.DOMAIN }}/admin/cache/clear || echo "Cache clear endpoint not available or already cleared"
             
             echo "Deployment completed successfully!"
-          EOF
-
-  clear-cache:
-    if: ${{ github.event_name == 'workflow_dispatch' }}
-    runs-on: ubuntu-latest
-    steps:
-      - name: Install SSH key
-        uses: webfactory/ssh-agent@v0.10.0
-        with:
-          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY_PROD }}
-
-      - name: Clear caches
-        env:
-          PROJECT_PATH_PROD: ${{ secrets.PROJECT_PATH_PROD || '/root/tyre-php-app' }}
-        run: |
-          ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST_PROD }} << EOF
-            set -e
-            PROJECT_PATH="${PROJECT_PATH_PROD:-/root/tyre-php-app}"
-            cd "\$PROJECT_PATH"
-
-            echo "Clearing application cache..."
-            docker exec tyre-app-php rm -rf /var/www/html/app/tmp/cache/* || echo "Cache directory not found or already empty"
-            docker exec tyre-app-php chmod -R 777 /var/www/html/app/tmp || true
-            curl -k -f https://${{ secrets.DOMAIN }}/admin/cache/clear || echo "Cache clear endpoint not available"
-            echo "Application cache cleared."
-
-            echo "Clearing Redis cache..."
-            docker exec tyre-app-redis redis-cli FLUSHDB
-            echo "Redis cache cleared."
           EOF
