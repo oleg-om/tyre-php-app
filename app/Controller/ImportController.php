@@ -3584,6 +3584,14 @@ class ImportController extends AppController
                                     $size = $length . 'x' . $width . 'x' . $height;
                                     $ah = trim($data->sheets[0]['cells'][$i][11]);
                                     $current = trim($data->sheets[0]['cells'][$i][12]);
+                                    $current_lower = strtolower($current);
+                                    if (strpos($current_lower, 'cca') !== false) {
+                                        $current_type = 'CCA';
+                                    } elseif (strpos($current_lower, 'sae') !== false) {
+                                        $current_type = 'SAE';
+                                    } else {
+                                        $current_type = 'EN';
+                                    }
                                     $f1 = '';
                                     if (isset($data->sheets[0]['cells'][$i][13])) {
                                         $f1 = trim($data->sheets[0]['cells'][$i][13]);
@@ -3716,6 +3724,7 @@ class ImportController extends AppController
                                                 'Product.category_id' => $category_id,
                                                 'Product.ah' => $ah,
                                                 'Product.current' => $current,
+                                                'Product.current_type' => $current_type,
                                                 'Product.width' => $width,
                                                 'Product.length' => $length,
                                                 'Product.height' => $height,
@@ -3812,6 +3821,7 @@ class ImportController extends AppController
                                                         'category_id' => $category_id,
                                                         'ah' => $ah,
                                                         'current' => $current,
+                                                        'current_type' => $current_type,
                                                         'width' => $width,
                                                         'length' => $length,
                                                         'height' => $height,

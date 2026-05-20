@@ -37,8 +37,8 @@
                         </td>
                     </tr>
                     <tr>
-                        <th>Пусковой ток</th>
-                        <td><?php echo $item['Product']['current'].' A (EN)'; ?></td>
+                        <th>Пусковой ток tttt2</th>
+                        <td><?php echo $item['Product']['current'].' A ('.(isset($item['Product']['current_type']) ? $item['Product']['current_type'] : 'EN').')'; ?></td>
                     </tr>
                     <tr>
                         <th>Габариты (ДхШхВ)</th>

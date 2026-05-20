@@ -61,8 +61,8 @@
 					<td><?php echo $product['Product']['ah']; ?>ач</td>
 				</tr>
 				<tr>
-					<th>Ток</th>
-					<td><?php echo $product['Product']['current']; ?></td>
+					<th>Пусковой ток</th>
+					<td><?php echo $product['Product']['current'].' A ('.(isset($product['Product']['current_type']) ? $product['Product']['current_type'] : 'EN').')'; ?></td>
 				</tr>
                 <tr>
                     <th>Технология изготовления</th>
