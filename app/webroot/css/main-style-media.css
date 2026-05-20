@@ -212,6 +212,8 @@
 
     .left-nav .filter-group {
         display: block;
+        max-height: calc(100vh - 106px);
+        overflow-y: scroll;
     }
 
     .left-nav .title {
