@@ -4,15 +4,6 @@ on:
   push:
     branches: [ "master" ] # Триггер на пуш в ветку master
   workflow_dispatch:
-    inputs:
-      clear_app_cache:
-        description: 'Очистить кеш приложения (app/tmp/cache)'
-        type: boolean
-        default: false
-      clear_redis_cache:
-        description: 'Очистить кеш Redis'
-        type: boolean
-        default: false
 
 jobs:
   deploy:
@@ -97,7 +88,7 @@ jobs:
 
   clear-cache:
     needs: deploy
-    if: ${{ github.event_name == 'workflow_dispatch' && (inputs.clear_app_cache || inputs.clear_redis_cache) }}
+    if: ${{ github.event_name == 'workflow_dispatch' }}
     runs-on: ubuntu-latest
     steps:
       - name: Install SSH key
@@ -114,17 +105,13 @@ jobs:
             PROJECT_PATH="${PROJECT_PATH_PROD:-/root/tyre-php-app}"
             cd "\$PROJECT_PATH"
 
-            if [ "${{ inputs.clear_app_cache }}" = "true" ]; then
-              echo "Clearing application cache..."
-              docker exec tyre-app-php rm -rf /var/www/html/app/tmp/cache/* || echo "Cache directory not found or already empty"
-              docker exec tyre-app-php chmod -R 777 /var/www/html/app/tmp || true
-              curl -k -f https://${{ secrets.DOMAIN }}/admin/cache/clear || echo "Cache clear endpoint not available"
-              echo "Application cache cleared."
-            fi
+            echo "Clearing application cache..."
+            docker exec tyre-app-php rm -rf /var/www/html/app/tmp/cache/* || echo "Cache directory not found or already empty"
+            docker exec tyre-app-php chmod -R 777 /var/www/html/app/tmp || true
+            curl -k -f https://${{ secrets.DOMAIN }}/admin/cache/clear || echo "Cache clear endpoint not available"
+            echo "Application cache cleared."
 
-            if [ "${{ inputs.clear_redis_cache }}" = "true" ]; then
-              echo "Clearing Redis cache..."
-              docker exec tyre-app-redis redis-cli FLUSHDB
-              echo "Redis cache cleared."
-            fi
+            echo "Clearing Redis cache..."
+            docker exec tyre-app-redis redis-cli FLUSHDB
+            echo "Redis cache cleared."
           EOF
