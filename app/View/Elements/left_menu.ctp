@@ -724,12 +724,24 @@
                             ?>
                         </div>
                     </div>
+                    <div class="item-inner-space-around" style="margin-bottom: 10px;">
+                        <?php
+                        $stock_options = array('2' => array('label' => 'Все', 'query' => 'in_stock'), '1' => array('label' => 'В наличии', 'query' => 'in_stock'), '0' => array('label' => 'Под заказ', 'query' => 'in_stock'));
+                        echo $this->element('custom_radio', array('label' => 'Наличие:', 'options' => $stock_options, 'size' => 'small', 'default_value' => '2', 'id_prefix' => 'auto', 'name' => 'in_stock_auto'));
+                        ?>
+                    </div>
                 <?php } ?>
                 <?php if ($show_filter != 2 || empty($modification_slug)) { echo ''; } else { ?>
                     <div class="item item-icon__disk">
                         <?php
                         $material_options = array('cast' => array('label' => 'Литые', 'query' => 'material', 'icon' => '/img/icons/disk-cast.png'), 'steel' => array('label' => 'Стальные', 'query' => 'material', 'icon' => '/img/icons/disk-steel.png'));
                         echo $this->element('custom_radio', array('label' => 'Материал:', 'options' => $material_options, 'size' => 'large', 'id_prefix' => 'auto', 'name' => 'material_auto'));
+                        ?>
+                    </div>
+                    <div class="item-inner-space-around" style="margin-bottom: 10px;">
+                        <?php
+                        $stock_options = array('2' => array('label' => 'Все', 'query' => 'in_stock'), '1' => array('label' => 'В наличии', 'query' => 'in_stock'), '0' => array('label' => 'Под заказ', 'query' => 'in_stock'));
+                        echo $this->element('custom_radio', array('label' => 'Наличие:', 'options' => $stock_options, 'size' => 'small', 'default_value' => '2', 'id_prefix' => 'auto', 'name' => 'in_stock_auto'));
                         ?>
                     </div>
                 <?php } ?>
@@ -975,11 +987,12 @@
             function onSearchModifications() {
                 const season = $('input[name="season_auto"]:checked').val();
                 const disk_material = $('input[name="material_auto"]:checked').val();
+                const in_stock = $('input[name="in_stock_auto"]:checked').val();
                 const mod = $('#CarModificationSlug').attr('value');
 
                 if (<?php echo $show_filter; ?> === 1) {
                     // tyres
-                    window.location = `${origin}/tyres?modification=${mod}&season=${season ? season : ''}<?php if (!empty($size1)) {
+                    window.location = `${origin}/tyres?modification=${mod}&season=${season ? season : ''}&in_stock=${in_stock !== undefined ? in_stock : '2'}<?php if (!empty($size1)) {
                         echo '&size1=' . $size1;
                     } ?><?php if (!empty($size2)) {
                          echo '&size2=' . $size2;
@@ -990,7 +1003,7 @@
                 if (<?php echo $show_filter; ?> === 2) {
                     // disks
                     window.location =
-                        `${origin}/disks?modification=${mod}&material=${disk_material ? disk_material : ''}<?php echo '&diameter=' . $this->request->query['diameter']; ?>`;
+                        `${origin}/disks?modification=${mod}&material=${disk_material ? disk_material : ''}&in_stock=${in_stock !== undefined ? in_stock : '2'}<?php echo '&diameter=' . $this->request->query['diameter']; ?>`;
                 }
                 if (<?php echo $show_filter; ?> === 3) {
                     // disks
