@@ -574,7 +574,9 @@ class TyresController extends AppController
         if (isset($this->request->query['modification']) && !empty($this->request->query['modification'])) {
             $modification_slug = $this->request->query['modification'];
         }
-        if ($modification_slug && empty($this->request->query['model_id'])) {
+        $truck_autos = array('trucks', 'agricultural', 'loader', 'special');
+        $current_auto = isset($this->request->query['auto']) ? $this->request->query['auto'] : '';
+        if ($modification_slug && empty($this->request->query['model_id']) && !in_array($current_auto, $truck_autos)) {
 
             $this->loadModel('CarTyres');
             $this->loadModel('CarWheels');
