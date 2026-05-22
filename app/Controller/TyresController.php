@@ -604,6 +604,7 @@ class TyresController extends AppController
             $factory_tyres = explode('|', $car_sizes['CarTyres']['factory_tyres']);
             $tuning_tyres = explode('|', $car_sizes['CarTyres']['tuning_tyres']);
             $diameter = $this->request->query['diameter'];
+            $in_stock = (isset($this->request->query['in_stock']) && $this->request->query['in_stock'] !== '') ? $this->request->query['in_stock'] : 2;
 
             // if no sizes in query url use first factory size
             // if (empty($this->request->query['size1']) && empty($this->request->query['size2']) && empty($this->request->query['size3']) && empty($diameter)) {
@@ -626,7 +627,7 @@ class TyresController extends AppController
                 $filter = array('size1' => $size_1, 'size2' => $size_2, 'size3' => $size_3, 'season' => $this->request->query['season']);
 
                 // redirect with sizes
-                $car_search_query = array('modification' => $modification_slug, 'size1' => $filter['size1'], 'size2' => $filter['size2'], 'size3' => $filter['size3'], 'season' => $filter['season'], 'diameter' => 'R' . $size_3, 'in_stock4' => 0, 'in_stock' => 2);
+                $car_search_query = array('modification' => $modification_slug, 'size1' => $filter['size1'], 'size2' => $filter['size2'], 'size3' => $filter['size3'], 'season' => $filter['season'], 'diameter' => 'R' . $size_3, 'in_stock4' => 0, 'in_stock' => $in_stock);
                 $this->redirect(array('controller' => 'tyres', 'action' => 'index', '?' => $car_search_query));
             }
 
@@ -663,7 +664,7 @@ class TyresController extends AppController
                     list($size_1, $size_2) = explode('/', $size_12);
                     $filter = array('size1' => $size_1, 'size2' => $size_2, 'size3' => $size_3, 'season' => $this->request->query['season']);
                     // redirect with sizes
-                    $car_search_query = array('modification' => $modification_slug, 'size1' => $filter['size1'], 'size2' => $filter['size2'], 'size3' => $filter['size3'], 'season' => $filter['season'], 'diameter' => 'R' . $size_3, 'in_stock' => 2);
+                    $car_search_query = array('modification' => $modification_slug, 'size1' => $filter['size1'], 'size2' => $filter['size2'], 'size3' => $filter['size3'], 'season' => $filter['season'], 'diameter' => 'R' . $size_3, 'in_stock4' => 0, 'in_stock' => $in_stock);
                     $this->redirect(array('controller' => 'tyres', 'action' => 'index', '?' => $car_search_query));
                 }
             }

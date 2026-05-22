@@ -59,6 +59,12 @@ if (empty($size)) {
         <script type="text/javascript">
             $(function(){
                 $("<?php echo "#".$id; ?>").change(function() {
+                    <?php if (!empty($id_prefix) && $id_prefix === 'auto') { ?>
+                    if (typeof onSearchModifications === 'function') {
+                        onSearchModifications();
+                        return;
+                    }
+                    <?php } ?>
                     window.onbeforeunload = function() {
                         // save scroll position
                         localStorage.setItem('ks-scroll-position', window.scrollY);

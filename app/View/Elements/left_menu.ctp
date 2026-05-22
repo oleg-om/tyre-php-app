@@ -991,19 +991,20 @@
                 const mod = $('#CarModificationSlug').attr('value');
 
                 if (<?php echo $show_filter; ?> === 1) {
-                    // tyres
-                    window.location = `${origin}/tyres?modification=${mod}&season=${season ? season : ''}&in_stock=${in_stock !== undefined ? in_stock : '2'}<?php if (!empty($size1)) {
-                        echo '&size1=' . $size1;
-                    } ?><?php if (!empty($size2)) {
-                         echo '&size2=' . $size2;
-                     } ?><?php if (!empty($size3)) {
-                          echo '&size3=' . $size3;
-                      } ?><?php echo '&diameter=' . $this->request->query['diameter']; ?>`;
+                    // tyres — сохраняем текущие параметры из URL
+                    const urlParams = new URLSearchParams(window.location.search);
+                    urlParams.set('modification', mod);
+                    urlParams.set('season', season ? season : '');
+                    urlParams.set('in_stock', in_stock !== undefined ? in_stock : '2');
+                    window.location = `${origin}/tyres?${urlParams.toString()}`;
                 }
                 if (<?php echo $show_filter; ?> === 2) {
-                    // disks
-                    window.location =
-                        `${origin}/disks?modification=${mod}&material=${disk_material ? disk_material : ''}&in_stock=${in_stock !== undefined ? in_stock : '2'}<?php echo '&diameter=' . $this->request->query['diameter']; ?>`;
+                    // disks — сохраняем текущие параметры из URL
+                    const urlParams = new URLSearchParams(window.location.search);
+                    urlParams.set('modification', mod);
+                    urlParams.set('material', disk_material ? disk_material : '');
+                    urlParams.set('in_stock', in_stock !== undefined ? in_stock : '2');
+                    window.location = `${origin}/disks?${urlParams.toString()}`;
                 }
                 if (<?php echo $show_filter; ?> === 3) {
                     // disks

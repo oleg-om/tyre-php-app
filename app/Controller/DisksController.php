@@ -1215,10 +1215,12 @@ class DisksController extends AppController
             $this->set('car_brand', $car_brand);
             $this->set('modification_slug', $modification_slug);
 
+            $material = '';
             if (!empty($this->request->query['material'])) {
                 $material = $this->request->query['material'];
                 $this->set('material', $material);
             }
+            $in_stock = (isset($this->request->query['in_stock']) && $this->request->query['in_stock'] !== '') ? $this->request->query['in_stock'] : 2;
 
             $car_factory_sizes = $this->CarWheels->find('all', array('conditions' => array('CarWheels.modification_slug' => $modification_slug, 'CarWheels.factory' => 1)));
 
@@ -1289,7 +1291,7 @@ class DisksController extends AppController
 
                 $item = $sizes[$product_key]['CarWheels'];
                 //
-                $filter = array('size1' => $item['front_axle_diameter'], 'size2' => $item['front_axle_pn'] . 'x' . $item['front_axle_pcd'], 'et_from' => $item['front_axle_et_min'], 'et_to' => $item['front_axle_et_max'], 'hub_from' => strval($item['front_axle_co_min']), 'hub_to' => strval($item['front_axle_co_max']), 'in_stock4' => 0, 'in_stock' => 2, 'width_from' => $item['front_axle_width_min'], 'width_to' => $item['front_axle_width_max'], 'modification' => $item['modification_slug'], 'diameter' => 'R' . $item['front_axle_diameter'], 'material' => $material);
+                $filter = array('size1' => $item['front_axle_diameter'], 'size2' => $item['front_axle_pn'] . 'x' . $item['front_axle_pcd'], 'et_from' => $item['front_axle_et_min'], 'et_to' => $item['front_axle_et_max'], 'hub_from' => strval($item['front_axle_co_min']), 'hub_to' => strval($item['front_axle_co_max']), 'in_stock4' => 0, 'in_stock' => $in_stock, 'width_from' => $item['front_axle_width_min'], 'width_to' => $item['front_axle_width_max'], 'modification' => $item['modification_slug'], 'diameter' => 'R' . $item['front_axle_diameter'], 'material' => $material);
 
                 $this->set('car_factory_sizes', $car_factory_sizes);
                 $this->set('car_tuning_sizes', $car_tuning_sizes);
@@ -1328,7 +1330,7 @@ class DisksController extends AppController
 
                     // getDiskParams
                     $item = $first_size['CarWheels'];
-                    $filter = array('size1' => $item['front_axle_diameter'], 'size2' => $item['front_axle_pn'] . 'x' . $item['front_axle_pcd'], 'et_from' => $item['front_axle_et_min'], 'et_to' => $item['front_axle_et_max'], 'hub_from' => strval($item['front_axle_co_min']), 'hub_to' => strval($item['front_axle_co_max']), 'in_stock4' => 0, 'in_stock' => 2, 'width_from' => $item['front_axle_width_min'], 'width_to' => $item['front_axle_width_max'], 'modification' => $item['modification_slug'], 'diameter' => $diameter, 'material' => $material);
+                    $filter = array('size1' => $item['front_axle_diameter'], 'size2' => $item['front_axle_pn'] . 'x' . $item['front_axle_pcd'], 'et_from' => $item['front_axle_et_min'], 'et_to' => $item['front_axle_et_max'], 'hub_from' => strval($item['front_axle_co_min']), 'hub_to' => strval($item['front_axle_co_max']), 'in_stock4' => 0, 'in_stock' => $in_stock, 'width_from' => $item['front_axle_width_min'], 'width_to' => $item['front_axle_width_max'], 'modification' => $item['modification_slug'], 'diameter' => $diameter, 'material' => $material);
 
                     // redirect with sizes
                     $this->redirect(array('controller' => 'disks', 'action' => 'index', '?' => $filter));
