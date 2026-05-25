@@ -752,31 +752,7 @@ class Moxiecode_ManagerEngine {
 			return $abs_path;
 		}
 
-		//print_r(substr($abs_path, strlen($root)));
-		//print_r($abs_path);
-		//print_r($root);
-		//echo"55555555";
-
-		
-		//$uri = substr($abs_path, strlen($root));
-		
-		
-		$uri = $this->_virez($_SERVER['SERVER_NAME'],$abs_path);
-		
-		//$uri= "/app/webroot".$uri;
-		
-		/*
-		echo"-----";
-		print_r($uri); // /var/www/vhosts/kerchshina.com/files/bam/mcith/mcith_1.jpg
-		echo"--";
-		//print_r($root); // /var/www/vhosts/kerchshina.com/app/webroot
-		print_r($this->_virez($_SERVER['SERVER_NAME'],$abs_path));
-		echo"--";
-		//print_r($_SERVER['SERVER_NAME']); //kerchshina.com
-		print_r($this->_virez($_SERVER['SERVER_NAME'],$root));
-		echo"--";
-		*/
-		
+		$uri = substr($abs_path, strlen($root));
 
 		if ($log && $log->isDebugEnabled())
 			$log->info("ConvertPathToURI: SiteRoot=" . $root . ", Path: " . $abs_path . " -> URI: " . $uri);

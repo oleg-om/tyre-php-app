@@ -19,7 +19,7 @@
 	$mcImageManagerConfig['general.allow_override'] = "*";
 
 	// Preview options
-	$mcImageManagerConfig['preview.wwwroot'] = ''; // absolute or relative from this script path, try to leave blank system figures it out.
+	$mcImageManagerConfig['preview.wwwroot'] = isset($_SERVER['DOCUMENT_ROOT']) ? $_SERVER['DOCUMENT_ROOT'] : '';
 	$mcImageManagerConfig['preview.urlprefix'] = "{proto}://{host}/"; // domain name
 	$mcImageManagerConfig['preview.urlsuffix'] = "";
 	$mcImageManagerConfig['preview.allow_export'] = "urlprefix,urlsuffix";
