@@ -2395,6 +2395,11 @@ function delete_loader() {
   $("#loader").remove();
   $(".flash-chart div").show();
 }
+window.addEventListener("pageshow", function (e) {
+  if (e.persisted) {
+    delete_loader();
+  }
+});
 function percentage_loader() {
   try {
     if (typeof document.body.style.maxHeight === "undefined") {
