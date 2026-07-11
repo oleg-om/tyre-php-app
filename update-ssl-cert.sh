@@ -1,290 +1,379 @@
 #!/bin/bash
+#
+# Обновление Let's Encrypt SSL и применение сертификата в Docker volume.
+#
+# Использование:
+#   ./update-ssl-cert.sh [домен]
+#   ./update-ssl-cert.sh example.com
+#   FORCE_RENEW=1 ./update-ssl-cert.sh example.com   # принудительно выпустить новый сертификат
+#
+# Важно про срок действия:
+#   Let's Encrypt ВСЕГДА выдаёт сертификат максимум на ~90 дней.
+#   Увеличить срок через certbot нельзя — это правило CA.
+#   Надёжный способ: автообновление раз в 1–2 месяца (cron через setup-cron.sh).
+#
+set -euo pipefail
 
-# Скрипт для обновления SSL сертификата Let's Encrypt в Docker volume
-# Использование: ./update-ssl-cert.sh [домен]
-# Пример: ./update-ssl-cert.sh example.com
-
-# Цвета для вывода
 RED='\033[0;31m'
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 BLUE='\033[0;34m'
-NC='\033[0m' # No Color
+NC='\033[0m'
 
-# Загрузка переменных окружения
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+cd "$SCRIPT_DIR"
+
 if [ -f .env ]; then
-    export $(cat .env | grep -v '^#' | xargs)
+    set -a
+    # shellcheck disable=SC1091
+    . ./.env
+    set +a
 fi
 
-# Определение домена
-DOMAIN=${1:-${ALLOWED_DOMAIN:-}}
-# Docker Compose добавляет префикс имени проекта к volumes
-# Автоопределение имени проекта из docker-compose.yml или директории
-PROJECT_NAME=$(basename "$(pwd)")
-VOLUME_NAME="${PROJECT_NAME}_tyre-app-ssl"
+DOMAIN="${1:-${ALLOWED_DOMAIN:-}}"
 CONTAINER_NAME="tyre-app-php"
+FORCE_RENEW="${FORCE_RENEW:-0}"
+STOPPED_APP=0
 
-# Проверка аргументов
-if [ -z "$DOMAIN" ]; then
-    echo -e "${RED}Ошибка: Укажите домен${NC}"
-    echo "Использование: $0 <домен>"
-    echo "Пример: $0 example.com"
+log()  { echo -e "${BLUE}$*${NC}"; }
+ok()   { echo -e "${GREEN}✓ $*${NC}"; }
+warn() { echo -e "${YELLOW}⚠ $*${NC}"; }
+err()  { echo -e "${RED}✗ $*${NC}" >&2; }
+
+die() {
+    err "$*"
+    exit 1
+}
+
+cleanup() {
+    if [ "$STOPPED_APP" -eq 1 ]; then
+        warn "Возвращаю приложение после ошибки..."
+        start_app || true
+    fi
+}
+trap cleanup EXIT
+
+require_cmd() {
+    command -v "$1" >/dev/null 2>&1 || die "Не найдена команда: $1"
+}
+
+compose_cmd() {
+    if docker compose version >/dev/null 2>&1; then
+        echo "docker compose"
+    elif command -v docker-compose >/dev/null 2>&1; then
+        echo "docker-compose"
+    else
+        die "Не найден docker compose / docker-compose"
+    fi
+}
+
+resolve_volume_name() {
+    local vol=""
+    if docker inspect "$CONTAINER_NAME" >/dev/null 2>&1; then
+        vol="$(docker inspect -f '{{range .Mounts}}{{if eq .Destination "/etc/apache2/ssl"}}{{.Name}}{{end}}{{end}}' "$CONTAINER_NAME" 2>/dev/null || true)"
+    fi
+    if [ -n "$vol" ]; then
+        echo "$vol"
+        return
+    fi
+
+    local project
+    project="$(basename "$SCRIPT_DIR")"
+    echo "${project}_tyre-app-ssl"
+}
+
+cert_expiry_epoch() {
+    local file="$1"
+    local end
+    end="$(openssl x509 -in "$file" -noout -enddate 2>/dev/null | cut -d= -f2)"
+    date -d "$end" +%s 2>/dev/null || date -j -f "%b %d %T %Y %Z" "$end" +%s 2>/dev/null
+}
+
+days_left() {
+    local file="$1"
+    local exp now
+    exp="$(cert_expiry_epoch "$file")"
+    now="$(date +%s)"
+    echo $(( (exp - now) / 86400 ))
+}
+
+show_cert_info() {
+    local label="$1"
+    local file="$2"
     echo ""
-    echo "Или установите ALLOWED_DOMAIN в .env файле"
-    exit 1
+    log "--- $label ---"
+    openssl x509 -in "$file" -noout -subject -issuer -dates 2>/dev/null || warn "Не удалось прочитать: $file"
+}
+
+port80_in_use() {
+    if command -v ss >/dev/null 2>&1; then
+        ss -ltn "( sport = :80 )" 2>/dev/null | grep -q ':80'
+        return $?
+    fi
+    if command -v lsof >/dev/null 2>&1; then
+        lsof -iTCP:80 -sTCP:LISTEN >/dev/null 2>&1
+        return $?
+    fi
+    return 1
+}
+
+stop_app() {
+    local dc
+    dc="$(compose_cmd)"
+    log "Останавливаю $CONTAINER_NAME, чтобы освободить порт 80 для ACME..."
+    $dc stop "$CONTAINER_NAME" >/dev/null 2>&1 || true
+    # На случай, если контейнер висит без compose
+    docker stop "$CONTAINER_NAME" >/dev/null 2>&1 || true
+    STOPPED_APP=1
+
+    local i=0
+    while port80_in_use && [ $i -lt 30 ]; do
+        sleep 1
+        i=$((i + 1))
+    done
+
+    if port80_in_use; then
+        warn "Порт 80 всё ещё занят. Кто слушает:"
+        if command -v ss >/dev/null 2>&1; then
+            ss -ltnp "( sport = :80 )" || true
+        else
+            lsof -iTCP:80 -sTCP:LISTEN || true
+        fi
+        die "Освободите порт 80 и повторите"
+    fi
+    ok "Порт 80 свободен"
+}
+
+start_app() {
+    local dc
+    dc="$(compose_cmd)"
+    log "Запускаю $CONTAINER_NAME..."
+    $dc up -d "$CONTAINER_NAME" >/dev/null
+    STOPPED_APP=0
+
+    local i=0
+    while ! docker exec "$CONTAINER_NAME" true >/dev/null 2>&1 && [ $i -lt 60 ]; do
+        sleep 1
+        i=$((i + 1))
+    done
+    docker exec "$CONTAINER_NAME" true >/dev/null 2>&1 || die "Контейнер $CONTAINER_NAME не запустился"
+    ok "Контейнер запущен"
+}
+
+reload_apache_ssl() {
+    log "Перезагружаю Apache, чтобы подхватил новые файлы сертификата..."
+    # graceful часто оставляет старый SSL в воркерах — делаем полный restart apache в контейнере
+    if docker exec "$CONTAINER_NAME" apache2ctl configtest >/dev/null 2>&1; then
+        docker exec "$CONTAINER_NAME" apache2ctl stop >/dev/null 2>&1 || true
+        sleep 1
+        docker exec "$CONTAINER_NAME" apache2ctl start >/dev/null 2>&1 \
+            || docker exec "$CONTAINER_NAME" service apache2 start >/dev/null 2>&1 \
+            || true
+    fi
+    # Надёжный fallback: recreate контейнера (volume уже с новым сертификатом)
+    local dc
+    dc="$(compose_cmd)"
+    $dc up -d --force-recreate "$CONTAINER_NAME" >/dev/null
+    sleep 3
+    ok "Apache/контейнер пересоздан с новым сертификатом"
+}
+
+copy_certs_to_volume() {
+    local volume="$1"
+    local fullchain="$2"
+    local privkey="$3"
+    local fullchain_real privkey_real
+
+    fullchain_real="$(readlink -f "$fullchain" 2>/dev/null || realpath "$fullchain" 2>/dev/null || echo "$fullchain")"
+    privkey_real="$(readlink -f "$privkey" 2>/dev/null || realpath "$privkey" 2>/dev/null || echo "$privkey")"
+
+    [ -r "$fullchain_real" ] || die "Нет доступа к $fullchain_real (нужен sudo?)"
+    [ -r "$privkey_real" ] || die "Нет доступа к $privkey_real (нужен sudo?)"
+
+    log "Копирую сертификаты в volume: $volume"
+    echo "  fullchain: $fullchain_real"
+    echo "  privkey:   $privkey_real"
+
+    if ! docker volume inspect "$volume" >/dev/null 2>&1; then
+        docker volume create "$volume" >/dev/null
+    fi
+
+    # Копируем через sudo cat — live/*.pem часто readable только root
+    local tmp_dir
+    tmp_dir="$(mktemp -d)"
+    sudo cat "$fullchain_real" > "$tmp_dir/fullchain.pem"
+    sudo cat "$privkey_real" > "$tmp_dir/privkey.pem"
+    chmod 600 "$tmp_dir/privkey.pem"
+    chmod 644 "$tmp_dir/fullchain.pem"
+
+    docker run --rm \
+        -v "${volume}:/ssl" \
+        -v "$tmp_dir/fullchain.pem:/source_fullchain:ro" \
+        -v "$tmp_dir/privkey.pem:/source_privkey:ro" \
+        alpine sh -c '
+            set -e
+            rm -f /ssl/server.crt /ssl/server.key /ssl/.server.crt /ssl/.server.key
+            cat /source_fullchain > /ssl/server.crt
+            cat /source_privkey > /ssl/server.key
+            chmod 644 /ssl/server.crt
+            chmod 600 /ssl/server.key
+            grep -q "BEGIN CERTIFICATE" /ssl/server.crt
+            grep -q "BEGIN" /ssl/server.key
+            sync
+            ls -lh /ssl/server.crt /ssl/server.key
+        '
+
+    rm -rf "$tmp_dir"
+    ok "Сертификаты записаны в volume"
+}
+
+verify_live_https() {
+    local domain="$1"
+    local expected_end="$2"
+    local live_end=""
+
+    log "Проверяю сертификат, который реально отдаёт https://$domain ..."
+    sleep 2
+
+    live_end="$(echo | openssl s_client -servername "$domain" -connect "${domain}:443" 2>/dev/null \
+        | openssl x509 -noout -enddate 2>/dev/null | cut -d= -f2 || true)"
+
+    if [ -z "$live_end" ]; then
+        warn "Не удалось получить сертификат с :443 (возможно, DNS/firewall)."
+        warn "Проверьте вручную: echo | openssl s_client -servername $domain -connect $domain:443 2>/dev/null | openssl x509 -noout -dates"
+        return 1
+    fi
+
+    echo "  Ожидаемый notAfter (из LE): $expected_end"
+    echo "  Фактический notAfter (:443): $live_end"
+
+    if [ "$live_end" = "$expected_end" ]; then
+        ok "Клиентский HTTPS отдаёт обновлённый сертификат"
+        return 0
+    fi
+
+    err "HTTPS на :443 отдаёт ДРУГОЙ сертификат (не тот, что только что выпущен)."
+    warn "Возможные причины: CDN/прокси перед сервером, другой контейнер на 443, кэш браузера."
+    return 1
+}
+
+# -------------------- main --------------------
+
+[ -n "$DOMAIN" ] || die "Укажите домен: $0 <домен>  или ALLOWED_DOMAIN в .env"
+
+require_cmd docker
+require_cmd openssl
+
+if ! command -v certbot >/dev/null 2>&1; then
+    die "certbot не установлен. Установите: sudo apt-get install -y certbot"
 fi
 
-echo -e "${BLUE}Обновление SSL сертификата для домена: $DOMAIN${NC}"
+CERT_DIR="/etc/letsencrypt/live/${DOMAIN}"
+FULLCHAIN="${CERT_DIR}/fullchain.pem"
+PRIVKEY="${CERT_DIR}/privkey.pem"
+VOLUME_NAME="$(resolve_volume_name)"
+
+log "Обновление SSL для: $DOMAIN"
+echo "  Volume:    $VOLUME_NAME"
+echo "  Container: $CONTAINER_NAME"
+echo "  Force:     $FORCE_RENEW"
+echo ""
+warn "Let's Encrypt выдаёт сертификат максимум на ~90 дней — увеличить срок нельзя."
+warn "Автообновление (cron) — правильный способ держать HTTPS валидным."
 echo ""
 
-# Проверка наличия certbot
-if ! command -v certbot &> /dev/null; then
-    echo -e "${RED}Ошибка: certbot не установлен${NC}"
-    echo "Установите certbot:"
-    echo "  sudo apt-get update"
-    echo "  sudo apt-get install certbot"
-    exit 1
+NEED_RENEW=0
+if ! sudo test -f "$FULLCHAIN"; then
+    die "Сертификат не найден: $FULLCHAIN. Сначала: ./setup-letsencrypt.sh $DOMAIN"
 fi
 
-# Проверка наличия Docker
-if ! command -v docker &> /dev/null; then
-    echo -e "${RED}Ошибка: Docker не установлен${NC}"
-    exit 1
-fi
+# Читаем текущий сертификат через sudo (права root)
+TMP_CURRENT="$(mktemp)"
+sudo cat "$FULLCHAIN" > "$TMP_CURRENT"
+CURRENT_DAYS="$(days_left "$TMP_CURRENT" || echo 0)"
+CURRENT_END="$(openssl x509 -in "$TMP_CURRENT" -noout -enddate 2>/dev/null | cut -d= -f2 || echo unknown)"
+show_cert_info "Текущий сертификат на диске (Let's Encrypt)" "$TMP_CURRENT"
+echo "  Осталось дней: $CURRENT_DAYS"
 
-# Проверка существования сертификатов Let's Encrypt
-CERT_DIR="/etc/letsencrypt/live/$DOMAIN"
-if [ ! -d "$CERT_DIR" ]; then
-    echo -e "${YELLOW}Сертификаты Let's Encrypt для $DOMAIN не найдены${NC}"
-    echo "Получите сертификат сначала:"
-    echo "  sudo certbot certonly --standalone -d $DOMAIN -d www.$DOMAIN"
-    exit 1
-fi
-
-# Проверка существования volume
-if ! docker volume inspect "$VOLUME_NAME" &> /dev/null; then
-    echo -e "${YELLOW}Volume $VOLUME_NAME не найден. Создаю...${NC}"
-    docker volume create "$VOLUME_NAME"
-fi
-
-# Обновление сертификата (certbot renew проверяет и обновляет только если нужно)
-echo -e "${YELLOW}Проверка необходимости обновления сертификата...${NC}"
-if sudo certbot renew --dry-run &> /dev/null; then
-    echo -e "${GREEN}Сертификат актуален, обновление не требуется${NC}"
+if [ "$FORCE_RENEW" = "1" ]; then
+    NEED_RENEW=1
+    warn "FORCE_RENEW=1 — принудительный выпуск нового сертификата"
+elif [ "$CURRENT_DAYS" -le 30 ]; then
+    NEED_RENEW=1
+    warn "До истечения ≤ 30 дней — нужно обновление"
 else
-    echo -e "${YELLOW}Обновление сертификата...${NC}"
-    sudo certbot renew --quiet
-    if [ $? -ne 0 ]; then
-        echo -e "${RED}Ошибка при обновлении сертификата${NC}"
-        exit 1
+    ok "До истечения > 30 дней. Новый выпуск не обязателен."
+    echo "  Чтобы выпустить новый сейчас: FORCE_RENEW=1 $0 $DOMAIN"
+fi
+
+# Всегда останавливаем app перед ACME standalone (и перед dry/renew)
+stop_app
+
+if [ "$NEED_RENEW" -eq 1 ]; then
+    log "Запрашиваю новый сертификат у Let's Encrypt (standalone, порт 80)..."
+    # --force-renewal: иначе certbot может отказать, если до конца > порога renew
+    RENEW_ARGS=(certonly --standalone --preferred-challenges http
+        --cert-name "$DOMAIN"
+        -d "$DOMAIN"
+        --agree-tos --non-interactive
+        --force-renewal)
+
+    if command -v dig >/dev/null 2>&1 && dig +short "www.$DOMAIN" 2>/dev/null | grep -q .; then
+        RENEW_ARGS+=(-d "www.$DOMAIN")
     fi
-    echo -e "${GREEN}Сертификат обновлен${NC}"
-fi
 
-# Копирование сертификатов в Docker volume
-echo -e "${YELLOW}Копирование сертификатов в Docker volume...${NC}"
-
-# Определяем пути к файлам (используем прямые пути, readlink разрешит символические ссылки)
-FULLCHAIN_SOURCE="/etc/letsencrypt/live/${DOMAIN}/fullchain.pem"
-PRIVKEY_SOURCE="/etc/letsencrypt/live/${DOMAIN}/privkey.pem"
-
-# Проверяем существование файлов
-if [ ! -f "$FULLCHAIN_SOURCE" ] || [ ! -r "$FULLCHAIN_SOURCE" ]; then
-    echo -e "${RED}Ошибка: Не удалось найти или прочитать fullchain.pem${NC}"
-    echo "Путь: $FULLCHAIN_SOURCE"
-    exit 1
-fi
-
-if [ ! -f "$PRIVKEY_SOURCE" ] || [ ! -r "$PRIVKEY_SOURCE" ]; then
-    echo -e "${RED}Ошибка: Не удалось найти или прочитать privkey.pem${NC}"
-    echo "Путь: $PRIVKEY_SOURCE"
-    exit 1
-fi
-
-# Определяем реальные пути (разрешаем символические ссылки)
-FULLCHAIN_REAL=$(readlink -f "$FULLCHAIN_SOURCE" 2>/dev/null || realpath "$FULLCHAIN_SOURCE" 2>/dev/null || echo "$FULLCHAIN_SOURCE")
-PRIVKEY_REAL=$(readlink -f "$PRIVKEY_SOURCE" 2>/dev/null || realpath "$PRIVKEY_SOURCE" 2>/dev/null || echo "$PRIVKEY_SOURCE")
-
-echo "Copying certificates:"
-echo "  Source fullchain: $FULLCHAIN_SOURCE (real: $FULLCHAIN_REAL)"
-echo "  Source privkey: $PRIVKEY_SOURCE (real: $PRIVKEY_REAL)"
-echo "  Target volume: $VOLUME_NAME"
-
-# Копируем файлы напрямую, читая их содержимое и записывая в volume
-# Это гарантирует, что мы копируем реальные файлы, а не символические ссылки
-docker run --rm \
-    -v ${VOLUME_NAME}:/ssl \
-    -v "$FULLCHAIN_REAL:/source_fullchain:ro" \
-    -v "$PRIVKEY_REAL:/source_privkey:ro" \
-    alpine sh -c "
-        # Удаляем старые сертификаты (включая скрытые файлы)
-        rm -f /ssl/server.crt /ssl/server.key /ssl/.server.crt /ssl/.server.key
-        
-        # Синхронизируем файловую систему для гарантии удаления
-        sync
-        
-        # Копируем содержимое файлов
-        cat /source_fullchain > /ssl/server.crt
-        cat /source_privkey > /ssl/server.key
-        
-        # Синхронизируем файловую систему для гарантии записи
-        sync
-        
-        # Устанавливаем права доступа
-        chmod 600 /ssl/server.key
-        chmod 644 /ssl/server.crt
-        chown root:root /ssl/server.key /ssl/server.crt
-        
-        # Проверяем, что файлы скопировались
-        if [ -f /ssl/server.crt ] && [ -f /ssl/server.key ]; then
-            # Проверяем базовую структуру PEM файлов (наличие BEGIN/END)
-            if grep -q 'BEGIN CERTIFICATE' /ssl/server.crt && grep -q 'END CERTIFICATE' /ssl/server.crt; then
-                if grep -q 'BEGIN.*PRIVATE KEY' /ssl/server.key && grep -q 'END.*PRIVATE KEY' /ssl/server.key; then
-                    echo 'Certificates copied successfully'
-                    ls -lh /ssl/
-                    echo ''
-                    echo 'Certificate file structure validated (PEM format)'
-                    echo 'File sizes:'
-                    wc -c /ssl/server.crt /ssl/server.key
-                    echo ''
-                    echo 'First 3 lines of certificate:'
-                    head -3 /ssl/server.crt
-                    echo 'Last 3 lines of certificate:'
-                    tail -3 /ssl/server.crt
-                else
-                    echo 'ERROR: Private key is not in PEM format'
-                    echo 'First 3 lines of key:'
-                    head -3 /ssl/server.key
-                    exit 1
-                fi
-            else
-                echo 'ERROR: Certificate is not in PEM format'
-                echo 'First 3 lines of certificate:'
-                head -3 /ssl/server.crt
-                exit 1
-            fi
-        else
-            echo 'ERROR: Failed to copy certificates'
-            ls -la /ssl/
-            exit 1
-        fi
-    " 2>&1
-
-COPY_RESULT=$?
-if [ $COPY_RESULT -eq 0 ]; then
-    echo -e "${GREEN}✓ Сертификаты скопированы в Docker volume${NC}"
-    
-    # Проверяем, что сертификаты действительно Let's Encrypt (используем openssl на хосте)
-    echo -e "${YELLOW}Проверка сертификата в volume...${NC}"
-    if command -v openssl &> /dev/null; then
-        # Временно копируем сертификат из volume для проверки
-        TEMP_CERT=$(mktemp)
-        docker run --rm -v ${VOLUME_NAME}:/ssl alpine cat /ssl/server.crt > "$TEMP_CERT" 2>/dev/null
-        
-        if [ -f "$TEMP_CERT" ] && [ -s "$TEMP_CERT" ]; then
-            CERT_ISSUER=$(openssl x509 -in "$TEMP_CERT" -noout -issuer 2>/dev/null || echo "")
-            CERT_SUBJECT=$(openssl x509 -in "$TEMP_CERT" -noout -subject 2>/dev/null || echo "")
-            CERT_DATES=$(openssl x509 -in "$TEMP_CERT" -noout -dates 2>/dev/null || echo "")
-            rm -f "$TEMP_CERT"
-            
-            if echo "$CERT_ISSUER" | grep -qi "let's encrypt\|letsencrypt"; then
-                echo -e "${GREEN}✓ Let's Encrypt сертификат подтвержден в volume${NC}"
-                echo "  Subject: $CERT_SUBJECT"
-                echo "  Issuer: $CERT_ISSUER"
-                echo "  Dates: $CERT_DATES"
-            else
-                echo -e "${RED}✗ ОШИБКА: Сертификат в volume не является Let's Encrypt!${NC}"
-                echo "  Subject: $CERT_SUBJECT"
-                echo "  Issuer: $CERT_ISSUER"
-                echo "  Dates: $CERT_DATES"
-                echo ""
-                echo -e "${YELLOW}Проверьте исходные файлы Let's Encrypt:${NC}"
-                echo "  Fullchain: $FULLCHAIN_SOURCE"
-                echo "  Privkey: $PRIVKEY_SOURCE"
-                if [ -f "$FULLCHAIN_SOURCE" ]; then
-                    echo "  Fullchain issuer: $(openssl x509 -in "$FULLCHAIN_SOURCE" -noout -issuer 2>/dev/null || echo 'Cannot read')"
-                fi
-                exit 1
-            fi
-        else
-            echo -e "${RED}✗ Не удалось прочитать сертификат из volume для проверки${NC}"
-            exit 1
-        fi
-    else
-        echo -e "${YELLOW}⚠ openssl не установлен на хосте, пропускаем проверку issuer${NC}"
-        echo -e "${YELLOW}⚠ Рекомендуется установить openssl для проверки сертификатов${NC}"
+    if ! sudo certbot "${RENEW_ARGS[@]}"; then
+        die "certbot не смог обновить сертификат"
     fi
+    ok "certbot выпустил новый сертификат"
 else
-    echo -e "${RED}✗ Ошибка при копировании сертификатов (код выхода: $COPY_RESULT)${NC}"
-    exit 1
+    log "Пропускаю выпуск нового сертификата — копирую текущий в Docker volume"
 fi
 
-# Перезапуск контейнера PHP для применения изменений
-echo -e "${YELLOW}Перезапуск контейнера PHP...${NC}"
-# Используем docker compose (без дефиса) если доступен, иначе docker-compose
-if command -v docker &> /dev/null && docker compose version &> /dev/null; then
-    DOCKER_COMPOSE_CMD="docker compose"
-else
-    DOCKER_COMPOSE_CMD="docker-compose"
-fi
+# Перечитываем после возможного renew
+sudo cat "$FULLCHAIN" > "$TMP_CURRENT"
+NEW_END="$(openssl x509 -in "$TMP_CURRENT" -noout -enddate 2>/dev/null | cut -d= -f2)"
+NEW_DAYS="$(days_left "$TMP_CURRENT")"
+show_cert_info "Сертификат после операции" "$TMP_CURRENT"
+echo "  Осталось дней: $NEW_DAYS"
 
-if $DOCKER_COMPOSE_CMD restart "$CONTAINER_NAME" 2>/dev/null; then
-    echo -e "${GREEN}✓ Контейнер перезапущен${NC}"
-    
-    # Ждем немного, чтобы Apache запустился
-    sleep 5
-    
-    # Проверяем сертификат в контейнере
-    echo -e "${YELLOW}Проверка сертификата в контейнере...${NC}"
-    
-    # Проверяем, что файлы в контейнере обновлены
-    CONTAINER_CERT_SIZE=$(docker exec "$CONTAINER_NAME" stat -c%s /etc/apache2/ssl/server.crt 2>/dev/null || echo "0")
-    VOLUME_CERT_SIZE=$(docker run --rm -v ${VOLUME_NAME}:/ssl alpine stat -c%s /ssl/server.crt 2>/dev/null || echo "0")
-    
-    if [ "$CONTAINER_CERT_SIZE" = "$VOLUME_CERT_SIZE" ] && [ "$CONTAINER_CERT_SIZE" != "0" ]; then
-        echo -e "${GREEN}✓ Размеры файлов совпадают (${CONTAINER_CERT_SIZE} bytes)${NC}"
-    else
-        echo -e "${YELLOW}⚠ Размеры файлов не совпадают (контейнер: ${CONTAINER_CERT_SIZE}, volume: ${VOLUME_CERT_SIZE})${NC}"
-    fi
-    
-    # Проверяем issuer сертификата в контейнере
-    if docker exec "$CONTAINER_NAME" openssl x509 -in /etc/apache2/ssl/server.crt -noout -issuer 2>/dev/null | grep -qi "let's encrypt\|letsencrypt"; then
-        echo -e "${GREEN}✓ Let's Encrypt сертификат активен в контейнере${NC}"
-        docker exec "$CONTAINER_NAME" openssl x509 -in /etc/apache2/ssl/server.crt -noout -subject -issuer -dates 2>/dev/null
-    else
-        echo -e "${YELLOW}⚠ Внимание: Контейнер все еще использует старый сертификат${NC}"
-        echo "Проверяю содержимое файла в контейнере..."
-        docker exec "$CONTAINER_NAME" openssl x509 -in /etc/apache2/ssl/server.crt -noout -subject -issuer -dates 2>/dev/null || echo "Не удалось прочитать сертификат"
-        
-        # Пытаемся перезагрузить Apache более агрессивно
-        echo -e "${YELLOW}Попытка перезагрузки Apache внутри контейнера...${NC}"
-        docker exec "$CONTAINER_NAME" apache2ctl graceful 2>/dev/null || docker exec "$CONTAINER_NAME" service apache2 reload 2>/dev/null || true
-        
-        sleep 3
-        
-        # Проверяем снова
-        if docker exec "$CONTAINER_NAME" openssl x509 -in /etc/apache2/ssl/server.crt -noout -issuer 2>/dev/null | grep -qi "let's encrypt\|letsencrypt"; then
-            echo -e "${GREEN}✓ Let's Encrypt сертификат активен после перезагрузки Apache${NC}"
-        else
-            echo -e "${RED}✗ Контейнер все еще использует старый сертификат${NC}"
-            echo -e "${YELLOW}Пробуем принудительно пересоздать контейнер...${NC}"
-            $DOCKER_COMPOSE_CMD stop "$CONTAINER_NAME" 2>/dev/null || true
-            $DOCKER_COMPOSE_CMD rm -f "$CONTAINER_NAME" 2>/dev/null || true
-            $DOCKER_COMPOSE_CMD up -d "$CONTAINER_NAME" 2>/dev/null
-            sleep 5
-            if docker exec "$CONTAINER_NAME" openssl x509 -in /etc/apache2/ssl/server.crt -noout -issuer 2>/dev/null | grep -qi "let's encrypt\|letsencrypt"; then
-                echo -e "${GREEN}✓ Let's Encrypt сертификат активен после пересоздания контейнера${NC}"
-            else
-                echo -e "${RED}✗ Проблема сохраняется. Проверьте монтирование volume:${NC}"
-                echo "  docker inspect $CONTAINER_NAME | grep -A 10 Mounts"
-            fi
-        fi
-    fi
-else
-    echo -e "${YELLOW}⚠ Не удалось перезапустить контейнер автоматически${NC}"
-    echo "Перезапустите вручную: docker compose restart $CONTAINER_NAME"
-fi
+ISSUER="$(openssl x509 -in "$TMP_CURRENT" -noout -issuer 2>/dev/null || true)"
+echo "$ISSUER" | grep -qi "let's encrypt\|letsencrypt\|r3\|r10\|r11\|e1\|e5\|e6\|e7\|e8\|e9" \
+    || warn "Issuer не похож на Let's Encrypt: $ISSUER"
+
+copy_certs_to_volume "$VOLUME_NAME" "$FULLCHAIN" "$PRIVKEY"
+
+# Проверка содержимого volume
+TMP_VOL="$(mktemp)"
+docker run --rm -v "${VOLUME_NAME}:/ssl" alpine cat /ssl/server.crt > "$TMP_VOL"
+VOL_END="$(openssl x509 -in "$TMP_VOL" -noout -enddate 2>/dev/null | cut -d= -f2)"
+show_cert_info "Сертификат в Docker volume" "$TMP_VOL"
+[ "$VOL_END" = "$NEW_END" ] || die "В volume другой notAfter ($VOL_END), чем у LE ($NEW_END)"
+
+start_app
+reload_apache_ssl
+
+# Проверка файла внутри контейнера
+TMP_CTR="$(mktemp)"
+docker exec "$CONTAINER_NAME" cat /etc/apache2/ssl/server.crt > "$TMP_CTR" 2>/dev/null \
+    || die "Не удалось прочитать /etc/apache2/ssl/server.crt из контейнера"
+CTR_END="$(openssl x509 -in "$TMP_CTR" -noout -enddate 2>/dev/null | cut -d= -f2)"
+show_cert_info "Сертификат в контейнере (файл)" "$TMP_CTR"
+[ "$CTR_END" = "$NEW_END" ] || die "В контейнере другой notAfter ($CTR_END), чем у LE ($NEW_END)"
+
+verify_live_https "$DOMAIN" "$NEW_END" || true
+
+rm -f "$TMP_CURRENT" "$TMP_VOL" "$TMP_CTR"
 
 echo ""
-echo -e "${GREEN}SSL сертификат успешно обновлен!${NC}"
-echo -e "${BLUE}Проверьте работу сайта: https://$DOMAIN${NC}"
+ok "Готово."
+echo -e "${BLUE}Проверьте в браузере (лучше инкогнито): https://${DOMAIN}${NC}"
+echo -e "${BLUE}Или: echo | openssl s_client -servername ${DOMAIN} -connect ${DOMAIN}:443 2>/dev/null | openssl x509 -noout -dates${NC}"
+echo ""
+echo "Срок Let's Encrypt ~90 дней. Для автообновления:"
+echo "  ./setup-cron.sh"
+echo "Принудительный выпуск нового сертификата:"
+echo "  FORCE_RENEW=1 ./update-ssl-cert.sh ${DOMAIN}"
+
+trap - EXIT
+exit 0
