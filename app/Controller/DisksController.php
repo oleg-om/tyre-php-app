@@ -275,7 +275,6 @@ class DisksController extends AppController
         if (empty($this->request->query['size1']) && empty($this->request->query['size3']) && empty($this->request->query['size2']) && empty($this->request->query['et_from']) && empty($this->request->query['et_to']) && empty($this->request->query['hub_from']) && empty($this->request->query['hub_to']) && empty($this->request->query['hub']) && empty($this->request->query['material'])
             && (!isset($this->request->query['auto']) || empty($this->request->query['auto']) || $this->request->query['auto'] === 'cars')) {
             $conditions['Product.size1'] = 18;
-            $conditions['BrandModel.material'] = 'cast';
         }
 
         if ($this->request->query['p1'] == 1 || $this->request->query['p2'] == 1 || $this->request->query['p3'] == 1) {
@@ -451,20 +450,26 @@ class DisksController extends AppController
 
 
         $sort = 'price_asc';
-        if (isset($this->request->query['sort']) && in_array($this->request->query['sort'], array('name', 'price_asc', 'price_desc'))) {
+        if (CONST_ENABLE_POPULAR_SORT == '1') {
+            $sort = 'popular';
+        }
+        if (isset($this->request->query['sort']) && in_array($this->request->query['sort'], array('name', 'price_asc', 'price_desc', 'popular'))) {
             $sort = $this->request->query['sort'];
         }
+        $this->BrandModel->virtualFields['material_sort'] = 'CASE BrandModel.material WHEN \'cast\' THEN 1 WHEN \'steel\' THEN 2 ELSE 3 END';
         if ($mode == 'table') {
             $sort_orders = array(
                 'price_asc' => array('Product.price' => 'ASC'),
                 'price_desc' => array('Product.price' => 'DESC'),
                 'name' => array('BrandModel.full_title' => 'ASC'),
+                'popular' => array('BrandModel.material_sort' => 'ASC', 'Product.price' => 'ASC'),
             );
         } else {
             $sort_orders = array(
                 'price_asc' => array('BrandModel.low_price' => 'ASC'),
                 'price_desc' => array('BrandModel.low_price' => 'DESC'),
                 'name' => array('BrandModel.full_title' => 'ASC'),
+                'popular' => array('BrandModel.material_sort' => 'ASC', 'BrandModel.low_price' => 'ASC'),
             );
 
             /*
@@ -552,7 +557,10 @@ class DisksController extends AppController
         $this->set('mode', $mode);
         $sort = 'price_asc';
         $auto = 'cars';
-        if (isset($this->request->query['sort']) && in_array($this->request->query['sort'], array('name', 'price_asc', 'price_desc'))) {
+        if (CONST_ENABLE_POPULAR_SORT == '1') {
+            $sort = 'popular';
+        }
+        if (isset($this->request->query['sort']) && in_array($this->request->query['sort'], array('name', 'price_asc', 'price_desc', 'popular'))) {
             $sort = $this->request->query['sort'];
         }
         if ($mode == 'table') {
@@ -560,12 +568,14 @@ class DisksController extends AppController
                 'price_asc' => array('Product.price' => 'ASC'),
                 'price_desc' => array('Product.price' => 'DESC'),
                 'name' => array('BrandModel.full_title' => 'ASC'),
+                'popular' => array('BrandModel.material_sort' => 'ASC', 'Product.price' => 'ASC'),
             );
         } else {
             $sort_orders = array(
                 'price_asc' => array('BrandModel.low_price' => 'ASC'),
                 'price_desc' => array('BrandModel.low_price' => 'DESC'),
                 'name' => array('BrandModel.full_title' => 'ASC'),
+                'popular' => array('BrandModel.material_sort' => 'ASC', 'BrandModel.low_price' => 'ASC'),
             );
         }
 
@@ -817,11 +827,10 @@ class DisksController extends AppController
 
                 if (isset($this->request->query['material']) && !empty($this->request->query['material'])) {
                     $model_conditions['BrandModel.material'] = $this->request->query['material'];
-                } elseif (count($conditions) == 4) {
-                    $model_conditions['BrandModel.material'] = 'cast';
                 }
 
                 $this->BrandModel->virtualFields['full_title'] = 'CONCAT(Brand.title,\' \',BrandModel.title)';
+                $this->BrandModel->virtualFields['material_sort'] = 'CASE BrandModel.material WHEN \'cast\' THEN 1 WHEN \'steel\' THEN 2 ELSE 3 END';
 
                 $this->paginate['order'] = $sort_orders[$sort];
 

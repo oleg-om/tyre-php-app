@@ -26,7 +26,7 @@ $this->Paginator->options(array('url' => $url));
 
 <?php
 echo $this->element('currency');
-echo $this->element('mode_selector', array('url' => $url));
+echo $this->element('mode_selector', array('url' => $url, 'popular_sort' => true));
 ?>
 <div class="clear"></div>
 <?php
