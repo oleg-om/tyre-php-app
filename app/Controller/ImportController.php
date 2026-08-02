@@ -4123,6 +4123,20 @@ class ImportController extends AppController
                                         continue;
                                     }
                                     $f = mb_substr($title, $last_space + 1);
+                                    $prefix_end = $last_space;
+
+                                    // "164 K" — индекс скорости оторван пробелом от индекса
+                                    // нагрузки, объединяем их обратно в "164K"
+                                    if (preg_match('/^[A-ZА-Я]{1,2}$/ui', $f)) {
+                                        $prev_part = mb_substr($title, 0, $last_space);
+                                        $prev_space = mb_strrpos($prev_part, ' ');
+                                        $load_index = ($prev_space !== false) ? mb_substr($prev_part, $prev_space + 1) : $prev_part;
+                                        if (preg_match('/^[0-9]{2,3}(\/[0-9]{2,3})?$/', $load_index)) {
+                                            $f = $load_index . $f;
+                                            $prefix_end = ($prev_space !== false) ? $prev_space : 0;
+                                        }
+                                    }
+
                                     if (mb_strlen($f) < 3) {
                                         $error_lines[] = $i;
                                         $skipped_rows++;
@@ -4130,7 +4144,7 @@ class ImportController extends AppController
                                     }
                                     $f1 = mb_substr($f, 0, -1);
                                     $f2 = mb_substr($f, -1);
-                                    $model_name = trim(str_replace($f, '', $title)) . $tube_marking;
+                                    $model_name = trim(mb_substr($title, 0, $prefix_end)) . $tube_marking;
                                     $model_name = $this->_normalize_superscripts($model_name);
                                     $model = $this->_clean_text($model_name, false);
                                     $delimiter = null;
