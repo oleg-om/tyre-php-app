@@ -275,6 +275,7 @@ class DisksController extends AppController
         if (empty($this->request->query['size1']) && empty($this->request->query['size3']) && empty($this->request->query['size2']) && empty($this->request->query['et_from']) && empty($this->request->query['et_to']) && empty($this->request->query['hub_from']) && empty($this->request->query['hub_to']) && empty($this->request->query['hub']) && empty($this->request->query['material'])
             && (!isset($this->request->query['auto']) || empty($this->request->query['auto']) || $this->request->query['auto'] === 'cars')) {
             $conditions['Product.size1'] = 18;
+            $conditions['BrandModel.material'] = 'cast';
         }
 
         if ($this->request->query['p1'] == 1 || $this->request->query['p2'] == 1 || $this->request->query['p3'] == 1) {
@@ -816,6 +817,8 @@ class DisksController extends AppController
 
                 if (isset($this->request->query['material']) && !empty($this->request->query['material'])) {
                     $model_conditions['BrandModel.material'] = $this->request->query['material'];
+                } elseif (count($conditions) == 4) {
+                    $model_conditions['BrandModel.material'] = 'cast';
                 }
 
                 $this->BrandModel->virtualFields['full_title'] = 'CONCAT(Brand.title,\' \',BrandModel.title)';
