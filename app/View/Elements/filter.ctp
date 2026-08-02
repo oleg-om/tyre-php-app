@@ -602,7 +602,17 @@ function loadSelectData(data, status)  {
 			}
 			var curr_select = $('select[name="' + field_key + '"]');
 			var curr_value = curr_select.find(':selected').val(), selected_added = false;
-			$.each(field_value, function(key, value) {
+			var keys = Object.keys(field_value);
+			var is_numeric = keys.length > 0 && keys.every(function(k) {
+				return /^-?\d+(\.\d+)?$/.test(k);
+			});
+			if (is_numeric) {
+				keys.sort(function(a, b) {
+					return parseFloat(a) - parseFloat(b);
+				});
+			}
+			$.each(keys, function(i, key) {
+				var value = field_value[key];
 				var selected = '';
 				if (curr_value == key && !selected_added && key != 0) {
 					selected = ' selected';

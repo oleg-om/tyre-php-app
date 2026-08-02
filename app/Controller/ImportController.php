@@ -4106,6 +4106,16 @@ class ImportController extends AppController
                                         $run_flat = 1;
                                     }
 
+
+                                    // Отделяем конечную маркировку TL/TT, иначе она "перетягивает"
+                                    // на себя роль индекса нагрузки/скорости и строка ошибочно пропускается
+                                    $tube_marking = '';
+                                    if (preg_match('/\s+(TL|TT)$/i', $title, $tube_match)) {
+                                        $tube_marking = ' ' . mb_strtoupper($tube_match[1]);
+                                        $title = mb_substr($title, 0, mb_strlen($title) - mb_strlen($tube_match[0]));
+                                        $title = rtrim($title);
+                                    }
+
                                     $last_space = mb_strrpos($title, ' ');
                                     if ($last_space === false) {
                                         $error_lines[] = $i;
@@ -4113,6 +4123,20 @@ class ImportController extends AppController
                                         continue;
                                     }
                                     $f = mb_substr($title, $last_space + 1);
+                                    $prefix_end = $last_space;
+
+                                    // "164 K" — индекс скорости оторван пробелом от индекса
+                                    // нагрузки, объединяем их обратно в "164K"
+                                    if (preg_match('/^[A-ZА-Я]{1,2}$/ui', $f)) {
+                                        $prev_part = mb_substr($title, 0, $last_space);
+                                        $prev_space = mb_strrpos($prev_part, ' ');
+                                        $load_index = ($prev_space !== false) ? mb_substr($prev_part, $prev_space + 1) : $prev_part;
+                                        if (preg_match('/^[0-9]{2,3}(\/[0-9]{2,3})?$/', $load_index)) {
+                                            $f = $load_index . $f;
+                                            $prefix_end = ($prev_space !== false) ? $prev_space : 0;
+                                        }
+                                    }
+
                                     if (mb_strlen($f) < 3) {
                                         $error_lines[] = $i;
                                         $skipped_rows++;
@@ -4120,10 +4144,14 @@ class ImportController extends AppController
                                     }
                                     $f1 = mb_substr($f, 0, -1);
                                     $f2 = mb_substr($f, -1);
-                                    $model_name = trim(str_replace($f, '', $title));
+                                    $model_name = trim(mb_substr($title, 0, $prefix_end)) . $tube_marking;
                                     $model_name = $this->_normalize_superscripts($model_name);
                                     $model = $this->_clean_text($model_name, false);
                                     $delimiter = null;
+                                    // "18.4 R-26" — дефис сразу после R относится к самой
+                                    // радиальной маркировке, а не разделяет ширину/профиль,
+                                    // убираем его, иначе размер ошибочно сочтут 3-частным
+                                    $size = preg_replace('/R-\s*/i', 'R', $size);
                                     if (substr_count($size, '/') == 1) {
                                         $size = str_replace('R', '/', $size);
                                     } elseif (substr_count($size, '-') == 1) {

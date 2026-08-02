@@ -481,15 +481,7 @@ class DisksController extends AppController
         }
         $this->BrandModel->virtualFields['full_title'] = 'CONCAT(Brand.title,\' \',BrandModel.title)';
 
-        if ($mode != 'table' && empty($this->request->query['material'])) {
-            $this->BrandModel->virtualFields['material_sort'] = 'CASE BrandModel.material WHEN \'cast\' THEN 1 WHEN \'steel\' THEN 2 ELSE 3 END';
-            $this->paginate['order'] = array_merge(
-                array('BrandModel.material_sort' => 'ASC'),
-                $sort_orders[$sort]
-            );
-        } else {
-            $this->paginate['order'] = $sort_orders[$sort];
-        }
+        $this->paginate['order'] = $sort_orders[$sort];
 
         if ($mode == 'table') {
             $this->Product->bindModel(
@@ -828,15 +820,7 @@ class DisksController extends AppController
 
                 $this->BrandModel->virtualFields['full_title'] = 'CONCAT(Brand.title,\' \',BrandModel.title)';
 
-                if ($mode != 'table' && empty($this->request->query['material'])) {
-                    $this->BrandModel->virtualFields['material_sort'] = 'CASE BrandModel.material WHEN \'cast\' THEN 1 WHEN \'steel\' THEN 2 ELSE 3 END';
-                    $this->paginate['order'] = array_merge(
-                        array('BrandModel.material_sort' => 'ASC'),
-                        $sort_orders[$sort]
-                    );
-                } else {
-                    $this->paginate['order'] = $sort_orders[$sort];
-                }
+                $this->paginate['order'] = $sort_orders[$sort];
 
                 if ($mode == 'table') {
                     $this->Product->bindModel(
