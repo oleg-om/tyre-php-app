@@ -310,15 +310,26 @@ class OrdersController extends AppController
                     }
                     // comment
                     // preorder
+                    $data_to_crm['preorder'] = array();
                     foreach ($products_crm as $product_item) {
-                        $supplier = $this->Supplier->find('first', array('conditions' => array('Supplier.id' => $product_item['Product']['supplier_id']), 'fields' => array('Supplier.title')));
+                        $supplier_title = '';
+                        if (!empty($product_item['Product']['supplier_id'])) {
+                            $supplier = $this->Supplier->find('first', array(
+                                'conditions' => array('Supplier.id' => $product_item['Product']['supplier_id']),
+                                'fields' => array('Supplier.title'),
+                                'recursive' => -1,
+                            ));
+                            if (!empty($supplier['Supplier']['title'])) {
+                                $supplier_title = strval($supplier['Supplier']['title']);
+                            }
+                        }
                         $current_item = array(
                             'price' => strval($product_item['price']),
                             'mode' => 'full',
                             'tyreItem' => '',
                             'quantity' => strval($product_item['quantity']),
-                            'brand' => str_replace("'", " ", $product_item['Brand']['title']),
-                            'model' => str_replace("'", " ", $product_item['BrandModel']['title']),
+                            'brand' => str_replace("'", " ", isset($product_item['Brand']['title']) ? $product_item['Brand']['title'] : ''),
+                            'model' => str_replace("'", " ", isset($product_item['BrandModel']['title']) ? $product_item['BrandModel']['title'] : ''),
                             'type' => strval($product_item['Product']['category_id']),
                             'sizeone' => '',
                             'sizetwo' => '',
@@ -337,7 +348,7 @@ class OrdersController extends AppController
                             'typeakb' => '',
                             'polar' => '',
                             'vendor' => '',
-                            'vendorFromSite' => strval($supplier['Supplier']['title']),
+                            'vendorFromSite' => $supplier_title,
 
                         );
                         if ($product_item['Product']['category_id'] == 1) {
@@ -367,15 +378,36 @@ class OrdersController extends AppController
 
                     }
 
-                    $crm_url = CONST_CRM_URL;
-                    // Преобразуем в JSON
-                    $json = json_encode($data_to_crm, JSON_UNESCAPED_UNICODE);
-                    // Составляем curl-запрос
-                    $cmd = "/usr/bin/curl -X POST -H 'Content-Type: application/json' -d '$json' \"$crm_url\"";
-
-                    // Выполняем
-                    exec($cmd, $output, $ret);
-                    // save to crm
+                    // Отправка в CRM с таймаутом — не блокируем страницу «спасибо»
+                    $crm_url = defined('CONST_CRM_URL') ? CONST_CRM_URL : '';
+                    if (!empty($crm_url) && !empty($data_to_crm['preorder'])) {
+                        $json = json_encode($data_to_crm, JSON_UNESCAPED_UNICODE);
+                        if ($json !== false) {
+                            if (function_exists('curl_init')) {
+                                $ch = curl_init($crm_url);
+                                curl_setopt_array($ch, array(
+                                    CURLOPT_POST => true,
+                                    CURLOPT_POSTFIELDS => $json,
+                                    CURLOPT_HTTPHEADER => array('Content-Type: application/json'),
+                                    CURLOPT_RETURNTRANSFER => true,
+                                    CURLOPT_CONNECTTIMEOUT => 3,
+                                    CURLOPT_TIMEOUT => 5,
+                                    CURLOPT_SSL_VERIFYPEER => false,
+                                ));
+                                curl_exec($ch);
+                                curl_close($ch);
+                            } else {
+                                // Fallback без зависания на exec
+                                $cmd = sprintf(
+                                    '/usr/bin/curl -sS -X POST -H %s -d %s --connect-timeout 3 --max-time 5 %s >/dev/null 2>&1 &',
+                                    escapeshellarg('Content-Type: application/json'),
+                                    escapeshellarg($json),
+                                    escapeshellarg($crm_url)
+                                );
+                                exec($cmd);
+                            }
+                        }
+                    }
 
                     $save_data = array(
                         'status_id' => $this->request->data['Order']['status_id'],
@@ -410,46 +442,54 @@ class OrdersController extends AppController
                         $address_str = implode(', ', $address);
                     }
                     foreach ($emails as $email) {
-                        $this->Sender->sendEmail(
-                            $email,
-                            'order_created_admin',
-                            array(
-                                'order_id' => $order_id,
-                                'total' => $this->getCartPriceOnly($cart['total']),
-                                'created' => date('d/m/y, H:i'),
-                                'name' => $this->request->data['Order']['name'],
-                                'email' => $this->request->data['Order']['email'],
-                                'phone' => $this->request->data['Order']['phone'],
-                                'comment' => $this->request->data['Order']['comment'],
-                                'shipping' => $shipping,
-                                'payment' => $payment_types[$this->request->data['Order']['payment_type_id']],
-                                'address' => $address_str,
-                                'products' => '<ol>' . implode(' ', $ordered_products) . '</ol>' . "\n"
-                            )
-                        );
+                        try {
+                            $this->Sender->sendEmail(
+                                $email,
+                                'order_created_admin',
+                                array(
+                                    'order_id' => $order_id,
+                                    'total' => $this->getCartPriceOnly($cart['total']),
+                                    'created' => date('d/m/y, H:i'),
+                                    'name' => $this->request->data['Order']['name'],
+                                    'email' => $this->request->data['Order']['email'],
+                                    'phone' => $this->request->data['Order']['phone'],
+                                    'comment' => $this->request->data['Order']['comment'],
+                                    'shipping' => $shipping,
+                                    'payment' => $payment_types[$this->request->data['Order']['payment_type_id']],
+                                    'address' => $address_str,
+                                    'products' => '<ol>' . implode(' ', $ordered_products) . '</ol>' . "\n"
+                                )
+                            );
+                        } catch (Exception $e) {
+                            // Письмо не должно блокировать оформление заказа
+                        }
                     }
                     if (!empty($this->request->data['Order']['email'])) {
                         $pay_link = '';
                         if ($this->request->data['Order']['payment_type_id'] == 2 || $this->request->data['Order']['payment_type_id'] == 3) {
                             $pay_link = '<a href="' . Router::url(array('controller' => 'orders', 'action' => 'thank', '?' => array('order_id' => $order_id)), true) . '">перейти к оплате</a>';
                         }
-                        $this->Sender->sendEmail(
-                            $this->request->data['Order']['email'],
-                            'order_created_user',
-                            array(
-                                'order_id' => $order_id,
-                                'total' => $this->getCartPriceOnly($cart['total']),
-                                'name' => $this->request->data['Order']['name'],
-                                'email' => $this->request->data['Order']['email'],
-                                'phone' => $this->request->data['Order']['phone'],
-                                'comment' => $this->request->data['Order']['comment'],
-                                'shipping' => $shipping,
-                                'payment' => $payment_types[$this->request->data['Order']['payment_type_id']],
-                                'address' => $address_str,
-                                'products' => '<ol>' . implode(' ', $ordered_products) . '</ol>' . "\n",
-                                'pay_link' => $pay_link . "\n"
-                            )
-                        );
+                        try {
+                            $this->Sender->sendEmail(
+                                $this->request->data['Order']['email'],
+                                'order_created_user',
+                                array(
+                                    'order_id' => $order_id,
+                                    'total' => $this->getCartPriceOnly($cart['total']),
+                                    'name' => $this->request->data['Order']['name'],
+                                    'email' => $this->request->data['Order']['email'],
+                                    'phone' => $this->request->data['Order']['phone'],
+                                    'comment' => $this->request->data['Order']['comment'],
+                                    'shipping' => $shipping,
+                                    'payment' => $payment_types[$this->request->data['Order']['payment_type_id']],
+                                    'address' => $address_str,
+                                    'products' => '<ol>' . implode(' ', $ordered_products) . '</ol>' . "\n",
+                                    'pay_link' => $pay_link . "\n"
+                                )
+                            );
+                        } catch (Exception $e) {
+                            // Письмо не должно блокировать оформление заказа
+                        }
                     }
                     $this->Session->write('cart', array());
                     $query = array();
@@ -484,7 +524,7 @@ class OrdersController extends AppController
 
     public function thank()
     {
-        $this->_filter_params();
+        // Не вызываем _filter_params — тяжёлые DISTINCT-запросы не нужны на странице «спасибо»
         if (isset($this->request->query['order_id'])) {
             $this->loadModel('Order');
             if ($order = $this->Order->find('first', array('conditions' => array('Order.id' => $this->request->query['order_id'], 'Order.payment_type_id' => array(2, 3), 'Order.status_id' => 1)))) {
@@ -497,7 +537,9 @@ class OrdersController extends AppController
             'title' => 'Оформление заказа'
         );
         $this->set('breadcrumbs', $breadcrumbs);
-
+        $this->set('show_left_menu', false);
+        $this->set('show_right_menu', false);
+        $this->set('show_filter', 0);
     }
 
     public function cart()
