@@ -201,7 +201,6 @@ class OrdersController extends AppController
             $cart = array('items' => array(), 'total' => 0);
         }
         list($cart, $products) = $this->_get_cart_items($cart);
-        $this->_filter_params();
         $this->loadModel('PaymentType');
         $this->loadModel('ShippingMethod');
         $this->loadModel('ShippingType');
@@ -378,37 +377,6 @@ class OrdersController extends AppController
 
                     }
 
-                    // Отправка в CRM с таймаутом — не блокируем страницу «спасибо»
-                    $crm_url = defined('CONST_CRM_URL') ? CONST_CRM_URL : '';
-                    if (!empty($crm_url) && !empty($data_to_crm['preorder'])) {
-                        $json = json_encode($data_to_crm, JSON_UNESCAPED_UNICODE);
-                        if ($json !== false) {
-                            if (function_exists('curl_init')) {
-                                $ch = curl_init($crm_url);
-                                curl_setopt_array($ch, array(
-                                    CURLOPT_POST => true,
-                                    CURLOPT_POSTFIELDS => $json,
-                                    CURLOPT_HTTPHEADER => array('Content-Type: application/json'),
-                                    CURLOPT_RETURNTRANSFER => true,
-                                    CURLOPT_CONNECTTIMEOUT => 3,
-                                    CURLOPT_TIMEOUT => 5,
-                                    CURLOPT_SSL_VERIFYPEER => false,
-                                ));
-                                curl_exec($ch);
-                                curl_close($ch);
-                            } else {
-                                // Fallback без зависания на exec
-                                $cmd = sprintf(
-                                    '/usr/bin/curl -sS -X POST -H %s -d %s --connect-timeout 3 --max-time 5 %s >/dev/null 2>&1 &',
-                                    escapeshellarg('Content-Type: application/json'),
-                                    escapeshellarg($json),
-                                    escapeshellarg($crm_url)
-                                );
-                                exec($cmd);
-                            }
-                        }
-                    }
-
                     $save_data = array(
                         'status_id' => $this->request->data['Order']['status_id'],
                         'order_id' => $order_id,
@@ -441,6 +409,65 @@ class OrdersController extends AppController
                     if (!empty($address)) {
                         $address_str = implode(', ', $address);
                     }
+
+                    // Сначала отдаём «спасибо», CRM и письма — после закрытия ответа клиенту
+                    $this->Session->write('cart', array());
+                    $query = array();
+                    if ($this->request->data['Order']['payment_type_id'] == 2 || $this->request->data['Order']['payment_type_id'] == 3) {
+                        $query = array('order_id' => $order_id);
+                    }
+                    $thank_url = Router::url(array('controller' => 'orders', 'action' => 'thank', '?' => $query), true);
+
+                    ignore_user_abort(true);
+                    if (session_id()) {
+                        session_write_close();
+                    }
+                    while (ob_get_level() > 0) {
+                        ob_end_clean();
+                    }
+                    header('Location: ' . $thank_url, true, 302);
+                    header('Content-Length: 0');
+                    header('Connection: close');
+                    flush();
+                    if (function_exists('fastcgi_finish_request')) {
+                        fastcgi_finish_request();
+                    }
+
+                    // CRM в фоне — без ожидания ответа
+                    $crm_url = defined('CONST_CRM_URL') ? CONST_CRM_URL : '';
+                    if (!empty($crm_url) && !empty($data_to_crm['preorder'])) {
+                        $json = json_encode($data_to_crm, JSON_UNESCAPED_UNICODE);
+                        if ($json !== false) {
+                            $tmp = TMP . 'crm_order_' . $order_id . '_' . uniqid('', true) . '.json';
+                            if (@file_put_contents($tmp, $json) !== false) {
+                                $curl_bin = is_executable('/usr/bin/curl') ? '/usr/bin/curl' : 'curl';
+                                $cmd = sprintf(
+                                    '( %s -sS -X POST -H %s --data-binary @%s --connect-timeout 3 --max-time 15 -k %s; rm -f %s ) >/dev/null 2>&1 &',
+                                    $curl_bin,
+                                    escapeshellarg('Content-Type: application/json'),
+                                    escapeshellarg($tmp),
+                                    escapeshellarg($crm_url),
+                                    escapeshellarg($tmp)
+                                );
+                                @exec($cmd);
+                            } elseif (function_exists('curl_init')) {
+                                // Fallback: короткий таймаут, если нет файла/curl CLI
+                                $ch = curl_init($crm_url);
+                                curl_setopt_array($ch, array(
+                                    CURLOPT_POST => true,
+                                    CURLOPT_POSTFIELDS => $json,
+                                    CURLOPT_HTTPHEADER => array('Content-Type: application/json'),
+                                    CURLOPT_RETURNTRANSFER => true,
+                                    CURLOPT_CONNECTTIMEOUT => 2,
+                                    CURLOPT_TIMEOUT => 3,
+                                    CURLOPT_SSL_VERIFYPEER => false,
+                                ));
+                                @curl_exec($ch);
+                                curl_close($ch);
+                            }
+                        }
+                    }
+
                     foreach ($emails as $email) {
                         try {
                             $this->Sender->sendEmail(
@@ -467,7 +494,7 @@ class OrdersController extends AppController
                     if (!empty($this->request->data['Order']['email'])) {
                         $pay_link = '';
                         if ($this->request->data['Order']['payment_type_id'] == 2 || $this->request->data['Order']['payment_type_id'] == 3) {
-                            $pay_link = '<a href="' . Router::url(array('controller' => 'orders', 'action' => 'thank', '?' => array('order_id' => $order_id)), true) . '">перейти к оплате</a>';
+                            $pay_link = '<a href="' . $thank_url . '">перейти к оплате</a>';
                         }
                         try {
                             $this->Sender->sendEmail(
@@ -491,17 +518,14 @@ class OrdersController extends AppController
                             // Письмо не должно блокировать оформление заказа
                         }
                     }
-                    $this->Session->write('cart', array());
-                    $query = array();
-                    if ($this->request->data['Order']['payment_type_id'] == 2 || $this->request->data['Order']['payment_type_id'] == 3) {
-                        $query = array('order_id' => $order_id);
-                    }
-                    $this->redirect(array('controller' => 'orders', 'action' => 'thank', '?' => $query));
+                    $this->_stop();
                 } else {
                     debug($this->Order->validationErrors);
                 }
             }
         }
+        // Тяжёлые фильтры только при показе формы, не при успешном оформлении
+        $this->_filter_params();
         $this->set('regions', $regions);
         $this->set('cities', $cities);
         $this->set('stores', $stores);
