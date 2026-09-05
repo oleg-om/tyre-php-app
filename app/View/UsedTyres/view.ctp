@@ -16,7 +16,7 @@ else {
 	<tr>
 		<td width="240" class="model_image"><?php
 			if (!empty($used_tyre['Photo']['filename'])) {
-				echo $this->Html->link($this->Html->image($this->Backend->thumbnail(array('id' => $used_tyre['Photo']['id'], 'filename' => $used_tyre['Photo']['filename'], 'path' => 'tyres', 'width' => 240, 'height' => 1000, 'crop' => false, 'folder' => true)), array('alt' => $brand . ' ' . $model)), $this->Backend->thumbnail(array('id' => $used_tyre['Photo']['id'], 'filename' => $used_tyre['Photo']['filename'], 'path' => 'tyres', 'width' => 800, 'height' => 600, 'crop' => false, 'folder' => true)), array('escape' => false, 'rel' => 'gallery', 'class' => 'lightbox', 'title' => $brand . ' ' . $model));
+				echo $this->Html->link($this->Html->image($this->Backend->thumbnail(array('id' => $used_tyre['Photo']['id'], 'filename' => $used_tyre['Photo']['filename'], 'path' => 'tyres', 'width' => 240, 'height' => 1000, 'crop' => false, 'folder' => true)), array('alt' => $brand . ' ' . $model)), $this->Backend->thumbnail(array('id' => $used_tyre['Photo']['id'], 'filename' => $used_tyre['Photo']['filename'], 'path' => 'tyres', 'width' => 800, 'height' => 600, 'crop' => false, 'folder' => true)), array('escape' => false, 'data-gallery' => 'used-tyre-' . $used_tyre['UsedTyre']['id'], 'class' => 'lightbox', 'title' => $brand . ' ' . $model));
 			}
 			else {
 				echo $this->Html->image('no-tyre-240.jpg', array('alt' => $brand . ' ' . $model));
@@ -66,7 +66,7 @@ else {
 			<div class="boxFotos"><?php
 				foreach ($used_tyre['UsedTyrePhoto'] as $item) {
 					if ($item['id'] != $used_tyre['UsedTyre']['photo_id']) {
-						echo '<span>' . $this->Html->link($this->Html->image($this->Backend->thumbnail(array('id' => $item['id'], 'filename' => $item['filename'], 'path' => 'tyres', 'width' => 60, 'height' => 60, 'crop' => true, 'folder' => true)), array('alt' => $brand . ' ' . $model)), $this->Backend->thumbnail(array('id' => $item['id'], 'filename' => $item['filename'], 'path' => 'tyres', 'width' => 800, 'height' => 600, 'crop' => false, 'folder' => true)), array('escape' => false, 'rel' => 'gallery', 'class' => 'lightbox', 'title' => $brand . ' ' . $model)) . '</span>';
+						echo '<span>' . $this->Html->link($this->Html->image($this->Backend->thumbnail(array('id' => $item['id'], 'filename' => $item['filename'], 'path' => 'tyres', 'width' => 60, 'height' => 60, 'crop' => true, 'folder' => true)), array('alt' => $brand . ' ' . $model)), $this->Backend->thumbnail(array('id' => $item['id'], 'filename' => $item['filename'], 'path' => 'tyres', 'width' => 800, 'height' => 600, 'crop' => false, 'folder' => true)), array('escape' => false, 'data-gallery' => 'used-tyre-' . $used_tyre['UsedTyre']['id'], 'class' => 'lightbox', 'title' => $brand . ' ' . $model)) . '</span>';
 					}
 				}
 			?></div>
@@ -79,18 +79,3 @@ else {
 	echo $used_tyre['UsedTyre']['content'];
 	echo $this->element('contacts_link');
 ?>
-<?php if (!empty($used_tyre['Photo']['filename'])) { ?>
-<script type="text/javascript">
-<!--
-$(function(){
-	$('.lightbox').lightBox({
-		imageLoading: '/img/lightbox-ico-loading.gif',
-		imageBtnPrev: '/img/lightbox-btn-prev.gif',
-		imageBtnNext: '/img/lightbox-btn-next.gif',
-		imageBtnClose: '/img/lightbox-btn-close.gif',
-		imageBlank: '/img/lightbox-blank.gif'
-	});
-});
-//-->
-</script>
-<?php } ?>

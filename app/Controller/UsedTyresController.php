@@ -215,8 +215,6 @@ class UsedTyresController extends AppController {
 		$this->setMeta('title', $meta_title);
 		$this->setMeta('keywords', $meta_keywords);
 		$this->setMeta('description', $meta_description);
-		$this->set('additional_js', array('lightbox'));
-		$this->set('additional_css', array('lightbox'));
 	}
 	public function view($id) {
 		$this->_filter_used_params();
@@ -261,8 +259,6 @@ class UsedTyresController extends AppController {
 			);
 			$this->set('breadcrumbs', $breadcrumbs);
 			$this->set('used_tyre', $used_tyre);
-			$this->set('additional_js', array('lightbox'));
-			$this->set('additional_css', array('lightbox'));
 			$this->setMeta('title', $brand . ' ' . $model);
 		}
 		else {

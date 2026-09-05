@@ -30,8 +30,6 @@ class ModelsController extends AppController {
 			$this->set('brands', array('' => __d('admin_common', 'list_all_items')));
 		}
 		$this->set('all_brands', $this->Brand->find('list', array('fields' => array('Brand.id', 'Brand.title'), 'order' => array('Brand.title' => 'asc'))));
-        $this->set('additional_js', array('lightbox'));
-        $this->set('additional_css', array('lightbox'));
 	}
 	public function _edit($id) {
 		$id = intval($id);
@@ -146,8 +144,6 @@ class ModelsController extends AppController {
         $this->set('extra_filenames', !empty($data[$this->model]['extra_filenames']) ? $data[$this->model]['extra_filenames'] : '');
         $this->set('brand_model_id', !empty($data[$this->model]['id']) ? $data[$this->model]['id'] : 0);
         $this->set('brand_id', !empty($data[$this->model]['brand_id']) ? $data[$this->model]['brand_id'] : 0);
-        $this->set('additional_js', array('lightbox'));
-        $this->set('additional_css', array('lightbox'));
 		return $title;
 	}
 	public function admin_merge() {

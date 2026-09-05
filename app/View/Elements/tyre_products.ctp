@@ -19,7 +19,7 @@
 				$image_big = $this->Backend->thumbnail(array('id' => $item['BrandModel']['id'], 'filename' => $item['BrandModel']['filename'], 'path' => 'models', 'width' => 800, 'height' => 600, 'crop' => false, 'folder' => false, 'watermark' => 'wm.png'), array('alt' => $item['BrandModel']['title']));
 			}
 			if ($image_big) {
-				echo $this->Html->link($image, $image_big, array('escape' => false, 'data-lightbox' => 'gallery'));
+				echo $this->Html->link($image, $image_big, array('escape' => false, 'class' => 'lightbox'));
 			}
 			else {
 				echo $image;
@@ -81,7 +81,7 @@
 					$item['Product']['season'] = 'all';
 				}
 				if (!empty($item['BrandModel']['filename'])) {
-					echo $this->Html->link($this->Html->image('camera.png', array('alt' => $item['Brand']['title'] . ' ' . $item['BrandModel']['title'])), $this->Backend->thumbnail(array('id' => $item['BrandModel']['id'], 'filename' => $item['BrandModel']['filename'], 'path' => 'models', 'width' => 800, 'height' => 600, 'crop' => false, 'folder' => false)), array('escape' => false, 'data-lightbox' => 'gallery', 'title' => $item['Brand']['title'] . ' ' . $item['BrandModel']['title']));
+					echo $this->Html->link($this->Html->image('camera.png', array('alt' => $item['Brand']['title'] . ' ' . $item['BrandModel']['title'])), $this->Backend->thumbnail(array('id' => $item['BrandModel']['id'], 'filename' => $item['BrandModel']['filename'], 'path' => 'models', 'width' => 800, 'height' => 600, 'crop' => false, 'folder' => false)), array('escape' => false, 'class' => 'lightbox', 'title' => $item['Brand']['title'] . ' ' . $item['BrandModel']['title']));
 				}
 			?></td>
 			<td><?php echo $this->Html->link($item['Product']['size1'] . '/' . $item['Product']['size2'] . '&nbsp;R' . $item['Product']['size3'], array('controller' => 'tyres', 'action' => 'view', 'slug' => $item['Brand']['slug'], 'id' => $item['Product']['id']), array('escape' => false)); ?></td>

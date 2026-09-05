@@ -176,8 +176,6 @@ class TubesController extends AppController {
 		$this->set('breadcrumbs', $breadcrumbs);
 		$this->setMeta('title', $meta_title);
 		$this->set('types', $this->Product->types);
-		$this->set('additional_js', array('lightbox'));
-		$this->set('additional_css', array('lightbox'));
 		$this->set('show_filter', 6);
         $path = $this->check_truck($auto)['path'];
         $this->set('active_menu', $path);
@@ -218,8 +216,6 @@ class TubesController extends AppController {
 				'title' => $this->Product->types[$product['Product']['type']] . ' ' . $product['Product']['sku']
 			);
 			$this->set('breadcrumbs', $breadcrumbs);
-			$this->set('additional_js', array('lightbox'));
-			$this->set('additional_css', array('lightbox'));
 			$this->setMeta('title', $this->Product->types[$product['Product']['type']] . ' ' . $product['Product']['sku']);
 			$this->set('product', $product);
             $this->set('active_menu', $path);

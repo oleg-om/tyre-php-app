@@ -188,19 +188,6 @@ echo $this->element('currency');
 	//echo $this->element('bottom_banner');
 ?>
 <script type="text/javascript">
-<!--
-$(function(){
-	$('.lightbox').lightBox({
-		imageLoading: '/img/lightbox-ico-loading.gif',
-		imageBtnPrev: '/img/lightbox-btn-prev.gif',
-		imageBtnNext: '/img/lightbox-btn-next.gif',
-		imageBtnClose: '/img/lightbox-btn-close.gif',
-		imageBlank: '/img/lightbox-blank.gif'
-	});
-});
-//-->
-</script>
-<script type="text/javascript">
 
     function buyAkb(itemId) {
         open_popup({

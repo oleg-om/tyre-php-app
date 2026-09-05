@@ -23,12 +23,12 @@
     <link rel="stylesheet" type="text/css" href="/css/main-style.css?v=<?php echo $css_version; ?>">
     <link rel="stylesheet" type="text/css" href="/css/main-style-media.css?v=<?php echo $css_version; ?>">
     <?php
-    $css = array('virtual-select.min');
+    $css = array('virtual-select.min', 'glightbox.min');
     if (isset($additional_css)) {
         $css = array_merge($css, $additional_css);
     }
     echo $this->Html->css($css);
-    $js = array('jquery.min', 'selectboxes.v2', 'virtual-select.min');
+    $js = array('jquery.min', 'selectboxes.v2', 'virtual-select.min', 'glightbox.min', 'functions');
     if (isset($additional_js)) {
         $js = array_merge($js, $additional_js);
     }

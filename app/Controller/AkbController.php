@@ -359,8 +359,6 @@ class AkbController extends AppController {
 		$this->setMeta('keywords', $meta_keywords);
 		$this->setMeta('description', $meta_description);
 		$this->set('active_menu', 'akb');
-		$this->set('additional_js', array('lightbox'));
-		$this->set('additional_css', array('lightbox'));
         $this->set('show_filter', 3);
         $this->set('akb_switch', true);
 	}
@@ -691,8 +689,6 @@ class AkbController extends AppController {
 			$this->set('brand', $brand);
             $this->set('sort', $sort);
 			$this->set('active_menu', 'akb');
-			$this->set('additional_js', array('lightbox'));
-			$this->set('additional_css', array('lightbox'));
             $this->set('akb_switch', true);
 		}
 		else {
@@ -739,8 +735,6 @@ class AkbController extends AppController {
 					'title' => $sku
 				);
 				$this->set('breadcrumbs', $breadcrumbs);
-				$this->set('additional_js', array('lightbox'));
-				$this->set('additional_css', array('lightbox'));
 				$this->set('models', $models);
 				$this->set('brand_id', $brand['Brand']['id']);
 				$this->set('model_id', $product['Product']['model_id']);
