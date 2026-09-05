@@ -173,8 +173,6 @@ class BoltsController extends AppController {
 		$this->setMeta('title', $meta_title);
 		$this->setMeta('keywords', $meta_keywords);
 		$this->setMeta('description', $meta_description);
-		$this->set('additional_js', array('lightbox'));
-		$this->set('additional_css', array('lightbox'));
 		$this->set('active_menu', 'bolts');
 	}
 	public function view($id) {
@@ -199,8 +197,6 @@ class BoltsController extends AppController {
 			$this->set('breadcrumbs', $breadcrumbs);
 			$this->setMeta('title', $this->Product->bolt_types[$product['Product']['bolt_type']] . ' ' . $product['Product']['bolt']);
 			$this->set('product', $product);
-			$this->set('additional_js', array('lightbox'));
-			$this->set('additional_css', array('lightbox'));
 		}
 		else {
 			$this->response->statusCode(404);

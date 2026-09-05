@@ -21,11 +21,12 @@ $(function(){
 		sortList: [[4,0]]
 	});
 	*/
-	$('.lightbox').lightBox({
-		imageLoading: '/img/lightbox-ico-loading.gif',
-		imageBtnPrev: '/img/lightbox-btn-prev.gif',
-		imageBtnNext: '/img/lightbox-btn-next.gif',
-		imageBtnClose: '/img/lightbox-btn-close.gif',
-		imageBlank: '/img/lightbox-blank.gif'
-	});
+	if (window.GLightbox) {
+		GLightbox({
+			selector: '.lightbox, [data-lightbox], [rel^="lightbox"]',
+			touchNavigation: true,
+			zoomable: true,
+			loop: false
+		});
+	}
 });

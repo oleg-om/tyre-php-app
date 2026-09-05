@@ -5,7 +5,7 @@
 <?php
 	echo $this->Html->charset();
 	echo $this->Html->meta('favicon.ico', '/favicon.ico', array('type' => 'icon'));
-	$css = array('admin/style', 'admin/datepicker');
+	$css = array('admin/style', 'admin/datepicker', 'glightbox.min');
 	if (Configure::read('debug')) {
 		$css[] = 'admin/debug';
 	}
@@ -15,11 +15,18 @@
 	echo $this->Html->css($css);
 	echo $this->Html->css(array('admin/print'), null, array('media' => 'print'));
 	echo $this->Html->scriptBlock('var m_state = ' . $m_state . ', s_state = new Array(' . implode(',', $s_state) . '), lang = \'ru\';');
-	$js = array('jquery-1.6.4.min', 'tinymce/jquery.tinymce', 'admin/main', 'admin/i18n/locale-ru');
+	$js = array('jquery-1.6.4.min', 'tinymce/jquery.tinymce', 'admin/main', 'admin/i18n/locale-ru', 'glightbox.min');
 	if (isset($additional_js)) {
 		$js = array_merge($js, $additional_js);
 	}
 	echo $this->Html->script($js);
+	echo $this->Html->scriptBlock('
+		jQuery(function ($) {
+			if (window.GLightbox) {
+				GLightbox({selector: ".lightbox, [data-lightbox], [rel^=\'lightbox\']", touchNavigation: true, zoomable: true, loop: false});
+			}
+		});
+	');
 ?>
 </head>
 <body>

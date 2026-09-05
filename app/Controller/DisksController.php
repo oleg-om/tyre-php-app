@@ -541,8 +541,8 @@ class DisksController extends AppController
         $this->set('active_menu', $path);
         $this->set('sort', $sort);
         $this->set('show_left_filter', true);
-        $this->set('additional_js', array('lightbox', 'slider', 'functions'));
-        $this->set('additional_css', array('lightbox', 'jquery-ui-1.9.2.custom.min'));
+        $this->set('additional_js', array('slider'));
+        $this->set('additional_css', array('jquery-ui-1.9.2.custom.min'));
     }
 
 
@@ -885,8 +885,8 @@ class DisksController extends AppController
             $this->set('sort', $sort);
             $path = $this->check_truck($auto)['path'];
             $this->set('active_menu', $path);
-            $this->set('additional_js', array('lightbox', 'slider', 'functions'));
-            $this->set('additional_css', array('lightbox', 'jquery-ui-1.9.2.custom.min'));
+            $this->set('additional_js', array('slider'));
+            $this->set('additional_css', array('jquery-ui-1.9.2.custom.min'));
             $this->render($render);
         } else {
             $this->response->statusCode(404);
@@ -1009,8 +1009,6 @@ class DisksController extends AppController
                 $this->set('filter', array_filter($this->request->query));
                 $this->set('all_materials', $this->BrandModel->materials);
                 $this->set('breadcrumbs', $breadcrumbs);
-                $this->set('additional_js', array('lightbox', 'functions'));
-                $this->set('additional_css', array('lightbox'));
                 $this->set('models', $models);
                 $this->set('brand_id', $brand['Brand']['id']);
                 $this->set('model_id', $product['Product']['model_id']);

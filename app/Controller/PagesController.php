@@ -195,10 +195,6 @@ class PagesController extends AppController {
 				$this->set('additional_css', array('galleryview'));
 				$this->set('additional_js', array('https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/jquery-ui.min.js', 'galleryview'));
 			}
-			if ($slug == 'service') {
-				$this->set('additional_js', array('jquery-1.10.2.min', 'lightbox-2.6.min'));
-				$this->set('additional_css', array('lightbox-2.6'));
-			}
 			$this->set('page', $page);
 			$this->set('active_menu', $slug);
 			$this->set('breadcrumbs', $breadcrumbs);
@@ -251,8 +247,6 @@ class PagesController extends AppController {
 		$this->set('mode', $mode);
 		$this->set('tab', $tab);
 		$this->set('seasons', $this->Product->seasons);
-		$this->set('additional_js', array('lightbox', 'functions'));
-		$this->set('additional_css', array('lightbox'));
 	}
 	public function calculator() {
 		$this->loadModel('Page');
@@ -350,8 +344,6 @@ class PagesController extends AppController {
 		$this->set('active_menu', '');
 		$this->set('show_left_menu', true);
 		$this->set('seasons', $this->Product->seasons);
-		$this->set('additional_js', array('lightbox', 'functions'));
-		$this->set('additional_css', array('lightbox'));
 
 	}
 	

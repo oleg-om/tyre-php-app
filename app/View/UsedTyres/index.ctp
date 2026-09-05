@@ -70,16 +70,3 @@ $this->Paginator->options(array('url' => array('controller' => 'used_tyres', 'ac
 	echo $this->element('seo_disks');
 	echo $this->element('contacts_link');
 ?>
-<script type="text/javascript">
-<!--
-$(function(){
-	$('.lightbox').lightBox({
-		imageLoading: '/img/lightbox-ico-loading.gif',
-		imageBtnPrev: '/img/lightbox-btn-prev.gif',
-		imageBtnNext: '/img/lightbox-btn-next.gif',
-		imageBtnClose: '/img/lightbox-btn-close.gif',
-		imageBlank: '/img/lightbox-blank.gif'
-	});
-});
-//-->
-</script>

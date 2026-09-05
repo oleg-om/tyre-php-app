@@ -48,16 +48,3 @@ $this->Paginator->options(array('url' => array('controller' => 'bolts', 'action'
 		echo $this->element('pager', array('bottom' => true));
 	?>
 </div>
-<script type="text/javascript">
-<!--
-$(function(){
-	$('.lightbox').lightBox({
-		imageLoading: '/img/lightbox-ico-loading.gif',
-		imageBtnPrev: '/img/lightbox-btn-prev.gif',
-		imageBtnNext: '/img/lightbox-btn-next.gif',
-		imageBtnClose: '/img/lightbox-btn-close.gif',
-		imageBlank: '/img/lightbox-blank.gif'
-	});
-});
-//-->
-</script>

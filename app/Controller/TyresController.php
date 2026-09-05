@@ -558,8 +558,8 @@ class TyresController extends AppController
         $this->set('current_auto', $auto);
         $this->set('sort', $sort);
         $this->set_prices();
-        $this->set('additional_js', array('lightbox', 'slider', 'functions'));
-        $this->set('additional_css', array('lightbox', 'jquery-ui-1.9.2.custom.min'));
+        $this->set('additional_js', array('slider'));
+        $this->set('additional_css', array('jquery-ui-1.9.2.custom.min'));
 //        $this->setCarBrandsForLeftMenu();
     }
 
@@ -1193,8 +1193,8 @@ class TyresController extends AppController
             $this->set('active_menu', $path);
             $this->set_prices();
             $this->set('current_auto', $auto);
-            $this->set('additional_js', array('lightbox', 'functions', 'slider'));
-            $this->set('additional_css', array('lightbox', 'jquery-ui-1.9.2.custom.min'));
+            $this->set('additional_js', array('slider'));
+            $this->set('additional_css', array('jquery-ui-1.9.2.custom.min'));
             $this->render($render);
         } else {
             $this->response->statusCode(404);
@@ -1368,8 +1368,6 @@ class TyresController extends AppController
                 $this->setLastModels($model);
                 $this->set('filter', array_filter($this->request->query));
                 $this->set('breadcrumbs', $breadcrumbs);
-                $this->set('additional_js', array('lightbox'));
-                $this->set('additional_css', array('lightbox'));
                 $this->set('models', $models);
                 $this->set('brand_id', $brand['Brand']['id']);
                 $this->set('model_id', $product['Product']['model_id']);
