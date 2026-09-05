@@ -7451,8 +7451,13 @@ class ImportController extends AppController
 
     private function _normalize_superscripts($text)
     {
-        // Raw Latin-1 bytes (from XLS "compressed Unicode" reader — single byte, no UTF-8 conversion)
-        $text = str_replace(["\xB9", "\xB2", "\xB3"], ['1', '2', '3'], $text);
+        // Raw Latin-1 bytes (from XLS "compressed Unicode" reader — single byte, no UTF-8 conversion).
+        // Only applied when $text isn't already valid UTF-8: these same byte values (0xB2, 0xB3, 0xB9)
+        // are continuation bytes of common Cyrillic letters in UTF-8 ('в', 'г', 'й'), so running this
+        // unconditionally corrupts valid UTF-8 text (e.g. "2024 г." loses its "г").
+        if (!mb_check_encoding($text, 'UTF-8')) {
+            $text = str_replace(["\xB9", "\xB2", "\xB3"], ['1', '2', '3'], $text);
+        }
         // UTF-8 encoded superscript digits
         return str_replace(
             ['⁰', '¹', '²', '³', '⁴', '⁵', '⁶', '⁷', '⁸', '⁹'],
