@@ -435,6 +435,7 @@ class OrdersController extends AppController
 
                     // CRM в фоне — без ожидания ответа
                     $crm_url = defined('CONST_CRM_URL') ? CONST_CRM_URL : '';
+                    $crm_api_key = defined('CONST_CRM_API_KEY') ? CONST_CRM_API_KEY : '';
                     if (!empty($crm_url) && !empty($data_to_crm['preorder'])) {
                         $json = json_encode($data_to_crm, JSON_UNESCAPED_UNICODE);
                         if ($json !== false) {
@@ -442,9 +443,10 @@ class OrdersController extends AppController
                             if (@file_put_contents($tmp, $json) !== false) {
                                 $curl_bin = is_executable('/usr/bin/curl') ? '/usr/bin/curl' : 'curl';
                                 $cmd = sprintf(
-                                    '( %s -sS -X POST -H %s --data-binary @%s --connect-timeout 3 --max-time 15 -k %s; rm -f %s ) >/dev/null 2>&1 &',
+                                    '( %s -sS -X POST -H %s%s --data-binary @%s --connect-timeout 3 --max-time 15 -k %s; rm -f %s ) >/dev/null 2>&1 &',
                                     $curl_bin,
                                     escapeshellarg('Content-Type: application/json'),
+                                    $crm_api_key !== '' ? ' -H ' . escapeshellarg('x-api-key: ' . $crm_api_key) : '',
                                     escapeshellarg($tmp),
                                     escapeshellarg($crm_url),
                                     escapeshellarg($tmp)
@@ -452,11 +454,15 @@ class OrdersController extends AppController
                                 @exec($cmd);
                             } elseif (function_exists('curl_init')) {
                                 // Fallback: короткий таймаут, если нет файла/curl CLI
+                                $headers = array('Content-Type: application/json');
+                                if ($crm_api_key !== '') {
+                                    $headers[] = 'x-api-key: ' . $crm_api_key;
+                                }
                                 $ch = curl_init($crm_url);
                                 curl_setopt_array($ch, array(
                                     CURLOPT_POST => true,
                                     CURLOPT_POSTFIELDS => $json,
-                                    CURLOPT_HTTPHEADER => array('Content-Type: application/json'),
+                                    CURLOPT_HTTPHEADER => $headers,
                                     CURLOPT_RETURNTRANSFER => true,
                                     CURLOPT_CONNECTTIMEOUT => 2,
                                     CURLOPT_TIMEOUT => 3,
