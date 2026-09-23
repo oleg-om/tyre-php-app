@@ -8,6 +8,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+    image: tyre-app-php:latest
     container_name: tyre-app-php
     restart: always
     ports:
@@ -15,6 +16,7 @@ services:
       - "${HTTPS_PORT:-443}:443"
     volumes:
       - tyre-app-files:/var/www/html/app/webroot/files
+      - tyre-app-xls:/var/www/html/app/webroot/xls
       - tyre-app-ssl:/etc/apache2/ssl
       # .htaccess управляется скриптом init-domain-restriction.sh, не монтируем как volume
       # - ./app/webroot/.htaccess:/var/www/html/app/webroot/.htaccess
@@ -32,6 +34,42 @@ services:
       - PHPMYADMIN_PASSWORD=${PHPMYADMIN_PASSWORD:-admin_password}
       - APP_ENV=${APP_ENV:-dev}
       - ALLOWED_DOMAIN=${ALLOWED_DOMAIN:-}
+    depends_on:
+      - tyre-app-mysql
+      - tyre-app-redis
+    networks:
+      - tyre-app-network
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  # Фоновая обработка импорта и конвертации прайсов (очередь import_jobs).
+  # Отдельно от Apache и с ограничением ресурсов, чтобы тяжёлые задачи не тормозили сайт.
+  tyre-app-worker:
+    image: tyre-app-php:latest
+    pull_policy: never
+    container_name: tyre-app-worker
+    restart: always
+    user: www-data
+    working_dir: /var/www/html/app
+    # Одна задача на процесс PHP; цикл перезапускает воркер после каждой задачи
+    command: ["sh", "-c", "while true; do nice -n 10 ionice -c2 -n7 php /var/www/html/lib/Cake/Console/cake.php -working /var/www/html/app import_worker --wait 300; sleep 1; done"]
+    cpus: 1.0
+    mem_limit: 768m
+    volumes:
+      - tyre-app-xls:/var/www/html/app/webroot/xls
+      - ./app/tmp:/var/www/html/app/tmp
+      - ./app/Config:/var/www/html/app/Config
+    environment:
+      - DB_HOST=tyre-app-mysql
+      - DB_PORT=3306
+      - DB_NAME=${DB_NAME:-tyre_db}
+      - DB_USER=${DB_USER:-tyre_user}
+      - DB_PASSWORD=${DB_PASSWORD:-tyre_password}
+      - APP_ENV=${APP_ENV:-dev}
+      - IMPORT_THROTTLE_MS=${IMPORT_THROTTLE_MS:-50}
     depends_on:
       - tyre-app-mysql
       - tyre-app-redis
@@ -95,6 +133,8 @@ volumes:
   tyre-app-mysql-data:
     driver: local
   tyre-app-files:
+    driver: local
+  tyre-app-xls:
     driver: local
   tyre-app-ssl:
     driver: local
