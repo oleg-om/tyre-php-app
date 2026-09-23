@@ -89,6 +89,35 @@ class ImportJob extends AppModel {
 		);
 	}
 
+	/**
+	 * Удаляет завершённые задачи старше $days дней вместе с их файлами
+	 * (результат конвертации в webroot/xls и загруженный прайс, если остался).
+	 */
+	public function purgeOld($days) {
+		$this->ensureTable();
+		$rows = $this->_fetch(
+			'SELECT `id`, `tmp_file`, `result` FROM `import_jobs` WHERE `status` IN (?, ?) AND COALESCE(`finished`, `created`) < NOW() - INTERVAL ' . (int)$days . ' DAY',
+			array(self::STATUS_DONE, self::STATUS_FAILED)
+		);
+		foreach ($rows as $row) {
+			$job = $this->_format($row['import_jobs']);
+			$files = array();
+			if (!empty($job['result']['filename'])) {
+				$files[] = WWW_ROOT . 'xls' . DS . basename($job['result']['filename']);
+			}
+			if (!empty($job['tmp_file'])) {
+				$files[] = TMP . basename($job['tmp_file']);
+			}
+			foreach ($files as $path) {
+				if (file_exists($path)) {
+					unlink($path);
+				}
+			}
+			$this->_query('DELETE FROM `import_jobs` WHERE `id` = ?', array($job['id']));
+		}
+		return count($rows);
+	}
+
 	public function setProgress($id, $rowsDone) {
 		$this->_query('UPDATE `import_jobs` SET `rows_done` = ? WHERE `id` = ?', array((int)$rowsDone, $id));
 	}
@@ -113,7 +142,11 @@ class ImportJob extends AppModel {
 		);
 		$jobs = array();
 		foreach ($rows as $row) {
-			$jobs[] = $this->_format($row['import_jobs']);
+			$job = $this->_format($row['import_jobs']);
+			if ($job['status'] == self::STATUS_QUEUED) {
+				$job['ahead'] = $this->countAhead($job['id']);
+			}
+			$jobs[] = $job;
 		}
 		return $jobs;
 	}

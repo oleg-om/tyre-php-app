@@ -790,7 +790,10 @@ class ImportController extends AppController
         $params = $this->request->data['Import'];
         unset($params['file']);
         $this->ImportJob->enqueue($kind, $params, $this->request->data['Import']['file']['name'], $this->Import->tmp_file);
-        $this->info('Файл поставлен в очередь и будет обработан в фоне. Статус — в блоке «Задачи».');
+        // Сразу после отправки блок задач показываем раскрытым, при обычном открытии страницы — свёрнутым
+        $this->Session->write('ImportJobs.open', true);
+        // Отдельный класс — блок задач убирает эту плашку, когда обработка закончится
+        $this->Session->setFlash('Файл поставлен в очередь и обрабатывается в фоне. Результат появится ниже.', 'default', array('class' => 'message import-queued-message'), 'info');
         $this->redirect(array('controller' => Inflector::underscore($this->name), 'action' => $action));
         return true;
     }
@@ -811,6 +814,8 @@ class ImportController extends AppController
             $this->loadModel('ImportJob');
             $this->set('jobs', $this->ImportJob->recent($this->jobKinds[$action]));
             $this->set('jobs_kind', $this->jobKinds[$action]);
+            $this->set('jobs_open', $this->Session->check('ImportJobs.open'));
+            $this->Session->delete('ImportJobs.open');
         }
     }
 
@@ -825,6 +830,7 @@ class ImportController extends AppController
         $this->loadModel('ImportJob');
         $this->set('jobs', $this->ImportJob->recent($kind));
         $this->set('jobs_kind', $kind);
+        $this->set('jobs_open', !empty($this->request->query['open']));
         // Без layout: layout «ajax» в этом проекте оборачивает HTML в JS для fancybox
         $this->autoLayout = false;
         $this->render('/Elements/import_jobs');

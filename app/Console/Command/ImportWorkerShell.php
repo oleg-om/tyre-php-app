@@ -19,6 +19,9 @@ class ImportWorkerShell extends AppShell {
 
 	public $uses = array('ImportJob');
 
+	// Сколько дней хранить завершённые задачи и файлы конвертации
+	const KEEP_DAYS = 7;
+
 	private $currentJobId = null;
 
 	public function getOptionParser() {
@@ -38,6 +41,7 @@ class ImportWorkerShell extends AppShell {
 		register_shutdown_function(array($this, 'onShutdown'));
 
 		$this->ImportJob->failInterrupted();
+		$this->ImportJob->purgeOld(self::KEEP_DAYS);
 
 		$deadline = time() + (int)$this->params['wait'];
 		do {

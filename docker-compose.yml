@@ -52,10 +52,9 @@ services:
     pull_policy: never
     container_name: tyre-app-worker
     restart: always
-    user: www-data
     working_dir: /var/www/html/app
-    # Одна задача на процесс PHP; цикл перезапускает воркер после каждой задачи
-    command: ["sh", "-c", "while true; do nice -n 10 ionice -c2 -n7 php /var/www/html/lib/Cake/Console/cake.php -working /var/www/html/app import_worker --wait 300; sleep 1; done"]
+    # Права на том xls и запуск воркера от www-data — в import-worker.sh
+    command: ["sh", "/var/www/html/import-worker.sh"]
     cpus: 1.0
     mem_limit: 768m
     volumes:
