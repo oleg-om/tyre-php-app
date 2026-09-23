@@ -105,6 +105,8 @@ services:
     platform: linux/amd64
     container_name: tyre-app-mysql
     restart: always
+    # По умолчанию Docker ждёт 10 с и убивает процесс — MySQL может не успеть сбросить данные на диск
+    stop_grace_period: 60s
     environment:
       - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD:-root_password}
       - MYSQL_DATABASE=${DB_NAME:-tyre_db}
