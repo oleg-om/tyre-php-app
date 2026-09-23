@@ -31,4 +31,14 @@ App::uses('Model', 'Model');
  * @package       app.Model
  */
 class AppModel extends Model {
+
+	public function __construct($id = false, $table = null, $ds = null) {
+		parent::__construct($id, $table, $ds);
+		// Кэш DboSource::name()/fields() хранится одним ключом method_cache и читается на каждом запросе.
+		// Динамические virtualFields (IN (...id товаров)) раздували его до 20 МБ (~230 мс на запрос),
+		// поэтому отключаем: на нашей схеме пересчёт этих значений дешевле чтения кэша.
+		if ($this->useTable !== false) {
+			$this->getDataSource()->cacheMethods = false;
+		}
+	}
 }
