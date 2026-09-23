@@ -3,6 +3,7 @@ $this->Backend->setOptions(array(
 	'model' => 'Import',
 	'controller' => 'import'
 ));
+echo $this->element('import_jobs');
 echo $this->Backend->getFormHeader();
 $this->Backend->addFile('file', array(
 	'label' => __d('admin_import', 'label_file')

@@ -81,6 +81,11 @@ jobs:
             # Очистка кеша через приложение (если доступно)
             echo "Clearing cache via application..."
             curl -k -f https://${{ secrets.DOMAIN }}/admin/cache/clear || echo "Cache clear endpoint not available or already cleared"
-            
+
+            # Сборка с --no-cache каждый раз оставляет ~1 ГБ кеша BuildKit и старый образ
+            echo "Pruning Docker build cache and dangling images..."
+            docker builder prune -af || true
+            docker image prune -f || true
+
             echo "Deployment completed successfully!"
           EOF

@@ -3,6 +3,7 @@ $this->Backend->setOptions(array(
 	'model' => 'Import',
 	'controller' => 'import'
 ));
+echo $this->element('import_jobs');
 echo $this->Backend->getFormHeader();
 if (isset($message_lines)) {
 	$message = implode('<br />', $message_lines);
