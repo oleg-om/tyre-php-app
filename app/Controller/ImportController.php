@@ -785,9 +785,6 @@ class ImportController extends AppController
             unset($this->Import->validate['type']);
         }
         if (!$this->Import->validates()) {
-            if ($this->Import->tmp_file && file_exists(TMP . $this->Import->tmp_file)) {
-                unlink(TMP . $this->Import->tmp_file);
-            }
             return false;
         }
         $params = $this->request->data['Import'];

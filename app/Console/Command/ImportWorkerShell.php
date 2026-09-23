@@ -82,6 +82,10 @@ class ImportWorkerShell extends AppShell {
 			} catch (Exception $e) {
 				$error = get_class($e) . ': ' . $e->getMessage();
 			}
+			// Экшен удаляет свою копию файла только при успешном чтении Excel
+			if (isset($controller->Import) && $controller->Import->tmp_file && file_exists(TMP . $controller->Import->tmp_file)) {
+				unlink(TMP . $controller->Import->tmp_file);
+			}
 			list($status, $result, $jobError) = $controller->jobResult();
 			if ($error === null) {
 				$error = $jobError;

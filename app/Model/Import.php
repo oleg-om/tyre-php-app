@@ -66,4 +66,11 @@ class Import extends AppModel {
 		}
 		return false;
 	}
+	// Форма невалидна — скопированный в beforeValidate файл больше не понадобится
+	public function afterValidate() {
+		if (!empty($this->validationErrors) && $this->tmp_file && file_exists(TMP . $this->tmp_file)) {
+			unlink(TMP . $this->tmp_file);
+			$this->tmp_file = null;
+		}
+	}
 }
