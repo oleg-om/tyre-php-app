@@ -825,7 +825,9 @@ class ImportController extends AppController
         $this->loadModel('ImportJob');
         $this->set('jobs', $this->ImportJob->recent($kind));
         $this->set('jobs_kind', $kind);
-        $this->render('/Elements/import_jobs', 'ajax');
+        // Без layout: layout «ajax» в этом проекте оборачивает HTML в JS для fancybox
+        $this->autoLayout = false;
+        $this->render('/Elements/import_jobs');
     }
 
     public function admin_import()
