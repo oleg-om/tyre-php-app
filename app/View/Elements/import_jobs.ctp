@@ -41,7 +41,7 @@ foreach ($jobs as $job) {
 }
 $title = $jobs_kind == 'import' ? 'Последние импорты' : 'Последние конвертации';
 ?>
-<div id="import-jobs" class="ij" data-url="<?php echo $this->Html->url(array('controller' => 'import', 'action' => 'jobs', 'admin' => true, $jobs_kind)); ?>">
+<div id="import-jobs" class="ij" data-url="<?php echo $this->Html->url(array('controller' => 'import', 'action' => 'jobs', 'admin' => true, $jobs_kind)); ?>" data-create-brand-url="<?php echo $this->Html->url(array('controller' => 'import', 'action' => 'create_brand', 'admin' => true)); ?>">
 <style type="text/css">
 	.ij { margin: 0 0 20px; font-size: 13px; }
 	.ij-wrap { border: 1px solid #dde1e6; border-radius: 6px; background: #fff; }
@@ -78,6 +78,11 @@ $title = $jobs_kind == 'import' ? 'Последние импорты' : 'Пос�
 	.ij-download { display: inline-block; margin-top: 8px; padding: 5px 14px; border-radius: 4px; background: #2e9d57; color: #fff !important; font-weight: bold; text-decoration: none; }
 	.ij-more { margin-top: 2px; }
 	.ij-more summary { cursor: pointer; color: #2f7fd1; font-size: 12px; outline: none; }
+	.ij-brand { display: inline-block; line-height: 22px; }
+	.ij-brand-add { display: none; margin-left: 8px; padding: 0 7px; border-radius: 3px; background: #2f7fd1; color: #fff !important; font-size: 11px; line-height: 18px; text-decoration: none; }
+	.ij-brand:hover .ij-brand-add, .ij-brand-add.ij-busy, .ij-brand-add.ij-brand-error { display: inline-block; }
+	.ij-brand-add.ij-brand-error { background: #d64545; }
+	.ij-brand-done { margin-left: 8px; color: #23794a !important; font-size: 11px; font-weight: bold; }
 	.ij-more-body { margin-top: 6px; padding: 8px 10px; background: #fff; border: 1px solid #e6e9ed; border-radius: 4px; max-height: 240px; overflow: auto; color: #444; }
 </style>
 <details class="ij-wrap"<?php echo !empty($jobs_open) ? ' open' : ''; ?>>
@@ -118,6 +123,16 @@ $title = $jobs_kind == 'import' ? 'Последние импорты' : 'Пос�
 							continue;
 						}
 						$tiles[] = $stat_tile($m[2], $m[1], $m[2] > 0 ? $tone : 'neutral');
+					} elseif (!empty($job['category_title']) && strpos($line, 'Необходимо добавить следующие бренды') === 0
+						&& preg_match_all('~<strong>(.*?)</strong> \((строки: [^)]*)\)~u', $line, $brands, PREG_SET_ORDER)) {
+						// Каждый бренд — отдельной строкой, с кнопкой создания при наведении
+						$items = array();
+						foreach ($brands as $brand) {
+							$items[] = '<span class="ij-brand" data-job="' . (int)$job['id'] . '" data-title="' . h($brand[1]) . '"><strong>' . h($brand[1]) . '</strong>'
+								. '<a href="#" class="ij-brand-add no-loader">+ создать в «' . h($job['category_title']) . '»</a></span>'
+								. ' <span class="ij-meta">(' . h($brand[2]) . ')</span>';
+						}
+						$notes[] = 'Необходимо добавить бренды — наведите на бренд, чтобы создать его. После этого загрузите прайс ещё раз:<br />' . implode('<br />', $items);
 					} elseif (strpos($line, '<strong>Файл:</strong>') !== 0) {
 						$notes[] = $line;
 					}
@@ -185,6 +200,29 @@ $title = $jobs_kind == 'import' ? 'Последние импорты' : 'Пос�
 	<?php endforeach; ?>
 	</div>
 </details>
+<script type="text/javascript">
+// Кнопки «создать бренд» в отчёте; блок перерисовывается автообновлением, поэтому обработчик один на документ
+if (!window.ijBrandCreateBound) {
+	window.ijBrandCreateBound = true;
+	$(document).delegate('.ij-brand-add', 'click', function (e) {
+		e.preventDefault();
+		var $link = $(this), $brand = $link.closest('.ij-brand');
+		if ($link.hasClass('ij-busy')) {
+			return;
+		}
+		$link.addClass('ij-busy').removeClass('ij-brand-error').text('создаю…');
+		$.post($('#import-jobs').attr('data-create-brand-url'), {job_id: $brand.attr('data-job'), title: $brand.attr('data-title')}, function (r) {
+			if (r && r.ok) {
+				$link.replaceWith($('<a class="ij-brand-done" target="_blank"></a>').attr('href', r.edit_url).text(r.existed ? '✓ уже есть' : '✓ создан'));
+			} else {
+				$link.removeClass('ij-busy').addClass('ij-brand-error').text('ошибка: ' + (r && r.error ? r.error : 'нет ответа') + ' — ещё раз');
+			}
+		}, 'json').error(function () {
+			$link.removeClass('ij-busy').addClass('ij-brand-error').text('ошибка сети — ещё раз');
+		});
+	});
+}
+</script>
 <?php if ($active_count): ?>
 	<script type="text/javascript">
 	setTimeout(function () {

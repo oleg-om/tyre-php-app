@@ -15,6 +15,9 @@ class ImportController extends AppController
         'admin_convert_tubes' => 'convert_tubes',
         'admin_convert_disks' => 'convert_disks'
     );
+    // Категория товаров для каждого типа импорта — как $category_id в switch admin_import
+    public $importTypeCategories = array(1 => 3, 2 => 2, 3 => 2, 4 => 1, 5 => 1, 6 => 1, 7 => 4, 8 => 2, 9 => 3, 10 => 1, 11 => 2);
+    public $categoryTitles = array(1 => 'шины', 2 => 'диски', 3 => 'АКБ', 4 => 'автокамеры');
 
     public $product_materials = array(
         'BFP',
@@ -811,8 +814,7 @@ class ImportController extends AppController
         parent::beforeRender();
         $action = $this->request->params['action'];
         if (!$this->inWorker && isset($this->jobKinds[$action])) {
-            $this->loadModel('ImportJob');
-            $this->set('jobs', $this->ImportJob->recent($this->jobKinds[$action]));
+            $this->set('jobs', $this->_recentJobs($this->jobKinds[$action]));
             $this->set('jobs_kind', $this->jobKinds[$action]);
             $this->set('jobs_open', $this->Session->check('ImportJobs.open'));
             $this->Session->delete('ImportJobs.open');
@@ -827,13 +829,98 @@ class ImportController extends AppController
         if (!in_array($kind, $this->jobKinds, true)) {
             throw new NotFoundException();
         }
-        $this->loadModel('ImportJob');
-        $this->set('jobs', $this->ImportJob->recent($kind));
+        $this->set('jobs', $this->_recentJobs($kind));
         $this->set('jobs_kind', $kind);
         $this->set('jobs_open', !empty($this->request->query['open']));
         // Без layout: layout «ajax» в этом проекте оборачивает HTML в JS для fancybox
         $this->autoLayout = false;
         $this->render('/Elements/import_jobs');
+    }
+
+    /**
+     * Последние задачи для блока на странице; импортам добавляется категория,
+     * в которой можно создать не найденные бренды.
+     */
+    protected function _recentJobs($kind)
+    {
+        $this->loadModel('ImportJob');
+        $jobs = $this->ImportJob->recent($kind);
+        foreach ($jobs as $i => $job) {
+            $category_id = $this->_jobCategory($job);
+            if ($category_id) {
+                $jobs[$i]['category_title'] = $this->categoryTitles[$category_id];
+            }
+        }
+        return $jobs;
+    }
+
+    protected function _jobCategory($job)
+    {
+        if ($job['kind'] != 'import' || !isset($job['params']['type'])) {
+            return null;
+        }
+        $type = (int)$job['params']['type'];
+        return isset($this->importTypeCategories[$type]) ? $this->importTypeCategories[$type] : null;
+    }
+
+    /**
+     * Создаёт бренд, не найденный при импорте, в категории этого импорта
+     * (кнопка у бренда в отчёте задачи). Отвечает JSON.
+     */
+    public function admin_create_brand()
+    {
+        $this->autoRender = false;
+        $this->response->type('json');
+        $response = array('ok' => false);
+
+        $this->loadModel('ImportJob');
+        $job_id = isset($this->request->data['job_id']) ? (int)$this->request->data['job_id'] : 0;
+        $title = isset($this->request->data['title']) ? trim($this->request->data['title']) : '';
+        $job = $job_id ? $this->ImportJob->get($job_id) : null;
+        $category_id = $job ? $this->_jobCategory($job) : null;
+
+        if (!$this->request->is('post') || !$category_id || $title === '') {
+            $response['error'] = 'некорректный запрос';
+        } else {
+            $this->loadModel('Brand');
+            $brand = $this->Brand->find('first', array(
+                'conditions' => array('Brand.category_id' => $category_id, 'Brand.title' => $title),
+                'fields' => array('Brand.id')
+            ));
+            if ($brand) {
+                $response = array('ok' => true, 'existed' => true, 'id' => $brand['Brand']['id']);
+            } else {
+                // Как прежнее автосоздание брендов в импорте: уникальный slug из названия
+                $slug = $this->_transliterate($title);
+                if ($slug === '') {
+                    $slug = 'brand';
+                }
+                $check_slug = $slug;
+                $j = 2;
+                while ($this->Brand->find('count', array('conditions' => array('Brand.slug' => $check_slug)))) {
+                    $check_slug = $slug . $j;
+                    $j++;
+                }
+                $this->Brand->create();
+                $saved = $this->Brand->save(array(
+                    'is_active' => 1,
+                    'category_id' => $category_id,
+                    'title' => $title,
+                    'slug' => $check_slug,
+                    'meta_title' => $title
+                ));
+                if ($saved) {
+                    $response = array('ok' => true, 'existed' => false, 'id' => $this->Brand->id);
+                } else {
+                    $response['error'] = 'не удалось сохранить бренд';
+                }
+            }
+            if ($response['ok']) {
+                $response['edit_url'] = Router::url(array('controller' => 'brands', 'action' => 'edit', 'admin' => true, $response['id']));
+            }
+        }
+        $this->response->body(json_encode($response));
+        return $this->response;
     }
 
     public function admin_import()
