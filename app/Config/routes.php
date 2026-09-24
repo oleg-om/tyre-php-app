@@ -585,6 +585,28 @@ Router::connect(
 );
 
 
+// sitemap: индекс и разделы (app/Controller/SitemapController.php)
+Router::connect(
+	'/sitemap.xml',
+	array(
+		'controller' => 'sitemap',
+		'action' => 'index'
+	)
+);
+Router::connect(
+	'/sitemap-:section.xml',
+	array(
+		'controller' => 'sitemap',
+		'action' => 'section'
+	),
+	array(
+		'pass' => array(
+			'section'
+		),
+		'section' => '[a-z]+'
+	)
+);
+
 // шинно-дисковый калькулятор
 Router::connect(
 	'/calculator',
