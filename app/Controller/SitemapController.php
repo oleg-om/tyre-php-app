@@ -26,10 +26,10 @@ class SitemapController extends Controller {
 			throw new NotFoundException();
 		}
 		$xml = $this->_cached($section, function () use ($section) {
-			$urls = $section === 'pages' ? $this->_pageUrls() : $this->_categoryUrls($section);
+			$urls = $section === 'pages' ? $this->_pageUrls() : array_fill_keys($this->_categoryUrls($section), null);
 			$items = array();
-			foreach ($urls as $url) {
-				$items[] = array('loc' => Router::url($url, true));
+			foreach ($urls as $url => $lastmod) {
+				$items[] = array('loc' => Router::url($url, true), 'lastmod' => $lastmod);
 			}
 			return $this->_xml('urlset', 'url', $items);
 		});
@@ -37,23 +37,27 @@ class SitemapController extends Controller {
 	}
 
 	/**
-	 * Главная, разделы каталога, текстовые страницы и сервисные центры
+	 * Главная, разделы каталога, текстовые страницы и сервисные центры: ссылка => lastmod.
+	 * Дата изменения есть только у текстовых страниц (Page.modified); у товаров её нет — они пересоздаются при загрузке прайсов.
 	 */
 	private function _pageUrls() {
-		$urls = array('/', '/tyres', '/disks', '/akb', '/selection', '/calculator');
+		$urls = array_fill_keys(array('/', '/tyres', '/disks', '/akb', '/selection', '/calculator'), null);
 
 		$Page = ClassRegistry::init('Page');
 		$own_routes = array('home' => '/', 'sales' => '/sales', 'delivery' => '/delivery');
-		foreach ($Page->find('list', array('conditions' => array('Page.is_active' => 1), 'fields' => array('Page.id', 'Page.slug'))) as $slug) {
-			$urls[] = isset($own_routes[$slug]) ? $own_routes[$slug] : '/page-' . $slug;
+		foreach ($Page->find('all', array('conditions' => array('Page.is_active' => 1), 'fields' => array('Page.slug', 'Page.modified'), 'recursive' => -1)) as $page) {
+			$slug = $page['Page']['slug'];
+			// главная и акции показывают не только текст страницы — дата изменения текста для них не подходит
+			$lastmod = !in_array($slug, array('home', 'sales')) && strtotime($page['Page']['modified']) > 0 ? date('c', strtotime($page['Page']['modified'])) : null;
+			$urls[isset($own_routes[$slug]) ? $own_routes[$slug] : '/page-' . $slug] = $lastmod;
 		}
 
 		$Station = ClassRegistry::init('Station');
 		$conditions = $Station->hasField('is_active') ? array('Station.is_active' => 1) : array();
 		foreach ($Station->find('list', array('conditions' => $conditions, 'fields' => array('Station.id', 'Station.slug'))) as $slug) {
-			$urls[] = '/stations/' . $slug;
+			$urls['/stations/' . $slug] = null;
 		}
-		return array_values(array_unique($urls));
+		return $urls;
 	}
 
 	/**
@@ -98,7 +102,11 @@ class SitemapController extends Controller {
 		$xml = '<?xml version="1.0" encoding="UTF-8"?>' . "\n";
 		$xml .= '<' . $root . ' xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' . "\n";
 		foreach ($items as $item) {
-			$xml .= '<' . $tag . '><loc>' . htmlspecialchars($item['loc'], ENT_XML1, 'UTF-8') . '</loc></' . $tag . '>' . "\n";
+			$xml .= '<' . $tag . '><loc>' . htmlspecialchars($item['loc'], ENT_XML1, 'UTF-8') . '</loc>';
+			if (!empty($item['lastmod'])) {
+				$xml .= '<lastmod>' . $item['lastmod'] . '</lastmod>';
+			}
+			$xml .= '</' . $tag . '>' . "\n";
 		}
 		return $xml . '</' . $root . '>' . "\n";
 	}
