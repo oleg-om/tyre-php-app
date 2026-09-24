@@ -79,6 +79,17 @@ class SitemapController extends Controller {
 			'conditions' => array('BrandModel.category_id' => $category_id, 'BrandModel.is_active' => 1),
 			'fields' => array('BrandModel.id', 'BrandModel.title')
 		));
+		// при SHOW_DISKS_IMG страница бренда дисков принимает model_id только у моделей с картинкой, иначе показывает бренд
+		$model_pages = $models;
+		if ($controller == 'disks') {
+			$settings = ClassRegistry::init('Setting')->get();
+			if (isset($settings['SHOW_DISKS_IMG']) && $settings['SHOW_DISKS_IMG'] == 1) {
+				$model_pages = ClassRegistry::init('BrandModel')->find('list', array(
+					'conditions' => array('BrandModel.category_id' => $category_id, 'BrandModel.is_active' => 1, 'BrandModel.filename !=' => ''),
+					'fields' => array('BrandModel.id', 'BrandModel.id')
+				));
+			}
+		}
 
 		$urls = array();
 		foreach ($products as $product) {
@@ -89,8 +100,10 @@ class SitemapController extends Controller {
 			$brand_slug = $brands[$product['brand_id']];
 			$brand_url = '/' . $controller . '/' . $brand_slug;
 			$urls[$brand_url] = $brand_url;
-			$model_url = $brand_url . '?model_id=' . $product['model_id'];
-			$urls[$model_url] = $model_url;
+			if (isset($model_pages[$product['model_id']])) {
+				$model_url = $brand_url . '?model_id=' . $product['model_id'];
+				$urls[$model_url] = $model_url;
+			}
 			// одинаковые товары разных поставщиков дают одну и ту же ссылку
 			$product_url = Router::url(ProductUrl::url($controller, $product, $brand_slug, $models[$product['model_id']]));
 			$urls[$product_url] = $product_url;
