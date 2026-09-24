@@ -22,6 +22,20 @@
 	<div class="clear"></div>
 	<div class="boxMod">
 		<h3>Модификации и цена <?php echo $model['Brand']['title']. ' '. $model['BrandModel']['title']; ?>:</h3>
+		<?php if (!empty($model_autos) && count($model_autos) > 1) {
+			$auto_titles = array('cars' => 'Легковые', 'trucks' => 'Грузовые', 'agricultural' => 'Сельскохозяйственные', 'loader' => 'Погрузчики', 'special' => 'Индустриальные');
+			$car_icon = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 17H3v-5l2-5h11l3 5h2v5h-2"/><path d="M9 17h6"/><circle cx="7" cy="17" r="2"/><circle cx="17" cy="17" r="2"/><path d="M5 12h14"/></svg>';
+			$truck_icon = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h11v11H3z"/><path d="M14 10h4l3 3v4h-7"/><circle cx="7" cy="18" r="2"/><circle cx="17" cy="18" r="2"/></svg>';
+		?>
+		<div class="auto-switch">
+			<?php foreach ($model_autos as $auto_value) {
+				$query = array_merge($this->request->query, array('auto' => $auto_value));
+				$title = isset($auto_titles[$auto_value]) ? $auto_titles[$auto_value] : $auto_value;
+				$icon = $auto_value === 'cars' ? $car_icon : $truck_icon;
+				echo $this->Html->link($icon . '<span>' . h($title) . '</span>', '?' . http_build_query($query), array('escape' => false, 'class' => 'auto-switch__item' . ($auto_value === $model_auto ? ' active' : '')));
+			} ?>
+		</div>
+		<?php } ?>
 
 		<table cellpadding="0" cellspacing="0">
 			<tr>

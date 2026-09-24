@@ -640,6 +640,24 @@ class DisksController extends AppController
                 $conditions['Product.auto'] = 'cars';
             }
 
+            // у модели могут быть и легковые, и грузовые диски — выбираем доступный тип и отдаём список для переключателя
+            if (!empty($model_id)) {
+                $model_autos = array_values(array_unique($this->Product->find('list', array(
+                    'fields' => array('Product.id', 'Product.auto'),
+                    'conditions' => array('Product.is_active' => 1, 'Product.model_id' => $model_id, 'Product.price > ' => 0, 'Product.stock_count > ' => 0)
+                ))));
+                usort($model_autos, function ($a, $b) {
+                    $order = array('cars', 'trucks', 'agricultural', 'loader', 'special');
+                    return array_search($a, $order) - array_search($b, $order);
+                });
+                if (!empty($model_autos) && !in_array($conditions['Product.auto'], $model_autos)) {
+                    $conditions['Product.auto'] = $model_autos[0];
+                }
+                $auto = $conditions['Product.auto'];
+                $this->set('model_autos', $model_autos);
+                $this->set('model_auto', $auto);
+            }
+
             if (isset($this->request->query['size2']) && !empty($this->request->query['size2'])) {
                 $values = array($this->request->query['size2']);
                 if (substr_count($this->request->query['size2'], '.') > 0) {
@@ -785,8 +803,6 @@ class DisksController extends AppController
             $render = 'index';
             if (!empty($model_id)) {
                 if ($model = $this->BrandModel->find('first', array('conditions' => array('BrandModel.id' => $model_id)))) {
-                    $auto = $model['Product']['auto'];
-
                     $breadcrumbs[] = array(
                         'url' => array('controller' => 'disks', 'action' => 'brand', 'slug' => $slug),
                         'title' => $brand['Brand']['title']
