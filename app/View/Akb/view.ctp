@@ -114,3 +114,7 @@
     'image' => !empty($filename) ? $this->Backend->thumbnail(array('id' => $id, 'filename' => $filename, 'path' => $path, 'width' => 800, 'height' => 600, 'crop' => false, 'folder' => false)) : null,
     'show_price' => $this->Frontend->canShowAkbPrice($product['Product']['not_show_price'])
 )); ?>
+<?php echo $this->element('product_meta', array(
+    'type' => 'akb',
+    'show_price' => $this->Frontend->canShowAkbPrice($product['Product']['not_show_price'])
+)); ?>

@@ -1152,12 +1152,13 @@ class DisksController extends AppController
     public function popular()
     {
         $this->loadModel('Page');
+        // текст страницы — общий с разделом дисков, поэтому заголовок и описание свои
         if ($page = $this->Page->find('first', array('conditions' => array('Page.is_active' => 1, 'Page.slug' => 'disks')))) {
-            $this->setMeta('title', !empty($page['Page']['meta_title']) ? $page['Page']['meta_title'] : $page['Page']['title']);
             $this->setMeta('keywords', $page['Page']['meta_keywords']);
-            $this->setMeta('description', $page['Page']['meta_description']);
             $this->set('page', $page);
         }
+        $this->setMeta('title', 'Популярные диски — купить в Керчи');
+        $this->setMeta('description', 'Популярные литые и штампованные диски в интернет-магазине КерчьШина: наличие, цены, подбор дисков по автомобилю и шиномонтаж в Керчи.');
         $this->category_id = 2;
         $this->_filter_disc_params();
         $this->loadModel('Product');

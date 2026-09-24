@@ -196,6 +196,7 @@ class BoltsController extends AppController {
 			);
 			$this->set('breadcrumbs', $breadcrumbs);
 			$this->setMeta('title', $this->Product->bolt_types[$product['Product']['bolt_type']] . ' ' . $product['Product']['bolt']);
+			$this->setMeta('description', $this->Product->bolt_types[$product['Product']['bolt_type']] . ' ' . $product['Product']['bolt'] . ' — купить в Керчи. Крепёж для колёсных дисков в интернет-магазине КерчьШина.');
 			$this->set('product', $product);
 		}
 		else {

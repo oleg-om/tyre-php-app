@@ -186,6 +186,12 @@ class PagesController extends AppController {
 			$this->setMeta('title', !empty($page['Page']['meta_title']) ? $page['Page']['meta_title'] : $page['Page']['title']);
 			$this->setMeta('keywords', $page['Page']['meta_keywords']);
 			$this->setMeta('description', $page['Page']['meta_description']);
+			// без своего описания — начало текста страницы, а не общее описание сайта
+			if (trim($page['Page']['meta_description']) === '') {
+				$text = trim(preg_replace('/\s+/u', ' ', html_entity_decode(strip_tags($page['Page']['content']), ENT_QUOTES, 'UTF-8')));
+				$this->setMeta('description', $text !== '' ? mb_substr($text, 0, 160, 'UTF-8') : $page['Page']['title'] . ' — КерчьШина, шинный центр в Керчи.');
+			}
+			$this->set('canonical_url', Router::url('/page-' . $slug, true));
 			$breadcrumbs = array();
 			$breadcrumbs[] = array(
 				'url' => null,
@@ -250,6 +256,8 @@ class PagesController extends AppController {
 	}
 	public function calculator() {
 		$this->loadModel('Page');
+		$this->setMeta('title', 'Шинный калькулятор — сравнение размеров шин и дисков');
+		$this->setMeta('description', 'Шинный калькулятор КерчьШина: сравните размеры шин и дисков, разницу в диаметре колеса, клиренсе и показаниях спидометра.');
 		if ($page = $this->Page->find('first', array('conditions' => array('Page.is_active' => 1, 'Page.slug' => 'calculator')))) {
 			$this->setMeta('title', !empty($page['Page']['meta_title']) ? $page['Page']['meta_title'] : $page['Page']['title']);
 			$this->setMeta('keywords', $page['Page']['meta_keywords']);

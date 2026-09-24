@@ -141,3 +141,7 @@
     'image' => !empty($product['BrandModel']['filename']) ? $image_big : null,
     'show_price' => $this->Frontend->canShowTyrePrice($product['Product']['auto'], $product['Product']['not_show_price'])
 )); ?>
+<?php echo $this->element('product_meta', array(
+    'type' => 'tyres',
+    'show_price' => $this->Frontend->canShowTyrePrice($product['Product']['auto'], $product['Product']['not_show_price'])
+)); ?>

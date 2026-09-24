@@ -193,6 +193,32 @@ class AppController extends Controller {
             $this->getCurrentSeason();
             $this->setCarBrandsForLeftMenu();
 			$this->_setListingSeo();
+			$this->_setSelectionMeta();
+			$controller = $this->request->params['controller'];
+			$action = $this->request->params['action'];
+			// главная приходит и с utm_* из рекламы и карт — это одна страница
+			if ($controller == 'pages' && $action == 'home') {
+				$this->set('canonical_url', Router::url('/', true));
+			}
+			// оформление заказа поисковику не нужно
+			if ($controller == 'orders' && in_array($action, array('cart', 'checkout', 'thank'))) {
+				$this->set('robots_noindex', true);
+			}
+		}
+	}
+
+	/**
+	 * Подбор по авто: у всех страниц было общее описание сайта — строим его из названия автомобиля в заголовке
+	 */
+	private function _setSelectionMeta() {
+		$prefix = 'Подбор по авто ';
+		$title = $this->viewVars['meta_title'];
+		if (!in_array($this->request->params['controller'], array('car_brands', 'car_models', 'car_generations', 'car_modifications', 'cars')) || strpos($title, $prefix) !== 0) {
+			return;
+		}
+		if ($this->viewVars['meta_description'] == (defined('CONST_META_DESCRIPTION') ? CONST_META_DESCRIPTION : '')) {
+			$car = trim(substr($title, strlen($prefix)));
+			$this->set('meta_description', 'Подбор шин, дисков и аккумуляторов для ' . $car . ': заводские и допустимые размеры, наличие и цены в Керчи. Интернет-магазин КерчьШина.');
 		}
 	}
 
@@ -256,6 +282,89 @@ class AppController extends Controller {
 		// разделы и бренды без фильтров не закрываем, даже если сейчас в них пусто
 		if ($empty && !empty($query)) {
 			$this->set('robots_noindex', true);
+		}
+
+		$this->_setListingMeta($controller, $action, $query, $model, isset($named['page']) ? intval($named['page']) : 1);
+	}
+
+	/**
+	 * Title и description каталога: у страниц с фильтрами и пагинацией — по фильтрам (CatalogMeta),
+	 * у бренда без фильтров — заданные в админке, если есть; у модели — описание по её размерам, если своего нет.
+	 */
+	private function _setListingMeta($controller, $action, $query, $model, $page) {
+		$default_title = defined('CONST_META_TITLE') ? CONST_META_TITLE : '';
+		$default_description = defined('CONST_META_DESCRIPTION') ? CONST_META_DESCRIPTION : '';
+		$title = $this->viewVars['meta_title'];
+		$description = $this->viewVars['meta_description'];
+		$brand = isset($this->viewVars['brand']['Brand']) ? $this->viewVars['brand']['Brand'] : null;
+
+		if ($model) {
+			if ($description === '' || $description == $default_description) {
+				$this->set('meta_description', CatalogMeta::modelDescription($controller, $model['Brand']['title'], $model['BrandModel']['title'], $model['Product']));
+			}
+			return;
+		}
+
+		$filtered = !empty($query) || $page > 1;
+		// meta_title бренда часто заполнен просто названием («IFREE», «Michelin») — это не свой заголовок, а написание названия
+		$brand_name = null;
+		$brand_custom_title = false;
+		if ($brand) {
+			$same_as_name = mb_strtolower(trim($brand['meta_title'])) === mb_strtolower(trim($brand['title']));
+			$brand_name = $same_as_name ? trim($brand['meta_title']) : $brand['title'];
+			$brand_custom_title = trim($brand['meta_title']) !== '' && !$same_as_name;
+		}
+		if ($action == 'brand') {
+			$generate_title = $filtered || !$brand_custom_title;
+			$generate_description = $filtered || trim($brand['meta_description']) === '';
+			// описание, скопированное нескольким брендам (например, общее описание раздела АКБ), своим не считаем
+			if (!$generate_description) {
+				$this->loadModel('Brand');
+				$generate_description = $this->Brand->find('count', array('conditions' => array('Brand.category_id' => $brand['category_id'], 'Brand.meta_description' => $brand['meta_description'], 'Brand.id !=' => $brand['id']), 'recursive' => -1)) > 0;
+			}
+		} else {
+			$generate_title = $filtered || $title == $default_title;
+			$generate_description = $filtered || $description == $default_description;
+		}
+		// свои заголовок и описание бренда из админки — как есть (шины оборачивали заголовок в «Шины … - купить в Керчи», АКБ заменяли описание общим)
+		if ($action == 'brand' && !$generate_title) {
+			$this->set('meta_title', trim($brand['meta_title']));
+		}
+		if ($action == 'brand' && !$generate_description) {
+			$this->set('meta_description', trim($brand['meta_description']));
+		}
+		if (!$generate_title && !$generate_description) {
+			return;
+		}
+
+		$names = array('brands' => array(), 'model' => null);
+		if ($brand) {
+			$names['brands'][] = $brand_name;
+		} elseif (!empty($query['brand_id'])) {
+			$ids = array_filter(array_map('intval', explode(',', $query['brand_id'])));
+			$this->loadModel('Brand');
+			$names['brands'] = array_values($this->Brand->find('list', array('conditions' => array('Brand.id' => $ids), 'fields' => array('Brand.id', 'Brand.title'), 'recursive' => -1)));
+		}
+		if (!empty($query['model_id'])) {
+			$this->loadModel('BrandModel');
+			$model_title = $this->BrandModel->field('title', array('BrandModel.id' => $query['model_id']));
+			// модель без букв и цифр (например «.») в заголовок не берём
+			$names['model'] = ProductUrl::slug($model_title) !== '' ? $model_title : null;
+		}
+		$count = null;
+		$count_of = 'products';
+		if (!empty($this->request->params['paging'])) {
+			$paging = reset($this->request->params['paging']);
+			$count = $paging['count'];
+			$count_of = key($this->request->params['paging']) == 'BrandModel' ? 'models' : 'products';
+		}
+
+		$meta = CatalogMeta::build($controller, array_diff_key($query, array('brand_id' => 1, 'model_id' => 1)), $names, $count, $count_of, $page);
+		if ($generate_title) {
+			$this->set('meta_title', $meta['title']);
+		}
+		if ($generate_description) {
+			$this->set('meta_description', $meta['description']);
 		}
 	}
 

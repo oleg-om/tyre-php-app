@@ -440,6 +440,7 @@ class CarsController extends AppController {
 						);
 
             $this->set('breadcrumbs', $breadcrumbs);
+            $this->setMeta('title', 'Подбор по авто ' . $car_brand['CarBrand']['title'] . ' ' . $car_model['CarModel']['title'] . ' ' . $car_generation['CarGeneration']['title'] . ' ' . $car_modification['CarModification']['title']);
 
             $this->set('show_left_menu', false);
 
