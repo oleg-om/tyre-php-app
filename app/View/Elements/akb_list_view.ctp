@@ -8,8 +8,8 @@
                         <td><h3>
                                 <?php
                                 $link_filter = array('model_id' => $item['BrandModel']['id']);
-                                echo $this->Html->link('<span>'.$item['Brand']['title'].' '.$item['BrandModel']['title'].'</span>', array('controller' => 'akb', 'action' => 'view', 'slug' => $item['Brand']['slug'], 'id' => $item['Product']['id']), array('escape' => false));
-                                $url = array('controller' => 'akb', 'action' => 'view', 'slug' => $item['Brand']['slug'], 'id' => $item['Product']['id']);
+                                echo $this->Html->link('<span>'.$item['Brand']['title'].' '.$item['BrandModel']['title'].'</span>', ProductUrl::url('akb', $item['Product'], $item['Brand']['slug'], $item['BrandModel']['title']), array('escape' => false));
+                                $url = ProductUrl::url('akb', $item['Product'], $item['Brand']['slug'], $item['BrandModel']['title']);
                                 ?></h3></td>
                     </tr>
                 </table>

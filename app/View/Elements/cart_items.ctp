@@ -8,7 +8,7 @@ foreach ($cart['items'] as $product_id => $count) {
 	if ($product['Product']['category_id'] == 1) {
 		$type = 'tyres';
 		$title .= ' ' . $product['Product']['size1'] . '/' . $product['Product']['size2'] . ' R' . $product['Product']['size3'];
-		$url = array('controller' => 'tyres', 'action' => 'view', 'slug' => $product['Brand']['slug'], 'id' => $product['Product']['id']);
+		$url = ProductUrl::url('tyres', $product['Product'], $product['Brand']['slug'], $product['BrandModel']['title']);
 		$image = $this->Html->image('no-tyre-little.jpg');
 		if (!empty($product['BrandModel']['filename'])) {
 			$image = $this->Html->image($this->Backend->thumbnail(array('id' => $product['BrandModel']['id'], 'filename' => $product['BrandModel']['filename'], 'path' => 'models', 'width' => 158, 'height' => 158, 'crop' => false, 'folder' => false, 'tyre' => true, 'empty' => '/img/no-tyre-little.jpg')), array('alt' => $product['BrandModel']['title']));
@@ -17,7 +17,7 @@ foreach ($cart['items'] as $product_id => $count) {
 	elseif ($product['Product']['category_id'] == 2) {
 		$type = 'disks';
 		$title .= ' ' . $product['Product']['size2'] . ' R' . $product['Product']['size2'] . 'x' . $product['Product']['size3'];
-		$url = array('controller' => 'disks', 'action' => 'view', 'slug' => $product['Brand']['slug'], 'id' => $product['Product']['id']);
+		$url = ProductUrl::url('disks', $product['Product'], $product['Brand']['slug'], $product['BrandModel']['title']);
 		$image = $this->Html->image('no-disk-little.jpg');
 		if (!empty($product['BrandModel']['filename'])) {
 			$image = $this->Html->image($this->Backend->thumbnail(array('id' => $product['BrandModel']['id'], 'filename' => $product['BrandModel']['filename'], 'path' => 'models', 'width' => 158, 'height' => 158, 'crop' => false, 'folder' => false, 'empty' => '/img/no-disk-little.jpg')), array('alt' => $product['BrandModel']['title']));
@@ -26,7 +26,7 @@ foreach ($cart['items'] as $product_id => $count) {
 	elseif ($product['Product']['category_id'] == 3) {
 		$type = 'akb';
 		$title .= ' ' . $product['Product']['ah'] . 'ач ' . $product['Product']['f1'];
-		$url = array('controller' => 'akb', 'action' => 'view', 'slug' => $product['Brand']['slug'], 'id' => $product['Product']['id']);
+		$url = ProductUrl::url('akb', $product['Product'], $product['Brand']['slug'], $product['BrandModel']['title']);
 		$image = $this->Html->image('no-akb-little.jpg');
 		$filename = null;
 		if (!empty($product['Product']['filename'])) {

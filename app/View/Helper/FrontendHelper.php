@@ -356,6 +356,29 @@ class FrontendHelper extends AppHelper
         return $price;
     }
 
+    /**
+     * Цена как в корзине числом (для микроразметки и фидов): roundPrice форматирует «1 440,00»
+     */
+    public function cartPriceNumber($price, $type = 'tyres')
+    {
+        return str_replace(array(' ', ','), array('', '.'), $this->calculateCartPrice($price, $type));
+    }
+
+    /**
+     * Показывается ли цена товара на сайте
+     */
+    public function canShowPrice($type, $item)
+    {
+        if ($type == 'tyres') {
+            return $this->canShowTyrePrice($item['auto'], $item['not_show_price']);
+        } elseif ($type == 'disks') {
+            return $this->canShowDiskPrice($item['not_show_price']);
+        } elseif ($type == 'akb') {
+            return $this->canShowAkbPrice($item['not_show_price']);
+        }
+        return false;
+    }
+
     public function getStockCount($count, $max = 12)
     {
         if ($count > $max) $count = $max;

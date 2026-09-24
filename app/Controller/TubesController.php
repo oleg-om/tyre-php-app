@@ -174,7 +174,18 @@ class TubesController extends AppController {
 			'title' => $title
 		);
 		$this->set('breadcrumbs', $breadcrumbs);
-		$this->setMeta('title', $meta_title);
+		// заголовок и описание по фильтрам: у всех страниц камер был один заголовок «Автокамеры»
+		$what = !empty($this->request->query['type']) && isset($this->Product->types[$this->request->query['type']]) ? CatalogMeta::ucfirst($this->Product->types[$this->request->query['type']]) : $meta_title;
+		if (!empty($this->request->query['size3'])) {
+			$what .= ' R' . $this->request->query['size3'];
+		}
+		if (!empty($auto) && isset($this->Product->auto[$auto])) {
+			$what .= ' (' . mb_strtolower($this->Product->auto[$auto], 'UTF-8') . ')';
+		}
+		$page = isset($this->request->params['named']['page']) ? intval($this->request->params['named']['page']) : 1;
+		$this->setMeta('title', $what . ' — купить в Керчи' . ($page > 1 ? ' — страница ' . $page : ''));
+		$count = $this->request->params['paging']['Product']['count'];
+		$this->setMeta('description', $what . ' в интернет-магазине КерчьШина' . ($count ? ': ' . $count . ' ' . CatalogMeta::plural($count, 'товар', 'товара', 'товаров') . ' в наличии и под заказ' : '') . '. Шиномонтаж в Керчи.' . ($page > 1 ? ' Страница ' . $page . '.' : ''));
 		$this->set('types', $this->Product->types);
 		$this->set('show_filter', 6);
         $path = $this->check_truck($auto)['path'];
@@ -217,6 +228,7 @@ class TubesController extends AppController {
 			);
 			$this->set('breadcrumbs', $breadcrumbs);
 			$this->setMeta('title', $this->Product->types[$product['Product']['type']] . ' ' . $product['Product']['sku']);
+			$this->setMeta('description', $this->Product->types[$product['Product']['type']] . ' ' . $product['Product']['sku'] . ' — купить в Керчи. Интернет-магазин КерчьШина.');
 			$this->set('product', $product);
             $this->set('active_menu', $path);
             $this->set('show_left_menu', false);

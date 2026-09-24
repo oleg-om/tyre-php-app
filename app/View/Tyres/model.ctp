@@ -117,7 +117,7 @@
 					}
 				?></strong></td>
 				<td>
-					<?php echo $this->Html->link('Подробнее', array('controller' => 'tyres', 'action' => 'view', 'slug' => $model['Brand']['slug'], 'id' => $product['id']), array('escape' => false, 'class' => 'btVer2')); ?>
+					<?php echo $this->Html->link('Подробнее', ProductUrl::url('tyres', $product, $model['Brand']['slug'], $model['BrandModel']['title']), array('escape' => false, 'class' => 'btVer2')); ?>
 				</td>
 			</tr>
 			<?php } ?>

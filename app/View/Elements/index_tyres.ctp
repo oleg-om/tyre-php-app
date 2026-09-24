@@ -133,7 +133,7 @@ foreach ($models as $item) {
                                                 $link_filter = array('model_id' => $item['BrandModel']['id']);
 
                                                 echo $this->Html->link('<span class="brand">' . $item['Brand']['title'] . '</span><span class="model">' . $item['BrandModel']['title'] . '</span>', array('controller' => 'tyres', 'action' => 'brand', 'slug' => $item['Brand']['slug'], '?' => $link_filter), array('escape' => false));
-                                                $url = array('controller' => 'tyres', 'action' => 'view', 'slug' => $item['Brand']['slug'], 'id' => $item['Product'][0]['id']);
+                                                $url = ProductUrl::url('tyres', $item['Product'][0], $item['Brand']['slug'], $item['BrandModel']['title']);
                                                 ?>
                                             </h3>
                                             <?php
@@ -159,7 +159,7 @@ foreach ($models as $item) {
                                                     $link_filter = array('model_id' => $item['BrandModel']['id']);
                                                     //$link_filter = array_merge($link_filter, $filter);
                                                     echo $this->Html->link('<span class="brand">' . $item['Brand']['title'] . '</span><span class="model">' . $item['BrandModel']['title'] . '</span>', array('controller' => 'tyres', 'action' => 'brand', 'slug' => $item['Brand']['slug'], '?' => $link_filter), array('escape' => false));
-                                                    $url = array('controller' => 'tyres', 'action' => 'view', 'slug' => $item['Brand']['slug'], 'id' => $item['Product'][0]['id']);
+                                                    $url = ProductUrl::url('tyres', $item['Product'][0], $item['Brand']['slug'], $item['BrandModel']['title']);
                                                     ?></h3>
                                                 <div class="productSeason<?php if ($season == 'winter') {
                                                     echo '2';
@@ -250,7 +250,7 @@ foreach ($models as $item) {
                                         <col class="desc-col"/>
                                         <col width="121" class="desc-col">
                                         <col width="30">
-                                        <tr onclick="window.location='<?php echo Router::url(array('controller' => 'tyres', 'action' => 'view', 'slug' => $item['Brand']['slug'], 'id' => $item['Product'][0]['id'], '?' => $filter)); ?>';">
+                                        <tr onclick="window.location='<?php echo Router::url(ProductUrl::url('tyres', $item['Product'][0], $item['Brand']['slug'], $item['BrandModel']['title'], $filter)); ?>';">
                                             <td><?php
                                                 echo $item['Product'][0]['size1']; ?>
                                                 / <?php echo $item['Product'][0]['size2']; ?>
@@ -299,7 +299,7 @@ foreach ($models as $item) {
                                 }
                                 ?>
                                 <tr class="no-more-info season-<?php echo $season; ?> <?php echo $class; ?> season-<?php echo isset($item['Product'][0]) ? 'yes' : 'no'; ?> season-<?php echo $is_trucks ? 'trucks' : 'cars'; ?>"
-                                    onclick="window.location='<?php echo Router::url(array('controller' => 'tyres', 'action' => 'view', 'slug' => $item['Brand']['slug'], 'id' => $item['Product'][0]['id'], '?' => $filter)); ?>';"<?php echo $is_trucks && $has_no_trucks ? ' style="display:none;"' : ''; ?>>
+                                    onclick="window.location='<?php echo Router::url(ProductUrl::url('tyres', $item['Product'][0], $item['Brand']['slug'], $item['BrandModel']['title'], $filter)); ?>';"<?php echo $is_trucks && $has_no_trucks ? ' style="display:none;"' : ''; ?>>
                                     <td class="a-center"><?php
                                         $image = $this->Html->image('img-detal.jpg');
                                         if (!empty($item['BrandModel']['filename'])) {
@@ -504,7 +504,7 @@ foreach ($models as $item) {
                                                 $season = $item['BrandModel']['season'];
                                             }
                                             ?>
-                                            <tr onclick="window.location='<?php echo Router::url(array('controller' => 'tyres', 'action' => 'view', 'slug' => $item['Brand']['slug'], 'id' => $product['id'])); ?>'">
+                                            <tr onclick="window.location='<?php echo Router::url(ProductUrl::url('tyres', $product, $item['Brand']['slug'], $item['BrandModel']['title'])); ?>'">
                                                 <td><?php echo $product['size1']; ?> / <?php echo $product['size2']; ?>
                                                     R<?php echo $product['size3']; ?></td>
                                                 <td><?php echo h($product['f1'] . $product['f2']); ?></td>
@@ -554,7 +554,7 @@ foreach ($models as $item) {
                                     }
                                     ?>
                                     <tr class="no-more-info season-<?php echo $season; ?> <?php echo $class; ?> season-<?php echo isset($item['Product'][0]) ? 'yes' : 'no'; ?> season-<?php echo $is_trucks ? 'trucks' : 'cars'; ?>"
-                                        onclick="window.location='<?php echo Router::url(array('controller' => 'tyres', 'action' => 'view', 'slug' => $item['Brand']['slug'], 'id' => $product['id'], '?' => $filter)); ?>'"<?php echo $is_trucks && $has_no_trucks ? ' style="display:none;"' : ''; ?>>
+                                        onclick="window.location='<?php echo Router::url(ProductUrl::url('tyres', $product, $item['Brand']['slug'], $item['BrandModel']['title'], $filter)); ?>'"<?php echo $is_trucks && $has_no_trucks ? ' style="display:none;"' : ''; ?>>
                                         <td class="a-center"><?php
                                             if (!empty($item['BrandModel']['filename'])) {
                                                 $image = $this->Html->image('img-detal.jpg');
@@ -570,7 +570,7 @@ foreach ($models as $item) {
                                         <td><?php
                                             $model_filter = $filter;
                                             unset($model_filter['mode']);
-                                            echo $this->Html->link($item['BrandModel']['title'], array('controller' => 'tyres', 'action' => 'view', 'slug' => $item['Brand']['slug'], 'id' => $product['id'], '?' => $model_filter), array('escape' => false));
+                                            echo $this->Html->link($item['BrandModel']['title'], ProductUrl::url('tyres', $product, $item['Brand']['slug'], $item['BrandModel']['title'], $model_filter), array('escape' => false));
                                             ?></td>
                                         <td>
                                             <?php if ($product['sale']) { ?>

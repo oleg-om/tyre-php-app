@@ -391,4 +391,39 @@ class Product extends AppModel {
 		}
 		return false;
 	}
+
+	/**
+	 * Поиск активного товара по ЧПУ (см. ProductUrl): бренд + слаг модели + слаг параметров.
+	 * Если одинаковых товаров несколько (разные поставщики) — берётся самый дешёвый.
+	 * Возвращает array('id' => ..., 'model_id' => ...) или false; если модель найдена,
+	 * а товара с такими параметрами нет в наличии — array('id' => null, 'model_id' => ...).
+	 */
+	public function findIdByUrl($category_id, $brand_id, $model_slug, $params_slug) {
+		$BrandModel = ClassRegistry::init('BrandModel');
+		$models = $BrandModel->find('list', array(
+			'conditions' => array('BrandModel.brand_id' => $brand_id, 'BrandModel.category_id' => $category_id),
+			'fields' => array('BrandModel.id', 'BrandModel.title'),
+			'recursive' => -1
+		));
+		$model_ids = array();
+		foreach ($models as $id => $title) {
+			if (ProductUrl::modelSlug($title) === $model_slug) {
+				$model_ids[] = $id;
+			}
+		}
+		if (empty($model_ids)) {
+			return false;
+		}
+		$products = $this->find('all', array(
+			'conditions' => array('Product.brand_id' => $brand_id, 'Product.model_id' => $model_ids, 'Product.is_active' => 1, 'Product.price > ' => 0, 'Product.stock_count > ' => 0),
+			'order' => array('Product.price' => 'asc'),
+			'recursive' => -1
+		));
+		foreach ($products as $product) {
+			if (ProductUrl::paramsSlug($product, $category_id) === $params_slug) {
+				return array('id' => $product['Product']['id'], 'model_id' => $product['Product']['model_id']);
+			}
+		}
+		return array('id' => null, 'model_id' => $model_ids[0]);
+	}
 }

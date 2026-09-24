@@ -86,15 +86,15 @@ class OrdersController extends AppController
                 $title = $product['Brand']['title'] . ' ' . $product['BrandModel']['title'];
                 if ($product['Product']['category_id'] == 1) {
                     $title .= ' ' . $product['Product']['size1'] . '/' . $product['Product']['size2'] . ' R' . $product['Product']['size3'];
-                    $url = array('controller' => 'tyres', 'action' => 'view', 'slug' => $product['Brand']['slug'], 'id' => $product['Product']['id']);
+                    $url = ProductUrl::url('tyres', $product['Product'], $product['Brand']['slug'], $product['BrandModel']['title']);
                     $type = 'tyres';
                 } elseif ($product['Product']['category_id'] == 2) {
                     $title .= ' ' . $product['Product']['size2'] . ' R' . $product['Product']['size2'] . 'x' . $product['Product']['size3'];
-                    $url = array('controller' => 'disks', 'action' => 'view', 'slug' => $product['Brand']['slug'], 'id' => $product['Product']['id']);
+                    $url = ProductUrl::url('disks', $product['Product'], $product['Brand']['slug'], $product['BrandModel']['title']);
                     $type = 'disks';
                 } elseif ($product['Product']['category_id'] == 3) {
                     $title .= ' ' . $product['Product']['ah'] . 'ач ' . $product['Product']['f1'];
-                    $url = array('controller' => 'akb', 'action' => 'view', 'slug' => $product['Brand']['slug'], 'id' => $product['Product']['id']);
+                    $url = ProductUrl::url('akb', $product['Product'], $product['Brand']['slug'], $product['BrandModel']['title']);
                     $type = 'akb';
                 } else {
                     $title = $this->Product->bolt_types[$product['Product']['bolt_type']] . ' ' . $product['Product']['bolt'];
@@ -250,15 +250,15 @@ class OrdersController extends AppController
                         $title = $product['Brand']['title'] . ' ' . $product['BrandModel']['title'];
                         if ($product['Product']['category_id'] == 1) {
                             $title .= ' ' . $product['Product']['size1'] . '/' . $product['Product']['size2'] . ' R' . $product['Product']['size3'];
-                            $url = array('controller' => 'tyres', 'action' => 'view', 'slug' => $product['Brand']['slug'], 'id' => $product['Product']['id']);
+                            $url = ProductUrl::url('tyres', $product['Product'], $product['Brand']['slug'], $product['BrandModel']['title']);
                             $type = 'tyres';
                         } elseif ($product['Product']['category_id'] == 2) {
                             $title .= ' ' . $product['Product']['size2'] . ' R' . $product['Product']['size2'] . 'x' . $product['Product']['size3'];
-                            $url = array('controller' => 'disks', 'action' => 'view', 'slug' => $product['Brand']['slug'], 'id' => $product['Product']['id']);
+                            $url = ProductUrl::url('disks', $product['Product'], $product['Brand']['slug'], $product['BrandModel']['title']);
                             $type = 'disks';
                         } elseif ($product['Product']['category_id'] == 3) {
                             $title .= ' ' . $product['Product']['ah'] . 'ач ' . $product['Product']['f1'];
-                            $url = array('controller' => 'akb', 'action' => 'view', 'slug' => $product['Brand']['slug'], 'id' => $product['Product']['id']);
+                            $url = ProductUrl::url('akb', $product['Product'], $product['Brand']['slug'], $product['BrandModel']['title']);
                             $type = 'akb';
                         } else {
                             $title = $this->Product->bolt_types[$product['Product']['bolt_type']] . ' ' . $product['Product']['bolt'];
@@ -720,15 +720,15 @@ class OrdersController extends AppController
                         $title = $product['Brand']['title'] . ' ' . $product['BrandModel']['title'];
                         if ($product['Product']['category_id'] == 1) {
                             $title .= ' ' . $product['Product']['size1'] . '/' . $product['Product']['size2'] . ' R' . $product['Product']['size3'];
-                            $url = array('controller' => 'tyres', 'action' => 'view', 'slug' => $product['Brand']['slug'], 'id' => $product['Product']['id']);
+                            $url = ProductUrl::url('tyres', $product['Product'], $product['Brand']['slug'], $product['BrandModel']['title']);
                             $type = 'tyres';
                         } elseif ($product['Product']['category_id'] == 2) {
                             $title .= ' ' . $product['Product']['size2'] . ' R' . $product['Product']['size2'] . 'x' . $product['Product']['size3'];
-                            $url = array('controller' => 'disks', 'action' => 'view', 'slug' => $product['Brand']['slug'], 'id' => $product['Product']['id']);
+                            $url = ProductUrl::url('disks', $product['Product'], $product['Brand']['slug'], $product['BrandModel']['title']);
                             $type = 'disks';
                         } else {
                             $title .= ' ' . $product['Product']['ah'] . 'ач ' . $product['Product']['f1'];
-                            $url = array('controller' => 'akb', 'action' => 'view', 'slug' => $product['Brand']['slug'], 'id' => $product['Product']['id']);
+                            $url = ProductUrl::url('akb', $product['Product'], $product['Brand']['slug'], $product['BrandModel']['title']);
                             $type = 'akb';
                         }
                         $ordered_products[] = '<li><a href="' . Router::url($url, true) . '">' . $title . '</a>, ' . $item['quantity'] . ' шт. — ' . $this->getCartPrice($product['Product']['price'] * $item['quantity'], $type) . '</li>';

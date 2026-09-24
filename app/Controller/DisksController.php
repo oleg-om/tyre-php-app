@@ -640,6 +640,24 @@ class DisksController extends AppController
                 $conditions['Product.auto'] = 'cars';
             }
 
+            // у модели могут быть и легковые, и грузовые диски — выбираем доступный тип и отдаём список для переключателя
+            if (!empty($model_id)) {
+                $model_autos = array_values(array_unique($this->Product->find('list', array(
+                    'fields' => array('Product.id', 'Product.auto'),
+                    'conditions' => array('Product.is_active' => 1, 'Product.model_id' => $model_id, 'Product.price > ' => 0, 'Product.stock_count > ' => 0)
+                ))));
+                usort($model_autos, function ($a, $b) {
+                    $order = array('cars', 'trucks', 'agricultural', 'loader', 'special');
+                    return array_search($a, $order) - array_search($b, $order);
+                });
+                if (!empty($model_autos) && !in_array($conditions['Product.auto'], $model_autos)) {
+                    $conditions['Product.auto'] = $model_autos[0];
+                }
+                $auto = $conditions['Product.auto'];
+                $this->set('model_autos', $model_autos);
+                $this->set('model_auto', $auto);
+            }
+
             if (isset($this->request->query['size2']) && !empty($this->request->query['size2'])) {
                 $values = array($this->request->query['size2']);
                 if (substr_count($this->request->query['size2'], '.') > 0) {
@@ -785,8 +803,6 @@ class DisksController extends AppController
             $render = 'index';
             if (!empty($model_id)) {
                 if ($model = $this->BrandModel->find('first', array('conditions' => array('BrandModel.id' => $model_id)))) {
-                    $auto = $model['Product']['auto'];
-
                     $breadcrumbs[] = array(
                         'url' => array('controller' => 'disks', 'action' => 'brand', 'slug' => $slug),
                         'title' => $brand['Brand']['title']
@@ -796,7 +812,7 @@ class DisksController extends AppController
                         'title' => $model['BrandModel']['title']
                     );
                     $this->setLastModels($model);
-                    $meta_title = (!empty($model['BrandModel']['meta_title']) ? $model['BrandModel']['meta_title'] : 'Автомобильный диск ' . $model['Brand']['title'] . ' ' . $model['BrandModel']['title']);
+                    $meta_title = (!empty($model['BrandModel']['meta_title']) ? $model['BrandModel']['meta_title'] : 'Автомобильный диск ' . $model['Brand']['title'] . ' ' . $model['BrandModel']['title']) . ' - купить в Керчи';
                     $meta_keywords = $model['BrandModel']['meta_keywords'];
                     $meta_description = $model['BrandModel']['meta_description'];
                     $this->set('model', $model);
@@ -896,11 +912,19 @@ class DisksController extends AppController
         }
     }
 
-    public function view($slug, $id)
+    public function view_by_id($slug, $id)
+    {
+        $this->_redirectProductById(2, $slug, $id);
+    }
+
+    public function view($slug, $model_slug, $params_slug)
     {
         $this->category_id = 2;
         $this->loadModel('Brand');
         if ($brand = $this->Brand->find('first', array('conditions' => array('Brand.is_active' => 1, 'Brand.category_id' => 2, 'Brand.slug' => $slug)))) {
+            if (!($id = $this->_productIdByUrl(2, $brand, $model_slug, $params_slug))) {
+                return;
+            }
             $this->loadModel('Product');
             $this->Product->bindModel(
                 array(
@@ -1012,11 +1036,12 @@ class DisksController extends AppController
                 $this->set('models', $models);
                 $this->set('brand_id', $brand['Brand']['id']);
                 $this->set('model_id', $product['Product']['model_id']);
-                $this->setMeta('title', $product['Product']['sku']);
+                $this->setMeta('title', $product['Product']['sku'] . ' - купить в Керчи');
                 $this->setMeta('keywords', $product['BrandModel']['meta_keywords']);
                 $this->setMeta('description', $product['BrandModel']['meta_description']);
                 $this->set('brand', $brand);
                 $this->set('product', $product);
+                $this->set('canonical_url', Router::url(ProductUrl::url('disks', $product['Product'], $brand['Brand']['slug'], $product['BrandModel']['title']), true));
                 $path = $this->check_truck($auto)['path'];
                 $this->set('active_menu', $path);
                 $this->set('show_left_menu', false);
@@ -1127,12 +1152,13 @@ class DisksController extends AppController
     public function popular()
     {
         $this->loadModel('Page');
+        // текст страницы — общий с разделом дисков, поэтому заголовок и описание свои
         if ($page = $this->Page->find('first', array('conditions' => array('Page.is_active' => 1, 'Page.slug' => 'disks')))) {
-            $this->setMeta('title', !empty($page['Page']['meta_title']) ? $page['Page']['meta_title'] : $page['Page']['title']);
             $this->setMeta('keywords', $page['Page']['meta_keywords']);
-            $this->setMeta('description', $page['Page']['meta_description']);
             $this->set('page', $page);
         }
+        $this->setMeta('title', 'Популярные диски — купить в Керчи');
+        $this->setMeta('description', 'Популярные литые и штампованные диски в интернет-магазине КерчьШина: наличие, цены, подбор дисков по автомобилю и шиномонтаж в Керчи.');
         $this->category_id = 2;
         $this->_filter_disc_params();
         $this->loadModel('Product');

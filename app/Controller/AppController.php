@@ -192,6 +192,179 @@ class AppController extends Controller {
 			$this->set('last_models', $this->Session->read('last_models'));
             $this->getCurrentSeason();
             $this->setCarBrandsForLeftMenu();
+			$this->_setListingSeo();
+			$this->_setSelectionMeta();
+			$controller = $this->request->params['controller'];
+			$action = $this->request->params['action'];
+			// главная приходит и с utm_* из рекламы и карт — это одна страница
+			if ($controller == 'pages' && $action == 'home') {
+				$this->set('canonical_url', Router::url('/', true));
+			}
+			// оформление заказа поисковику не нужно
+			if ($controller == 'orders' && in_array($action, array('cart', 'checkout', 'thank'))) {
+				$this->set('robots_noindex', true);
+			}
+		}
+	}
+
+	/**
+	 * Подбор по авто: у всех страниц было общее описание сайта — строим его из названия автомобиля в заголовке
+	 */
+	private function _setSelectionMeta() {
+		$prefix = 'Подбор по авто ';
+		$title = $this->viewVars['meta_title'];
+		if (!in_array($this->request->params['controller'], array('car_brands', 'car_models', 'car_generations', 'car_modifications', 'cars')) || strpos($title, $prefix) !== 0) {
+			return;
+		}
+		if ($this->viewVars['meta_description'] == (defined('CONST_META_DESCRIPTION') ? CONST_META_DESCRIPTION : '')) {
+			$car = trim(substr($title, strlen($prefix)));
+			$this->set('meta_description', 'Подбор шин, дисков и аккумуляторов для ' . $car . ': заводские и допустимые размеры, наличие и цены в Керчи. Интернет-магазин КерчьШина.');
+		}
+	}
+
+	/**
+	 * Параметры каталога, которые меняют набор товаров и попадают в canonical — в этом порядке.
+	 * Остальные (наличие, склад, сортировка, вид, цена, промо-флаги, пустые значения) на canonical не влияют,
+	 * поэтому /tyres?auto=&axis=&size1=195&in_stock=2&upr_all=1 и /tyres?size1=195 — одна страница для поисковиков.
+	 */
+	private $listing_canonical_params = array(
+		'tyres' => array('auto', 'season', 'size1', 'size2', 'size3', 'axis', 'stud', 'run_flat', 'brand_id', 'model_id'),
+		'disks' => array('auto', 'material', 'size3', 'size1', 'size2', 'et_from', 'et_to', 'hub', 'hub_from', 'hub_to', 'width_from', 'width_to', 'brand_id', 'model_id'),
+		'akb' => array('ah', 'ah_from', 'ah_to', 'current', 'current_from', 'current_to', 'f1', 'f2', 'length', 'length_from', 'length_to', 'width', 'width_from', 'width_to', 'height', 'height_from', 'height_to', 'agm', 'efb', 'start_stop', 'tight', 'short', 'brand_id', 'model_id')
+	);
+
+	/**
+	 * Каталог шин, дисков и АКБ (index, brand): canonical без служебных параметров
+	 * и noindex для страниц, где ничего не найдено (они одинаковые при любых фильтрах).
+	 */
+	private function _setListingSeo() {
+		$controller = $this->request->params['controller'];
+		$action = $this->request->params['action'];
+		if (!isset($this->listing_canonical_params[$controller]) || !in_array($action, array('index', 'brand')) || isset($this->viewVars['canonical_url'])) {
+			return;
+		}
+		$path = '/' . $controller;
+		if ($action == 'brand') {
+			$path .= '/' . $this->request->params['slug'];
+		}
+		$named = $this->request->params['named'];
+		if (!empty($named['page']) && intval($named['page']) > 1) {
+			$path .= '/page:' . intval($named['page']);
+		}
+
+		$model = isset($this->viewVars['model']['BrandModel']['id']) ? $this->viewVars['model'] : null;
+		// шины и диски выводят найденную модель отдельным шаблоном ($model), АКБ — фильтруют список и ставят model_id, только если модель есть у бренда
+		$model_id = $model ? $model['BrandModel']['id'] : ($controller == 'akb' && !empty($this->viewVars['model_id']) ? $this->viewVars['model_id'] : null);
+		$query = array();
+		foreach ($this->listing_canonical_params[$controller] as $param) {
+			$value = isset($this->request->query[$param]) ? trim((string)$this->request->query[$param]) : '';
+			if (empty($value)) {
+				continue;
+			}
+			// на странице бренда бренд уже в пути; модель — только если она найдена, иначе это страница бренда
+			if (($param == 'brand_id' && $action == 'brand') || ($param == 'model_id' && $model_id != $value)) {
+				continue;
+			}
+			// диски без типа показываются как легковые
+			if ($controller == 'disks' && $param == 'auto' && $value == 'cars') {
+				continue;
+			}
+			$query[$param] = $value;
+		}
+		$this->set('canonical_url', Router::url($path, true) . (!empty($query) ? '?' . http_build_query($query) : ''));
+
+		$empty = $model && empty($model['Product']);
+		if (!$model && !empty($this->request->params['paging'])) {
+			foreach ($this->request->params['paging'] as $paging) {
+				$empty = $empty || empty($paging['count']);
+			}
+		}
+		// разделы и бренды без фильтров не закрываем, даже если сейчас в них пусто
+		if ($empty && !empty($query)) {
+			$this->set('robots_noindex', true);
+		}
+
+		$this->_setListingMeta($controller, $action, $query, $model, isset($named['page']) ? intval($named['page']) : 1);
+	}
+
+	/**
+	 * Title и description каталога: у страниц с фильтрами и пагинацией — по фильтрам (CatalogMeta),
+	 * у бренда без фильтров — заданные в админке, если есть; у модели — описание по её размерам, если своего нет.
+	 */
+	private function _setListingMeta($controller, $action, $query, $model, $page) {
+		$default_title = defined('CONST_META_TITLE') ? CONST_META_TITLE : '';
+		$default_description = defined('CONST_META_DESCRIPTION') ? CONST_META_DESCRIPTION : '';
+		$title = $this->viewVars['meta_title'];
+		$description = $this->viewVars['meta_description'];
+		$brand = isset($this->viewVars['brand']['Brand']) ? $this->viewVars['brand']['Brand'] : null;
+
+		if ($model) {
+			if ($description === '' || $description == $default_description) {
+				$this->set('meta_description', CatalogMeta::modelDescription($controller, $model['Brand']['title'], $model['BrandModel']['title'], $model['Product']));
+			}
+			return;
+		}
+
+		$filtered = !empty($query) || $page > 1;
+		// meta_title бренда часто заполнен просто названием («IFREE», «Michelin») — это не свой заголовок, а написание названия
+		$brand_name = null;
+		$brand_custom_title = false;
+		if ($brand) {
+			$same_as_name = mb_strtolower(trim($brand['meta_title'])) === mb_strtolower(trim($brand['title']));
+			$brand_name = $same_as_name ? trim($brand['meta_title']) : $brand['title'];
+			$brand_custom_title = trim($brand['meta_title']) !== '' && !$same_as_name;
+		}
+		if ($action == 'brand') {
+			$generate_title = $filtered || !$brand_custom_title;
+			$generate_description = $filtered || trim($brand['meta_description']) === '';
+			// описание, скопированное нескольким брендам (например, общее описание раздела АКБ), своим не считаем
+			if (!$generate_description) {
+				$this->loadModel('Brand');
+				$generate_description = $this->Brand->find('count', array('conditions' => array('Brand.category_id' => $brand['category_id'], 'Brand.meta_description' => $brand['meta_description'], 'Brand.id !=' => $brand['id']), 'recursive' => -1)) > 0;
+			}
+		} else {
+			$generate_title = $filtered || $title == $default_title;
+			$generate_description = $filtered || $description == $default_description;
+		}
+		// свои заголовок и описание бренда из админки — как есть (шины оборачивали заголовок в «Шины … - купить в Керчи», АКБ заменяли описание общим)
+		if ($action == 'brand' && !$generate_title) {
+			$this->set('meta_title', trim($brand['meta_title']));
+		}
+		if ($action == 'brand' && !$generate_description) {
+			$this->set('meta_description', trim($brand['meta_description']));
+		}
+		if (!$generate_title && !$generate_description) {
+			return;
+		}
+
+		$names = array('brands' => array(), 'model' => null);
+		if ($brand) {
+			$names['brands'][] = $brand_name;
+		} elseif (!empty($query['brand_id'])) {
+			$ids = array_filter(array_map('intval', explode(',', $query['brand_id'])));
+			$this->loadModel('Brand');
+			$names['brands'] = array_values($this->Brand->find('list', array('conditions' => array('Brand.id' => $ids), 'fields' => array('Brand.id', 'Brand.title'), 'recursive' => -1)));
+		}
+		if (!empty($query['model_id'])) {
+			$this->loadModel('BrandModel');
+			$model_title = $this->BrandModel->field('title', array('BrandModel.id' => $query['model_id']));
+			// модель без букв и цифр (например «.») в заголовок не берём
+			$names['model'] = ProductUrl::slug($model_title) !== '' ? $model_title : null;
+		}
+		$count = null;
+		$count_of = 'products';
+		if (!empty($this->request->params['paging'])) {
+			$paging = reset($this->request->params['paging']);
+			$count = $paging['count'];
+			$count_of = key($this->request->params['paging']) == 'BrandModel' ? 'models' : 'products';
+		}
+
+		$meta = CatalogMeta::build($controller, array_diff_key($query, array('brand_id' => 1, 'model_id' => 1)), $names, $count, $count_of, $page);
+		if ($generate_title) {
+			$this->set('meta_title', $meta['title']);
+		}
+		if ($generate_description) {
+			$this->set('meta_description', $meta['description']);
 		}
 	}
 
@@ -1628,6 +1801,46 @@ class AppController extends Controller {
 					$this->Session->write('last_models', $models);
 				}
 			}
+		}
+	}
+
+	/**
+	 * id товара по ЧПУ /{controller}/бренд/модель/параметры.
+	 * Если товара нет — редирект на страницу модели/бренда и false.
+	 */
+	protected function _productIdByUrl($category_id, $brand, $model_slug, $params_slug) {
+		$this->loadModel('Product');
+		$found = $this->Product->findIdByUrl($category_id, $brand['Brand']['id'], $model_slug, $params_slug);
+		if (!empty($found['id'])) {
+			return $found['id'];
+		}
+		$url = array('controller' => ProductUrl::$controllers[$category_id], 'action' => 'brand', 'slug' => $brand['Brand']['slug']);
+		if ($found) {
+			// модель есть, но товара с такими параметрами сейчас нет в наличии — может появиться после следующей загрузки прайса
+			$url['?'] = array('model_id' => $found['model_id']);
+			$this->redirect($url, 302);
+		} else {
+			$this->redirect($url, 301);
+		}
+		return false;
+	}
+
+	/**
+	 * Старые ссылки /{controller}/бренд/{id} — 301 на ЧПУ, если товар ещё существует, иначе на бренд.
+	 */
+	protected function _redirectProductById($category_id, $slug, $id) {
+		$this->loadModel('Product');
+		$this->Product->bindModel(array(
+			'belongsTo' => array(
+				'Brand',
+				'BrandModel' => array('foreignKey' => 'model_id')
+			)
+		));
+		$product = $this->Product->find('first', array('conditions' => array('Product.id' => $id, 'Product.category_id' => $category_id)));
+		if (!empty($product['Brand']['slug']) && !empty($product['BrandModel']['id'])) {
+			$this->redirect(ProductUrl::url(ProductUrl::$controllers[$category_id], $product, $product['Brand']['slug'], $product['BrandModel']['title'], $this->request->query), 301);
+		} else {
+			$this->redirect(array('controller' => ProductUrl::$controllers[$category_id], 'action' => 'brand', 'slug' => $slug), 301);
 		}
 	}
 }

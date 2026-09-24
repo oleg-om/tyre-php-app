@@ -187,6 +187,11 @@ Configure::write('Dispatcher.filters', array(
 	'CacheDispatcher'
 ));
 
+// ЧПУ товаров (app/Lib/ProductUrl.php)
+App::uses('ProductUrl', 'Lib');
+App::uses('ProductInfo', 'Lib');
+App::uses('CatalogMeta', 'Lib');
+
 /**
  * Configures default file logging options
  */

@@ -244,12 +244,31 @@ Router::connect(
 	)
 );
 
-// шина
+// товар: /tyres/бренд/модель/параметры (ЧПУ без id, см. app/Lib/ProductUrl.php)
+Router::connect(
+	'/tyres/:slug/:model/:params',
+	array(
+		'controller' => 'tyres',
+		'action' => 'view'
+	),
+	array(
+		'pass' => array(
+			'slug',
+			'model',
+			'params'
+		),
+		'slug' => '[A-z0-9_-]+',
+		'model' => '[a-z0-9_.-]+',
+		'params' => '[a-z0-9_.-]+'
+	)
+);
+
+// старая ссылка по id — 301 на ЧПУ
 Router::connect(
 	'/tyres/:slug/:id',
 	array(
 		'controller' => 'tyres',
-		'action' => 'view'
+		'action' => 'view_by_id'
 	),
 	array(
 		'pass' => array(
@@ -343,12 +362,31 @@ Router::connect(
 	)
 );
 
-// диск
+// товар: /disks/бренд/модель/параметры (ЧПУ без id, см. app/Lib/ProductUrl.php)
+Router::connect(
+	'/disks/:slug/:model/:params',
+	array(
+		'controller' => 'disks',
+		'action' => 'view'
+	),
+	array(
+		'pass' => array(
+			'slug',
+			'model',
+			'params'
+		),
+		'slug' => '[A-z0-9_-]+',
+		'model' => '[a-z0-9_.-]+',
+		'params' => '[a-z0-9_.-]+'
+	)
+);
+
+// старая ссылка по id — 301 на ЧПУ
 Router::connect(
 	'/disks/:slug/:id',
 	array(
 		'controller' => 'disks',
-		'action' => 'view'
+		'action' => 'view_by_id'
 	),
 	array(
 		'pass' => array(
@@ -384,12 +422,31 @@ Router::connect(
 	)
 );
 
-// диск
+// товар: /akb/бренд/модель/параметры (ЧПУ без id, см. app/Lib/ProductUrl.php)
+Router::connect(
+	'/akb/:slug/:model/:params',
+	array(
+		'controller' => 'akb',
+		'action' => 'view'
+	),
+	array(
+		'pass' => array(
+			'slug',
+			'model',
+			'params'
+		),
+		'slug' => '[A-z0-9_-]+',
+		'model' => '[a-z0-9_.-]+',
+		'params' => '[a-z0-9_.-]+'
+	)
+);
+
+// старая ссылка по id — 301 на ЧПУ
 Router::connect(
 	'/akb/:slug/:id',
 	array(
 		'controller' => 'akb',
-		'action' => 'view'
+		'action' => 'view_by_id'
 	),
 	array(
 		'pass' => array(
@@ -527,6 +584,37 @@ Router::connect(
 	)
 );
 
+
+// sitemap: индекс и разделы (app/Controller/SitemapController.php)
+Router::connect(
+	'/sitemap.xml',
+	array(
+		'controller' => 'sitemap',
+		'action' => 'index'
+	)
+);
+Router::connect(
+	'/sitemap-:section.xml',
+	array(
+		'controller' => 'sitemap',
+		'action' => 'section'
+	),
+	array(
+		'pass' => array(
+			'section'
+		),
+		'section' => '[a-z]+'
+	)
+);
+
+// YML-фид товаров (app/Controller/YmlController.php)
+Router::connect(
+	'/yml.xml',
+	array(
+		'controller' => 'yml',
+		'action' => 'index'
+	)
+);
 
 // шинно-дисковый калькулятор
 Router::connect(

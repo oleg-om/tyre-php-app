@@ -39,8 +39,8 @@
 						<div class="info-top">
 							<h3>
 								<?php
-									echo $this->Html->link('<span class="brand">' . $item['Brand']['title']. '</span><span class="model">'. $item['BrandModel']['title'] . '</span>', array('controller' => 'tyres', 'action' => 'view', 'slug' => $item['Brand']['slug'], 'id' => $item['Product']['id']), array('escape' => false));
-									$url = array('controller' => 'tyres', 'action' => 'view', 'slug' => $item['Brand']['slug'], 'id' => $item['Product']['id']);
+									echo $this->Html->link('<span class="brand">' . $item['Brand']['title']. '</span><span class="model">'. $item['BrandModel']['title'] . '</span>', ProductUrl::url('tyres', $item['Product'], $item['Brand']['slug'], $item['BrandModel']['title']), array('escape' => false));
+									$url = ProductUrl::url('tyres', $item['Product'], $item['Brand']['slug'], $item['BrandModel']['title']);
 								?>
 								<span class="productSeason<?php if ($item['Product']['season']=='winter') {echo '2';} elseif ($item['Product']['season']=='all') {echo '3';}?>" title="<?php echo $seasons[$item['Product']['season']];?>">
 									<?php echo $seasons[$item['Product']['season']];?>
@@ -152,7 +152,7 @@
 									?></strong></td>
 									<td><?php echo $this->Frontend->getStockCount($item['Product']['stock_count']); ?> шт.</td>
 									<td align="right"><?php
-										echo $this->Html->link('подробнее', array('controller' => 'tyres', 'action' => 'view', 'slug' => $item['Brand']['slug'], 'id' => $item['Product']['id'], '?' => $filter), array('escape' => false, 'class' => 'btVer2'));
+										echo $this->Html->link('подробнее', ProductUrl::url('tyres', $item['Product'], $item['Brand']['slug'], $item['BrandModel']['title'], $filter), array('escape' => false, 'class' => 'btVer2'));
 									?></td>
 								</tr>
 							</table>
@@ -194,7 +194,7 @@
 								}
 							?></strong></td>
 							<td><?php
-								echo $this->Html->link('подробнее', array('controller' => 'tyres', 'action' => 'view', 'slug' => $item['Brand']['slug'], 'id' => $item['Product']['id'], '?' => $filter), array('escape' => false, 'class' => 'btVer2'));
+								echo $this->Html->link('подробнее', ProductUrl::url('tyres', $item['Product'], $item['Brand']['slug'], $item['BrandModel']['title'], $filter), array('escape' => false, 'class' => 'btVer2'));
 							?></td>
 						</tr>
 					<?php } ?>

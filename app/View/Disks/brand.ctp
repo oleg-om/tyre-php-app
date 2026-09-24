@@ -33,7 +33,7 @@ $this->Paginator->options(array('url' => array('controller' => 'disks', 'action'
 						if ($item['Product']['in_stock']) {
 							$attributes = ' class="green" style="font-weight: bold; font-size: 1.2em;"';
 						}
-						echo $this->Html->link('<strong>' . $brand['Brand']['title'] . ' ' . $item['BrandModel']['title'] . '<br /><span>' . $item['Product']['size1'] . ' ' . $item['Product']['size2'] . '</span></strong><div' . $attributes . '>' . /*$this->Frontend->getPrice($item['Product']['price']) */ '</div>', array('controller' => 'disks', 'action' => 'view', 'slug' => $brand['Brand']['slug'], 'id' => $item['Product']['id']), array('title' => $item['Product']['sku'], 'escape' => false, 'class' => 'img-brand'));
+						echo $this->Html->link('<strong>' . $brand['Brand']['title'] . ' ' . $item['BrandModel']['title'] . '<br /><span>' . $item['Product']['size1'] . ' ' . $item['Product']['size2'] . '</span></strong><div' . $attributes . '>' . /*$this->Frontend->getPrice($item['Product']['price']) */ '</div>', ProductUrl::url('disks', $item['Product'], $brand['Brand']['slug'], $item['BrandModel']['title']), array('title' => $item['Product']['sku'], 'escape' => false, 'class' => 'img-brand'));
 						echo '</div>';
 						$i ++;
 					}

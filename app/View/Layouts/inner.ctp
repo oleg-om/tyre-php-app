@@ -5,9 +5,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <meta http-equiv="X-UA-Compatible" content="ie=edge"/>
     <title><?php echo h($meta_title); ?></title>
+    <link rel="icon" href="/favicon.ico" sizes="16x16 32x32 48x48"/>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg"/>
+    <link rel="icon" type="image/png" href="/favicon-120.png" sizes="120x120"/>
+    <link rel="apple-touch-icon" href="/favicon-120.png"/>
     <?php
     echo $this->Html->meta('keywords', $meta_keywords);
     echo $this->Html->meta('description', $meta_description);
+    if (!empty($canonical_url)) {
+        echo '<link rel="canonical" href="' . h($canonical_url) . '"/>';
+    }
+    // каталог, где ничего не найдено: не индексировать, но ссылки обходить
+    if (!empty($robots_noindex)) {
+        echo '<meta name="robots" content="noindex, follow"/>';
+    }
     ?>
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700&subset=latin,cyrillic" rel="stylesheet"
           type="text/css">

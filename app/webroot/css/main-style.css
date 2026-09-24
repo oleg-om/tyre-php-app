@@ -5373,3 +5373,57 @@ table.withlines {
 .tyre__benefit-price {
     font-weight: 900;
 }
+
+.auto-switch {
+    display: inline-flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    margin: 0 0 16px;
+    padding: 4px;
+    background-color: #eef1f4;
+    border-radius: 10px;
+}
+
+.auto-switch__item {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 20px;
+    border-radius: 7px;
+    color: #5f6b76;
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 1.2;
+    text-decoration: none;
+    transition: background-color .15s, color .15s, box-shadow .15s;
+}
+
+.auto-switch__item svg {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+}
+
+.auto-switch__item:hover {
+    color: #2f3a44;
+    background-color: rgba(255, 255, 255, .6);
+}
+
+.auto-switch__item.active {
+    background-color: #ffffff;
+    color: #40b252;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, .12), 0 1px 2px rgba(0, 0, 0, .06);
+    cursor: default;
+}
+
+@media (max-width: 600px) {
+    .auto-switch {
+        display: flex;
+    }
+
+    .auto-switch__item {
+        flex: 1 1 auto;
+        justify-content: center;
+        padding: 8px 12px;
+    }
+}

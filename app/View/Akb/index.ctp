@@ -78,7 +78,7 @@ echo $this->element('currency');
 						echo $this->Html->link($this->Html->image('camera.png', array('alt' => $item['Brand']['title'] . ' ' . $item['BrandModel']['title'])), $this->Backend->thumbnail(array('id' => $id, 'filename' => $filename, 'path' => $pathAkb, 'width' => 800, 'height' => 600, 'crop' => false, 'folder' => false)), array('escape' => false, 'class' => 'lightbox', 'title' => $item['Brand']['title'] . ' ' . $item['BrandModel']['title']));
 					}
 				?></td>
-				<td><?php echo $this->Html->link($item['Brand']['title'], array('controller' => 'akb', 'action' => 'view', 'slug' => $item['Brand']['slug'], 'id' => $item['Product']['id']), array('escape' => false)); ?></td>
+				<td><?php echo $this->Html->link($item['Brand']['title'], ProductUrl::url('akb', $item['Product'], $item['Brand']['slug'], $item['BrandModel']['title']), array('escape' => false)); ?></td>
 				<td><?php echo h($item['BrandModel']['title']); ?></td>
 				<td><?php echo $item['Product']['width'] . 'x' . $item['Product']['length'] . 'x' . $item['Product']['height']; ?></td>
 				<td><?php echo $item['Product']['ah']; ?>ач</td>
@@ -108,8 +108,8 @@ echo $this->element('currency');
                                 <?php
                                 $link_filter = array('model_id' => $item['BrandModel']['id']);
                                 //$link_filter = array_merge($link_filter, $filter);
-                                echo $this->Html->link('<span>'.$item['Brand']['title'].' '.$item['BrandModel']['title'].'</span>', array('controller' => 'akb', 'action' => 'view', 'slug' => $item['Brand']['slug'], 'id' => $item['Product']['id']), array('escape' => false));
-                                $url = array('controller' => 'akb', 'action' => 'view', 'slug' => $item['Brand']['slug'], 'id' => $item['Product']['id']);
+                                echo $this->Html->link('<span>'.$item['Brand']['title'].' '.$item['BrandModel']['title'].'</span>', ProductUrl::url('akb', $item['Product'], $item['Brand']['slug'], $item['BrandModel']['title']), array('escape' => false));
+                                $url = ProductUrl::url('akb', $item['Product'], $item['Brand']['slug'], $item['BrandModel']['title']);
                                 ?></h3>
                             </div>
                             <div class="prodImg floatl">
