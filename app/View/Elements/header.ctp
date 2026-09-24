@@ -63,7 +63,7 @@ if ($is1April) {
                 <div class="logos">
                     <div class="logo logo__autodom"><img src="/img/kerchshina.png" alt="Шинный центр"/><span
                                 class="logo__years">25 лет</span></div>
-                    <div class="logo logo__vianor"><img src="/img/ivanor-logo.png" alt="Vianor"/></div>
+                    <div class="logo logo__vianor"><img src="/img/ivanor_logo.png" alt="Иванор"/></div>
                 </div>
                 <div class="cart <?php if ($isNewYear) {
                     echo 'new-year-cart';
