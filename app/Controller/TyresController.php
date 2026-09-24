@@ -1207,7 +1207,12 @@ class TyresController extends AppController
         }
     }
 
-    public function view($slug, $id)
+    public function view_by_id($slug, $id)
+    {
+        $this->_redirectProductById(1, $slug, $id);
+    }
+
+    public function view($slug, $model_slug, $params_slug)
     {
         $this->loadModel('Brand');
 
@@ -1220,6 +1225,9 @@ class TyresController extends AppController
         $this->set('suppliers', $suppliers_output);
 
         if ($brand = $this->Brand->find('first', array('conditions' => array('Brand.is_active' => 1, 'Brand.category_id' => 1, 'Brand.slug' => $slug)))) {
+            if (!($id = $this->_productIdByUrl(1, $brand, $model_slug, $params_slug))) {
+                return;
+            }
             $this->loadModel('Product');
             $this->Product->bindModel(
                 array(
@@ -1379,6 +1387,7 @@ class TyresController extends AppController
                 $this->setMeta('description', $product['BrandModel']['meta_description']);
                 $this->set('brand', $brand);
                 $this->set('product', $product);
+                $this->set('canonical_url', Router::url(ProductUrl::url('tyres', $product['Product'], $brand['Brand']['slug'], $product['BrandModel']['title']), true));
                 $path = $this->check_truck($product['Product']['auto'])['path'];
                 $this->set_prices();
                 $this->set('active_menu', $path);
@@ -1388,7 +1397,7 @@ class TyresController extends AppController
 //                $this->response->statusCode(404);
 //                $this->response->send();
 //   echo $this->request;
-                $this->redirect($slug);
+                $this->redirect(array('controller' => 'tyres', 'action' => 'brand', 'slug' => $slug));
 //                $this->render(false);
                 return;
             }

@@ -1630,4 +1630,44 @@ class AppController extends Controller {
 			}
 		}
 	}
+
+	/**
+	 * id товара по ЧПУ /{controller}/бренд/модель/параметры.
+	 * Если товара нет — редирект на страницу модели/бренда и false.
+	 */
+	protected function _productIdByUrl($category_id, $brand, $model_slug, $params_slug) {
+		$this->loadModel('Product');
+		$found = $this->Product->findIdByUrl($category_id, $brand['Brand']['id'], $model_slug, $params_slug);
+		if (!empty($found['id'])) {
+			return $found['id'];
+		}
+		$url = array('controller' => ProductUrl::$controllers[$category_id], 'action' => 'brand', 'slug' => $brand['Brand']['slug']);
+		if ($found) {
+			// модель есть, но товара с такими параметрами сейчас нет в наличии — может появиться после следующей загрузки прайса
+			$url['?'] = array('model_id' => $found['model_id']);
+			$this->redirect($url, 302);
+		} else {
+			$this->redirect($url, 301);
+		}
+		return false;
+	}
+
+	/**
+	 * Старые ссылки /{controller}/бренд/{id} — 301 на ЧПУ, если товар ещё существует, иначе на бренд.
+	 */
+	protected function _redirectProductById($category_id, $slug, $id) {
+		$this->loadModel('Product');
+		$this->Product->bindModel(array(
+			'belongsTo' => array(
+				'Brand',
+				'BrandModel' => array('foreignKey' => 'model_id')
+			)
+		));
+		$product = $this->Product->find('first', array('conditions' => array('Product.id' => $id, 'Product.category_id' => $category_id)));
+		if (!empty($product['Brand']['slug']) && !empty($product['BrandModel']['id'])) {
+			$this->redirect(ProductUrl::url(ProductUrl::$controllers[$category_id], $product, $product['Brand']['slug'], $product['BrandModel']['title'], $this->request->query), 301);
+		} else {
+			$this->redirect(array('controller' => ProductUrl::$controllers[$category_id], 'action' => 'brand', 'slug' => $slug), 301);
+		}
+	}
 }

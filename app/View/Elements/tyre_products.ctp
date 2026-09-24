@@ -51,7 +51,7 @@
 					<td><?php echo $item['Product']['in_stock'] ? '<img title="в наличии" alt="в наличии" src="/img/yes.png">' : ''; ?></td>
 				</tr>
 			</table>
-			<div class="all-more"><?php echo $this->Html->link('Подробнее', array('controller' => 'tyres', 'action' => 'view', 'slug' => $item['Brand']['slug'], 'id' => $item['Product']['id']), array('escape' => false)); ?></div>
+			<div class="all-more"><?php echo $this->Html->link('Подробнее', ProductUrl::url('tyres', $item['Product'], $item['Brand']['slug'], $item['BrandModel']['title']), array('escape' => false)); ?></div>
 		</div>
 		<div class="clear"></div>
 	</div>
@@ -84,7 +84,7 @@
 					echo $this->Html->link($this->Html->image('camera.png', array('alt' => $item['Brand']['title'] . ' ' . $item['BrandModel']['title'])), $this->Backend->thumbnail(array('id' => $item['BrandModel']['id'], 'filename' => $item['BrandModel']['filename'], 'path' => 'models', 'width' => 800, 'height' => 600, 'crop' => false, 'folder' => false)), array('escape' => false, 'class' => 'lightbox', 'title' => $item['Brand']['title'] . ' ' . $item['BrandModel']['title']));
 				}
 			?></td>
-			<td><?php echo $this->Html->link($item['Product']['size1'] . '/' . $item['Product']['size2'] . '&nbsp;R' . $item['Product']['size3'], array('controller' => 'tyres', 'action' => 'view', 'slug' => $item['Brand']['slug'], 'id' => $item['Product']['id']), array('escape' => false)); ?></td>
+			<td><?php echo $this->Html->link($item['Product']['size1'] . '/' . $item['Product']['size2'] . '&nbsp;R' . $item['Product']['size3'], ProductUrl::url('tyres', $item['Product'], $item['Brand']['slug'], $item['BrandModel']['title']), array('escape' => false)); ?></td>
 			<td><?php echo $current_auto == 'trucks' ? h($item['Product']['axis']) : h($item['Product']['f1'] . $item['Product']['f2']); ?></td>
 			<td><?php echo h($item['Brand']['title']); ?></td>
 			<td><?php echo h($item['BrandModel']['title']); ?></td>

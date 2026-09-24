@@ -40,7 +40,7 @@ $this->Paginator->options(array('url' => array('controller' => 'tyres', 'action'
 						echo $this->Html->link($this->Html->image('camera.png', array('alt' => $brand['Brand']['title'] . ' ' . $item['BrandModel']['title'])), $this->Backend->thumbnail(array('id' => $item['BrandModel']['id'], 'filename' => $item['BrandModel']['filename'], 'path' => 'models', 'width' => 800, 'height' => 600, 'crop' => false, 'folder' => false, 'watermark' => 'wm.png')), array('escape' => false, 'class' => 'lightbox', 'title' => $brand['Brand']['title'] . ' ' . $item['BrandModel']['title']));
 					}
 				?></td>
-				<td><?php echo $this->Html->link($item['Product']['size1'] . '/' . $item['Product']['size2'] . '&nbsp;R' . $item['Product']['size3'], array('controller' => 'tyres', 'action' => 'view', 'slug' => $brand['Brand']['slug'], 'id' => $item['Product']['id']), array('escape' => false)); ?></td>
+				<td><?php echo $this->Html->link($item['Product']['size1'] . '/' . $item['Product']['size2'] . '&nbsp;R' . $item['Product']['size3'], ProductUrl::url('tyres', $item['Product'], $brand['Brand']['slug'], $item['BrandModel']['title']), array('escape' => false)); ?></td>
 				<td><?php echo $current_auto == 'trucks' ? h($item['Product']['axis']) : h($item['Product']['f1'] . $item['Product']['f2']); ?></td>
 				<td><?php echo h($brand['Brand']['title']); ?></td>
 				<td><?php echo h($models[$item['Product']['model_id']]); ?></td>

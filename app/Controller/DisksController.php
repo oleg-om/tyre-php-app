@@ -796,7 +796,7 @@ class DisksController extends AppController
                         'title' => $model['BrandModel']['title']
                     );
                     $this->setLastModels($model);
-                    $meta_title = (!empty($model['BrandModel']['meta_title']) ? $model['BrandModel']['meta_title'] : 'Автомобильный диск ' . $model['Brand']['title'] . ' ' . $model['BrandModel']['title']);
+                    $meta_title = (!empty($model['BrandModel']['meta_title']) ? $model['BrandModel']['meta_title'] : 'Автомобильный диск ' . $model['Brand']['title'] . ' ' . $model['BrandModel']['title']) . ' - купить в Керчи';
                     $meta_keywords = $model['BrandModel']['meta_keywords'];
                     $meta_description = $model['BrandModel']['meta_description'];
                     $this->set('model', $model);
@@ -896,11 +896,19 @@ class DisksController extends AppController
         }
     }
 
-    public function view($slug, $id)
+    public function view_by_id($slug, $id)
+    {
+        $this->_redirectProductById(2, $slug, $id);
+    }
+
+    public function view($slug, $model_slug, $params_slug)
     {
         $this->category_id = 2;
         $this->loadModel('Brand');
         if ($brand = $this->Brand->find('first', array('conditions' => array('Brand.is_active' => 1, 'Brand.category_id' => 2, 'Brand.slug' => $slug)))) {
+            if (!($id = $this->_productIdByUrl(2, $brand, $model_slug, $params_slug))) {
+                return;
+            }
             $this->loadModel('Product');
             $this->Product->bindModel(
                 array(
@@ -1012,11 +1020,12 @@ class DisksController extends AppController
                 $this->set('models', $models);
                 $this->set('brand_id', $brand['Brand']['id']);
                 $this->set('model_id', $product['Product']['model_id']);
-                $this->setMeta('title', $product['Product']['sku']);
+                $this->setMeta('title', $product['Product']['sku'] . ' - купить в Керчи');
                 $this->setMeta('keywords', $product['BrandModel']['meta_keywords']);
                 $this->setMeta('description', $product['BrandModel']['meta_description']);
                 $this->set('brand', $brand);
                 $this->set('product', $product);
+                $this->set('canonical_url', Router::url(ProductUrl::url('disks', $product['Product'], $brand['Brand']['slug'], $product['BrandModel']['title']), true));
                 $path = $this->check_truck($auto)['path'];
                 $this->set('active_menu', $path);
                 $this->set('show_left_menu', false);

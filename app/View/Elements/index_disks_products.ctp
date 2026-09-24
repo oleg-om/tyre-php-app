@@ -37,7 +37,7 @@
 				<?php if ($mode == 'block') { ?>
 					<h3 class="title-tyres">
 						<?php
-							$url = array('controller' => 'disks', 'action' => 'view', 'slug' => $item['Brand']['slug'], 'id' => $item['Product']['id']);
+							$url = ProductUrl::url('disks', $item['Product'], $item['Brand']['slug'], $item['BrandModel']['title']);
 							echo $this->Html->link($item['Brand']['title']. ' '. $item['BrandModel']['title'], $url, array('escape' => false));
 						?>
 					</h3>
@@ -128,7 +128,7 @@
 							<span><?php echo $this->Frontend->getPrice($item['Product']['price'], 'disks', array('after' => '</span>', 'between' => '&nbsp;<span>')); ?></span>
 						<?php } ?>
 						<?php
-							echo $this->Html->link('подробнее', array('controller' => 'disks', 'action' => 'view', 'slug' => $item['Brand']['slug'], 'id' => $item['Product']['id'], '?' => $filter), array('escape' => false, 'class' => 'btVer2'));
+							echo $this->Html->link('подробнее', ProductUrl::url('disks', $item['Product'], $item['Brand']['slug'], $item['BrandModel']['title'], $filter), array('escape' => false, 'class' => 'btVer2'));
 						?>
 					</div>
 					<div class="clear"></div>
@@ -169,7 +169,7 @@
 							}
 							?></strong></td>
 						<td><?php
-							echo $this->Html->link('подробнее', array('controller' => 'disks', 'action' => 'view', 'slug' => $item['Brand']['slug'], 'id' => $item['Product']['id'], '?' => $filter), array('escape' => false, 'class' => 'btVer2'));
+							echo $this->Html->link('подробнее', ProductUrl::url('disks', $item['Product'], $item['Brand']['slug'], $item['BrandModel']['title'], $filter), array('escape' => false, 'class' => 'btVer2'));
 						?></td>
 					</tr>
 				<?php } ?>

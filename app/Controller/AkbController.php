@@ -698,10 +698,17 @@ class AkbController extends AppController {
 			return;
 		}
 	}
-	public function view($slug, $id) {
+	public function view_by_id($slug, $id) {
+		$this->_redirectProductById(3, $slug, $id);
+	}
+
+	public function view($slug, $model_slug, $params_slug) {
 		$this->category_id = 3;
 		$this->loadModel('Brand');
 		if ($brand = $this->Brand->find('first', array('conditions' => array('Brand.is_active' => 1, 'Brand.category_id' => 3, 'Brand.slug' => $slug)))) {
+			if (!($id = $this->_productIdByUrl(3, $brand, $model_slug, $params_slug))) {
+				return;
+			}
 			$this->loadModel('Product');
 			$this->Product->bindModel(
 				array(
@@ -738,11 +745,12 @@ class AkbController extends AppController {
 				$this->set('models', $models);
 				$this->set('brand_id', $brand['Brand']['id']);
 				$this->set('model_id', $product['Product']['model_id']);
-				$this->setMeta('title', $sku);
+				$this->setMeta('title', $sku . ' - купить в Керчи');
 				$this->setMeta('keywords', $product['BrandModel']['meta_keywords']);
 				$this->setMeta('description', $product['BrandModel']['meta_description']);
 				$this->set('brand', $brand);
 				$this->set('product', $product);
+				$this->set('canonical_url', Router::url(ProductUrl::url('akb', $product['Product'], $brand['Brand']['slug'], $product['BrandModel']['title']), true));
 				$this->set('active_menu', 'akb');
                 $this->set('show_left_menu', false);
 			}

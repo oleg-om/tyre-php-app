@@ -8,6 +8,9 @@
     <?php
     echo $this->Html->meta('keywords', $meta_keywords);
     echo $this->Html->meta('description', $meta_description);
+    if (!empty($canonical_url)) {
+        echo '<link rel="canonical" href="' . h($canonical_url) . '"/>';
+    }
     ?>
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700&subset=latin,cyrillic" rel="stylesheet"
           type="text/css">

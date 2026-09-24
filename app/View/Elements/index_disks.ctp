@@ -79,7 +79,7 @@
 						<div class="infoList">
 							<div class="detalProd disks">
 								<a href="<?php
-								 $url = array('controller' => 'disks', 'action' => 'view', 'slug' => $item['Brand']['slug'], 'id' => $item['Product'][0]['id']);
+								 $url = ProductUrl::url('disks', $item['Product'][0], $item['Brand']['slug'], $item['BrandModel']['title']);
 								 echo Router::url($url); ?>"><?php echo $item['Product'][0]['size1']; ?>" <?php echo $item['Product'][0]['size2']; ?>&nbsp;&nbsp;<?php echo $this->Frontend->getSize3($item['Product'][0]['size3']); ?>J&nbsp;&nbsp;ET<?php echo (int)$item['Product'][0]['et']; ?>&nbsp;DIA<?php echo $item['Product'][0]['hub']; ?></a>
 							</div>
 						</div>
@@ -158,7 +158,7 @@
 								<span><?php echo $this->Frontend->getPrice($item['Product'][0]['price'], 'disks', array('between' => '&nbsp;<span>', 'after' => '</span>')); ?></span>
 							<?php
 								}
-								echo $this->Html->link('подробнее', array('controller' => 'disks', 'action' => 'view', 'slug' => $item['Brand']['slug'], 'id' => $item['Product'][0]['id'], '?' => $filter), array('escape' => false, 'class' => 'btVer2'));
+								echo $this->Html->link('подробнее', ProductUrl::url('disks', $item['Product'][0], $item['Brand']['slug'], $item['BrandModel']['title'], $filter), array('escape' => false, 'class' => 'btVer2'));
 							?>
 						</div>
 						<div class="clear"></div>
@@ -172,7 +172,7 @@
 							}
 							$line ++;
 						?>
-						<tr class="<?php echo $class; ?>" onclick="window.location='<?php echo Router::url(array('controller' => 'disks', 'action' => 'view', 'slug' => $item['Brand']['slug'], 'id' => $item['Product'][0]['id'], '?' => $filter)); ?>';">
+						<tr class="<?php echo $class; ?>" onclick="window.location='<?php echo Router::url(ProductUrl::url('disks', $item['Product'][0], $item['Brand']['slug'], $item['BrandModel']['title'], $filter)); ?>';">
 							<td class="a-center"><?php
 								if (!empty($item['BrandModel']['filename'])) {
 									$image = $this->Html->image('img-detal.jpg');
@@ -351,7 +351,7 @@
 									<th>Цена</th>
 								</tr>
 								<?php foreach ($item['Product'] as $product) { ?>
-								<tr onclick="window.location='<?php echo Router::url(array('controller' => 'disks', 'action' => 'view', 'slug' => $item['Brand']['slug'], 'id' => $product['id'])); ?>';">
+								<tr onclick="window.location='<?php echo Router::url(ProductUrl::url('disks', $product, $item['Brand']['slug'], $item['BrandModel']['title'])); ?>';">
 									<td><?php echo $product['size1']; ?> <?php echo $product['size2']; ?></td>
 									<td><?php echo $this->Frontend->getSize3($product['size3']); ?>J</td>
 									<td><?php echo $product['et']; ?></td>
@@ -383,7 +383,7 @@
 							}
 							$line ++;
 						?>
-						<tr class="<?php echo $class; ?>" onclick="window.location='<?php echo Router::url(array('controller' => 'disks', 'action' => 'view', 'slug' => $item['Brand']['slug'], 'id' => $product['id'])); ?>';">
+						<tr class="<?php echo $class; ?>" onclick="window.location='<?php echo Router::url(ProductUrl::url('disks', $product, $item['Brand']['slug'], $item['BrandModel']['title'])); ?>';">
 							<td class="a-center"><?php
 								$image = $this->Html->image('img-detal.jpg');
 								if (!empty($item['BrandModel']['filename'])) {

@@ -32,7 +32,7 @@ $this->Paginator->options(array('url' => array('controller' => 'akb', 'action' =
 						<!-- <div class="boxList season-winter with-season season-yes season-cars">
 				<div class="info-top">
 					<h3>
-					<?php echo $this->Html->link($brand['Brand']['title'], array('controller' => 'akb', 'action' => 'view', 'slug' => $brand['Brand']['slug'], 'id' => $item['Product']['id']), array('escape' => false)); ?>
+					<?php echo $this->Html->link($brand['Brand']['title'], ProductUrl::url('akb', $item['Product'], $brand['Brand']['slug'], $item['BrandModel']['title']), array('escape' => false)); ?>
 						 <a href=""><?php echo h($brand['Brand']['title']); ?> <?php echo h($item['BrandModel']['title']); ?></a>  
 					</h3>
 				</div>
@@ -79,7 +79,7 @@ $this->Paginator->options(array('url' => array('controller' => 'akb', 'action' =
 					echo $this->Html->link($this->Html->image('camera.png', array('alt' => $brand['Brand']['title'] . ' ' . $item['BrandModel']['title'])), $this->Backend->thumbnail(array('id' => $id, 'filename' => $filename, 'path' => $pathAkb, 'width' => 800, 'height' => 600, 'crop' => false, 'folder' => false)), array('escape' => false, 'class' => 'lightbox', 'title' => $brand['Brand']['title'] . ' ' . $item['BrandModel']['title']));
 				}
 			?></td>
-			<td><?php echo $this->Html->link($brand['Brand']['title'], array('controller' => 'akb', 'action' => 'view', 'slug' => $brand['Brand']['slug'], 'id' => $item['Product']['id']), array('escape' => false)); ?></td>
+			<td><?php echo $this->Html->link($brand['Brand']['title'], ProductUrl::url('akb', $item['Product'], $brand['Brand']['slug'], $item['BrandModel']['title']), array('escape' => false)); ?></td>
 			<td><?php echo h($item['BrandModel']['title']); ?></td>
 			<td><?php echo $item['Product']['width'] . 'x' . $item['Product']['length'] . 'x' . $item['Product']['height']; ?></td>
 			<td><?php echo $item['Product']['ah']; ?>ач</td>
@@ -107,8 +107,8 @@ $this->Paginator->options(array('url' => array('controller' => 'akb', 'action' =
                 <div class="boxList season-winter with-season season-yes season-cars">
                     <div class="info-top">
                         <h3><?php
-                            echo $this->Html->link('<span>'.$brand['Brand']['title'].' '.$item['BrandModel']['title'].'</span>', array('controller' => 'akb', 'action' => 'view', 'slug' => $brand['Brand']['slug'], 'id' => $item['Product']['id']), array('escape' => false));
-                            $url = array('controller' => 'akb', 'action' => 'view', 'slug' => $brand['Brand']['slug'], 'id' => $item['Product']['id']);
+                            echo $this->Html->link('<span>'.$brand['Brand']['title'].' '.$item['BrandModel']['title'].'</span>', ProductUrl::url('akb', $item['Product'], $brand['Brand']['slug'], $item['BrandModel']['title']), array('escape' => false));
+                            $url = ProductUrl::url('akb', $item['Product'], $brand['Brand']['slug'], $item['BrandModel']['title']);
                             ?></h3>
                     </div>
                     <div class="prodImg floatl">
