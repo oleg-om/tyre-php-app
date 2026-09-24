@@ -7,6 +7,18 @@ class ImportController extends AppController
     public $submenu = 'products';
     public $section = 'import';
 
+    // Тяжёлые экшены выполняются в фоне (ImportWorkerShell); true — код уже запущен воркером
+    public $inWorker = false;
+    public $jobKinds = array(
+        'admin_import' => 'import',
+        'admin_convert_tyres' => 'convert_tyres',
+        'admin_convert_tubes' => 'convert_tubes',
+        'admin_convert_disks' => 'convert_disks'
+    );
+    // Категория товаров для каждого типа импорта — как $category_id в switch admin_import
+    public $importTypeCategories = array(1 => 3, 2 => 2, 3 => 2, 4 => 1, 5 => 1, 6 => 1, 7 => 4, 8 => 2, 9 => 3, 10 => 1, 11 => 2);
+    public $categoryTitles = array(1 => 'шины', 2 => 'диски', 3 => 'АКБ', 4 => 'автокамеры');
+
     public $product_materials = array(
         'BFP',
         'сильвер с крышками под винт',
@@ -757,8 +769,165 @@ class ImportController extends AppController
         return $data;
     }
 
+    /**
+     * Ставит отправленный файл в очередь фоновой обработки и возвращает на страницу формы.
+     * Возвращает false, если обрабатывать нечего или форма невалидна — тогда экшен
+     * отрабатывает как обычно и показывает ошибки формы.
+     */
+    protected function _enqueueJob()
+    {
+        if ($this->inWorker || empty($this->request->data)) {
+            return false;
+        }
+        $action = $this->request->params['action'];
+        $kind = $this->jobKinds[$action];
+        $this->loadModel('Import');
+        $this->loadModel('ImportJob');
+        $this->Import->set($this->request->data);
+        if ($kind != 'import') {
+            unset($this->Import->validate['type']);
+        }
+        if (!$this->Import->validates()) {
+            return false;
+        }
+        $params = $this->request->data['Import'];
+        unset($params['file']);
+        $this->ImportJob->enqueue($kind, $params, $this->request->data['Import']['file']['name'], $this->Import->tmp_file);
+        // Сразу после отправки блок задач показываем раскрытым, при обычном открытии страницы — свёрнутым
+        $this->Session->write('ImportJobs.open', true);
+        // Отдельный класс — блок задач убирает эту плашку, когда обработка закончится
+        $this->Session->setFlash('Файл поставлен в очередь и обрабатывается в фоне. Результат появится ниже.', 'default', array('class' => 'message import-queued-message'), 'info');
+        $this->redirect(array('controller' => Inflector::underscore($this->name), 'action' => $action));
+        return true;
+    }
+
+    /**
+     * Вызывается на каждой строке прайса. В веб-запросе ничего не делает;
+     * в воркере обновляет прогресс задачи и делает паузы, чтобы не мешать сайту.
+     */
+    protected function _jobTick($rows)
+    {
+    }
+
+    public function beforeRender()
+    {
+        parent::beforeRender();
+        $action = $this->request->params['action'];
+        if (!$this->inWorker && isset($this->jobKinds[$action])) {
+            $this->set('jobs', $this->_recentJobs($this->jobKinds[$action]));
+            $this->set('jobs_kind', $this->jobKinds[$action]);
+            $this->set('jobs_open', $this->Session->check('ImportJobs.open'));
+            $this->Session->delete('ImportJobs.open');
+        }
+    }
+
+    /**
+     * HTML блока «Задачи» для автообновления на странице импорта/конвертации.
+     */
+    public function admin_jobs($kind = null)
+    {
+        if (!in_array($kind, $this->jobKinds, true)) {
+            throw new NotFoundException();
+        }
+        $this->set('jobs', $this->_recentJobs($kind));
+        $this->set('jobs_kind', $kind);
+        $this->set('jobs_open', !empty($this->request->query['open']));
+        // Без layout: layout «ajax» в этом проекте оборачивает HTML в JS для fancybox
+        $this->autoLayout = false;
+        $this->render('/Elements/import_jobs');
+    }
+
+    /**
+     * Последние задачи для блока на странице; импортам добавляется категория,
+     * в которой можно создать не найденные бренды.
+     */
+    protected function _recentJobs($kind)
+    {
+        $this->loadModel('ImportJob');
+        $jobs = $this->ImportJob->recent($kind);
+        foreach ($jobs as $i => $job) {
+            $category_id = $this->_jobCategory($job);
+            if ($category_id) {
+                $jobs[$i]['category_title'] = $this->categoryTitles[$category_id];
+            }
+        }
+        return $jobs;
+    }
+
+    protected function _jobCategory($job)
+    {
+        if ($job['kind'] != 'import' || !isset($job['params']['type'])) {
+            return null;
+        }
+        $type = (int)$job['params']['type'];
+        return isset($this->importTypeCategories[$type]) ? $this->importTypeCategories[$type] : null;
+    }
+
+    /**
+     * Создаёт бренд, не найденный при импорте, в категории этого импорта
+     * (кнопка у бренда в отчёте задачи). Отвечает JSON.
+     */
+    public function admin_create_brand()
+    {
+        $this->autoRender = false;
+        $this->response->type('json');
+        $response = array('ok' => false);
+
+        $this->loadModel('ImportJob');
+        $job_id = isset($this->request->data['job_id']) ? (int)$this->request->data['job_id'] : 0;
+        $title = isset($this->request->data['title']) ? trim($this->request->data['title']) : '';
+        $job = $job_id ? $this->ImportJob->get($job_id) : null;
+        $category_id = $job ? $this->_jobCategory($job) : null;
+
+        if (!$this->request->is('post') || !$category_id || $title === '') {
+            $response['error'] = 'некорректный запрос';
+        } else {
+            $this->loadModel('Brand');
+            $brand = $this->Brand->find('first', array(
+                'conditions' => array('Brand.category_id' => $category_id, 'Brand.title' => $title),
+                'fields' => array('Brand.id')
+            ));
+            if ($brand) {
+                $response = array('ok' => true, 'existed' => true, 'id' => $brand['Brand']['id']);
+            } else {
+                // Как прежнее автосоздание брендов в импорте: уникальный slug из названия
+                $slug = $this->_transliterate($title);
+                if ($slug === '') {
+                    $slug = 'brand';
+                }
+                $check_slug = $slug;
+                $j = 2;
+                while ($this->Brand->find('count', array('conditions' => array('Brand.slug' => $check_slug)))) {
+                    $check_slug = $slug . $j;
+                    $j++;
+                }
+                $this->Brand->create();
+                $saved = $this->Brand->save(array(
+                    'is_active' => 1,
+                    'category_id' => $category_id,
+                    'title' => $title,
+                    'slug' => $check_slug,
+                    'meta_title' => $title
+                ));
+                if ($saved) {
+                    $response = array('ok' => true, 'existed' => false, 'id' => $this->Brand->id);
+                } else {
+                    $response['error'] = 'не удалось сохранить бренд';
+                }
+            }
+            if ($response['ok']) {
+                $response['edit_url'] = Router::url(array('controller' => 'brands', 'action' => 'edit', 'admin' => true, $response['id']));
+            }
+        }
+        $this->response->body(json_encode($response));
+        return $this->response;
+    }
+
     public function admin_import()
     {
+        if ($this->_enqueueJob()) {
+            return;
+        }
         // Отключаем лимит времени выполнения для долгих импортов
         set_time_limit(0);
         ini_set('max_execution_time', 0);
@@ -867,13 +1036,7 @@ class ImportController extends AppController
                             for ($i = 7; $i <= $data->sheets[0]['numRows']; $i++) {
                                 if (isset($data->sheets[0]['cells'][$i][1])) {
                                     $total_rows++;
-                                    // Периодически логируем прогресс и делаем паузу для освобождения ресурсов MySQL
-                                    // Пауза дает MySQL время обработать другие запросы от пользователей сайта
-                                    if ($total_rows % 200 == 0) {
-                                        CakeLog::info("Import progress: $total_rows rows processed");
-                                        // Пауза 20мс каждые 200 строк - освобождает ресурсы для других запросов, но не замедляет импорт сильно
-                                        usleep(20000);
-                                    }
+                                    $this->_jobTick($total_rows);
                                     $brand_id = null;
                                     $model_id = null;
                                     $brand_name = trim($data->sheets[0]['cells'][$i][1]);
@@ -1112,6 +1275,7 @@ class ImportController extends AppController
                             for ($i = 6; $i <= $data->sheets[0]['numRows']; $i++) {
                                 if (isset($data->sheets[0]['cells'][$i][1]) && !empty($data->sheets[0]['cells'][$i][1])) {
                                     $total_rows++;
+                                    $this->_jobTick($total_rows);
                                     $brand_id = null;
                                     $model_id = null;
 
@@ -1360,13 +1524,7 @@ class ImportController extends AppController
                             for ($i = 1; $i <= $data->sheets[0]['numRows']; $i++) {
                                 if (isset($data->sheets[0]['cells'][$i][1]) && !empty($data->sheets[0]['cells'][$i][1])) {
                                     $total_rows++;
-                                    // Периодически логируем прогресс и делаем паузу для освобождения ресурсов MySQL
-                                    // Пауза дает MySQL время обработать другие запросы от пользователей сайта
-                                    if ($total_rows % 200 == 0) {
-                                        CakeLog::info("Import progress: $total_rows rows processed");
-                                        // Пауза 20мс каждые 200 строк - освобождает ресурсы для других запросов, но не замедляет импорт сильно
-                                        usleep(20000);
-                                    }
+                                    $this->_jobTick($total_rows);
                                     $brand_id = null;
                                     $model_id = null;
                                     $auto = 'cars';
@@ -1672,6 +1830,7 @@ class ImportController extends AppController
                             for ($i = 1; $i <= $data->sheets[0]['numRows']; $i++) {
                                 if (isset($data->sheets[0]['cells'][$i][1]) && !empty($data->sheets[0]['cells'][$i][1])) {
                                     $total_rows++;
+                                    $this->_jobTick($total_rows);
                                     $brand_id = null;
                                     $model_id = null;
                                     $brand_name = trim($data->sheets[0]['cells'][$i][2]);
@@ -2033,6 +2192,7 @@ class ImportController extends AppController
                             for ($i = 1; $i <= $data->sheets[0]['numRows']; $i++) {
                                 if (isset($data->sheets[0]['cells'][$i][1]) && !empty($data->sheets[0]['cells'][$i][1])) {
                                     $total_rows++;
+                                    $this->_jobTick($total_rows);
                                     $brand_id = null;
                                     $model_id = null;
                                     $brand_name = trim($data->sheets[0]['cells'][$i][2]);
@@ -2425,6 +2585,7 @@ class ImportController extends AppController
                             for ($i = 1; $i <= count($data->sheets[0]['cells']); $i++) {
                                 if (isset($data->sheets[0]['cells'][$i][1]) && !empty($data->sheets[0]['cells'][$i][1])) {
                                     $total_rows++;
+                                    $this->_jobTick($total_rows);
                                     $brand_id = null;
                                     $model_id = null;
                                     $axis = '';
@@ -2855,6 +3016,7 @@ class ImportController extends AppController
                             for ($i = 1; $i <= $data->sheets[0]['numRows']; $i++) {
                                 if (isset($data->sheets[0]['cells'][$i][2]) && !empty($data->sheets[0]['cells'][$i][2])) {
                                     $total_rows++;
+                                    $this->_jobTick($total_rows);
                                     $type = trim(mb_strtolower($data->sheets[0]['cells'][$i][2]));
                                     $model_id = null;
                                     if ($type == 'автокамера' || $type == 'камера' || $type == 'мотокамера' || $type == 'ободная лента') {
@@ -3188,6 +3350,7 @@ class ImportController extends AppController
                                 //echo "<br>---".$i;
                                 if (isset($data->sheets[0]['cells'][$i][1]) && !empty($data->sheets[0]['cells'][$i][1])) {
                                     $total_rows++;
+                                    $this->_jobTick($total_rows);
                                     //$conditions = array();
                                     //	$brand_id = null;
                                     //	$model_id = null;
@@ -3524,6 +3687,7 @@ class ImportController extends AppController
                             for ($i = 1; $i <= $data->sheets[0]['numRows']; $i++) {
                                 if (isset($data->sheets[0]['cells'][$i][1])) {
                                     $total_rows++;
+                                    $this->_jobTick($total_rows);
                                     $brand_id = null;
                                     $model_id = null;
                                     $auto_text = mb_strtolower(trim($data->sheets[0]['cells'][$i][1]));
@@ -3932,6 +4096,7 @@ class ImportController extends AppController
                             for ($i = 1; $i <= $data->sheets[0]['numRows']; $i++) {
                                 if (isset($data->sheets[0]['cells'][$i][1]) && !empty($data->sheets[0]['cells'][$i][1])) {
                                     $total_rows++;
+                                    $this->_jobTick($total_rows);
                                     $brand_id = null;
                                     $model_id = null;
                                     $brand_name = trim($data->sheets[0]['cells'][$i][2]);
@@ -4493,6 +4658,7 @@ class ImportController extends AppController
                             for ($i = 6; $i <= $data->sheets[0]['numRows']; $i++) {
                                 if (isset($data->sheets[0]['cells'][$i][1]) && !empty($data->sheets[0]['cells'][$i][1])) {
                                     $total_rows++;
+                                    $this->_jobTick($total_rows);
                                     $brand_id = null;
                                     $model_id = null;
                                     $auto = 'cars';
@@ -4908,6 +5074,9 @@ class ImportController extends AppController
 
     public function admin_convert_tyres()
     {
+        if ($this->_enqueueJob()) {
+            return;
+        }
         $this->layout = 'admin';
         $this->loadModel('Import');
         if (!empty($this->request->data)) {
@@ -5288,6 +5457,7 @@ class ImportController extends AppController
                                 }
                                 foreach ($sheet['cells'] as $i => $row) {
                                     $total_rows_count++;
+                                    $this->_jobTick($total_rows_count);
                                     if (count($row) < 3) {
                                         $total_skipped_rows++;
                                         continue;
@@ -5387,6 +5557,7 @@ class ImportController extends AppController
                                     //debug($row);
                                     if ($i > $first_line) {
                                         $total_rows_count++;
+                                        $this->_jobTick($total_rows_count);
                                         // find season and auto here
                                         if (count($row) < 3) {
                                             $total_skipped_rows++;
@@ -6008,6 +6179,9 @@ class ImportController extends AppController
 
     public function admin_convert_tubes()
     {
+        if ($this->_enqueueJob()) {
+            return;
+        }
         $this->layout = 'admin';
         $this->loadModel('Import');
         if (!empty($this->request->data)) {
@@ -6072,6 +6246,7 @@ class ImportController extends AppController
                             if (isset($sheet['cells'])) {
                                 foreach ($sheet['cells'] as $i => $row) {
                                     $total_rows_count++;
+                                    $this->_jobTick($total_rows_count);
                                     if (count($row) < 2) {
                                         $total_skipped_rows++;
                                         continue;
@@ -6102,6 +6277,7 @@ class ImportController extends AppController
                                     //debug($row);
                                     if ($i > $first_line) {
                                         $total_rows_count++;
+                                        $this->_jobTick($total_rows_count);
                                         // find season and auto here
                                         if (count($row) < 3) {
                                             $total_skipped_rows++;
@@ -6256,6 +6432,9 @@ class ImportController extends AppController
 
     public function admin_convert_disks()
     {
+        if ($this->_enqueueJob()) {
+            return;
+        }
         $this->layout = 'admin';
         $this->loadModel('Import');
         if (!empty($this->request->data)) {
@@ -6506,6 +6685,7 @@ class ImportController extends AppController
                             if (isset($sheet['cells'])) {
                                 foreach ($sheet['cells'] as $i => $row) {
                                     $total_rows_count++;
+                                    $this->_jobTick($total_rows_count);
                                     if (count($row) < 3) {
                                         $total_skipped_rows++;
                                         continue;
@@ -6572,6 +6752,7 @@ class ImportController extends AppController
                                     //debug($row);
                                     if ($i > $first_line) {
                                         $total_rows_count++;
+                                        $this->_jobTick($total_rows_count);
 
                                         // find season and auto here
                                         if ((count($row) + count($fill_cells)) < 3) {

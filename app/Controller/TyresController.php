@@ -493,16 +493,7 @@ class TyresController extends AppController
             );
 
 
-            foreach ($models as $i => $model) {
-                $models[$i]['Product'] = array();
-                $cond = $conditions;
-                $cond['Product.model_id'] = $model['BrandModel']['id'];
-                if ($products = $this->Product->find('all', array('conditions' => $cond, 'order' => 'Product.price ASC'))) {
-                    foreach ($products as $product) {
-                        $models[$i]['Product'][] = $product['Product'];
-                    }
-                }
-            }
+            $models = $this->_attach_products($models, $conditions);
             //print_r($models);
             //exit();
         }
@@ -676,6 +667,27 @@ class TyresController extends AppController
         }
     }
 
+
+    /**
+     * Подгружает товары для страницы моделей одним запросом вместо запроса на каждую модель.
+     */
+    protected function _attach_products($models, $conditions)
+    {
+        $index = array();
+        foreach ($models as $i => $model) {
+            $models[$i]['Product'] = array();
+            $index[$model['BrandModel']['id']] = $i;
+        }
+        if (empty($index)) {
+            return $models;
+        }
+        $conditions['Product.model_id'] = array_keys($index);
+        $products = $this->Product->find('all', array('conditions' => $conditions, 'order' => 'Product.price ASC'));
+        foreach ($products as $product) {
+            $models[$index[$product['Product']['model_id']]]['Product'][] = $product['Product'];
+        }
+        return $models;
+    }
 
     public function brand($slug)
     {
@@ -1163,16 +1175,7 @@ class TyresController extends AppController
                     }
 
                     $models = $this->paginate('BrandModel');
-                    foreach ($models as $i => $model) {
-                        $models[$i]['Product'] = array();
-                        $cond = $conditions;
-                        $cond['Product.model_id'] = $model['BrandModel']['id'];
-                        if ($products = $this->Product->find('all', array('conditions' => $cond, 'order' => 'Product.price ASC'))) {
-                            foreach ($products as $product) {
-                                $models[$i]['Product'][] = $product['Product'];
-                            }
-                        }
-                    }
+                    $models = $this->_attach_products($models, $conditions);
                 }
                 $brand_models = $this->BrandModel->find('list', array('conditions' => array('BrandModel.brand_id' => $brand['Brand']['id'], 'BrandModel.is_active' => 1, 'BrandModel.active_products_count > 0'), 'order' => array('BrandModel.title' => 'asc'), 'fields' => array('BrandModel.id', 'BrandModel.title')));
                 $this->set('brand_models', $brand_models);
