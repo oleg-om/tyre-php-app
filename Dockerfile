@@ -34,13 +34,15 @@ RUN apt-get update && apt-get install -y --no-install-recommends libzip-dev && \
     zip \
     && rm -rf /var/lib/apt/lists/*
 
-# Установка Redis расширения через PECL (версия 2.2.8 для совместимости с PHP 5.6)
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends libhiredis-dev && \
-    pecl install redis-2.2.8 && \
+# Установка Redis расширения (версия 2.2.8 для совместимости с PHP 5.6).
+# Собираем из исходников с GitHub: pecl в PHP 5.6 перестал получать релизы с pecl.php.net
+# («No releases available for package pecl.php.net/redis»). libhiredis phpredis не нужен.
+RUN curl -fsSL https://github.com/phpredis/phpredis/archive/refs/tags/2.2.8.tar.gz -o /tmp/phpredis.tar.gz && \
+    mkdir -p /tmp/phpredis && \
+    tar -xzf /tmp/phpredis.tar.gz -C /tmp/phpredis --strip-components=1 && \
+    cd /tmp/phpredis && phpize && ./configure && make && make install && \
     docker-php-ext-enable redis && \
-    apt-get purge -y libhiredis-dev && \
-    rm -rf /var/lib/apt/lists/*
+    cd / && rm -rf /tmp/phpredis /tmp/phpredis.tar.gz
 
 # Включение модулей Apache для оптимизации и SSL
 RUN a2enmod rewrite auth_basic headers expires deflate ssl reqtimeout
