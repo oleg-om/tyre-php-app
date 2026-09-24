@@ -87,3 +87,8 @@
 	</div>
 </div>
 </div>
+<?php echo $this->element('schema_product', array(
+	'type' => 'disks',
+	'image' => !empty($product['BrandModel']['filename']) ? $image_big : null,
+	'show_price' => $this->Frontend->canShowDiskPrice($product['Product']['not_show_price'])
+)); ?>

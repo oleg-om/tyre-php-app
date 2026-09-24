@@ -109,3 +109,8 @@
 <?php if (!empty($product['BrandModel']['video'])) { ?><div class="video"><?php echo $product['BrandModel']['video']; ?></div><?php } ?>
 <div class="infoBox"><?php echo $product['BrandModel']['content']; ?></div>
 </div></div>
+<?php echo $this->element('schema_product', array(
+    'type' => 'akb',
+    'image' => !empty($filename) ? $this->Backend->thumbnail(array('id' => $id, 'filename' => $filename, 'path' => $path, 'width' => 800, 'height' => 600, 'crop' => false, 'folder' => false)) : null,
+    'show_price' => $this->Frontend->canShowAkbPrice($product['Product']['not_show_price'])
+)); ?>

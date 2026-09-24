@@ -189,6 +189,7 @@ Configure::write('Dispatcher.filters', array(
 
 // ЧПУ товаров (app/Lib/ProductUrl.php)
 App::uses('ProductUrl', 'Lib');
+App::uses('ProductInfo', 'Lib');
 
 /**
  * Configures default file logging options
