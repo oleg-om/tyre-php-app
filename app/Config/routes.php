@@ -607,6 +607,15 @@ Router::connect(
 	)
 );
 
+// YML-фид товаров (app/Controller/YmlController.php)
+Router::connect(
+	'/yml.xml',
+	array(
+		'controller' => 'yml',
+		'action' => 'index'
+	)
+);
+
 // шинно-дисковый калькулятор
 Router::connect(
 	'/calculator',
