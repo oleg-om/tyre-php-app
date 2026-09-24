@@ -192,6 +192,70 @@ class AppController extends Controller {
 			$this->set('last_models', $this->Session->read('last_models'));
             $this->getCurrentSeason();
             $this->setCarBrandsForLeftMenu();
+			$this->_setListingSeo();
+		}
+	}
+
+	/**
+	 * Параметры каталога, которые меняют набор товаров и попадают в canonical — в этом порядке.
+	 * Остальные (наличие, склад, сортировка, вид, цена, промо-флаги, пустые значения) на canonical не влияют,
+	 * поэтому /tyres?auto=&axis=&size1=195&in_stock=2&upr_all=1 и /tyres?size1=195 — одна страница для поисковиков.
+	 */
+	private $listing_canonical_params = array(
+		'tyres' => array('auto', 'season', 'size1', 'size2', 'size3', 'axis', 'stud', 'run_flat', 'brand_id', 'model_id'),
+		'disks' => array('auto', 'material', 'size3', 'size1', 'size2', 'et_from', 'et_to', 'hub', 'hub_from', 'hub_to', 'width_from', 'width_to', 'brand_id', 'model_id'),
+		'akb' => array('ah', 'ah_from', 'ah_to', 'current', 'current_from', 'current_to', 'f1', 'f2', 'length', 'length_from', 'length_to', 'width', 'width_from', 'width_to', 'height', 'height_from', 'height_to', 'agm', 'efb', 'start_stop', 'tight', 'short', 'brand_id', 'model_id')
+	);
+
+	/**
+	 * Каталог шин, дисков и АКБ (index, brand): canonical без служебных параметров
+	 * и noindex для страниц, где ничего не найдено (они одинаковые при любых фильтрах).
+	 */
+	private function _setListingSeo() {
+		$controller = $this->request->params['controller'];
+		$action = $this->request->params['action'];
+		if (!isset($this->listing_canonical_params[$controller]) || !in_array($action, array('index', 'brand')) || isset($this->viewVars['canonical_url'])) {
+			return;
+		}
+		$path = '/' . $controller;
+		if ($action == 'brand') {
+			$path .= '/' . $this->request->params['slug'];
+		}
+		$named = $this->request->params['named'];
+		if (!empty($named['page']) && intval($named['page']) > 1) {
+			$path .= '/page:' . intval($named['page']);
+		}
+
+		$model = isset($this->viewVars['model']['BrandModel']['id']) ? $this->viewVars['model'] : null;
+		// шины и диски выводят найденную модель отдельным шаблоном ($model), АКБ — фильтруют список и ставят model_id, только если модель есть у бренда
+		$model_id = $model ? $model['BrandModel']['id'] : ($controller == 'akb' && !empty($this->viewVars['model_id']) ? $this->viewVars['model_id'] : null);
+		$query = array();
+		foreach ($this->listing_canonical_params[$controller] as $param) {
+			$value = isset($this->request->query[$param]) ? trim((string)$this->request->query[$param]) : '';
+			if (empty($value)) {
+				continue;
+			}
+			// на странице бренда бренд уже в пути; модель — только если она найдена, иначе это страница бренда
+			if (($param == 'brand_id' && $action == 'brand') || ($param == 'model_id' && $model_id != $value)) {
+				continue;
+			}
+			// диски без типа показываются как легковые
+			if ($controller == 'disks' && $param == 'auto' && $value == 'cars') {
+				continue;
+			}
+			$query[$param] = $value;
+		}
+		$this->set('canonical_url', Router::url($path, true) . (!empty($query) ? '?' . http_build_query($query) : ''));
+
+		$empty = $model && empty($model['Product']);
+		if (!$model && !empty($this->request->params['paging'])) {
+			foreach ($this->request->params['paging'] as $paging) {
+				$empty = $empty || empty($paging['count']);
+			}
+		}
+		// разделы и бренды без фильтров не закрываем, даже если сейчас в них пусто
+		if ($empty && !empty($query)) {
+			$this->set('robots_noindex', true);
 		}
 	}
 

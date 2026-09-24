@@ -15,6 +15,10 @@
     if (!empty($canonical_url)) {
         echo '<link rel="canonical" href="' . h($canonical_url) . '"/>';
     }
+    // каталог, где ничего не найдено: не индексировать, но ссылки обходить
+    if (!empty($robots_noindex)) {
+        echo '<meta name="robots" content="noindex, follow"/>';
+    }
     ?>
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700&subset=latin,cyrillic" rel="stylesheet"
           type="text/css">
