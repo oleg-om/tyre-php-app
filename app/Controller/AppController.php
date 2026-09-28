@@ -230,11 +230,12 @@ class AppController extends Controller {
 	private $listing_canonical_params = array(
 		'tyres' => array('auto', 'season', 'size1', 'size2', 'size3', 'axis', 'stud', 'run_flat', 'brand_id', 'model_id'),
 		'disks' => array('auto', 'material', 'size3', 'size1', 'size2', 'et_from', 'et_to', 'hub', 'hub_from', 'hub_to', 'width_from', 'width_to', 'brand_id', 'model_id'),
+		'tubes' => array('auto', 'type', 'size3'),
 		'akb' => array('ah', 'ah_from', 'ah_to', 'current', 'current_from', 'current_to', 'f1', 'f2', 'length', 'length_from', 'length_to', 'width', 'width_from', 'width_to', 'height', 'height_from', 'height_to', 'agm', 'efb', 'start_stop', 'tight', 'short', 'brand_id', 'model_id')
 	);
 
 	/**
-	 * Каталог шин, дисков и АКБ (index, brand): canonical без служебных параметров
+	 * Каталог шин, дисков, камер и АКБ (index, brand): canonical без служебных параметров
 	 * и noindex для страниц, где ничего не найдено (они одинаковые при любых фильтрах).
 	 */
 	private function _setListingSeo() {
@@ -284,7 +285,10 @@ class AppController extends Controller {
 			$this->set('robots_noindex', true);
 		}
 
-		$this->_setListingMeta($controller, $action, $query, $model, isset($named['page']) ? intval($named['page']) : 1);
+		// у камер заголовок и описание по фильтрам строит TubesController
+		if ($controller != 'tubes') {
+			$this->_setListingMeta($controller, $action, $query, $model, isset($named['page']) ? intval($named['page']) : 1);
+		}
 	}
 
 	/**
