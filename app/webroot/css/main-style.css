@@ -5427,3 +5427,772 @@ table.withlines {
         padding: 8px 12px;
     }
 }
+
+/* ===== Страница модели шины (Tyres/model.ctp) ===== */
+.tm {
+    --tm-accent: #40b252;
+    --tm-accent-hover: #369a46;
+    --tm-text: #1f2933;
+    --tm-muted: #6b7680;
+    --tm-line: #e6e9ec;
+    --tm-soft: #f5f7f8;
+    color: var(--tm-text);
+    padding: 8px 0 16px;
+}
+
+.tm__hero {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.tm__media {
+    position: relative;
+    background: linear-gradient(160deg, #ffffff 0%, #f1f4f5 100%);
+    border: 1px solid var(--tm-line);
+    border-radius: 14px;
+    overflow: hidden;
+}
+
+.tm__image {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px;
+    height: 200px;
+    box-sizing: border-box;
+}
+
+.tm__image img {
+    max-width: 100%;
+    max-height: 100%;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    mix-blend-mode: multiply;
+    transition: transform .3s ease;
+}
+
+.tm__image:hover img {
+    transform: scale(1.04);
+}
+
+.tm__info {
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+.tm__brand {
+    color: var(--tm-accent);
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+}
+
+.tm .tm__title {
+    margin: 4px 0 0;
+    padding: 0;
+    color: var(--tm-text);
+    font-size: 28px;
+    font-weight: 800;
+    line-height: 1.15;
+}
+
+.tm__meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px 16px;
+    margin-top: 10px;
+    font-size: 14px;
+}
+
+.tm__meta-price {
+    color: var(--tm-accent);
+    font-size: 18px;
+    font-weight: 800;
+    white-space: nowrap;
+}
+
+.tm__meta-item {
+    font-weight: 600;
+}
+
+.tm__sizes {
+    margin-top: 22px;
+    scroll-margin-top: 20px;
+}
+
+.tm__sizes-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px 16px;
+    margin-bottom: 8px;
+}
+
+.tm .tm__sizes-title {
+    margin: 0;
+    padding: 0;
+    color: var(--tm-text);
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 1.3;
+}
+
+.tm-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 12px 5px 10px;
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 600;
+    line-height: 1.2;
+    background-color: var(--tm-soft);
+    color: var(--tm-text);
+}
+
+.tm-badge::first-letter {
+    text-transform: uppercase;
+}
+
+.tm-badge svg {
+    width: 16px;
+    height: 16px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.tm-badge--winter {
+    background-color: #e6f1fb;
+    color: #1f6fb2;
+}
+
+.tm-badge--summer {
+    background-color: #fff3dc;
+    color: #b76e00;
+}
+
+.tm-badge--all {
+    background-color: #eaf6ec;
+    color: #2d7d3a;
+}
+
+.tm__stock-yes {
+    color: #2d8a3e;
+}
+
+.tm__stock-order {
+    color: #b76e00;
+}
+
+.tm-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 9px 18px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 1.2;
+    text-decoration: none;
+    white-space: nowrap;
+    transition: background-color .15s, box-shadow .15s, transform .15s;
+}
+
+.tm-btn--primary {
+    background-color: var(--tm-accent);
+    color: #fff;
+}
+
+.tm-btn--primary:hover {
+    background-color: var(--tm-accent-hover);
+    color: #fff;
+    text-decoration: none;
+    box-shadow: 0 4px 12px rgba(64, 178, 82, .3);
+}
+
+.tm__section {
+    margin-top: 36px;
+    scroll-margin-top: 20px;
+}
+
+.tm .tm__section-title {
+    margin: 0;
+    padding: 0;
+    color: var(--tm-text);
+    font-size: 20px;
+    font-weight: 700;
+    line-height: 1.3;
+}
+
+.tm-chips {
+    display: inline-flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    padding: 4px;
+    background-color: #eef1f4;
+    border-radius: 10px;
+}
+
+.tm-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 7px 14px;
+    border: 0;
+    border-radius: 7px;
+    background: transparent;
+    color: #5f6b76;
+    font: inherit;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color .15s, color .15s, box-shadow .15s;
+}
+
+.tm-chip span {
+    color: #9aa4ad;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.tm-chip:hover {
+    color: #2f3a44;
+    background-color: rgba(255, 255, 255, .6);
+}
+
+.tm-chip.active {
+    background-color: #fff;
+    color: var(--tm-accent);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, .12), 0 1px 2px rgba(0, 0, 0, .06);
+}
+
+/* таблица размеров: на мобильных — карточки */
+.tm-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+}
+
+.tm-table thead {
+    display: none;
+}
+
+.tm-table tbody,
+.tm-table tr,
+.tm-table td {
+    display: block;
+}
+
+.tm-row {
+    position: relative;
+    display: grid !important;
+    grid-template-columns: 1fr auto;
+    grid-template-areas:
+        "size price"
+        "index icons"
+        "stock stock"
+        "axis axis"
+        "action action";
+    gap: 6px 12px;
+    margin-bottom: 10px;
+    padding: 14px 16px;
+    border: 1px solid var(--tm-line);
+    border-radius: 12px;
+    background-color: #fff;
+}
+
+.tm-row.tm-row--hidden {
+    display: none !important;
+}
+
+.tm-row td {
+    padding: 0;
+    font-size: 13px;
+}
+
+.tm-row__size { grid-area: size; }
+.tm-row__price { grid-area: price; text-align: right; }
+.tm-row__index { grid-area: index; }
+.tm-row__icons { grid-area: icons; }
+.tm-row__stock { grid-area: stock; }
+.tm-row__axis { grid-area: axis; }
+.tm-row__action { grid-area: action; margin-top: 6px; }
+
+.tm-row__axis:empty {
+    display: none !important;
+}
+
+.tm-row__label {
+    color: var(--tm-muted);
+}
+
+.tm-row__size a {
+    color: var(--tm-text);
+    font-size: 16px;
+    font-weight: 700;
+    text-decoration: none;
+    white-space: nowrap;
+}
+
+.tm-row__size a:hover {
+    color: var(--tm-accent);
+}
+
+.tm-row__index strong {
+    display: inline-block;
+    margin-right: 6px;
+    padding: 1px 7px;
+    border-radius: 5px;
+    background-color: var(--tm-soft);
+    font-size: 13px;
+}
+
+.tm-row__index span {
+    color: var(--tm-muted);
+    font-size: 12px;
+}
+
+.tm-row__price {
+    font-size: 17px !important;
+    font-weight: 800;
+    white-space: nowrap;
+}
+
+.tm-row__stock {
+    color: var(--tm-muted);
+}
+
+.tm-row__stock .namber {
+    display: inline-block;
+}
+
+.tm-stock--yes {
+    color: #2d8a3e;
+    font-weight: 600;
+}
+
+.tm-stock--yes::before {
+    content: "";
+    display: inline-block;
+    width: 7px;
+    height: 7px;
+    margin-right: 6px;
+    border-radius: 50%;
+    background-color: #40b252;
+    vertical-align: 1px;
+}
+
+.tm-row__action .tm-btn {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.tm-row__icons .desc-icons {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 6px;
+    position: relative;
+}
+
+.tm-row__icons .tyre__icons {
+    position: relative;
+    flex-direction: row;
+    gap: 6px;
+}
+
+.tm-row__icons .tyre__icon {
+    width: 20px;
+    height: 20px;
+    display: flex;
+}
+
+.tm-row__icons .tyre__icon-tyremount {
+    margin-left: 0;
+}
+
+.tm-row__icons .tyre__icon-tooltip {
+    left: auto;
+    right: 25px;
+    top: -5px;
+    z-index: 3;
+}
+
+.tm__desc-body {
+    max-width: 860px;
+    color: #3b4650;
+    font-size: 15px;
+    line-height: 1.65;
+}
+
+.tm__desc-body p {
+    margin: 0 0 12px;
+}
+
+@media screen and (min-width: 550px) and (max-width: 991px) {
+    .tm-table tbody {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+    }
+
+    .tm-row {
+        margin-bottom: 0;
+    }
+}
+
+@media screen and (min-width: 768px) {
+    .tm__media {
+        align-self: flex-start;
+        width: 300px;
+    }
+
+    .tm__image {
+        height: 240px;
+    }
+
+    .tm .tm__title {
+        font-size: 32px;
+    }
+}
+
+@media screen and (min-width: 992px) {
+
+    .tm-table thead {
+        display: table-header-group;
+    }
+
+    .tm-table tbody {
+        display: table-row-group;
+    }
+
+    .tm-table tr,
+    .tm-row {
+        display: table-row !important;
+        padding: 0;
+        margin: 0;
+        border: 0;
+    }
+
+    .tm-row.tm-row--hidden {
+        display: none !important;
+    }
+
+    .tm-table th,
+    .tm-table td {
+        display: table-cell;
+        vertical-align: middle;
+        text-align: left;
+    }
+
+    .tm-table th {
+        padding: 10px;
+        border-bottom: 1px solid var(--tm-line);
+        color: var(--tm-muted);
+        font-size: 12px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: .04em;
+        white-space: nowrap;
+    }
+
+    .tm-table th.tm-table__price-col,
+    .tm-table td.tm-row__price {
+        text-align: right;
+    }
+
+    .tm-row td {
+        padding: 12px 10px;
+        border-bottom: 1px solid var(--tm-line);
+        transition: background-color .15s;
+    }
+
+    .tm-row:hover td {
+        background-color: #f7faf7;
+    }
+
+    .tm-row__action {
+        width: 1%;
+        margin-top: 0;
+    }
+
+    .tm-row__icons .desc-icons {
+        justify-content: flex-start;
+    }
+
+    .tm-row__axis:empty {
+        display: table-cell !important;
+    }
+
+    .tm-row__label {
+        display: none;
+    }
+}
+
+@media screen and (min-width: 992px) and (max-width: 1199px) {
+    .tm__hero .tm__media {
+        flex-basis: 240px;
+    }
+
+    .tm__hero .tm__image {
+        height: 280px;
+    }
+
+    .tm-row__index span {
+        display: none;
+    }
+
+    .tm-table th {
+        white-space: normal;
+    }
+}
+
+@media screen and (min-width: 992px) {
+    .tm__hero {
+        flex-direction: row;
+        align-items: flex-start;
+        gap: 32px;
+    }
+
+    .tm__media {
+        flex: 0 0 300px;
+        width: auto;
+    }
+
+    .tm__image {
+        height: 340px;
+    }
+}
+
+/* ===== Страница товара шины (Tyres/view.ctp), дополняет .tm ===== */
+.tp .tm__title .tm__brand {
+    display: block;
+    margin-bottom: 4px;
+    font-family: Arial, Helvetica, sans-serif;
+    text-decoration: none;
+}
+
+.tp .tm__title .tm__brand:hover {
+    text-decoration: underline;
+}
+
+.tp .tm__media .tyre__icons {
+    top: 10px;
+    left: 10px;
+    z-index: 2;
+}
+
+.tp__grid {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.tp-buy {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    padding: 20px;
+    border: 1px solid var(--tm-line);
+    border-radius: 14px;
+    background-color: #fff;
+    box-shadow: 0 4px 16px rgba(31, 41, 51, .06);
+}
+
+.tp-buy__price {
+    color: var(--tm-text);
+    font-size: 30px;
+    font-weight: 800;
+    line-height: 1.1;
+    white-space: nowrap;
+}
+
+.tp-buy__unit {
+    margin-left: 4px;
+    color: var(--tm-muted);
+    font-size: 13px;
+    font-weight: 400;
+}
+
+.tp-buy__stock {
+    color: var(--tm-muted);
+    font-size: 13px;
+}
+
+.tp-buy__stock .namber {
+    display: inline-block;
+}
+
+.tp-buy__actions {
+    display: flex;
+    align-items: stretch;
+    gap: 10px;
+}
+
+.tp-buy .add-to-cart {
+    float: none;
+    padding: 0;
+}
+
+.tp-buy .select-namber {
+    display: inline-flex;
+    align-items: stretch;
+    height: 100%;
+    border: 1px solid var(--tm-line);
+    border-radius: 8px;
+    overflow: hidden;
+    background-color: #fff;
+}
+
+.tp-buy .select-namber a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 38px;
+    height: auto;
+    margin: 0;
+    border: 0;
+    background: var(--tm-soft);
+    color: var(--tm-text);
+    font-size: 18px;
+    font-weight: 600;
+    line-height: 1;
+    text-decoration: none;
+    transition: background-color .15s;
+}
+
+.tp-buy .select-namber a:hover {
+    background-color: #e6eaed;
+}
+
+.tp-buy .select-namber span {
+    display: flex;
+    align-items: center;
+    gap: 3px;
+    height: auto;
+    margin: 0;
+    padding: 0 10px;
+    border: 0;
+    box-shadow: none;
+    background: #fff;
+    color: var(--tm-muted);
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.tp-buy .select-namber span input {
+    width: 24px;
+    background: transparent;
+    color: var(--tm-text);
+    font-size: 15px;
+    font-weight: 700;
+    text-align: center;
+}
+
+.tp-buy__btn {
+    flex: 1 1 auto;
+    padding: 13px 24px;
+    font-size: 16px;
+}
+
+.tp-buy .tyre__benefit {
+    margin-top: 0;
+    padding: 6px 12px 6px 6px;
+    border-radius: 10px;
+    background-color: #fff6ec;
+    justify-content: flex-start;
+    gap: 10px;
+}
+
+.tp-buy__phone {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding-top: 14px;
+    border-top: 1px solid var(--tm-line);
+    color: var(--tm-muted);
+    font-size: 13px;
+}
+
+.tp-buy__phone a {
+    color: var(--tm-text);
+    font-size: 18px;
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.tp-buy__phone a:hover {
+    color: var(--tm-accent);
+}
+
+.tp-specs table {
+    width: 100%;
+    margin-top: 8px;
+    border-collapse: collapse;
+}
+
+.tp-specs th,
+.tp-specs td {
+    padding: 9px 0;
+    border-bottom: 1px solid var(--tm-line);
+    font-size: 14px;
+    text-align: left;
+    vertical-align: top;
+}
+
+.tp-specs th {
+    width: 45%;
+    padding-right: 12px;
+    color: var(--tm-muted);
+    font-weight: 400;
+}
+
+.tp-specs td {
+    color: var(--tm-text);
+    font-weight: 600;
+}
+
+.tp-specs__muted {
+    color: var(--tm-muted);
+    font-weight: 400;
+}
+
+.tp-specs__more {
+    display: inline-block;
+    margin-top: 14px;
+    color: var(--tm-accent);
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.tp-specs__more:hover {
+    text-decoration: underline;
+}
+
+@media screen and (min-width: 768px) {
+    .tp__grid {
+        flex-direction: row;
+        align-items: flex-start;
+        gap: 28px;
+    }
+
+    .tp-buy {
+        flex: 0 0 300px;
+        order: 2;
+    }
+
+    .tp-specs {
+        flex: 1 1 auto;
+        min-width: 0;
+    }
+}
