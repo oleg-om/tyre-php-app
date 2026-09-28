@@ -4,5 +4,7 @@ Allow: /
 Clean-param: in_stock&in_stock4&upr_all&stock_place&modification&limit&price_from&price_to&p1&p2&p3 /tyres
 Clean-param: in_stock&in_stock4&upr_all&stock_place&modification&limit&price_from&price_to&p1&p2&p3 /disks
 Clean-param: in_stock&in_stock4&upr_all&stock_place&modification&limit&price_from&price_to&auto&view&color&axis&material /akb
+Clean-param: in_stock&limit&mode&info /tubes
 Clean-param: mode&sort&direction&diameter&etext
+Clean-param: utm_source&utm_medium&utm_campaign&utm_content&utm_term&utm_referer&utm_ya_campaign&utm_candidate&yabizcmpgn&yclid&gclid
 Sitemap: https://kerchshina.com/sitemap.xml
