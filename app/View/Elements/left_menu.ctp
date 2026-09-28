@@ -1,5 +1,41 @@
-<div class="left-nav left-nav-open" id="left-nav-filter">
+<?php
+// Сколько условий фильтра выбрано (для кнопки «Фильтры (N)»).
+// Диапазон «от–до» считается одним условием, «Наличие: все» (in_stock=2) — значением по умолчанию.
+// При подборе по авто сам автомобиль — одно условие, подставленные из него размеры не считаются.
+$active_filters = 0;
+$filter_query = $this->request->query;
+$ignore_keys = array('in_stock4', 'page', 'sort', 'direction', 'limit', 'mode', 'diameter', 'start_stop', 'x');
+if (!empty($filter_query['modification'])) {
+    $active_filters++;
+    $filter_query = array_intersect_key($filter_query, array_flip(array('season', 'material', 'in_stock', 'brand_id', 'auto')));
+}
+$counted = array();
+foreach ($filter_query as $key => $value) {
+    if (in_array($key, $ignore_keys) || $value === '' || $value === null || (is_array($value) && !array_filter($value))) {
+        continue;
+    }
+    if ($key == 'in_stock' && (string)$value === '2') {
+        continue;
+    }
+    $counted[preg_replace('/_(from|to)$/', '', $key)] = true;
+}
+$active_filters += count($counted);
+?>
+<div class="left-nav<?php echo $active_filters > 0 ? ' left-nav--has-filters' : ' left-nav-open'; ?>" id="left-nav-filter">
     <div class="left-nav__sticky">
+        <?php if ($active_filters > 0) { ?>
+            <button type="button" class="left-nav__summary" onclick="openFilterDialog();">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M7 12h10M10 18h4"/></svg>
+                Фильтры
+                <span class="left-nav__summary-count"><?php echo $active_filters; ?></span>
+            </button>
+        <?php } ?>
+        <div class="left-nav__dialog-head">
+            <span class="left-nav__dialog-title">Фильтры</span>
+            <button type="button" class="left-nav__dialog-close" onclick="closeFilterDialog();" aria-label="Закрыть">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+            </button>
+        </div>
         <?php
         if (empty(isset($show_switch_params_and_auto))) {
             $show_switch_params_and_auto = true;
@@ -65,17 +101,34 @@
 
 
         <script>
-            var openFilter = true;
-
             function switchFilter() {
-                if (!openFilter) {
-                    document.getElementById("left-nav-filter").className = "left-nav left-nav-open";
-                    openFilter = true
-                } else {
-                    document.getElementById("left-nav-filter").className = "left-nav";
-                    openFilter = false
-                }
+                document.getElementById("left-nav-filter").classList.toggle("left-nav-open");
             }
+
+            // «Фильтры (N)»: на мобильных открываем фильтр окном поверх страницы
+            function openFilterDialog() {
+                var nav = document.getElementById("left-nav-filter");
+                nav.classList.add("left-nav-open", "left-nav--dialog");
+                document.body.style.overflow = "hidden";
+            }
+
+            function closeFilterDialog() {
+                var nav = document.getElementById("left-nav-filter");
+                nav.classList.remove("left-nav-open", "left-nav--dialog");
+                document.body.style.overflow = "";
+            }
+
+            document.addEventListener("click", function (e) {
+                // клик по затемнённому фону (псевдоэлемент самого #left-nav-filter)
+                if (e.target.id === "left-nav-filter" && e.target.classList.contains("left-nav--dialog")) {
+                    closeFilterDialog();
+                }
+            });
+            document.addEventListener("keydown", function (e) {
+                if (e.key === "Escape" && document.querySelector(".left-nav--dialog")) {
+                    closeFilterDialog();
+                }
+            });
 
             function switchTab(params) {
 

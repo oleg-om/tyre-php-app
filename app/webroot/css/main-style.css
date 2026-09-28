@@ -7340,3 +7340,155 @@ a.sel-steps__link:hover {
     inset: 0;
     border-radius: inherit;
 }
+
+/* Свёрнутый фильтр после поиска: вместо вкладок кнопка «Фильтры (N)» (Elements/left_menu.ctp).
+   На десктопе фильтр — постоянная боковая панель, кнопка там не нужна. */
+.left-nav__summary {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    height: 52px;
+    padding: 0 16px;
+    border: 0;
+    background-color: #e0e0e0;
+    color: #1f2933;
+    font: inherit;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.left-nav__summary svg {
+    width: 20px;
+    height: 20px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+}
+
+.left-nav__summary-count {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 22px;
+    height: 22px;
+    padding: 0 6px;
+    border-radius: 999px;
+    background-color: #40b252;
+    color: #fff;
+    font-size: 13px;
+    font-weight: 700;
+    box-sizing: border-box;
+}
+
+@media screen and (max-width: 991px) {
+    .left-nav--has-filters:not(.left-nav-open) .left-nav__summary {
+        display: flex;
+    }
+
+    .left-nav--has-filters:not(.left-nav-open) .title__switch,
+    .left-nav--has-filters:not(.left-nav-open) .title {
+        display: none;
+    }
+}
+
+/* Фильтр окном поверх страницы (кнопка «Фильтры (N)» на мобильных) */
+.left-nav__dialog-head {
+    display: none;
+}
+
+@media screen and (max-width: 991px) {
+    .left-nav--dialog::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        z-index: 1000;
+        background: rgba(15, 23, 42, .45);
+        animation: filter-fade-in .2s ease-out;
+    }
+
+    .left-nav--dialog .left-nav__sticky {
+        position: fixed;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        z-index: 1001;
+        max-height: 90vh;
+        overflow-y: auto;
+        border-radius: 16px 16px 0 0;
+        background-color: #eee;
+        box-shadow: 0 -12px 40px rgba(15, 23, 42, .25);
+        animation: filter-slide-up .25s ease-out;
+        overscroll-behavior: contain;
+    }
+
+    .left-nav--dialog .left-nav__dialog-head {
+        position: sticky;
+        top: 0;
+        z-index: 2;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 14px 12px 12px 20px;
+        border-bottom: 1px solid #e6e9ec;
+        background-color: #fff;
+    }
+
+    .left-nav__dialog-title {
+        color: #1f2933;
+        font-size: 18px;
+        font-weight: 800;
+    }
+
+    .left-nav__dialog-close {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 36px;
+        height: 36px;
+        padding: 0;
+        border: 0;
+        border-radius: 50%;
+        background: transparent;
+        color: #6b7680;
+        cursor: pointer;
+    }
+
+    .left-nav__dialog-close:hover {
+        background-color: #f5f7f8;
+        color: #1f2933;
+    }
+
+    .left-nav__dialog-close svg {
+        width: 20px;
+        height: 20px;
+        fill: none;
+        stroke: currentColor;
+        stroke-width: 2;
+        stroke-linecap: round;
+    }
+
+    /* в окне закрываем крестиком, стрелка сворачивания и кнопка «Фильтры» не нужны */
+    .left-nav--dialog .left-nav__summary,
+    .left-nav--dialog .left-nav__button {
+        display: none !important;
+    }
+
+    .left-nav--dialog .title__switch,
+    .left-nav--dialog .title {
+        display: flex;
+    }
+}
+
+@keyframes filter-fade-in {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes filter-slide-up {
+    from { transform: translateY(100%); }
+    to { transform: none; }
+}
