@@ -66,7 +66,7 @@ echo $this->element('currency');
 					$filename = null;
 					if (!empty($item['Product']['filename'])) {
 						$filename = $item['Product']['filename'];
-						$id = $item['Product']['id'];
+						$id = 'akb_images';
                         $pathAkb = 'akb';
 					}
 					elseif (!empty($item['BrandModel']['filename'])) {
@@ -123,7 +123,7 @@ echo $this->element('currency');
                                             $filename = null;
                                             if (!empty($item['Product']['filename'])) {
                                                 $filename = $item['Product']['filename'];
-                                                $id = $item['Product']['id'];
+                                                $id = 'akb_images';
                                                 $pathAkb = 'akb';
                                             }
                                             elseif (!empty($item['BrandModel']['filename'])) {

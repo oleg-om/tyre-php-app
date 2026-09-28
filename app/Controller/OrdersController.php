@@ -81,28 +81,7 @@ class OrdersController extends AppController
                     $cart_products[$item['Product']['id']] = $item;
                 }
             }
-            foreach ($order['OrderProduct'] as $item) {
-                $product = $cart_products[$item['product_id']];
-                $title = $product['Brand']['title'] . ' ' . $product['BrandModel']['title'];
-                if ($product['Product']['category_id'] == 1) {
-                    $title .= ' ' . $product['Product']['size1'] . '/' . $product['Product']['size2'] . ' R' . $product['Product']['size3'];
-                    $url = ProductUrl::url('tyres', $product['Product'], $product['Brand']['slug'], $product['BrandModel']['title']);
-                    $type = 'tyres';
-                } elseif ($product['Product']['category_id'] == 2) {
-                    $title .= ' ' . $product['Product']['size2'] . ' R' . $product['Product']['size2'] . 'x' . $product['Product']['size3'];
-                    $url = ProductUrl::url('disks', $product['Product'], $product['Brand']['slug'], $product['BrandModel']['title']);
-                    $type = 'disks';
-                } elseif ($product['Product']['category_id'] == 3) {
-                    $title .= ' ' . $product['Product']['ah'] . 'ач ' . $product['Product']['f1'];
-                    $url = ProductUrl::url('akb', $product['Product'], $product['Brand']['slug'], $product['BrandModel']['title']);
-                    $type = 'akb';
-                } else {
-                    $title = $this->Product->bolt_types[$product['Product']['bolt_type']] . ' ' . $product['Product']['bolt'];
-                    $url = array('controller' => 'bolts', 'action' => 'view', 'id' => $product['Product']['id']);
-                    $type = 'bolts';
-                }
-                $ordered_products[] = '<li><a href="' . Router::url($url, true) . '">' . $title . '</a>, ' . $item['quantity'] . ' шт. — ' . $this->getCartPrice(ceil($product['Product']['price']) * $item['quantity'], $type) . '</li>';
-            }
+            $ordered_products = $this->_orderedProductsList($order['OrderProduct'], $cart_products);
             if (!empty($this->request->data)) {
                 $this->loadModel('OrderEvent');
                 $this->request->data['OrderEvent']['order_id'] = $id;
@@ -193,6 +172,51 @@ class OrdersController extends AppController
         $this->render('admin_view');
     }
 
+    /**
+     * Название, ссылка и тип товара (для цены) — в заказе и письмах
+     */
+    private function _orderProductInfo($product)
+    {
+        $title = $product['Brand']['title'] . ' ' . $product['BrandModel']['title'];
+        if ($product['Product']['category_id'] == 1) {
+            $title .= ' ' . $product['Product']['size1'] . '/' . $product['Product']['size2'] . ' R' . $product['Product']['size3'];
+            $url = ProductUrl::url('tyres', $product['Product'], $product['Brand']['slug'], $product['BrandModel']['title']);
+            $type = 'tyres';
+        } elseif ($product['Product']['category_id'] == 2) {
+            $title .= ' R' . $product['Product']['size1'] . ' ' . $product['Product']['size3'] . 'J ' . $product['Product']['size2'];
+            $url = ProductUrl::url('disks', $product['Product'], $product['Brand']['slug'], $product['BrandModel']['title']);
+            $type = 'disks';
+        } elseif ($product['Product']['category_id'] == 3) {
+            $title .= ' ' . $product['Product']['ah'] . 'ач ' . $product['Product']['f1'];
+            $url = ProductUrl::url('akb', $product['Product'], $product['Brand']['slug'], $product['BrandModel']['title']);
+            $type = 'akb';
+        } else {
+            $title = $this->Product->bolt_types[$product['Product']['bolt_type']] . ' ' . $product['Product']['bolt'];
+            $url = array('controller' => 'bolts', 'action' => 'view', 'id' => $product['Product']['id']);
+            $type = 'bolts';
+        }
+        return array($title, $url, $type);
+    }
+
+    /**
+     * Строки списка товаров для писем по заказу. Цена — та, по которой заказали;
+     * если товар уже удалён с сайта, выводим сохранённое в заказе название без ссылки.
+     */
+    private function _orderedProductsList($order_products, $cart_products)
+    {
+        $list = array();
+        foreach ($order_products as $item) {
+            if (isset($cart_products[$item['product_id']])) {
+                list($title, $url) = $this->_orderProductInfo($cart_products[$item['product_id']]);
+                $name = '<a href="' . Router::url($url, true) . '">' . $title . '</a>';
+            } else {
+                $name = !empty($item['title']) ? h($item['title']) : 'Товар #' . $item['product_id'];
+            }
+            $list[] = '<li>' . $name . ', ' . $item['quantity'] . ' шт. — ' . $this->getCartPriceOnly($item['price'] * $item['quantity']) . '</li>';
+        }
+        return $list;
+    }
+
     public function checkout()
     {
         if ($this->Session->check('cart')) {
@@ -247,26 +271,12 @@ class OrdersController extends AppController
                     $this->loadModel('OrderProduct');
                     foreach ($cart['items'] as $product_id => $count) {
                         $product = $products[$product_id];
-                        $title = $product['Brand']['title'] . ' ' . $product['BrandModel']['title'];
-                        if ($product['Product']['category_id'] == 1) {
-                            $title .= ' ' . $product['Product']['size1'] . '/' . $product['Product']['size2'] . ' R' . $product['Product']['size3'];
-                            $url = ProductUrl::url('tyres', $product['Product'], $product['Brand']['slug'], $product['BrandModel']['title']);
-                            $type = 'tyres';
-                        } elseif ($product['Product']['category_id'] == 2) {
-                            $title .= ' ' . $product['Product']['size2'] . ' R' . $product['Product']['size2'] . 'x' . $product['Product']['size3'];
-                            $url = ProductUrl::url('disks', $product['Product'], $product['Brand']['slug'], $product['BrandModel']['title']);
-                            $type = 'disks';
-                        } elseif ($product['Product']['category_id'] == 3) {
-                            $title .= ' ' . $product['Product']['ah'] . 'ач ' . $product['Product']['f1'];
-                            $url = ProductUrl::url('akb', $product['Product'], $product['Brand']['slug'], $product['BrandModel']['title']);
-                            $type = 'akb';
-                        } else {
-                            $title = $this->Product->bolt_types[$product['Product']['bolt_type']] . ' ' . $product['Product']['bolt'];
-                            $url = array('controller' => 'bolts', 'action' => 'view', 'id' => $product['Product']['id']);
-                            $type = 'bolts';
-                        }
+                        list($title, $url, $type) = $this->_orderProductInfo($product);
+                        // название и категорию храним в заказе: товар могут удалить при загрузке прайса
                         $save_data = array(
                             'product_id' => $product_id,
+                            'title' => $title,
+                            'category_id' => $product['Product']['category_id'],
                             'quantity' => $count,
                             'price' => $this->calculateCartPrice($product['Product']['price'], $type),
                             'order_id' => $order_id
@@ -697,6 +707,7 @@ class OrdersController extends AppController
                         $product_ids[] = $item['product_id'];
                     }
                     $this->loadModel('Product');
+                    $this->Product->virtualFields['bolt'] = 'IF(Product.bolt_type=\'ring\',CONCAT(Product.size1,\'x\',Product.size2),CONCAT(Product.size1,\'x\',Product.size2,\'x\',Product.size3,\'x\',Product.f1,\' \',Product.color,\' \',Product.material))';
                     $this->Product->bindModel(
                         array(
                             'belongsTo' => array(
@@ -715,24 +726,7 @@ class OrdersController extends AppController
                             $cart_products[$item['Product']['id']] = $item;
                         }
                     }
-                    foreach ($order['OrderProduct'] as $item) {
-                        $product = $cart_products[$item['product_id']];
-                        $title = $product['Brand']['title'] . ' ' . $product['BrandModel']['title'];
-                        if ($product['Product']['category_id'] == 1) {
-                            $title .= ' ' . $product['Product']['size1'] . '/' . $product['Product']['size2'] . ' R' . $product['Product']['size3'];
-                            $url = ProductUrl::url('tyres', $product['Product'], $product['Brand']['slug'], $product['BrandModel']['title']);
-                            $type = 'tyres';
-                        } elseif ($product['Product']['category_id'] == 2) {
-                            $title .= ' ' . $product['Product']['size2'] . ' R' . $product['Product']['size2'] . 'x' . $product['Product']['size3'];
-                            $url = ProductUrl::url('disks', $product['Product'], $product['Brand']['slug'], $product['BrandModel']['title']);
-                            $type = 'disks';
-                        } else {
-                            $title .= ' ' . $product['Product']['ah'] . 'ач ' . $product['Product']['f1'];
-                            $url = ProductUrl::url('akb', $product['Product'], $product['Brand']['slug'], $product['BrandModel']['title']);
-                            $type = 'akb';
-                        }
-                        $ordered_products[] = '<li><a href="' . Router::url($url, true) . '">' . $title . '</a>, ' . $item['quantity'] . ' шт. — ' . $this->getCartPrice($product['Product']['price'] * $item['quantity'], $type) . '</li>';
-                    }
+                    $ordered_products = $this->_orderedProductsList($order['OrderProduct'], $cart_products);
                     $this->loadModel('OrderEvent');
                     $save_data = array(
                         'status_id' => 2,
