@@ -6196,3 +6196,595 @@ table.withlines {
         min-width: 0;
     }
 }
+
+/* ===== Модальное окно «Мой заказ» (Orders/cart.ctp) ===== */
+.popup__wrapper:has(.cart-popup) {
+    width: 560px;
+    max-width: calc(100vw - 24px);
+    max-height: 86vh;
+    padding: 0;
+    border-radius: 16px;
+    background-color: #fff;
+    box-shadow: 0 24px 60px rgba(15, 23, 42, .25);
+    overflow-y: auto;
+    animation: cart-popup-in .2s ease-out;
+}
+
+.popup__wrapper:has(.cart-popup) + .bg-popup {
+    background: rgba(15, 23, 42, .45);
+    backdrop-filter: blur(2px);
+}
+
+@keyframes cart-popup-in {
+    from { opacity: 0; transform: translateY(12px) scale(.98); }
+    to { opacity: 1; transform: none; }
+}
+
+.cart-popup {
+    --cp-accent: #40b252;
+    --cp-accent-hover: #369a46;
+    --cp-text: #1f2933;
+    --cp-muted: #6b7680;
+    --cp-line: #e6e9ec;
+    --cp-soft: #f5f7f8;
+    color: var(--cp-text);
+}
+
+.cart-popup__head {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 20px 14px;
+    border-bottom: 1px solid var(--cp-line);
+    background-color: #fff;
+}
+
+.cart-popup__title {
+    font-size: 20px;
+    font-weight: 800;
+    line-height: 1.2;
+}
+
+.cart-popup__close {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    margin: -6px -8px -6px 0;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background: transparent;
+    color: var(--cp-muted);
+    cursor: pointer;
+    transition: background-color .15s, color .15s;
+}
+
+.cart-popup__close:hover {
+    background-color: var(--cp-soft);
+    color: var(--cp-text);
+}
+
+.cart-popup__close svg {
+    width: 20px;
+    height: 20px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+}
+
+.cart-popup__items {
+    padding: 4px 20px 0;
+}
+
+/* товар */
+.cart-popup .cart-prod {
+    display: grid;
+    grid-template-columns: 72px minmax(0, 1fr);
+    gap: 14px;
+    align-items: start;
+    margin: 0;
+    padding: 16px 32px 16px 0;
+    border-bottom: 1px solid var(--cp-line);
+    background: none;
+    box-shadow: none;
+}
+
+.cart-popup .cart-prod .img {
+    float: none;
+    width: 72px;
+    height: 72px;
+    margin: 0;
+    padding: 6px;
+    box-sizing: border-box;
+    border: 0;
+    border-radius: 10px;
+    background-color: var(--cp-soft);
+}
+
+.cart-popup .cart-prod .img a {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
+.cart-popup .cart-prod .img img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    mix-blend-mode: multiply;
+}
+
+.cart-popup .cart-prod .desc h3 {
+    margin: 0 0 10px;
+    font-size: 15px;
+    font-weight: 600;
+    line-height: 1.35;
+}
+
+.cart-popup .cart-prod .desc h3 a {
+    color: var(--cp-text);
+}
+
+.cart-popup .cart-prod .desc h3 a:hover {
+    color: var(--cp-accent);
+    text-decoration: none;
+}
+
+.cart-popup .cart-prod .desc table tbody tr {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px 14px;
+}
+
+.cart-popup .cart-prod td {
+    padding: 0;
+}
+
+.cart-popup .cart-prod table td.price {
+    min-width: 76px;
+    color: var(--cp-muted);
+    font-size: 13px;
+    white-space: nowrap;
+}
+
+.cart-popup .cart-prod table td.total {
+    margin-left: auto;
+    color: var(--cp-text);
+    font-size: 17px;
+    font-weight: 800;
+    white-space: nowrap;
+}
+
+.cart-popup .cart-prod .delete {
+    top: 16px;
+    right: 0;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%239aa4ad' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 7h16M10 11v6M14 11v6M6 7l1 12a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l1-12M9 7V4h6v3'/%3E%3C/svg%3E") center / 18px no-repeat;
+    transition: background-color .15s;
+}
+
+.cart-popup .cart-prod .delete:hover {
+    background-color: #fdecec;
+}
+
+/* счётчик */
+.cart-popup .select-namber {
+    display: inline-flex;
+    align-items: stretch;
+    height: 34px;
+    border: 1px solid var(--cp-line);
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.cart-popup .select-namber a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: auto;
+    margin: 0;
+    border: 0;
+    background: var(--cp-soft);
+    color: var(--cp-text);
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 1;
+    text-decoration: none;
+}
+
+.cart-popup .select-namber a:hover {
+    background-color: #e6eaed;
+}
+
+.cart-popup .select-namber span {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    height: auto;
+    margin: 0;
+    padding: 0 8px;
+    border: 0;
+    box-shadow: none;
+    background: #fff;
+    color: var(--cp-muted);
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.cart-popup .select-namber span input {
+    width: 22px;
+    background: transparent;
+    color: var(--cp-text);
+    font-size: 14px;
+    font-weight: 700;
+    text-align: center;
+}
+
+/* итог */
+.cart-popup .cart-prod.total-cart {
+    display: block;
+    padding: 16px 0;
+    border-bottom: 0;
+}
+
+.cart-popup .cart-prod.total-cart table {
+    width: 100%;
+}
+
+.cart-popup .cart-prod.total-cart tr {
+    justify-content: space-between;
+}
+
+.cart-popup .cart-prod table td.total-price {
+    color: var(--cp-muted);
+    font-size: 15px;
+}
+
+.cart-popup .cart-prod table td.total-all {
+    padding: 0;
+    color: var(--cp-text);
+    font-size: 24px;
+    font-weight: 800;
+}
+
+/* кнопки */
+.cart-popup .option-cart {
+    position: sticky;
+    bottom: 0;
+    display: flex;
+    flex-direction: column-reverse;
+    gap: 10px;
+    padding: 14px 20px 18px;
+    border-top: 1px solid var(--cp-line);
+    background-color: #fff;
+}
+
+.cart-popup .option-cart .next-shop,
+.cart-popup .option-cart .checkout a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0;
+    padding: 12px 20px;
+    border-radius: 10px;
+    font-family: inherit;
+    font-size: 15px;
+    font-weight: 700;
+    text-decoration: none;
+    text-transform: none;
+    transition: background-color .15s, box-shadow .15s;
+}
+
+.cart-popup .option-cart .next-shop {
+    float: none;
+    background-color: var(--cp-soft);
+    color: var(--cp-text);
+}
+
+.cart-popup .option-cart .next-shop:hover {
+    background-color: #e9edf0;
+}
+
+.cart-popup .option-cart .checkout {
+    display: block;
+    padding: 0;
+}
+
+.cart-popup .option-cart .checkout a {
+    border: 0;
+    background: var(--cp-accent);
+    box-shadow: none;
+    color: #fff;
+}
+
+.cart-popup .option-cart .checkout a:hover {
+    background-color: var(--cp-accent-hover);
+    box-shadow: 0 4px 12px rgba(64, 178, 82, .3);
+}
+
+@media screen and (min-width: 550px) {
+    .cart-popup .option-cart {
+        flex-direction: row;
+        justify-content: flex-end;
+    }
+
+    .cart-popup .option-cart .checkout a {
+        padding-left: 28px;
+        padding-right: 28px;
+    }
+}
+
+/* кнопки +/- счётчика на пределе */
+.select-namber a.disabled {
+    opacity: .35;
+    cursor: default;
+    pointer-events: none;
+}
+
+/* ===== Размеры по авто (Elements/tyre_car, disk_car, akb_car) ===== */
+.car__sizes {
+    gap: 0;
+    margin: 10px 0 20px;
+    padding: 18px 20px;
+    border: 1px solid #e6e9ec;
+    border-radius: 14px;
+    background-color: #fff;
+    color: #1f2933;
+}
+
+.car__sizes .car__sizes__wrap {
+    gap: 20px;
+}
+
+.car__sizes .car__sizes__info {
+    gap: 18px;
+    min-width: 0;
+}
+
+.car__sizes .car__sizes__diameters {
+    display: inline-flex;
+    flex-wrap: wrap;
+    align-self: flex-start;
+    gap: 4px;
+    padding: 4px;
+    border-radius: 10px;
+    background-color: #eef1f4;
+}
+
+.car__sizes .car__sizes__diameters a,
+.car__sizes .car__sizes__diameters a:first-child,
+.car__sizes .car__sizes__diameters a:last-child {
+    height: auto;
+    padding: 7px 16px;
+    border: 0;
+    border-radius: 7px;
+    background: transparent;
+    color: #5f6b76;
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: background-color .15s, color .15s, box-shadow .15s;
+}
+
+.car__sizes .car__sizes__diameters a:hover {
+    background-color: rgba(255, 255, 255, .6);
+    color: #2f3a44;
+}
+
+.car__sizes .car__sizes__diameters a.active-diameter {
+    background-color: #fff;
+    color: #40b252;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, .12), 0 1px 2px rgba(0, 0, 0, .06);
+}
+
+.car__sizes .car__sizes__title {
+    color: #6b7680;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+}
+
+.car__sizes .car__sizes__list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 8px 0 0;
+}
+
+.car__sizes .car__sizes__list li {
+    display: inline-block;
+    margin: 0;
+    padding: 7px 12px;
+    border: 1px solid #e6e9ec;
+    border-radius: 8px;
+    background-color: #fff;
+    color: #6b7680;
+    font-size: 13px;
+    line-height: 1.4;
+    transition: border-color .15s, background-color .15s;
+}
+
+.car__sizes .car__sizes__list li:hover {
+    border-color: #40b252;
+}
+
+.car__sizes .car__sizes__list a {
+    color: #1f2933;
+    font-weight: 700;
+    white-space: nowrap;
+    text-decoration: none;
+}
+
+.car__sizes .car__sizes__list a:hover {
+    color: #40b252;
+}
+
+.car__sizes .car__sizes__list li.is_active,
+.car__sizes .car__sizes__list li:has(.is_active) {
+    border-color: #40b252;
+    background-color: #eef8f0;
+}
+
+.car__sizes .car__sizes__list .is_active,
+.car__sizes .car__sizes__list .is_active a {
+    font-weight: 600;
+}
+
+.car__sizes .car__sizes__list .is_active a,
+.car__sizes .car__sizes__list li.is_active a {
+    color: #2d8a3e;
+    font-weight: 700;
+}
+
+.car__sizes .car__sizes__extra__text {
+    padding: 10px 14px;
+    border-radius: 10px;
+    background-color: #e6f1fb;
+    color: #1f5f96;
+    font-size: 13px;
+}
+
+.car__sizes .car__sizes-right {
+    align-items: flex-end;
+    gap: 10px;
+}
+
+.car__sizes .car__sizes-right img {
+    max-height: 110px;
+}
+
+.car__sizes .filter-reset-car {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin: 0 0 0 auto;
+    padding: 6px 12px;
+    border-radius: 999px;
+    background-color: #f5f7f8;
+    color: #5f6b76;
+    font: inherit;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color .15s, color .15s;
+}
+
+.car__sizes .filter-reset-car:hover {
+    background-color: #fdecec;
+    color: #c0392b;
+}
+
+.car__sizes .filter-reset-car span {
+    margin: 0;
+    color: inherit;
+    font-size: 0;
+}
+
+.car__sizes .filter-reset-car span::before {
+    content: "\00d7";
+    font-size: 17px;
+    line-height: 1;
+}
+
+.car__sizes .car__sizes__info {
+    flex: 1 1 auto;
+}
+
+@media screen and (min-width: 768px) {
+    .car__sizes .car__sizes-right {
+        flex: 0 0 auto;
+        width: 240px;
+        min-width: 0;
+        max-width: 240px;
+    }
+}
+
+/* цена АКБ с обменом (Akb/view.ctp) */
+.tp-buy__note {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 6px;
+    color: #2d8a3e;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.tp-buy__alt {
+    padding: 8px 12px;
+    border-radius: 8px;
+    background-color: #f5f7f8;
+    color: #6b7680;
+    font-size: 13px;
+}
+
+.tp-buy__alt strong {
+    color: #1f2933;
+    font-size: 15px;
+}
+
+.tp .tm__media span.tm__image img {
+    mix-blend-mode: multiply;
+}
+
+/* таблица размеров дисков (Disks/model.ctp): на мобильных параметры в строку с подписями */
+.tm__auto-switch {
+    margin: 16px 0 0;
+}
+
+@media screen and (max-width: 991px) {
+    .tm-table--disks .tm-row {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        grid-template-areas:
+            "size size price price"
+            "pcd et hub color"
+            "stock stock stock stock"
+            "action action action action";
+    }
+
+    .tm-table--disks .tm-row__pcd { grid-area: pcd; }
+    .tm-table--disks .tm-row__et { grid-area: et; }
+    .tm-table--disks .tm-row__hub { grid-area: hub; }
+    .tm-table--disks .tm-row__color { grid-area: color; }
+
+    .tm-table--disks .tm-row__param {
+        font-weight: 600;
+        overflow-wrap: anywhere;
+    }
+
+    .tm-table--disks .tm-row__param::before {
+        content: attr(data-label);
+        display: block;
+        color: #6b7680;
+        font-size: 11px;
+        font-weight: 400;
+    }
+}
+
+@media screen and (min-width: 992px) and (max-width: 1199px) {
+    .tm-table--disks th,
+    .tm-table--disks .tm-row td {
+        padding-left: 6px;
+        padding-right: 6px;
+    }
+
+    .tm-table--disks .tm-row__action .tm-btn {
+        padding: 8px 12px;
+    }
+
+    .tm-table--disks .tm-row__price {
+        font-size: 15px !important;
+    }
+}

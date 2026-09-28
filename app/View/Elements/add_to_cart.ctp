@@ -6,9 +6,9 @@ if ($product['Product']['category_id'] > 2) {
 if ($value > 0) {
 ?>
 <div class="select-namber">
-	<a href="javascript:void(0);" onclick="items_minus();">-</a>
+	<a href="javascript:void(0);" onclick="items_minus();" class="items-minus">-</a>
 	<span><input type="text" id="items_count" name="items_count" value="<?php echo $value; ?>"> шт.</span>
-	<a href="javascript:void(0);" onclick="items_plus();">+</a>
+	<a href="javascript:void(0);" onclick="items_plus();" class="items-plus">+</a>
 </div>
 <?php } ?>
 <script type="text/javascript">
@@ -24,6 +24,7 @@ function items_plus() {
 		items_count = max_items;
 	}
 	$('#items_count').val(items_count);
+	items_update_buttons();
 }
 function items_minus() {
 	var items_count = parseInt($('#items_count').val().trim());
@@ -35,7 +36,18 @@ function items_minus() {
 		items_count = 1;
 	}
 	$('#items_count').val(items_count);
+	items_update_buttons();
 }
+function items_update_buttons() {
+	var items_count = parseInt($('#items_count').val(), 10);
+	var $box = $('#items_count').closest('.select-namber');
+	$box.find('.items-plus').toggleClass('disabled', !(items_count < max_items));
+	$box.find('.items-minus').toggleClass('disabled', !(items_count > 1));
+}
+$(function () {
+	items_update_buttons();
+	$('#items_count').on('input change', items_update_buttons);
+});
 function buy() {
 	var items_count = parseInt($('#items_count').val().trim());
 	if (isNaN(items_count)) {

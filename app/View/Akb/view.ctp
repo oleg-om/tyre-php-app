@@ -1,120 +1,162 @@
-<div class="product__wrapper">
-    <div class="prodBigImg"><?php
-        $sku = $brand['Brand']['title'] . ' ' . $product['BrandModel']['title'] . ' ' . $product['Product']['ah'] . 'ач ' . $product['Product']['f1'];
-        $filename = null;
-        if (!empty($product['Product']['filename'])) {
-            $filename = $product['Product']['filename'];
-            $id = 'akb_images';
-            $path = 'akb';
-        }
-        elseif (!empty($product['BrandModel']['filename'])) {
-            $filename = $product['BrandModel']['filename'];
-            $id = $product['BrandModel']['id'];
-            $path = 'models';
-        }
-        if (!empty($filename)) {
-            echo $this->Html->link($this->Html->image($this->Backend->thumbnail(array('id' => $id, 'filename' => $filename, 'path' => $path, 'width' => 240, 'height' => 1000, 'crop' => false, 'folder' => false)), array('alt' => $sku)), $this->Backend->thumbnail(array('id' => $id, 'filename' => $filename, 'path' => $path, 'width' => 800, 'height' => 600, 'crop' => false, 'folder' => false)), array('escape' => false, 'class' => 'lightbox', 'title' => $sku));
-        }
-        else {
-            echo $this->Html->image('no-akb-240.jpg', array('alt' => $sku));
-        }
-        ?></div>
-    <div class="infoProdBig">
-        <div class="boxLeftInfo">
-        <h2><?php echo h($brand['Brand']['title']). ' <span>'. $product['BrandModel']['title']; ?></span></h2>
-        </div>
-<table border="0" width="100%">
-	<tr>
+<?php
+$p = $product['Product'];
+$full_title = $brand['Brand']['title'] . ' ' . $product['BrandModel']['title'];
+$sku = $full_title . ' ' . $p['ah'] . 'ач ' . $p['f1'];
+$filename = null;
+if (!empty($p['filename'])) {
+    $filename = $p['filename'];
+    $id = 'akb_images';
+    $path = 'akb';
+}
+elseif (!empty($product['BrandModel']['filename'])) {
+    $filename = $product['BrandModel']['filename'];
+    $id = $product['BrandModel']['id'];
+    $path = 'models';
+}
+$image_big = !empty($filename) ? $this->Backend->thumbnail(array('id' => $id, 'filename' => $filename, 'path' => $path, 'width' => 800, 'height' => 600, 'crop' => false, 'folder' => false)) : null;
+$show_price = $this->Frontend->canShowAkbPrice($p['not_show_price']);
+$has_exchange = !empty($p['price_with_exchange']) && $p['price_with_exchange'] != 0;
+$model_url = Router::url(array('controller' => 'akb', 'action' => 'brand', 'slug' => $brand['Brand']['slug'], '?' => array('model_id' => $p['model_id'])));
 
-		<td>
-			<table class="brend" border="0" width="100%">
-				<tr>
-					<th>Бренд</th>
-					<td><?php echo h($brand['Brand']['title']); ?></td>
-				</tr>
-				<tr>
-					<th>Модель</th>
-					<td><?php echo h($product['BrandModel']['title']); ?></td>
-				</tr>
-				<tr>
-					<th>Ширина</th>
-					<td><?php echo $product['Product']['width']; ?></td>
-				</tr>
-				<tr>
-					<th>Длина</th>
-					<td><?php echo $product['Product']['length']; ?></td>
-				</tr>
-				<tr>
-					<th>Высота</th>
-					<td><?php echo $product['Product']['height'].' '.$product['Product']['f3']; ?></td>
-				</tr>
-				<tr>
-					<th>Тип</th>
-					<td><?php echo h($product['Product']['f1']); ?></td>
-				</tr>
-				<tr>
-					<th>Полярность</th>
-					<td><?php echo h($product['Product']['f2']); ?></td>
-				</tr>
-				<tr>
-					<th>Ah</th>
-					<td><?php echo $product['Product']['ah']; ?>ач</td>
-				</tr>
-				<tr>
-					<th>Пусковой ток</th>
-					<td><?php echo $product['Product']['current'].' A ('.(isset($product['Product']['current_type']) ? $product['Product']['current_type'] : 'EN').')'; ?></td>
-				</tr>
-                <tr>
-                    <th>Технология изготовления</th>
-                    <td><?php echo $product['Product']['color'] ? $product['Product']['color'] : '-'; ?> <?php echo $product['Product']['truck'] ? '<strong>'.$product['Product']['truck'].'</strong>' : ''; ?></td>
-                </tr>
-                <tr>
-                    <th>Страна-производитель</th>
-                    <td><?php echo $product['Product']['material'] ? $product['Product']['material'] : '-'; ?></td>
-                </tr>
-                <tr>
-                    <th>Гарантия</th>
-                    <td><?php echo $product['Product']['axis']; ?></td>
-                </tr>
-			</table>
-		</td>
-	</tr>
-</table>
-        <div class="product__info-instock my-1">
+$title_parts = array();
+if (!empty($p['ah'])) { $title_parts[] = $p['ah'] . ' Ач'; }
+if (!empty($p['current'])) { $title_parts[] = $p['current'] . ' А'; }
+if (!empty($p['f1'])) { $title_parts[] = $p['f1']; }
+if (!empty($p['f2'])) { $title_parts[] = $p['f2']; }
+
+$dimensions = array_filter(array($p['length'], $p['width'], $p['height']));
+?>
+<div class="tm tp">
+    <div class="tm__hero">
+        <div class="tm__media">
             <?php
-            $in_stock_mark = $product['Product']['in_stock'] ? '<img title="в наличии" alt="в наличии" src="/img/yes.png">' : '';
-            $in_stock_text = $product['Product']['in_stock'] ? 'В наличии: ' : 'Под заказ: ';
-            echo $this->element('stock_places', array('stock_places' => $product['Product'], 'text' => '<div class="namber tyres">'.$in_stock_text.$this->Frontend->getStockCount($product['Product']['stock_count']).' шт. '.$in_stock_mark.'</div>', 'position' => 'right'));
+            if (!empty($filename)) {
+                echo $this->Html->link($this->Html->image($this->Backend->thumbnail(array('id' => $id, 'filename' => $filename, 'path' => $path, 'width' => 400, 'height' => 1000, 'crop' => false, 'folder' => false)), array('alt' => $sku)), $image_big, array('escape' => false, 'class' => 'lightbox tm__image', 'title' => $sku));
+            } else {
+                echo '<span class="tm__image">' . $this->Html->image('no-akb-240.jpg', array('alt' => $sku)) . '</span>';
+            }
             ?>
         </div>
-        <div class="boxRightInfo">
-<?php if ($this->Frontend->canShowAkbPrice($product['Product']['not_show_price'])) { ?>
-<div class="boxPriceProd akb-price-box">
-    <div class="boxPriceProd-price">
-        <?php echo $this->element('akb_price', array('item' => $product)); ?>
-	</div>
-	<div class="add-to-cart"><?php echo $this->element('add_to_cart'); ?></div>
-	<div class="buy-button">
-		<a href="javascript:void(0);" class="btVer2" onclick="buy();">Купить</a>
-	</div>
-	<div class="clear"></div>
+        <div class="tm__info">
+            <h1 class="tm__title">
+                <a href="<?php echo h($model_url); ?>" class="tm__brand"><?php echo h($full_title); ?></a>
+                <?php echo h(implode(' · ', $title_parts)); ?>
+            </h1>
 
+            <div class="tp__grid">
+                <div class="tp-buy">
+                    <?php if ($show_price) { ?>
+                        <?php if ($has_exchange) { ?>
+                            <div>
+                                <div class="tp-buy__price"><?php echo $this->Frontend->getPrice($p['price_with_exchange'], 'akb'); ?></div>
+                                <div class="tp-buy__note">
+                                    <img src="/img/recycle-symbol.png" alt="" width="16" height="16" />
+                                    при сдаче старого аккумулятора
+                                </div>
+                            </div>
+                            <div class="tp-buy__alt">
+                                Без обмена: <strong><?php echo $this->Frontend->getPrice($p['price'], 'akb'); ?></strong>
+                            </div>
+                        <?php } else { ?>
+                            <div class="tp-buy__price"><?php echo $this->Frontend->getPrice($p['price'], 'akb'); ?></div>
+                        <?php } ?>
+                    <?php } ?>
+                    <div class="tp-buy__stock">
+                        <?php
+                        $stock_text = $p['in_stock'] ? 'В наличии: ' : 'Под заказ: ';
+                        $stock_class = $p['in_stock'] ? 'tm-stock tm-stock--yes' : '';
+                        echo $this->element('stock_places', array('stock_places' => $p, 'text' => '<div class="namber tyres ' . $stock_class . '">' . $stock_text . $this->Frontend->getStockCount($p['stock_count']) . ' шт.</div>', 'position' => 'right'));
+                        ?>
+                    </div>
+                    <?php if ($show_price) { ?>
+                        <div class="tp-buy__actions">
+                            <div class="add-to-cart"><?php echo $this->element('add_to_cart'); ?></div>
+                            <a href="javascript:void(0);" class="tm-btn tm-btn--primary tp-buy__btn" onclick="buy();">Купить</a>
+                        </div>
+                    <?php } ?>
+                    <div class="tp-buy__phone">
+                        <span>Или закажите по телефону</span>
+                        <a href="tel:<?php echo preg_replace('/[^\d+]/', '', CONST_STORAGE_CELLPHONE); ?>"><?php echo CONST_STORAGE_CELLPHONE; ?></a>
+                    </div>
+                </div>
+
+                <div class="tp-specs">
+                    <h2 class="tm__sizes-title">Характеристики</h2>
+                    <table>
+                        <?php if (!empty($p['ah'])) { ?>
+                        <tr>
+                            <th>Ёмкость</th>
+                            <td><?php echo h($p['ah']); ?> Ач</td>
+                        </tr>
+                        <?php } ?>
+                        <?php if (!empty($p['current'])) { ?>
+                        <tr>
+                            <th>Пусковой ток</th>
+                            <td><?php echo h($p['current']); ?> А <span class="tp-specs__muted">(<?php echo h(!empty($p['current_type']) ? $p['current_type'] : 'EN'); ?>)</span></td>
+                        </tr>
+                        <?php } ?>
+                        <?php if (!empty($p['f2'])) { ?>
+                        <tr>
+                            <th>Полярность</th>
+                            <td><?php echo h($p['f2']); ?></td>
+                        </tr>
+                        <?php } ?>
+                        <?php if (!empty($p['f1'])) { ?>
+                        <tr>
+                            <th>Тип корпуса</th>
+                            <td><?php echo h($p['f1']); ?></td>
+                        </tr>
+                        <?php } ?>
+                        <?php if (!empty($dimensions)) { ?>
+                        <tr>
+                            <th>Размеры (Д × Ш × В)</th>
+                            <td><?php echo h($p['length'] . ' × ' . $p['width'] . ' × ' . $p['height']); ?> мм<?php if (!empty($p['f3'])) { ?> <span class="tp-specs__muted"><?php echo h($p['f3']); ?></span><?php } ?></td>
+                        </tr>
+                        <?php } ?>
+                        <tr>
+                            <th>Технология</th>
+                            <td><?php echo $p['color'] ? h($p['color']) : '—'; ?><?php if ($p['truck']) { ?> <span class="tm-badge"><?php echo h($p['truck']); ?></span><?php } ?></td>
+                        </tr>
+                        <?php if (!empty($p['material'])) { ?>
+                        <tr>
+                            <th>Страна-производитель</th>
+                            <td><?php echo h(mb_convert_case($p['material'], MB_CASE_TITLE, 'UTF-8')); ?></td>
+                        </tr>
+                        <?php } ?>
+                        <?php if (!empty($p['axis'])) { ?>
+                        <tr>
+                            <th>Гарантия</th>
+                            <td><?php echo h($p['axis']); ?></td>
+                        </tr>
+                        <?php } ?>
+                        <tr>
+                            <th>Бренд</th>
+                            <td><?php echo h($brand['Brand']['title']); ?></td>
+                        </tr>
+                    </table>
+                    <a href="<?php echo h($model_url); ?>" class="tp-specs__more">Все аккумуляторы <?php echo h($full_title); ?> →</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <?php $content = trim(strip_tags($product['BrandModel']['content'])); ?>
+    <?php if (!empty($content) || !empty($product['BrandModel']['video'])) { ?>
+    <section class="tm__section tm__desc">
+        <?php if (!empty($content)) { ?>
+            <h2 class="tm__section-title">Описание</h2>
+            <div class="tm__desc-body"><?php echo $product['BrandModel']['content']; ?></div>
+        <?php } ?>
+        <?php if (!empty($product['BrandModel']['video'])) { ?><div class="video"><?php echo $product['BrandModel']['video']; ?></div><?php } ?>
+    </section>
+    <?php } ?>
 </div>
-<?php } ?>
-        <div class="orderCall">
-            <h3>Либо заказать по телефону:</h3>
-            <a href="tel:<?php echo CONST_STORAGE_CELLPHONE; ?>"><?php echo CONST_STORAGE_CELLPHONE; ?></a>
-        </div>
-        </div>
-<?php if (!empty($product['BrandModel']['video'])) { ?><div class="video"><?php echo $product['BrandModel']['video']; ?></div><?php } ?>
-<div class="infoBox"><?php echo $product['BrandModel']['content']; ?></div>
-</div></div>
 <?php echo $this->element('schema_product', array(
     'type' => 'akb',
-    'image' => !empty($filename) ? $this->Backend->thumbnail(array('id' => $id, 'filename' => $filename, 'path' => $path, 'width' => 800, 'height' => 600, 'crop' => false, 'folder' => false)) : null,
-    'show_price' => $this->Frontend->canShowAkbPrice($product['Product']['not_show_price'])
+    'image' => $image_big,
+    'show_price' => $show_price
 )); ?>
 <?php echo $this->element('product_meta', array(
     'type' => 'akb',
-    'show_price' => $this->Frontend->canShowAkbPrice($product['Product']['not_show_price'])
+    'show_price' => $show_price
 )); ?>
