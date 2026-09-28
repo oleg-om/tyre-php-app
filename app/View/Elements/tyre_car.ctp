@@ -22,7 +22,7 @@
                     <div class="car__sizes__title">Заводская комплектация</div>
                     <ul class="car__sizes__list">
                         <?php
-                        foreach (array_unique($factory_sizes) as $tyre) {
+                        foreach (array_unique(array_map(array($this->Frontend, 'normalizeTyreSize'), $factory_sizes)) as $tyre) {
                             $size_filter = $this->Frontend->getTyreParams($tyre, $car_sizes['CarTyres']['modification_slug'], $size1, $size2, $size3); ?>
                             <li id="<?php echo 'size-R' . $size_filter['size3']; ?>" class="<?php echo 'size-R' . $size_filter['size3']; ?> <?php if ($size_filter['is_active'] == 1) {
                                 echo 'is_active';
@@ -52,7 +52,7 @@
                     <div class="car__sizes__title">Тюнинг</div>
                     <ul class="car__sizes__list">
                         <?php
-                        foreach (array_unique($tuning_sizes) as $tyre) {
+                        foreach (array_unique(array_map(array($this->Frontend, 'normalizeTyreSize'), $tuning_sizes)) as $tyre) {
                             $size_filter = $this->Frontend->getTyreParams($tyre, $car_sizes['CarTyres']['modification_slug'], $size1, $size2, $size3); ?>
                             <li id="<?php echo 'size-R' . $size_filter['size3']; ?>" class="<?php echo 'size-R' . $size_filter['size3']; ?> <?php if ($size_filter['is_active'] == 1) {
                                 echo 'is_active';

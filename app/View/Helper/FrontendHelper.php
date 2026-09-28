@@ -385,6 +385,18 @@ class FrontendHelper extends AppHelper
         return $count;
     }
 
+    /**
+     * «275/35 R20:275/35 R20» (одинаковые передние и задние) → «275/35 R20»
+     */
+    public function normalizeTyreSize($tyre)
+    {
+        $parts = array_map('trim', explode(':', $tyre));
+        if (count($parts) == 2 && $parts[0] === $parts[1]) {
+            return $parts[0];
+        }
+        return trim($tyre);
+    }
+
     public function getTyreParams($tyre, $modification_slug, $query_size1, $query_size2, $query_size3)
     {
         list($size12, $size3) = explode(' ', $tyre);

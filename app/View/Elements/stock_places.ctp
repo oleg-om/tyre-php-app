@@ -48,7 +48,7 @@ $place_list_filtered = array_filter($place_list);
     <?php echo $text; ?>
     <?php if (!empty($place_list_filtered)) { ?>
     <div class="tooltiptext">
-        <span class="tooltip-places-title">Наличие по шинным центрам:</span>
+        <span class="tooltip-places-title">Наличие по шинным центрам</span>
         <table>
         <tbody>
         <?php
@@ -61,7 +61,7 @@ $place_list_filtered = array_filter($place_list);
 
             if ($place_quantity != 0) {
                 echo '<tr>';
-                echo '<td>· '.$filter_all_places_short[$i].'</td>';
+                echo '<td>'.$filter_all_places_short[$i].'</td>';
                 echo '<td class="tooltip-places-row-quantity">'. $num .' шт.</td>';
                 echo '</tr>';
             }

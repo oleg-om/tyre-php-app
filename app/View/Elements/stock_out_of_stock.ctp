@@ -28,7 +28,11 @@ if (!empty($original_stock)) {
     $time = $supplier['delivery_time_from'] . $days;
 
     if (!empty($supplier['delivery_time_to'])) {
-        $time = $supplier['delivery_time_from'] . ' - ' . $supplier['delivery_time_to'] . $days;
+        $time = $supplier['delivery_time_from'] . '–' . $supplier['delivery_time_to'] . $days;
+    }
+
+    if (empty($supplier['delivery_time_from']) && empty($supplier['delivery_time_to'])) {
+        $time = 'уточняйте по телефону';
     }
 
     $prefix_supplier = '';
@@ -45,7 +49,8 @@ if (!empty($original_stock)) {
                                                alt="Шины под заказ" src="/img/delivery.png" width="22"
                                                height="16"><?php } ?>
         <div class="tooltiptext">
-            <span class="tooltip-places-title">Время доставки<?php echo $prefix_supplier . ': ' . $time; ?></span>
+            <span class="tooltip-places-title">Время доставки<?php echo rtrim($prefix_supplier); ?></span>
+            <span class="tooltip-delivery-time"><?php echo $time; ?></span>
         </div>
     </div>
 <?php } ?>

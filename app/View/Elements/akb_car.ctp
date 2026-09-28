@@ -1,4 +1,4 @@
-<div class="<?php if (empty($modification_slug)) { echo 'd-none'; } else { echo 'car__sizes car__sizes-wheels'; } ?>">
+<div class="<?php if (empty($modification_slug)) { echo 'd-none'; } else { echo 'car__sizes car__sizes-wheels car__sizes-akb'; } ?>">
     <div class="car__sizes__wrap">
         <div class="car__sizes__info">
             <?php if (!empty($start_stop) && $start_stop == 1) { ?>
