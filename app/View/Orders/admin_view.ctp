@@ -17,13 +17,20 @@ echo $this->Backend->getFormHeader();
 $this->Backend->addHtml('<h3>' . __d('admin_orders', 'title_ordered_products') . '</h3>');
 $products_table = '';
 $i = 0;
+// заглушки фото по категории — для товаров, которых уже нет на сайте
+$no_images = array(1 => 'no-tyre-little.jpg', 2 => 'no-disk-little.jpg', 3 => 'no-akb-little.jpg');
 foreach ($order['OrderProduct'] as $order_product) {
-	if (isset($products[$order_product['product_id']])) {
 		$products_table .= '<tr class="row_table' . ($i % 2 == 1 ? '_odd' : '') . '">';
-		$product = $products[$order_product['product_id']];
 		$cost = $order_product['quantity'] * $order_product['price'];
-		$title = $product['Brand']['title'] . ' ' . $product['BrandModel']['title'];
-		if ($product['Product']['category_id'] == 1) {
+		$product = isset($products[$order_product['product_id']]) ? $products[$order_product['product_id']] : null;
+		$title = $product ? $product['Brand']['title'] . ' ' . $product['BrandModel']['title'] : '';
+		if (!$product) {
+			// товар удалён — показываем то, что сохранили в заказе
+			$category_id = !empty($order_product['category_id']) ? $order_product['category_id'] : 0;
+			$image = $this->Html->image(isset($no_images[$category_id]) ? $no_images[$category_id] : 'no-bolts-little.jpg');
+			$title = (!empty($order_product['title']) ? h($order_product['title']) : 'Товар #' . $order_product['product_id']) . '<br /><small>товар удалён с сайта</small>';
+		}
+		elseif ($product['Product']['category_id'] == 1) {
 			$title .= ' ' . $product['Product']['size1'] . '/' . $product['Product']['size2'] . ' R' . $product['Product']['size3'];
 			$image = $this->Html->image('no-tyre-little.jpg');
 			if (!empty($product['BrandModel']['filename'])) {
@@ -31,7 +38,7 @@ foreach ($order['OrderProduct'] as $order_product) {
 			}
 		}
 		elseif ($product['Product']['category_id'] == 2) {
-			$title .= ' ' . $product['Product']['size2'] . ' R' . $product['Product']['size2'] . 'x' . $product['Product']['size3'];
+			$title .= ' R' . $product['Product']['size1'] . ' ' . $product['Product']['size3'] . 'J ' . $product['Product']['size2'];
 			$image = $this->Html->image('no-disk-little.jpg');
 			if (!empty($product['BrandModel']['filename'])) {
 				$image = $this->Html->image($this->Backend->thumbnail(array('id' => $product['BrandModel']['id'], 'filename' => $product['BrandModel']['filename'], 'path' => 'models', 'width' => 150, 'height' => 150, 'crop' => false, 'folder' => false, 'empty' => '/img/no-disk-little.jpg')), array('alt' => $product['BrandModel']['title']));
@@ -43,7 +50,7 @@ foreach ($order['OrderProduct'] as $order_product) {
 			$filename = null;
 			if (!empty($product['Product']['filename'])) {
 				$filename = $product['Product']['filename'];
-				$id = $product['Product']['id'];
+				$id = 'akb_images';
 				$path = 'akb';
 			}
 			elseif (!empty($product['BrandModel']['filename'])) {
@@ -81,7 +88,6 @@ foreach ($order['OrderProduct'] as $order_product) {
 		$products_table .= '<td class="a-right">' . $cost . '</td>';
 		$products_table .= '</tr>';
 		$i ++;
-	}
 }
 $total_replaces = $replaces;
 $total_replaces[1][] = $this->Frontend->roundPrice($order['Order'], $order['Order']['total'], false);
