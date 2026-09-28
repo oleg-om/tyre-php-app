@@ -67,7 +67,7 @@ $this->Paginator->options(array('url' => array('controller' => 'akb', 'action' =
 				$filename = null;
 				if (!empty($item['Product']['filename'])) {
 					$filename = $item['Product']['filename'];
-					$id = $item['Product']['id'];
+					$id = 'akb_images';
 					$pathAkb = 'akb';
 				}
 				elseif (!empty($item['BrandModel']['filename'])) {
@@ -122,7 +122,7 @@ $this->Paginator->options(array('url' => array('controller' => 'akb', 'action' =
                                     $filename = null;
                                     if (!empty($item['Product']['filename'])) {
                                         $filename = $item['Product']['filename'];
-                                        $id = $item['Product']['id'];
+                                        $id = 'akb_images';
                                         $pathAkb = 'akb';
                                     }
                                     elseif (!empty($item['BrandModel']['filename'])) {

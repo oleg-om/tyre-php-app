@@ -31,7 +31,7 @@ foreach ($cart['items'] as $product_id => $count) {
 		$filename = null;
 		if (!empty($product['Product']['filename'])) {
 			$filename = $product['Product']['filename'];
-			$id = $product['Product']['id'];
+			$id = 'akb_images';
 			$path = 'akb';
 		}
 		elseif (!empty($product['BrandModel']['filename'])) {
