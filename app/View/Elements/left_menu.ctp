@@ -109,12 +109,14 @@ $active_filters += count($counted);
             function openFilterDialog() {
                 var nav = document.getElementById("left-nav-filter");
                 nav.classList.add("left-nav-open", "left-nav--dialog");
+                document.documentElement.style.overflow = "hidden";
                 document.body.style.overflow = "hidden";
             }
 
             function closeFilterDialog() {
                 var nav = document.getElementById("left-nav-filter");
                 nav.classList.remove("left-nav-open", "left-nav--dialog");
+                document.documentElement.style.overflow = "";
                 document.body.style.overflow = "";
             }
 

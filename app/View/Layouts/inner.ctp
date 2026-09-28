@@ -39,7 +39,8 @@
         $css = array_merge($css, $additional_css);
     }
     echo $this->Html->css($css);
-    $js = array('jquery.min', 'selectboxes.v2', 'virtual-select.min', 'glightbox.min', 'functions');
+    // свои скрипты — с версией, как CSS: иначе браузер держит старые из кэша (max-age год)
+    $js = array('jquery.min', '/js/selectboxes.v2.js?v=' . $css_version, 'virtual-select.min', 'glightbox.min', '/js/functions.js?v=' . $css_version);
     if (isset($additional_js)) {
         $js = array_merge($js, $additional_js);
     }

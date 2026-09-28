@@ -102,3 +102,56 @@ $(document).on('input', '.sel-search', function () {
 	});
 	$grid.nextAll('.sel__empty').first().prop('hidden', shown > 0);
 });
+
+// На телефонах нажатие на картинку в карточке списка (шины, диски, АКБ и т.д.) открывает товар,
+// а не увеличенное фото. Ссылку берём из той же карточки: сначала ссылку на товар
+// (/tyres/бренд/модель/параметры), иначе на модель. На страницах товара/модели
+// (.tm__media, .prodBigImg) и у значка фотоаппарата в таблицах фото открывается как раньше.
+function card_link_for_image(link) {
+	var catalog = /^\/(tyres|disks|akb|tubes|bolts|used_tyres|truck-tyres|truck-disks)(\/|\?|$)/i;
+	var el = link.parentElement;
+	for (var depth = 0; el && depth < 10; depth++, el = el.parentElement) {
+		// вышли за пределы карточки — в контейнере уже несколько картинок-ссылок
+		if (el.querySelectorAll('a.lightbox').length > 1) {
+			break;
+		}
+		var best = null, bestScore = 0;
+		var links = el.querySelectorAll('a[href]');
+		for (var i = 0; i < links.length; i++) {
+			var a = links[i];
+			if (a === link || a.classList.contains('lightbox')) {
+				continue;
+			}
+			var href = a.getAttribute('href');
+			if (!catalog.test(href)) {
+				continue;
+			}
+			var path = href.split('?')[0].replace(/\/+$/, '');
+			var score = path.split('/').length >= 5 ? 2 : 1; // товар важнее модели
+			if (score > bestScore) {
+				best = a.href;
+				bestScore = score;
+			}
+		}
+		if (best) {
+			return best;
+		}
+	}
+	return null;
+}
+document.addEventListener('click', function (e) {
+	// мобильный вид (как в CSS, до 992px) или сенсорный экран
+	if (!window.matchMedia || !window.matchMedia('(max-width: 991px), (hover: none) and (pointer: coarse)').matches) {
+		return;
+	}
+	var link = e.target.closest && e.target.closest('a.lightbox');
+	if (!link || link.closest('.tm__media, .prodBigImg') || link.querySelector('img[src*="camera"]')) {
+		return;
+	}
+	var href = card_link_for_image(link);
+	if (href) {
+		e.preventDefault();
+		e.stopImmediatePropagation();
+		window.location.href = href;
+	}
+}, true);

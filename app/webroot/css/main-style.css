@@ -7492,3 +7492,57 @@ a.sel-steps__link:hover {
     from { transform: translateY(100%); }
     to { transform: none; }
 }
+
+/* Мобильное меню (кнопка .header-toggle): панель поверх сайта под верхней полосой шапки */
+.header-toggle__close {
+    display: none;
+}
+
+@media screen and (max-width: 991px) {
+    .header-wrapper {
+        position: relative;
+    }
+
+    #header #nav.toggle__menu-open {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        z-index: 1001;
+        box-shadow: 0 16px 40px rgba(15, 23, 42, .3);
+        animation: header-menu-in .18s ease-out;
+    }
+
+    #header #nav.toggle__menu-open::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        z-index: -1;
+        background: rgba(15, 23, 42, .45);
+    }
+
+    #header #nav.toggle__menu-open ul {
+        position: relative;
+        width: 100%;
+        margin: 0;
+    }
+
+    .header-toggle.is-open {
+        position: relative;
+        z-index: 1002;
+    }
+
+    .header-toggle.is-open .header-toggle__open {
+        display: none;
+    }
+
+    .header-toggle.is-open .header-toggle__close {
+        display: block;
+        margin: 5px;
+    }
+}
+
+@keyframes header-menu-in {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}

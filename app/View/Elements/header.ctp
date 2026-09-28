@@ -22,8 +22,9 @@ if ($is1April) {
     <div class="tyres <?php echo $current_season; ?>-season">
         <div class="wrap header-wrapper">
             <div class="header-wrap">
-                <a href="javascript:void(0);" onclick="switchToggle();" class="header-toggle">
-                    <svg viewBox="0 0 100 80" width="40" height="40">
+                <a href="javascript:void(0);" onclick="switchToggle();" class="header-toggle" id="header-toggle" aria-label="Меню" aria-expanded="false">
+                    <svg class="header-toggle__close" viewBox="0 0 24 24" width="30" height="30" aria-hidden="true"><path d="M5 5l14 14M19 5L5 19" stroke="#FFFFFF" stroke-width="2.4" stroke-linecap="round"/></svg>
+                    <svg class="header-toggle__open" viewBox="0 0 100 80" width="40" height="40">
                         <rect width="100" height="10" fill="#FFFFFF"></rect>
                         <rect y="30" width="100" height="10" fill="#FFFFFF"></rect>
                         <rect y="60" width="100" height="10" fill="#FFFFFF"></rect>
@@ -129,16 +130,30 @@ if ($is1April) {
         </div>
     </div>
     <script>
-        var toggle = false;
-
-        function switchToggle() {
-            if (!toggle) {
-                document.getElementById("nav").className = "toggle__menu-open";
-                toggle = true
-            } else {
-                document.getElementById("nav").className = "toggle__menu";
-                toggle = false
+        // Мобильное меню: открывается панелью поверх сайта (стили — .toggle__menu-open)
+        function switchToggle(open) {
+            var nav = document.getElementById("nav"), button = document.getElementById("header-toggle");
+            if (typeof open !== "boolean") {
+                open = nav.className !== "toggle__menu-open";
             }
+            nav.className = open ? "toggle__menu-open" : "toggle__menu";
+            button.classList.toggle("is-open", open);
+            // пока открыт оверлей, страница под ним не прокручивается
+            document.documentElement.style.overflow = open ? "hidden" : "";
+            document.body.style.overflow = open ? "hidden" : "";
+            button.setAttribute("aria-expanded", open ? "true" : "false");
         }
+
+        document.addEventListener("click", function (e) {
+            // клик по затемнению (псевдоэлемент самого #nav)
+            if (e.target.id === "nav" && e.target.className === "toggle__menu-open") {
+                switchToggle(false);
+            }
+        });
+        document.addEventListener("keydown", function (e) {
+            if (e.key === "Escape" && document.getElementById("nav").className === "toggle__menu-open") {
+                switchToggle(false);
+            }
+        });
     </script>
 </div>

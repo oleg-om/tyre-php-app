@@ -482,7 +482,7 @@ function open_popup(opt) {
     opt
   );
 
-  $("body").css('overflow', 'hidden')
+  $("html, body").css('overflow', 'hidden')
   if (opt?.size === 'lg') {
     $("body").append(
         '<div class="popup__wrapper lg" id="popup"><div class="popup" style="display:none;"></div></div><div class="bg-popup" id="popup-overlay"></div>'
@@ -501,7 +501,7 @@ function open_popup(opt) {
 function close_popup() {
   $("#popup-overlay").remove();
   $("#popup").remove();
-  $("body").css('overflow', 'auto');
+  $("html, body").css('overflow', '');
 }
 function search(query) {
   if (query.length > 2) {
